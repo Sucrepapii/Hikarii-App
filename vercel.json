@@ -1,0 +1,33 @@
+{
+  "version": 2,
+  "rewrites": [
+    {
+      "source": "/api/auth/:path*",
+      "destination": "/server/src/server.ts"
+    },
+    {
+      "source": "/api/tasks/:path*",
+      "destination": "/server/src/server.ts"
+    },
+    {
+      "source": "/api/insights/:path*",
+      "destination": "/server/src/server.ts"
+    },
+    {
+      "source": "/api/budgets/:path*",
+      "destination": "/server/src/server.ts"
+    },
+    {
+      "source": "/api/expenses/:path*",
+      "destination": "/server/src/server.ts"
+    },
+    {
+      "source": "/health",
+      "destination": "/server/src/server.ts"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/"
+    }
+  ]
+}

@@ -69,27 +69,32 @@ app.use((req: Request, res: Response) => {
 // Error handler (must be last)
 app.use(errorHandler);
 
-// Connect to database and start server
-const startServer = async () => {
-  try {
-    await connectDB();
+// Connect to database and start server (only if not on Vercel)
+if (process.env.NODE_ENV !== "production" || !process.env.VERCEL) {
+  const startServer = async () => {
+    try {
+      await connectDB();
 
-    app.listen(PORT, () => {
-      // Start background jobs
-      startReminderJob();
+      app.listen(PORT, () => {
+        // Start background jobs
+        startReminderJob();
 
-      console.log(`\n🚀 Server is running`);
-      console.log(`📡 Port: ${PORT}`);
-      console.log(`🌍 Environment: ${process.env.NODE_ENV || "development"}`);
-      console.log(`🔗 API: http://localhost:${PORT}/api`);
-      console.log(`✅ Health check: http://localhost:${PORT}/health\n`);
-    });
-  } catch (error) {
-    console.error("Failed to start server:", error);
-    process.exit(1);
-  }
-};
+        console.log(`\n🚀 Server is running`);
+        console.log(`📡 Port: ${PORT}`);
+        console.log(`🌍 Environment: ${process.env.NODE_ENV || "development"}`);
+        console.log(`🔗 API: http://localhost:${PORT}/api`);
+        console.log(`✅ Health check: http://localhost:${PORT}/health\n`);
+      });
+    } catch (error) {
+      console.error("Failed to start server:", error);
+      process.exit(1);
+    }
+  };
 
-startServer();
+  startServer();
+} else {
+  // On Vercel, we still need to connect to the database
+  connectDB();
+}
 
 export default app;
