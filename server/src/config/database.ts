@@ -13,7 +13,8 @@ const connectDB = async (): Promise<void> => {
     console.log(`📊 Database: ${mongoose.connection.name}`);
   } catch (error) {
     console.error("❌ MongoDB connection error:", error);
-    process.exit(1);
+    // On serverless, don't exit. Let the request fail so Vercel can retry or show a proper error.
+    throw error;
   }
 };
 
