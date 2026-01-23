@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="128" fill="url(#grad)" />
+  <!-- Castle Icon (Simplified from Lucide Castle) -->
+  <path d="M224 57L256 26L288 57L315 26L350 57V124H162V57L197 26L224 57Z" fill="white"/>
+  <path d="M120 125H392V230L348 230L348 380H164L164 230L120 230V125Z" fill="white"/>
+  <path d="M120 380H392V486H120V380Z" fill="white"/>
+  <!-- More detailed Castle path approximation for 512x512 -->
+  <path d="M384 96V32H320V64L288 32L256 64L224 32L192 64V32H128V96C128 113.6 142.4 128 160 128V224H128V288H160V416H128V480H384V416H352V288H384V224H352V128C369.6 128 384 113.6 384 96ZM224 416H288V288H224V416Z" fill="white" transform="scale(0.8) translate(64, 16)"/>
+</svg>

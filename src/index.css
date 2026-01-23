@@ -1,0 +1,269 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --gradient-accent: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    --gradient-success: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    --gradient-glass: rgba(255, 255, 255, 0.1);
+  }
+
+  .dark {
+    --gradient-glass: rgba(0, 0, 0, 0.2);
+    color-scheme: dark;
+  }
+
+  /* Fix Date Picker Icon in Dark Mode */
+  .dark ::-webkit-calendar-picker-indicator {
+    filter: invert(0.6);
+    cursor: pointer;
+  }
+
+  body {
+    @apply bg-gradient-to-br from-slate-100 via-blue-100 to-purple-100 dark:from-slate-950 dark:via-blue-950 dark:to-purple-950 text-slate-900 dark:text-slate-100 font-sans;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-display font-semibold;
+  }
+}
+
+@layer components {
+  /* Enhanced 3D Glassmorphism */
+  .glass {
+    @apply bg-white/95 dark:bg-black/30 backdrop-blur-2xl border border-slate-200/80 dark:border-white/20;
+  }
+
+  /* Premium 3D Card Effect */
+  .glass-card {
+    @apply glass rounded-3xl transition-all duration-300;
+    box-shadow:
+      0 1px 2px rgba(0, 0, 0, 0.02),
+      0 4px 8px rgba(0, 0, 0, 0.04),
+      0 8px 16px rgba(0, 0, 0, 0.06),
+      0 16px 32px rgba(0, 0, 0, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    transform: translateZ(0);
+  }
+
+  .dark .glass-card {
+    box-shadow:
+      0 1px 2px rgba(0, 0, 0, 0.3),
+      0 4px 8px rgba(0, 0, 0, 0.4),
+      0 8px 16px rgba(0, 0, 0, 0.5),
+      0 16px 32px rgba(0, 0, 0, 0.6),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+
+  /* 3D Hover Effect */
+  .glass-card:hover {
+    transform: translateY(-4px) translateZ(0);
+    box-shadow:
+      0 2px 4px rgba(0, 0, 0, 0.03),
+      0 8px 16px rgba(0, 0, 0, 0.06),
+      0 16px 32px rgba(0, 0, 0, 0.09),
+      0 24px 48px rgba(0, 0, 0, 0.12),
+      0 32px 64px rgba(99, 102, 241, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  }
+
+  .dark .glass-card:hover {
+    box-shadow:
+      0 2px 4px rgba(0, 0, 0, 0.4),
+      0 8px 16px rgba(0, 0, 0, 0.5),
+      0 16px 32px rgba(0, 0, 0, 0.6),
+      0 24px 48px rgba(0, 0, 0, 0.7),
+      0 32px 64px rgba(99, 102, 241, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  }
+
+  /* Elevated Card - Stronger 3D Effect */
+  .card-elevated {
+    @apply glass rounded-3xl transition-all duration-300;
+    box-shadow:
+      0 2px 4px rgba(0, 0, 0, 0.04),
+      0 8px 16px rgba(0, 0, 0, 0.08),
+      0 16px 32px rgba(0, 0, 0, 0.12),
+      0 24px 48px rgba(0, 0, 0, 0.16),
+      0 0 0 1px rgba(255, 255, 255, 0.8) inset,
+      0 -2px 8px rgba(99, 102, 241, 0.1) inset;
+    transform: translateZ(0);
+  }
+
+  .card-elevated:hover {
+    transform: translateY(-6px) scale(1.01) translateZ(0);
+    box-shadow:
+      0 4px 8px rgba(0, 0, 0, 0.06),
+      0 12px 24px rgba(0, 0, 0, 0.1),
+      0 24px 48px rgba(0, 0, 0, 0.14),
+      0 36px 72px rgba(0, 0, 0, 0.18),
+      0 0 0 1px rgba(255, 255, 255, 0.9) inset,
+      0 -2px 12px rgba(99, 102, 241, 0.15) inset;
+  }
+
+  /* Floating Card - Subtle Animation */
+  .card-floating {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px) translateZ(0);
+    }
+    50% {
+      transform: translateY(-8px) translateZ(0);
+    }
+  }
+
+  /* 3D Button Effect */
+  .btn-3d {
+    @apply relative overflow-hidden;
+    box-shadow:
+      0 2px 4px rgba(0, 0, 0, 0.1),
+      0 4px 8px rgba(0, 0, 0, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    transform: translateZ(0);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .btn-3d:hover {
+    transform: translateY(-2px) translateZ(0);
+    box-shadow:
+      0 4px 8px rgba(0, 0, 0, 0.12),
+      0 8px 16px rgba(0, 0, 0, 0.18),
+      inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  }
+
+  .btn-3d:active {
+    transform: translateY(0px) translateZ(0);
+    box-shadow:
+      0 1px 2px rgba(0, 0, 0, 0.1),
+      0 2px 4px rgba(0, 0, 0, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  }
+
+  /* Input 3D Effect */
+  .input-3d {
+    box-shadow:
+      inset 0 2px 4px rgba(0, 0, 0, 0.06),
+      inset 0 1px 2px rgba(0, 0, 0, 0.04),
+      0 0 0 1px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease;
+  }
+
+  .input-3d:focus {
+    box-shadow:
+      inset 0 2px 4px rgba(0, 0, 0, 0.04),
+      inset 0 1px 2px rgba(0, 0, 0, 0.02),
+      0 0 0 3px rgba(99, 102, 241, 0.1),
+      0 0 0 1px rgba(99, 102, 241, 0.3);
+  }
+
+  /* Gradient text */
+  .gradient-text {
+    @apply bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent;
+  }
+
+  /* Smooth transitions */
+  .transition-smooth {
+    @apply transition-all duration-300 ease-in-out;
+  }
+
+  /* Custom scrollbar */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-slate-100 dark:bg-slate-800 rounded-full;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-slate-300 dark:bg-slate-600 rounded-full hover:bg-slate-400 dark:hover:bg-slate-500;
+  }
+
+  /* Button hover effects */
+  .btn-hover {
+    @apply transform hover:scale-105 active:scale-95 transition-transform duration-200;
+  }
+
+  /* Shimmer effect */
+  .shimmer {
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.2) 50%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: -1000px 0;
+    }
+    100% {
+      background-position: 1000px 0;
+    }
+  }
+
+  /* 3D Transform Utilities */
+  .transform-3d {
+    transform-style: preserve-3d;
+    perspective: 1000px;
+  }
+
+  .rotate-3d:hover {
+    transform: rotateY(5deg) rotateX(5deg) translateZ(0);
+  }
+
+  /* Depth Layers */
+  .depth-1 {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+
+  .depth-2 {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  }
+
+  .depth-3 {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
+  }
+
+  .depth-4 {
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.20);
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Spacing utilities */
+  .section-padding {
+    @apply px-8 py-6;
+  }
+
+  .card-padding {
+    @apply p-8;
+  }
+
+  .content-gap {
+    @apply gap-6;
+  }
+}
