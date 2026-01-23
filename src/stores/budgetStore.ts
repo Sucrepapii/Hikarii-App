@@ -213,7 +213,7 @@ export const useBudgetStore = create<BudgetStore>((set, get) => ({
   },
 
   createExpenseFromTask: async (taskId, taskTitle, amount, category) => {
-    const newExpense = await get().addExpense({
+    await get().addExpense({
       title: `${taskTitle} (Auto)`,
       amount,
       category,

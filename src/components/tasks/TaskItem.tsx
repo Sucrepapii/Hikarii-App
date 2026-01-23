@@ -2,7 +2,7 @@ import React from 'react';
 import { Task, TaskPriority, TaskStatus, TaskType } from '../../types/task.types';
 import { Card } from '../common/Card';
 import { Button } from '../common/Button';
-import { Check, Clock, Trash2, Edit, AlertCircle, TrendingUp, TrendingDown } from 'lucide-react';
+import { Check, Clock, Trash2, Edit, AlertCircle } from 'lucide-react';
 import { formatRelativeDate, isOverdue } from '../../utils/dateUtils';
 import { clsx } from 'clsx';
 import { FinancialImpactBadge } from '../intelligence/FinancialImpactBadge';
@@ -134,13 +134,13 @@ export const TaskItem: React.FC<TaskItemProps> = ({
                                 {/* Late Fee Warning */}
                                 {hasLateFee && task.status !== TaskStatus.COMPLETED && (
                                     <span className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/30">
-                                        ⚠️ ₦{task.financials.lateFeePerDay.toLocaleString()}/day late fee
+                                        ⚠️ ₦{task.financials?.lateFeePerDay?.toLocaleString() || 0}/day late fee
                                     </span>
                                 )}
                             </div>
 
                             {/* Income vs Actual (for completed income tasks) */}
-                            {hasFinancials &&
+                            {task.financials &&
                                 task.financials.type === TaskType.INCOME &&
                                 task.status === TaskStatus.COMPLETED &&
                                 task.financials.actualIncome &&

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { taskSchema, TaskFormData } from '../../utils/validationSchemas';
@@ -6,7 +6,7 @@ import { TaskStatus, TaskPriority, TaskType } from '../../types/task.types';
 import { ExpenseCategory } from '../../types/budget.types';
 import { Input } from '../common/Input';
 import { Button } from '../common/Button';
-import { Calendar, Tag, DollarSign, TrendingUp, TrendingDown, AlertTriangle } from 'lucide-react';
+import { Calendar, DollarSign, TrendingUp, TrendingDown, AlertTriangle } from 'lucide-react';
 
 interface TaskFormProps {
     onSubmit: (data: TaskFormData) => void;

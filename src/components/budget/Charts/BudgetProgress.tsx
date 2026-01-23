@@ -1,10 +1,10 @@
 import React from 'react';
 import { Card } from '../../common/Card';
-import { ExpenseCategory, BudgetPeriod } from '../../../types/budget.types';
+import { BudgetPeriod, Budget, Expense } from '../../../types/budget.types';
 import { useBudgetStore } from '../../../stores/budgetStore';
 import { formatCurrency } from '../../../utils/currencyFormatter';
 import { clsx } from 'clsx';
-import { isSameDay, isSameWeek, isSameMonth } from 'date-fns';
+import { isSameDay, isSameWeek } from 'date-fns';
 
 interface BudgetProgressProps {
     selectedDate?: Date;
@@ -27,9 +27,9 @@ export const BudgetProgress: React.FC<BudgetProgressProps> = ({ selectedDate = n
         <Card>
             <h3 className="text-xl font-semibold mb-4">Budget Progress</h3>
             <div className="space-y-4">
-                {budgets.map((budget) => {
+                {budgets.map((budget: Budget) => {
                     const categoryExpenses = expenses.filter(
-                        (e) => {
+                        (e: Expense) => {
                             const expenseDate = new Date(e.date);
                             const period = budget.period || BudgetPeriod.MONTHLY;
 
@@ -44,7 +44,7 @@ export const BudgetProgress: React.FC<BudgetProgressProps> = ({ selectedDate = n
                             }
                         }
                     );
-                    const spent = categoryExpenses.reduce((sum, e) => sum + e.amount, 0);
+                    const spent = categoryExpenses.reduce((sum: number, e: Expense) => sum + e.amount, 0);
                     const percentage = (spent / budget.limit) * 100;
                     const isOverBudget = spent > budget.limit;
                     const isNearLimit = percentage >= 80 && !isOverBudget;

@@ -1,11 +1,5 @@
 import { create } from "zustand";
-import {
-  Task,
-  TaskStatus,
-  TaskPriority,
-  TaskFinancials,
-  TaskType,
-} from "../types/task.types";
+import { Task, TaskFinancials, TaskType } from "../types/task.types";
 import apiClient from "../api/client";
 
 interface TaskStore {

@@ -1,5 +1,5 @@
 import { Task, TaskStatus, TaskType } from "../types/task.types";
-import { Expense, Budget, ExpenseCategory } from "../types/budget.types";
+import { Expense, Budget } from "../types/budget.types";
 import {
   Insight,
   InsightType,
@@ -17,7 +17,7 @@ export class IntelligenceService {
    */
   static generateInsights(
     tasks: Task[],
-    expenses: Expense[],
+    _expenses: Expense[],
     budgets: Budget[],
   ): Insight[] {
     const insights: Insight[] = [];
@@ -94,8 +94,7 @@ export class IntelligenceService {
 
     // Financial impact
     if (task.financials) {
-      const { lateFeePerDay, type, estimatedCost, estimatedIncome } =
-        task.financials;
+      const { lateFeePerDay, type, estimatedCost } = task.financials;
 
       // Late fees increase urgency dramatically
       if (lateFeePerDay && lateFeePerDay > 0) {
@@ -180,7 +179,7 @@ export class IntelligenceService {
   private static getFinancialContext(task: Task, budgets: Budget[]): string {
     if (!task.financials) return "";
 
-    const { type, estimatedCost, estimatedIncome, actualCost, actualIncome } =
+    const { type, estimatedCost, estimatedIncome, actualIncome } =
       task.financials;
     const availableFunds = budgets.reduce(
       (sum, b) => sum + (b.limit - b.spent),

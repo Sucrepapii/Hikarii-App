@@ -3,7 +3,7 @@ import {
     format, startOfMonth, endOfMonth, startOfWeek, endOfWeek,
     eachDayOfInterval, isSameMonth, isSameDay, isToday, addMonths, subMonths
 } from 'date-fns';
-import { ChevronLeft, ChevronRight, CheckSquare, Wallet, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, CheckSquare, Wallet } from 'lucide-react';
 import { Card } from '../components/common/Card';
 import { useTaskStore } from '../stores/taskStore';
 import { useBudgetStore } from '../stores/budgetStore';
@@ -29,11 +29,7 @@ export const Calendar: React.FC = () => {
     const startDate = startOfWeek(monthStart);
     const endDate = endOfWeek(monthEnd);
 
-    const dateFormat = "d";
-    const rows = [];
-    let days = [];
-    let day = startDate;
-    let formattedDate = "";
+
 
     const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
@@ -85,14 +81,13 @@ export const Calendar: React.FC = () => {
 
                         {/* Days Grid */}
                         <div className="grid grid-cols-7 auto-rows-fr bg-slate-200 dark:bg-slate-700 gap-[1px]">
-                            {allDays.map((dayItem, idx) => {
+                            {allDays.map((dayItem) => {
                                 const { dayTasks, dayExpenses } = getDayItems(dayItem);
                                 const isCurrentMonth = isSameMonth(dayItem, monthStart);
                                 const isTodayDate = isToday(dayItem);
 
                                 // Indicators
-                                const hasOverdue = dayTasks.some(t => t.status !== TaskStatus.COMPLETED && new Date(t.dueDate!) < new Date() && !isToday(new Date(t.dueDate!)));
-                                const hasPending = dayTasks.some(t => t.status !== TaskStatus.COMPLETED);
+
                                 const totalExpense = dayExpenses.reduce((sum, e) => sum + e.amount, 0);
 
                                 return (

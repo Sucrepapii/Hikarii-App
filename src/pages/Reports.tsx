@@ -10,7 +10,7 @@ import { formatCurrency } from '../utils/currencyFormatter';
 
 export const Reports: React.FC = () => {
     const { tasks } = useTaskStore();
-    const { expenses, budgets, currency } = useBudgetStore();
+    const { expenses, currency } = useBudgetStore();
 
     // Task completion data
     const taskStatusData = [
@@ -63,7 +63,7 @@ export const Reports: React.FC = () => {
                                     fill="#8884d8"
                                     dataKey="value"
                                 >
-                                    {taskStatusData.map((entry, index) => (
+                                    {taskStatusData.map((_, index) => (
                                         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                     ))}
                                 </Pie>
@@ -93,7 +93,7 @@ export const Reports: React.FC = () => {
                                     fill="#8884d8"
                                     dataKey="value"
                                 >
-                                    {taskPriorityData.map((entry, index) => (
+                                    {taskPriorityData.map((_, index) => (
                                         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                     ))}
                                 </Pie>

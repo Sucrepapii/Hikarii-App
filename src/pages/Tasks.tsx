@@ -9,11 +9,11 @@ import { Plus } from 'lucide-react';
 import { useTaskStore } from '../stores/taskStore';
 import { Task, TaskStatus, TaskPriority, TaskType } from '../types/task.types';
 import { TaskFormData } from '../utils/validationSchemas';
-import { useBudgetStore } from '../stores/budgetStore';
+// import { useBudgetStore } from '../stores/budgetStore';
 
 export const Tasks: React.FC = () => {
     const { tasks, fetchTasks, addTask, updateTask, deleteTask, toggleTaskStatus } = useTaskStore();
-    const { createExpenseFromTask } = useBudgetStore();
+    // const { createExpenseFromTask } = useBudgetStore();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingTask, setEditingTask] = useState<Task | null>(null);
 

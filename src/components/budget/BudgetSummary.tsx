@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card } from '../common/Card';
-import { TrendingUp, TrendingDown, Wallet, DollarSign } from 'lucide-react';
+import { TrendingUp, Wallet, DollarSign } from 'lucide-react';
 import { formatCurrency } from '../../utils/currencyFormatter';
 import { useBudgetStore } from '../../stores/budgetStore';
 

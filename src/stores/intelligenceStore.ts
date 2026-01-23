@@ -15,7 +15,7 @@ interface IntelligenceStore {
   clearAllInsights: () => void;
 }
 
-export const useIntelligenceStore = create<IntelligenceStore>((set, get) => ({
+export const useIntelligenceStore = create<IntelligenceStore>((set) => ({
   insights: [],
   recommendations: [],
   lastRefresh: null,

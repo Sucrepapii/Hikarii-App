@@ -2,7 +2,7 @@ import React from "react";
 import { TaskRecommendation } from "../../types/intelligence.types";
 import { useTaskStore } from "../../stores/taskStore";
 import { Card } from "../common/Card";
-import { TrendingUp, Clock, DollarSign } from "lucide-react";
+import { DollarSign } from "lucide-react";
 import { clsx } from "clsx";
 
 interface TaskRecommendationCardProps {
