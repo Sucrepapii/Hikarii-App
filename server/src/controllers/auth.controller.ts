@@ -35,12 +35,17 @@ export const signup = async (
     const otp = generateOTP();
     const otpExpires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
 
+    // Hash password
+    const bcrypt = await import("bcryptjs");
+    const salt = await bcrypt.default.genSalt(10);
+    const hashedPassword = await bcrypt.default.hash(password, salt);
+
     // Create new user (unverified)
     const user = await prisma.user.create({
       data: {
         name,
         email,
-        password,
+        password: hashedPassword,
         isVerified: false,
         verificationToken: otp,
         verificationTokenExpires: otpExpires,

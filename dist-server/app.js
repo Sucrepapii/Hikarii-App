@@ -132,11 +132,14 @@ var init_auth_controller = __esm({
         console.log("Creating new user...");
         const otp = generateOTP();
         const otpExpires = new Date(Date.now() + 60 * 60 * 1e3);
+        const bcrypt = await import("bcryptjs");
+        const salt = await bcrypt.default.genSalt(10);
+        const hashedPassword = await bcrypt.default.hash(password, salt);
         const user = await db_default.user.create({
           data: {
             name,
             email,
-            password,
+            password: hashedPassword,
             isVerified: false,
             verificationToken: otp,
             verificationTokenExpires: otpExpires

@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { LogIn, Mail, Lock, Sparkles } from 'lucide-react';
+import { LogIn, Mail, Lock, Sparkles, Eye, EyeOff } from 'lucide-react';
 import { useAuthStore } from '../stores/authStore';
 import { Input } from '../components/common/Input';
 import { Button } from '../components/common/Button';
@@ -22,6 +22,7 @@ export const Login: React.FC = () => {
     const [verificationMode, setVerificationMode] = useState(false);
     const [emailToVerify, setEmailToVerify] = useState('');
     const [otp, setOtp] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
 
     const {
         register,
@@ -170,11 +171,18 @@ export const Login: React.FC = () => {
                                     <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                                     <Input
                                         {...register('password')}
-                                        type="password"
+                                        type={showPassword ? 'text' : 'password'}
                                         placeholder="••••••••"
-                                        className="pl-12"
+                                        className="pl-12 pr-12"
                                         autoComplete="current-password"
                                     />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
+                                    >
+                                        {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                                    </button>
                                 </div>
                                 {errors.password && (
                                     <p className="mt-2 text-sm text-danger-500">{errors.password.message}</p>
