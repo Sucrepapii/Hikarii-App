@@ -16,7 +16,7 @@ var errorHandler;
 var init_errorHandler = __esm({
   "server/src/middleware/errorHandler.ts"() {
     errorHandler = (err, _req, res, _next) => {
-      console.error("Error:", err);
+      console.error("\u{1F6A8} Server Error:", err.stack || err);
       const statusCode = err.statusCode || 500;
       const message = err.message || "Internal Server Error";
       res.status(statusCode).json({
@@ -848,13 +848,14 @@ var init_server = __esm({
     app.use(
       cors({
         origin: (origin, callback) => {
-          if (!origin) return callback(null, true);
-          if (allowedOrigins.indexOf(origin) !== -1 || allowedOrigins.includes("*")) {
+          if (!origin || process.env.NODE_ENV === "production" || allowedOrigins.includes("*")) {
+            return callback(null, true);
+          }
+          if (allowedOrigins.indexOf(origin) !== -1) {
             callback(null, true);
           } else {
-            console.log("Buffered allow origins:", allowedOrigins);
-            console.log("Blocked by CORS:", origin);
-            callback(new Error("Not allowed by CORS"));
+            console.log("CORS check failed for origin:", origin);
+            callback(null, false);
           }
         },
         credentials: true

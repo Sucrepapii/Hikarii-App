@@ -6,7 +6,8 @@ export const errorHandler = (
   res: Response,
   _next: NextFunction,
 ): void => {
-  console.error("Error:", err);
+  // Log the full error to Railway console for debugging
+  console.error("🚨 Server Error:", err.stack || err);
 
   const statusCode = err.statusCode || 500;
   const message = err.message || "Internal Server Error";

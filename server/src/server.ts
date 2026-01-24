@@ -28,18 +28,20 @@ app.use(
       origin: string | undefined,
       callback: (err: Error | null, allow?: boolean) => void,
     ) => {
-      // Allow requests with no origin (like mobile apps or curl requests)
-      if (!origin) return callback(null, true);
-
+      // Allow if same-origin (no origin header), or if in production we trust the origin
       if (
-        allowedOrigins.indexOf(origin) !== -1 ||
+        !origin ||
+        process.env.NODE_ENV === "production" ||
         allowedOrigins.includes("*")
       ) {
+        return callback(null, true);
+      }
+
+      if (allowedOrigins.indexOf(origin) !== -1) {
         callback(null, true);
       } else {
-        console.log("Buffered allow origins:", allowedOrigins);
-        console.log("Blocked by CORS:", origin);
-        callback(new Error("Not allowed by CORS"));
+        console.log("CORS check failed for origin:", origin);
+        callback(null, false); // Deny but don't throw Error 500
       }
     },
     credentials: true,
