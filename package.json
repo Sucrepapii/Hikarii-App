@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build && tsc -p tsconfig.server.json",
-    "start": "./node_modules/.bin/prisma migrate deploy && node dist-server/app.js",
+    "start": "npx --no-install prisma migrate deploy && node dist-server/app.js",
     "preview": "vite preview"
   },
   "dependencies": {
