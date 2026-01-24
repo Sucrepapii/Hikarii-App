@@ -3,6 +3,10 @@ import prisma from "../config/db";
 import { generateToken } from "../utils/jwt";
 import { AuthRequest } from "../middleware/auth.middleware";
 import { sendEmail } from "../services/email.service";
+import {
+  getVerificationTemplate,
+  getPasswordResetTemplate,
+} from "../utils/emailTemplates";
 
 // Helper to generate 6-digit OTP
 const generateOTP = () =>
@@ -56,11 +60,8 @@ export const signup = async (
     try {
       await sendEmail(
         email,
-        "Verify your HikariAccount",
-        `<h1>Verification Code</h1>
-             <p>Hello ${name},</p>
-             <p>Your verification code is: <strong>${otp}</strong></p>
-             <p>This code expires in 1 hour.</p>`,
+        "Verify your Hikari Account",
+        getVerificationTemplate(name, otp),
       );
     } catch (emailError) {
       console.error("Failed to send verification email:", emailError);
@@ -243,11 +244,8 @@ export const resendVerification = async (
 
     await sendEmail(
       email,
-      "Resend: Verify your HikariAccount",
-      `<h1>Verification Code</h1>
-              <p>Hello ${user.name},</p>
-              <p>Your new verification code is: <strong>${otp}</strong></p>
-              <p>This code expires in 1 hour.</p>`,
+      "Resend: Verify your Hikari Account",
+      getVerificationTemplate(user.name, otp),
     );
 
     res.json({ message: "Verification code resent" });
@@ -318,12 +316,8 @@ export const forgotPassword = async (
     try {
       await sendEmail(
         email,
-        "Reset your HikariPassword",
-        `<h1>Password Reset Code</h1>
-               <p>Hello ${user.name},</p>
-               <p>Your password reset code is: <strong>${otp}</strong></p>
-               <p>This code expires in 15 minutes.</p>
-               <p>If you did not request this, please ignore this email.</p>`,
+        "Reset your Hikari Password",
+        getPasswordResetTemplate(user.name, otp),
       );
     } catch (emailError) {
       console.error("Failed to send reset email:", emailError);

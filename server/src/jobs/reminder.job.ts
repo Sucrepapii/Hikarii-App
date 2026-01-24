@@ -2,6 +2,7 @@ import cron from "node-cron";
 import prisma from "../config/db";
 // import { TaskStatus } from "../models/types";
 import { sendEmail } from "../services/email.service";
+import { getOverdueReminderTemplate } from "../utils/emailTemplates";
 
 export const startReminderJob = () => {
   if (process.env.VERCEL) {
@@ -35,22 +36,10 @@ export const startReminderJob = () => {
             )
             .join("");
 
-          const html = `
-                        <h2>Action Required: Overdue Tasks</h2>
-                        <p>Hello ${user.name},</p>
-                        <p>You have <strong>${overdueTasks.length}</strong> task(s) that are past their due date:</p>
-                        <ul>
-                            ${taskListHtml}
-                        </ul>
-                        <p>Please log in to Hikarito update your progress.</p>
-                        <br/>
-                        <p>Best,<br/>HikariTeam</p>
-                    `;
-
           await sendEmail(
             user.email,
-            `Overdue Tasks Alert (${overdueTasks.length})`,
-            html,
+            `Action Required: ${overdueTasks.length} Overdue Tasks on Hikari`,
+            getOverdueReminderTemplate(user.name, taskListHtml),
           );
         }
       }

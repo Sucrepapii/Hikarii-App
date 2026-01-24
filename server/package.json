@@ -1,5 +1,5 @@
 {
-  "name": "checkmate-server",
+  "name": "hikari-server",
   "version": "1.0.0",
   "description": "Backend API server for Hikaritask and budget app",
   "main": "dist/server.js",
