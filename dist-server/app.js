@@ -954,6 +954,14 @@ var require_app = __commonJS({
       console.log("\u2705 dist folder exists");
       if (fs.existsSync(path.join(clientBuildPath, "index.html"))) {
         console.log("\u2705 index.html found");
+        const distContents = fs.readdirSync(clientBuildPath);
+        console.log("\u{1F4C2} dist contents:", distContents);
+        if (distContents.includes("assets")) {
+          console.log(
+            "\u{1F4C2} assets contents:",
+            fs.readdirSync(path.join(clientBuildPath, "assets"))
+          );
+        }
       } else {
         console.error("\u274C index.html MISSING in dist!");
       }
@@ -963,6 +971,7 @@ var require_app = __commonJS({
     }
     server_default.use(express2.static(clientBuildPath));
     server_default.get("*", (req, res) => {
+      console.log("\u26A0\uFE0F Fallback route hit for:", req.path);
       if (req.path.startsWith("/api")) {
         res.status(404).json({ error: "API Route not found" });
         return;

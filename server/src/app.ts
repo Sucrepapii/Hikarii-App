@@ -12,6 +12,14 @@ if (fs.existsSync(clientBuildPath)) {
   console.log("✅ dist folder exists");
   if (fs.existsSync(path.join(clientBuildPath, "index.html"))) {
     console.log("✅ index.html found");
+    const distContents = fs.readdirSync(clientBuildPath);
+    console.log("📂 dist contents:", distContents);
+    if (distContents.includes("assets")) {
+      console.log(
+        "📂 assets contents:",
+        fs.readdirSync(path.join(clientBuildPath, "assets")),
+      );
+    }
   } else {
     console.error("❌ index.html MISSING in dist!");
   }
@@ -25,6 +33,7 @@ app.use(express.static(clientBuildPath));
 // The "catchall" handler: for any request that doesn't
 // match one above, send back React's index.html file.
 app.get("*", (req, res) => {
+  console.log("⚠️ Fallback route hit for:", req.path);
   // If it's an API request that wasn't handled, don't return HTML
   if (req.path.startsWith("/api")) {
     res.status(404).json({ error: "API Route not found" });
