@@ -83,13 +83,14 @@ app.use((_req: Request, res: Response) => {
 app.use(errorHandler);
 
 // Start server (only if not on Vercel)
-if (process.env.NODE_ENV !== "production" || !process.env.VERCEL) {
-  app.listen(PORT, async () => {
-    // Cron jobs are handled here only for local
-    const { startReminderJob } = await import("./jobs/reminder.job");
-    startReminderJob();
-    console.log(`\n🚀 Server is running on port ${PORT}`);
-  });
-}
+// Start server (only if not on Vercel)
+// if (process.env.NODE_ENV !== "production" || !process.env.VERCEL) {
+//   app.listen(PORT, async () => {
+//     // Cron jobs are handled here only for local
+//     const { startReminderJob } = await import("./jobs/reminder.job.js");
+//     startReminderJob();
+//     console.log(`\n🚀 Server is running on port ${PORT}`);
+//   });
+// }
 
 export default app;

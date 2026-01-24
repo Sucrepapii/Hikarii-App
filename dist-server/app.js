@@ -829,6 +829,58 @@ var init_insights_routes = __esm({
   }
 });
 
+// server/src/server.ts
+import express from "express";
+import cors from "cors";
+import dotenv2 from "dotenv";
+var app, PORT, allowedOrigins, server_default;
+var init_server = __esm({
+  "server/src/server.ts"() {
+    init_errorHandler();
+    init_auth_routes();
+    init_task_routes();
+    init_budget_routes();
+    init_insights_routes();
+    dotenv2.config();
+    app = express();
+    PORT = process.env.PORT || 5e3;
+    allowedOrigins = (process.env.CLIENT_URL || "http://localhost:5173,http://localhost:5174").split(",");
+    app.use(
+      cors({
+        origin: (origin, callback) => {
+          if (!origin) return callback(null, true);
+          if (allowedOrigins.indexOf(origin) !== -1 || allowedOrigins.includes("*")) {
+            callback(null, true);
+          } else {
+            console.log("Buffered allow origins:", allowedOrigins);
+            console.log("Blocked by CORS:", origin);
+            callback(new Error("Not allowed by CORS"));
+          }
+        },
+        credentials: true
+      })
+    );
+    app.use(express.json());
+    app.use(express.urlencoded({ extended: true }));
+    app.get("/health", (_req, res) => {
+      res.json({
+        status: "OK",
+        message: "Server is running",
+        timestamp: /* @__PURE__ */ new Date()
+      });
+    });
+    app.use("/api/auth", auth_routes_default);
+    app.use("/api/tasks", task_routes_default);
+    app.use("/api", budget_routes_default);
+    app.use("/api/insights", insights_routes_default);
+    app.use((_req, res) => {
+      res.status(404).json({ error: "Route not found" });
+    });
+    app.use(errorHandler);
+    server_default = app;
+  }
+});
+
 // server/src/jobs/reminder.job.ts
 var reminder_job_exports = {};
 __export(reminder_job_exports, {
@@ -889,66 +941,6 @@ var init_reminder_job = __esm({
         }
       });
     };
-  }
-});
-
-// server/src/server.ts
-import express from "express";
-import cors from "cors";
-import dotenv2 from "dotenv";
-var app, PORT, allowedOrigins, server_default;
-var init_server = __esm({
-  "server/src/server.ts"() {
-    init_errorHandler();
-    init_auth_routes();
-    init_task_routes();
-    init_budget_routes();
-    init_insights_routes();
-    dotenv2.config();
-    app = express();
-    PORT = process.env.PORT || 5e3;
-    allowedOrigins = (process.env.CLIENT_URL || "http://localhost:5173,http://localhost:5174").split(",");
-    app.use(
-      cors({
-        origin: (origin, callback) => {
-          if (!origin) return callback(null, true);
-          if (allowedOrigins.indexOf(origin) !== -1 || allowedOrigins.includes("*")) {
-            callback(null, true);
-          } else {
-            console.log("Buffered allow origins:", allowedOrigins);
-            console.log("Blocked by CORS:", origin);
-            callback(new Error("Not allowed by CORS"));
-          }
-        },
-        credentials: true
-      })
-    );
-    app.use(express.json());
-    app.use(express.urlencoded({ extended: true }));
-    app.get("/health", (_req, res) => {
-      res.json({
-        status: "OK",
-        message: "Server is running",
-        timestamp: /* @__PURE__ */ new Date()
-      });
-    });
-    app.use("/api/auth", auth_routes_default);
-    app.use("/api/tasks", task_routes_default);
-    app.use("/api", budget_routes_default);
-    app.use("/api/insights", insights_routes_default);
-    app.use((_req, res) => {
-      res.status(404).json({ error: "Route not found" });
-    });
-    app.use(errorHandler);
-    if (process.env.NODE_ENV !== "production" || !process.env.VERCEL) {
-      app.listen(PORT, async () => {
-        const { startReminderJob: startReminderJob2 } = await Promise.resolve().then(() => (init_reminder_job(), reminder_job_exports));
-        startReminderJob2();
-        console.log(`
-\u{1F680} Server is running on port ${PORT}`);
-      });
-    }
-    server_default = app;
   }
 });
 
