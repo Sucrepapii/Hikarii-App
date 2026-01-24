@@ -17,8 +17,18 @@ var init_errorHandler = __esm({
   "server/src/middleware/errorHandler.ts"() {
     errorHandler = (err, _req, res, _next) => {
       console.error("\u{1F6A8} Server Error:", err.stack || err);
-      const statusCode = err.statusCode || 500;
-      const message = err.message || "Internal Server Error";
+      let statusCode = err.statusCode || 500;
+      let message = err.message || "Internal Server Error";
+      if (process.env.NODE_ENV === "production" || !process.env.VERCEL) {
+        if (err.code && err.code.startsWith("P")) {
+          console.log("Caught technical database error:", err.code);
+          message = "Signup failed: A database error occurred. Please try again later.";
+          statusCode = 500;
+        } else if (err.message && err.message.includes("invocation:")) {
+          message = "Signup failed: Server configuration issue. Please contact support.";
+          statusCode = 500;
+        }
+      }
       res.status(statusCode).json({
         error: message,
         ...process.env.NODE_ENV === "development" && { stack: err.stack }
@@ -945,34 +955,12 @@ var init_reminder_job = __esm({
 // server/src/app.ts
 import express2 from "express";
 import path from "path";
-import fs from "fs";
 var require_app = __commonJS({
   "server/src/app.ts"() {
     init_server();
     var clientBuildPath = path.join(process.cwd(), "dist");
-    console.log("\u{1F4C2} Static files path:", clientBuildPath);
-    if (fs.existsSync(clientBuildPath)) {
-      console.log("\u2705 dist folder exists");
-      if (fs.existsSync(path.join(clientBuildPath, "index.html"))) {
-        console.log("\u2705 index.html found");
-        const distContents = fs.readdirSync(clientBuildPath);
-        console.log("\u{1F4C2} dist contents:", distContents);
-        if (distContents.includes("assets")) {
-          console.log(
-            "\u{1F4C2} assets contents:",
-            fs.readdirSync(path.join(clientBuildPath, "assets"))
-          );
-        }
-      } else {
-        console.error("\u274C index.html MISSING in dist!");
-      }
-    } else {
-      console.error("\u274C dist folder MISSING at:", clientBuildPath);
-      console.log("\u{1F4C2} Current directory contents:", fs.readdirSync(process.cwd()));
-    }
     server_default.use(express2.static(clientBuildPath));
     server_default.get("*", (req, res) => {
-      console.log("\u26A0\uFE0F Fallback route hit for:", req.path);
       if (req.path.startsWith("/api")) {
         res.status(404).json({ error: "API Route not found" });
         return;
