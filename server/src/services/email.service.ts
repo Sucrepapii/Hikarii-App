@@ -14,7 +14,7 @@ export const sendEmail = async (to: string, subject: string, html: string) => {
     const resend = new Resend(apiKey);
 
     const { data, error } = await resend.emails.send({
-      from: "Checkmate <onboarding@resend.dev>",
+      from: "Hikari<onboarding@resend.dev>",
       to: [to],
       subject: subject,
       html: html,

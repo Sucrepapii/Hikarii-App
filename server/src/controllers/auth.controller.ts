@@ -56,7 +56,7 @@ export const signup = async (
     try {
       await sendEmail(
         email,
-        "Verify your Checkmate Account",
+        "Verify your HikariAccount",
         `<h1>Verification Code</h1>
              <p>Hello ${name},</p>
              <p>Your verification code is: <strong>${otp}</strong></p>
@@ -243,7 +243,7 @@ export const resendVerification = async (
 
     await sendEmail(
       email,
-      "Resend: Verify your Checkmate Account",
+      "Resend: Verify your HikariAccount",
       `<h1>Verification Code</h1>
               <p>Hello ${user.name},</p>
               <p>Your new verification code is: <strong>${otp}</strong></p>
@@ -318,7 +318,7 @@ export const forgotPassword = async (
     try {
       await sendEmail(
         email,
-        "Reset your Checkmate Password",
+        "Reset your HikariPassword",
         `<h1>Password Reset Code</h1>
                <p>Hello ${user.name},</p>
                <p>Your password reset code is: <strong>${otp}</strong></p>

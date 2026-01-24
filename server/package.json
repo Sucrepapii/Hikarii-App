@@ -1,7 +1,7 @@
 {
   "name": "checkmate-server",
   "version": "1.0.0",
-  "description": "Backend API server for Checkmate task and budget app",
+  "description": "Backend API server for Hikaritask and budget app",
   "main": "dist/server.js",
   "scripts": {
     "dev": "nodemon src/server.ts",

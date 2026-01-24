@@ -1,6 +1,6 @@
-# Checkmate Backend API
+# HikariBackend API
 
-Backend server for the Checkmate task and budget management application.
+Backend server for the Hikaritask and budget management application.
 
 ## Features
 

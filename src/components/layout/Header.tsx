@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Moon, Sun, Castle, LogOut, User, Menu } from 'lucide-react';
+import { Moon, Sun, LogOut, User, Menu } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../common/Button';
 import { useAuthStore } from '../../stores/authStore';
@@ -53,15 +53,15 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
                         <Menu className="w-5 h-5" />
                     </Button>
 
-                    <div className="p-3 rounded-2xl bg-gradient-to-br from-primary-500 to-accent-500 shadow-lg">
-                        <Castle className="w-6 h-6 text-white" />
+                    <div className="p-3 rounded-2xl bg-gradient-to-br from-primary-500 to-accent-500 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                        <Sun className="w-6 h-6 text-white" />
                     </div>
                     <div>
                         <h1 className="text-xl md:text-2xl font-display font-bold gradient-text">
-                            Checkmate
+                            Hikari
                         </h1>
                         <p className="text-xs text-slate-500 dark:text-slate-400 hidden sm:block">
-                            Manage tasks & finances
+                            Light & Clarity
                         </p>
                     </div>
                 </div>

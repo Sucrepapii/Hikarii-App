@@ -42,9 +42,9 @@ export const startReminderJob = () => {
                         <ul>
                             ${taskListHtml}
                         </ul>
-                        <p>Please log in to Checkmate to update your progress.</p>
+                        <p>Please log in to Hikarito update your progress.</p>
                         <br/>
-                        <p>Best,<br/>Checkmate Team</p>
+                        <p>Best,<br/>HikariTeam</p>
                     `;
 
           await sendEmail(

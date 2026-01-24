@@ -86,7 +86,7 @@ var init_email_service = __esm({
         }
         const resend = new Resend(apiKey);
         const { data, error } = await resend.emails.send({
-          from: "Checkmate <onboarding@resend.dev>",
+          from: "Hikari<onboarding@resend.dev>",
           to: [to],
           subject,
           html
@@ -148,7 +148,7 @@ var init_auth_controller = __esm({
         try {
           await sendEmail(
             email,
-            "Verify your Checkmate Account",
+            "Verify your HikariAccount",
             `<h1>Verification Code</h1>
              <p>Hello ${name},</p>
              <p>Your verification code is: <strong>${otp}</strong></p>
@@ -279,7 +279,7 @@ var init_auth_controller = __esm({
         });
         await sendEmail(
           email,
-          "Resend: Verify your Checkmate Account",
+          "Resend: Verify your HikariAccount",
           `<h1>Verification Code</h1>
               <p>Hello ${user.name},</p>
               <p>Your new verification code is: <strong>${otp}</strong></p>
@@ -336,7 +336,7 @@ var init_auth_controller = __esm({
         try {
           await sendEmail(
             email,
-            "Reset your Checkmate Password",
+            "Reset your HikariPassword",
             `<h1>Password Reset Code</h1>
                <p>Hello ${user.name},</p>
                <p>Your password reset code is: <strong>${otp}</strong></p>
@@ -1020,9 +1020,9 @@ var init_reminder_job = __esm({
                         <ul>
                             ${taskListHtml}
                         </ul>
-                        <p>Please log in to Checkmate to update your progress.</p>
+                        <p>Please log in to Hikarito update your progress.</p>
                         <br/>
-                        <p>Best,<br/>Checkmate Team</p>
+                        <p>Best,<br/>HikariTeam</p>
                     `;
               await sendEmail(
                 user.email,

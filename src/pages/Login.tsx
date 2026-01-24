@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { LogIn, Mail, Lock, Sparkles, Eye, EyeOff } from 'lucide-react';
+import { LogIn, Mail, Lock, Sun, Eye, EyeOff } from 'lucide-react';
 import { useAuthStore } from '../stores/authStore';
 import { Input } from '../components/common/Input';
 import { Button } from '../components/common/Button';
@@ -73,15 +73,15 @@ export const Login: React.FC = () => {
         <div className="min-h-screen flex items-center justify-center p-6">
             <div className="w-full max-w-md">
                 {/* Logo and Title */}
-                <div className="text-center mb-10 animate-fade-in">
-                    <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary-500 to-accent-500 rounded-3xl mb-6 shadow-2xl">
-                        <Sparkles className="w-10 h-10 text-white" />
+                <div className="text-center mb-10 animate-fade-in group">
+                    <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary-500 to-accent-500 rounded-3xl mb-6 shadow-2xl group-hover:scale-110 transition-transform duration-300">
+                        <Sun className="w-10 h-10 text-white" />
                     </div>
                     <h1 className="text-5xl font-display font-bold gradient-text mb-3">
-                        Checkmate
+                        Hikari
                     </h1>
                     <p className="text-lg text-slate-600 dark:text-slate-400">
-                        Manage tasks & finances
+                        Light & Clarity
                     </p>
                 </div>
 
