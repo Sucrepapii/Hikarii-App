@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build && tsc -p tsconfig.server.json",
-    "start": "npx --no-install prisma migrate deploy && node dist-server/server/src/app.js",
+    "start": "node -e \"console.log('CHECKING DB VAR:', (process.env.DATABASE_URL ? 'DEFINED' : 'MISSING'), 'PROTOCOL:', (process.env.DATABASE_URL || '').split(':')[0])\" && npx --no-install prisma migrate deploy && node dist-server/server/src/app.js",
     "preview": "vite preview"
   },
   "dependencies": {
