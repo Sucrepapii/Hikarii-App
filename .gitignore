@@ -28,3 +28,5 @@ yarn-error.log*
 !.vscode/settings.json
 .idea
 .fleet
+
+/src/generated/prisma

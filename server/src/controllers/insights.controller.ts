@@ -1,5 +1,5 @@
 import { Response } from "express";
-import { Task, Budget } from "../models";
+import prisma from "../config/db";
 import { AuthRequest } from "../middleware/auth.middleware";
 import { TaskType, TaskStatus } from "../models/types";
 
@@ -22,8 +22,8 @@ export const getInsights = async (
 ): Promise<void> => {
   try {
     const [tasks, budgets] = await Promise.all([
-      Task.find({ userId: req.userId }),
-      Budget.find({ userId: req.userId }),
+      prisma.task.findMany({ where: { userId: req.userId } }),
+      prisma.budget.findMany({ where: { userId: req.userId } }),
     ]);
 
     const insights: Insight[] = [];
@@ -36,7 +36,7 @@ export const getInsights = async (
     if (availableFunds < 10000) {
       const incomeTasks = tasks.filter(
         (t) =>
-          t.financials?.type === TaskType.INCOME &&
+          (t.financials as any)?.type === TaskType.INCOME &&
           t.status !== TaskStatus.COMPLETED,
       );
 
@@ -64,10 +64,14 @@ export const getInsights = async (
     const pendingExpenses = tasks
       .filter(
         (t) =>
-          t.financials?.type === TaskType.EXPENSE &&
+          (t.financials as any)?.type === TaskType.EXPENSE &&
           t.status !== TaskStatus.COMPLETED,
       )
-      .reduce((sum, t) => sum + (t.financials?.estimatedCost || 0), 0);
+      .reduce((sum, t) => {
+        // Type casting json?
+        const est = (t.financials as any)?.estimatedCost || 0;
+        return sum + est;
+      }, 0);
 
     if (pendingExpenses > availableFunds) {
       const deficit = pendingExpenses - availableFunds;
@@ -89,7 +93,7 @@ export const getInsights = async (
     const now = new Date();
     tasks.forEach((task) => {
       if (
-        task.financials?.lateFeePerDay &&
+        (task.financials as any)?.lateFeePerDay &&
         task.dueDate &&
         task.status !== TaskStatus.COMPLETED
       ) {
@@ -100,16 +104,16 @@ export const getInsights = async (
           const daysLate = Math.ceil(
             (now.getTime() - dueDate.getTime()) / (1000 * 60 * 60 * 24),
           );
-          const accruedFees = daysLate * task.financials.lateFeePerDay;
+          const accruedFees = daysLate * (task.financials as any).lateFeePerDay;
 
           insights.push({
-            id: `latefee-${task._id}`,
+            id: `latefee-${task.id}`,
             type: "BUDGET_WARNING",
             priority: "CRITICAL",
             title: `Late Fee Accruing: ${task.title}`,
             message: `Task is ${daysLate} day(s) overdue. Accrued fees: ₦${accruedFees.toLocaleString()}`,
             actionable: true,
-            taskId: task._id.toString(),
+            taskId: task.id,
             suggestedAction: "Complete this task immediately",
             financialImpact: -accruedFees,
             createdAt: now,
@@ -130,7 +134,12 @@ export const getRecommendations = async (
 ): Promise<void> => {
   try {
     const [tasks] = await Promise.all([
-      Task.find({ userId: req.userId, status: { $ne: TaskStatus.COMPLETED } }),
+      prisma.task.findMany({
+        where: {
+          userId: req.userId,
+          status: { not: TaskStatus.COMPLETED },
+        },
+      }),
     ]);
 
     const recommendations = tasks
@@ -150,12 +159,12 @@ export const getRecommendations = async (
           else if (daysUntilDue <= 3) score += 20;
         }
 
-        if (task.financials?.lateFeePerDay) {
+        if ((task.financials as any)?.lateFeePerDay) {
           score += 40;
         }
 
         return {
-          taskId: task._id.toString(),
+          taskId: task.id,
           task: task,
           urgencyScore: Math.min(100, score),
         };

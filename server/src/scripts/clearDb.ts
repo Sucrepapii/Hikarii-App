@@ -1,30 +1,25 @@
-// import mongoose from "mongoose";
+import prisma from "../config/db";
 import dotenv from "dotenv";
-import connectDB from "../config/database";
-import { User } from "../models/User";
-import { Task } from "../models/Task";
-import { Budget } from "../models/Budget";
-import { Expense } from "../models/Expense";
-
-dotenv.config();
 
 const clearDb = async () => {
   try {
-    await connectDB();
+    // await connectDB(); // No longer needed with Prisma
 
     console.log("🗑️  Clearing database...");
 
-    await User.deleteMany({});
-    console.log("✅ Users cleared");
+    // Order matters because of Foreign Keys!
+    // Delete dependents first
+    await prisma.expense.deleteMany({});
+    console.log("✅ Expenses cleared");
 
-    await Task.deleteMany({});
-    console.log("✅ Tasks cleared");
-
-    await Budget.deleteMany({});
+    await prisma.budget.deleteMany({});
     console.log("✅ Budgets cleared");
 
-    await Expense.deleteMany({});
-    console.log("✅ Expenses cleared");
+    await prisma.task.deleteMany({});
+    console.log("✅ Tasks cleared");
+
+    await prisma.user.deleteMany({});
+    console.log("✅ Users cleared");
 
     console.log("✨ Database cleared successfully");
     process.exit(0);

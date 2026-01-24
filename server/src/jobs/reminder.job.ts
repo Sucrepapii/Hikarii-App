@@ -1,6 +1,5 @@
 import cron from "node-cron";
-import { User } from "../models/User";
-import { Task } from "../models/Task";
+import prisma from "../config/db";
 // import { TaskStatus } from "../models/types";
 import { sendEmail } from "../services/email.service";
 
@@ -15,15 +14,17 @@ export const startReminderJob = () => {
   cron.schedule("0 9 * * *", async () => {
     console.log("Running daily reminder job...");
     try {
-      const users = await User.find({});
+      const users = await prisma.user.findMany({});
       const today = new Date();
       today.setHours(0, 0, 0, 0);
 
       for (const user of users) {
-        const overdueTasks = await Task.find({
-          userId: user._id,
-          status: { $ne: "COMPLETED" }, // Assuming string or enum match
-          dueDate: { $lt: today },
+        const overdueTasks = await prisma.task.findMany({
+          where: {
+            userId: user.id,
+            status: { not: "COMPLETED" }, // Prisma enum string matching
+            dueDate: { lt: today },
+          },
         });
 
         if (overdueTasks.length > 0) {

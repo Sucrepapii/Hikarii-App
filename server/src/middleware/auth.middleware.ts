@@ -19,7 +19,7 @@ export const authenticate = async (
       return;
     }
 
-    const decoded = verifyToken(token);
+    const decoded = verifyToken(token) as any;
     req.userId = decoded.userId;
     req.userEmail = decoded.email;
 

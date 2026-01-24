@@ -1,0 +1,121 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                      String   @id @default(uuid())
+  name                    String
+  email                   String   @unique
+  password                String
+  isVerified              Boolean  @default(false)
+  verificationToken       String?
+  verificationTokenExpires DateTime?
+  
+  tasks     Task[]
+  budgets   Budget[]
+  expenses  Expense[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Task {
+  id             String      @id @default(uuid())
+  title          String
+  description    String?
+  status         TaskStatus  @default(TODO)
+  priority       TaskPriority @default(MEDIUM)
+  dueDate        DateTime?
+  tags           String[]    // Prisma supports array types in Postgres
+  
+  // Financials embedded in Mongo, normalized here or kept as JSON?
+  // Postgres supports JSON types (JSONB).
+  financials     Json? 
+
+  userId         String
+  user           User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  @@index([userId, status])
+  @@index([userId, dueDate])
+}
+
+model Budget {
+  id        String          @id @default(uuid())
+  category  ExpenseCategory
+  limit     Float
+  spent     Float           @default(0)
+  period    BudgetPeriod    @default(MONTHLY)
+
+  userId    String
+  user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+
+  @@unique([userId, category])
+}
+
+model Expense {
+  id             String          @id @default(uuid())
+  title          String
+  amount         Float
+  category       ExpenseCategory
+  date           DateTime        @default(now())
+  description    String?
+  linkedTaskId   String?         // Optional link to a task
+  isAutoCreated  Boolean         @default(false)
+
+  userId         String
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  @@index([userId, date])
+  @@index([userId, category])
+}
+
+// Enums
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  COMPLETED
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum TaskType {
+  EXPENSE
+  INCOME
+  NEUTRAL
+}
+
+enum BudgetPeriod {
+  DAILY
+  WEEKLY
+  MONTHLY
+  YEARLY
+}
+
+enum ExpenseCategory {
+  FOOD
+  TRANSPORT
+  ENTERTAINMENT
+  UTILITIES
+  SHOPPING
+  HEALTH
+  OTHER
+}
