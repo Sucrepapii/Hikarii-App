@@ -5,9 +5,9 @@ const connectDB = async (): Promise<void> => {
     const mongoURI =
       process.env.MONGODB_URI || "mongodb://localhost:27017/checkmate";
 
+    console.log("📡 Attempting to connect to MongoDB...");
     await mongoose.connect(mongoURI, {
-      family: 4, // Force IPv4 to avoid SSL errors
-      serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of hanging
+      serverSelectionTimeoutMS: 10000, // Wait up to 10s
       socketTimeoutMS: 45000,
     });
 
