@@ -1,14 +1,6 @@
 import mongoose, { Schema, Document } from "mongoose";
 
-export enum ExpenseCategory {
-  FOOD = "FOOD",
-  TRANSPORT = "TRANSPORT",
-  ENTERTAINMENT = "ENTERTAINMENT",
-  UTILITIES = "UTILITIES",
-  SHOPPING = "SHOPPING",
-  HEALTH = "HEALTH",
-  OTHER = "OTHER",
-}
+import { ExpenseCategory } from "./types";
 
 export interface IExpense extends Document {
   userId: mongoose.Types.ObjectId;

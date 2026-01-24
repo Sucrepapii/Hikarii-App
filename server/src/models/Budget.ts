@@ -1,12 +1,5 @@
 import mongoose, { Schema, Document } from "mongoose";
-import { ExpenseCategory } from "./Expense";
-
-export enum BudgetPeriod {
-  DAILY = "DAILY",
-  WEEKLY = "WEEKLY",
-  MONTHLY = "MONTHLY",
-  YEARLY = "YEARLY",
-}
+import { ExpenseCategory, BudgetPeriod } from "./types";
 
 export interface IBudget extends Document {
   userId: mongoose.Types.ObjectId;

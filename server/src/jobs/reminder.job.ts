@@ -1,6 +1,7 @@
 import cron from "node-cron";
 import { User } from "../models/User";
-import { Task, TaskStatus } from "../models/Task";
+import { Task } from "../models/Task";
+import { TaskStatus } from "../models/types";
 import { sendEmail } from "../services/email.service";
 
 export const startReminderJob = () => {

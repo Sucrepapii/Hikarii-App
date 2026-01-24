@@ -1,7 +1,7 @@
 import { Response } from "express";
 import { Task, Budget, Expense } from "../models";
 import { AuthRequest } from "../middleware/auth.middleware";
-import { TaskType, TaskStatus } from "../models/Task";
+import { TaskType, TaskStatus } from "../models/types";
 
 interface Insight {
   id: string;
