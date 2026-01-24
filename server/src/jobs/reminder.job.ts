@@ -1,12 +1,16 @@
 import cron from "node-cron";
 import { User } from "../models/User";
-import { Task } from "../models/Task";
+import { Task, TaskStatus } from "../models/Task";
 import { sendEmail } from "../services/email.service";
-import { TaskStatus } from "../models/Task"; // Ensure this matches model export
 
 export const startReminderJob = () => {
+  if (process.env.VERCEL) {
+    console.log(
+      "Cron jobs are not supported on Vercel Serverless. Skipping...",
+    );
+    return;
+  }
   // Run every day at 9:00 AM '0 9 * * *'
-  // For testing, we can use '* * * * *' (every minute) or a specific time
   cron.schedule("0 9 * * *", async () => {
     console.log("Running daily reminder job...");
     try {

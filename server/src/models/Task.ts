@@ -106,4 +106,5 @@ taskSchema.index({ userId: 1, status: 1 });
 taskSchema.index({ userId: 1, dueDate: 1 });
 
 export const Task =
-  mongoose.models.Task || mongoose.model<ITask>("Task", taskSchema);
+  (mongoose.models.Task as mongoose.Model<ITask>) ||
+  mongoose.model<ITask>("Task", taskSchema);

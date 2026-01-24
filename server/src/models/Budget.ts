@@ -54,4 +54,5 @@ const budgetSchema = new Schema<IBudget>(
 budgetSchema.index({ userId: 1, category: 1 }, { unique: true });
 
 export const Budget =
-  mongoose.models.Budget || mongoose.model<IBudget>("Budget", budgetSchema);
+  (mongoose.models.Budget as mongoose.Model<IBudget>) ||
+  mongoose.model<IBudget>("Budget", budgetSchema);
