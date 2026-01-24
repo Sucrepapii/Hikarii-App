@@ -1,4 +1,4 @@
-import app from "./server";
+import app from "./server.js";
 import express from "express";
 import path from "path";
 
@@ -21,7 +21,7 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   // Check if we need to start cron jobs
   if (process.env.NODE_ENV === "production" && !process.env.VERCEL) {
-    import("./jobs/reminder.job")
+    import("./jobs/reminder.job.js")
       .then(({ startReminderJob }) => {
         startReminderJob();
       })
