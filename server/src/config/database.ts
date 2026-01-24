@@ -7,6 +7,8 @@ const connectDB = async (): Promise<void> => {
 
     await mongoose.connect(mongoURI, {
       family: 4, // Force IPv4 to avoid SSL errors
+      serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of hanging
+      socketTimeoutMS: 45000,
     });
 
     console.log("✅ MongoDB connected successfully");
