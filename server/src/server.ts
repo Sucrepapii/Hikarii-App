@@ -9,7 +9,6 @@ import authRoutes from "./routes/auth.routes";
 import taskRoutes from "./routes/task.routes";
 import budgetRoutes from "./routes/budget.routes";
 import insightsRoutes from "./routes/insights.routes";
-import { startReminderJob } from "./jobs/reminder.job";
 
 // Load environment variables
 dotenv.config();
@@ -46,10 +45,16 @@ app.use(
     credentials: true,
   }),
 );
-// Connect to database
-connectDB().catch((err: any) =>
-  console.error("Initial DB connection error:", err),
-);
+
+// Database connection middleware
+app.use((req: any, res: any, next: any) => {
+  connectDB()
+    .then(() => next())
+    .catch((err) => {
+      console.error("DB Connection Failure:", err);
+      res.status(500).json({ error: "Database connection failed" });
+    });
+});
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -79,8 +84,9 @@ app.use(errorHandler);
 
 // Start server (only if not on Vercel)
 if (process.env.NODE_ENV !== "production" || !process.env.VERCEL) {
-  app.listen(PORT, () => {
+  app.listen(PORT, async () => {
     // Cron jobs are handled here only for local
+    const { startReminderJob } = await import("./jobs/reminder.job");
     startReminderJob();
     console.log(`\n🚀 Server is running on port ${PORT}`);
   });
