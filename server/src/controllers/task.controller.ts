@@ -1,5 +1,6 @@
 import { Response } from "express";
-import { Task, TaskStatus } from "../models/Task";
+import { Task } from "../models/Task";
+import { TaskStatus } from "../models/types";
 import { AuthRequest } from "../middleware/auth.middleware";
 
 export const getTasks = async (

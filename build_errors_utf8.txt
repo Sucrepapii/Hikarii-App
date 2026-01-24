@@ -1,0 +1,9 @@
+﻿
+> task-budget-app@0.1.0 build
+> tsc && vite build
+
+api/backend/controllers/insights.controller.ts(2,24): error TS6133: 'Expense' is declared but its value is never read.
+api/backend/middleware/errorHandler.ts(5,3): error TS6133: 'req' is declared but its value is never read.
+api/backend/middleware/errorHandler.ts(7,3): error TS6133: 'next' is declared but its value is never read.
+api/backend/models/types.ts(1,1): error TS6133: 'mongoose' is declared but its value is never read.
+api/backend/scripts/clearDb.ts(1,1): error TS6133: 'mongoose' is declared but its value is never read.

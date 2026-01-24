@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { Response } from "express";
 import { User } from "../models/User";
 import { generateToken } from "../utils/jwt";
@@ -245,7 +246,7 @@ export const getMe = async (req: AuthRequest, res: Response): Promise<void> => {
     res.status(500).json({ error: error.message });
   }
 };
-export const debugInfo = async (req: any, res: Response) => {
+export const debugInfo = async (_req: any, res: Response) => {
   res.json({
     env: {
       NODE_ENV: process.env.NODE_ENV,

@@ -47,7 +47,7 @@ app.use(
 );
 
 // Database connection middleware
-app.use((req: any, res: any, next: any) => {
+app.use((_req: any, res: any, next: any) => {
   connectDB()
     .then(() => next())
     .catch((err) => {
@@ -60,7 +60,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Health check endpoint
-app.get("/health", (req: Request, res: Response) => {
+app.get("/health", (_req: Request, res: Response) => {
   res.json({
     status: "OK",
     message: "Server is running",
@@ -75,7 +75,7 @@ app.use("/api", budgetRoutes); // Contains /budgets and /expenses
 app.use("/api/insights", insightsRoutes);
 
 // 404 handler
-app.use((req: Request, res: Response) => {
+app.use((_req: Request, res: Response) => {
   res.status(404).json({ error: "Route not found" });
 });
 

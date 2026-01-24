@@ -1,4 +1,4 @@
-export default function handler(req: any, res: any) {
+export default function handler(_req: any, res: any) {
   res.status(200).json({
     status: "pong",
     timestamp: new Date().toISOString(),

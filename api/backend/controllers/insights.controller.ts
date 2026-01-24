@@ -1,5 +1,5 @@
 import { Response } from "express";
-import { Task, Budget, Expense } from "../models";
+import { Task, Budget } from "../models";
 import { AuthRequest } from "../middleware/auth.middleware";
 import { TaskType, TaskStatus } from "../models/types";
 
@@ -21,10 +21,9 @@ export const getInsights = async (
   res: Response,
 ): Promise<void> => {
   try {
-    const [tasks, budgets, expenses] = await Promise.all([
+    const [tasks, budgets] = await Promise.all([
       Task.find({ userId: req.userId }),
       Budget.find({ userId: req.userId }),
-      Expense.find({ userId: req.userId }),
     ]);
 
     const insights: Insight[] = [];
@@ -130,9 +129,8 @@ export const getRecommendations = async (
   res: Response,
 ): Promise<void> => {
   try {
-    const [tasks, budgets] = await Promise.all([
+    const [tasks] = await Promise.all([
       Task.find({ userId: req.userId, status: { $ne: TaskStatus.COMPLETED } }),
-      Budget.find({ userId: req.userId }),
     ]);
 
     const recommendations = tasks
