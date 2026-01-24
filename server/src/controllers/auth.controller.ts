@@ -12,20 +12,26 @@ export const signup = async (
   req: AuthRequest,
   res: Response,
 ): Promise<void> => {
+  console.log("Signup request received for:", req.body?.email);
   try {
     const { name, email, password } = req.body;
 
-    // Check if user already exists
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      // If user exists but NOT verified, we could resend code, but for security/simplicity
-      // let's say "User exists" unless we want to handle that edge case specifically.
-      // Or if unverified, we could overwrite? Let's stick to standard "exists".
-      res.status(400).json({ error: "User already exists with this email" });
+    if (!name || !email || !password) {
+      console.log("Missing fields in signup request");
+      res.status(400).json({ error: "Name, email, and password are required" });
       return;
     }
 
     // Generate OTP
+    console.log("Finding existing user...");
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      console.log("User already exists:", email);
+      res.status(400).json({ error: "User already exists with this email" });
+      return;
+    }
+
+    console.log("Creating new user...");
     const otp = generateOTP();
     const otpExpires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
 
@@ -143,11 +149,9 @@ export const verifyEmail = async (
       !user.verificationTokenExpires ||
       user.verificationTokenExpires < new Date()
     ) {
-      res
-        .status(400)
-        .json({
-          error: "Verification code expired. Please request a new one.",
-        });
+      res.status(400).json({
+        error: "Verification code expired. Please request a new one.",
+      });
       return;
     }
 
@@ -240,4 +244,18 @@ export const getMe = async (req: AuthRequest, res: Response): Promise<void> => {
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
+};
+export const debugInfo = async (req: any, res: Response) => {
+  res.json({
+    env: {
+      NODE_ENV: process.env.NODE_ENV,
+      VERCEL: process.env.VERCEL,
+      HAS_MONGO_URI: !!process.env.MONGODB_URI,
+      HAS_JWT_SECRET: !!process.env.JWT_SECRET,
+      HAS_RESEND_KEY: !!process.env.RESEND_API_KEY,
+      CLIENT_URL: process.env.CLIENT_URL,
+    },
+    dbStatus:
+      mongoose.connection.readyState === 1 ? "connected" : "disconnected",
+  });
 };

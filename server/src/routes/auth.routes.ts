@@ -5,6 +5,7 @@ import {
   getMe,
   verifyEmail,
   resendVerification,
+  debugInfo,
 } from "../controllers/auth.controller";
 import { authenticate } from "../middleware/auth.middleware";
 
@@ -15,5 +16,6 @@ router.post("/login", login);
 router.post("/verify-email", verifyEmail);
 router.post("/resend-verification", resendVerification);
 router.get("/me", authenticate, getMe);
+router.get("/debug", debugInfo);
 
 export default router;
