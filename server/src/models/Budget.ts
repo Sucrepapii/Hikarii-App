@@ -53,4 +53,5 @@ const budgetSchema = new Schema<IBudget>(
 // Unique constraint: one budget per category per user
 budgetSchema.index({ userId: 1, category: 1 }, { unique: true });
 
-export const Budget = mongoose.model<IBudget>("Budget", budgetSchema);
+export const Budget =
+  mongoose.models.Budget || mongoose.model<IBudget>("Budget", budgetSchema);
