@@ -1,11 +1,6 @@
 import app from "./server";
 import express from "express";
 import path from "path";
-// import { fileURLToPath } from "url";
-
-// Helper for ESM directory
-// const __filename = fileURLToPath(import.meta.url);
-// const __dirname = path.dirname(__filename);
 
 // Serve static files from the React app
 const clientBuildPath = path.join(process.cwd(), "dist");

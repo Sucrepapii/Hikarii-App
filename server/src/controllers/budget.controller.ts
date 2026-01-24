@@ -68,7 +68,7 @@ export const deleteBudget = async (
   try {
     // Verify ownership
     const existing = await prisma.budget.findFirst({
-      where: { id: req.params.id, userId: req.userId },
+      where: { id: req.params.id as string, userId: req.userId },
     });
 
     if (!existing) {
@@ -76,7 +76,7 @@ export const deleteBudget = async (
       return;
     }
 
-    await prisma.budget.delete({ where: { id: req.params.id } });
+    await prisma.budget.delete({ where: { id: req.params.id as string } });
 
     // Handled above
 
@@ -145,7 +145,7 @@ export const updateExpense = async (
   try {
     const existingExpense = await prisma.expense.findFirst({
       where: {
-        id: req.params.id,
+        id: req.params.id as string,
         userId: req.userId,
       },
     });
@@ -156,7 +156,7 @@ export const updateExpense = async (
     }
 
     const updatedExpense = await prisma.expense.update({
-      where: { id: req.params.id },
+      where: { id: req.params.id as string },
       data: req.body,
     });
 
@@ -210,7 +210,7 @@ export const deleteExpense = async (
 ): Promise<void> => {
   try {
     const existingExpense = await prisma.expense.findFirst({
-      where: { id: req.params.id, userId: req.userId },
+      where: { id: req.params.id as string, userId: req.userId },
     });
 
     if (!existingExpense) {
@@ -219,7 +219,7 @@ export const deleteExpense = async (
     }
 
     const deletedExpense = await prisma.expense.delete({
-      where: { id: req.params.id },
+      where: { id: req.params.id as string },
     });
 
     // Update budget spent amount

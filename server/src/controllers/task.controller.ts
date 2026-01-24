@@ -42,7 +42,7 @@ export const getTaskById = async (
   try {
     const task = await prisma.task.findFirst({
       where: {
-        id: req.params.id,
+        id: req.params.id as string,
         userId: req.userId,
       },
     });
@@ -65,7 +65,7 @@ export const updateTask = async (
   try {
     // First check existence to handle 404 cleanly, or let Prisma throw
     const existingTask = await prisma.task.findFirst({
-      where: { id: req.params.id, userId: req.userId },
+      where: { id: req.params.id as string, userId: req.userId },
     });
 
     if (!existingTask) {
@@ -74,7 +74,7 @@ export const updateTask = async (
     }
 
     const task = await prisma.task.update({
-      where: { id: req.params.id },
+      where: { id: req.params.id as string },
       data: req.body,
     });
 
@@ -93,7 +93,7 @@ export const deleteTask = async (
   try {
     // Verify ownership first
     const existingTask = await prisma.task.findFirst({
-      where: { id: req.params.id, userId: req.userId },
+      where: { id: req.params.id as string, userId: req.userId },
     });
 
     if (!existingTask) {
@@ -102,7 +102,7 @@ export const deleteTask = async (
     }
 
     await prisma.task.delete({
-      where: { id: req.params.id },
+      where: { id: req.params.id as string },
     });
 
     /* Handled above */
@@ -120,7 +120,7 @@ export const toggleTaskStatus = async (
   try {
     const task = await prisma.task.findFirst({
       where: {
-        id: req.params.id,
+        id: req.params.id as string,
         userId: req.userId,
       },
     });

@@ -1,10 +1,10 @@
-import { Task, Budget } from "../models";
+import prisma from "../config/db";
 import { TaskType, TaskStatus } from "../models/types";
 export const getInsights = async (req, res) => {
     try {
         const [tasks, budgets] = await Promise.all([
-            Task.find({ userId: req.userId }),
-            Budget.find({ userId: req.userId }),
+            prisma.task.findMany({ where: { userId: req.userId } }),
+            prisma.budget.findMany({ where: { userId: req.userId } }),
         ]);
         const insights = [];
         // 1. Cash Flow Urgency
@@ -32,7 +32,11 @@ export const getInsights = async (req, res) => {
         const pendingExpenses = tasks
             .filter((t) => t.financials?.type === TaskType.EXPENSE &&
             t.status !== TaskStatus.COMPLETED)
-            .reduce((sum, t) => sum + (t.financials?.estimatedCost || 0), 0);
+            .reduce((sum, t) => {
+            // Type casting json?
+            const est = t.financials?.estimatedCost || 0;
+            return sum + est;
+        }, 0);
         if (pendingExpenses > availableFunds) {
             const deficit = pendingExpenses - availableFunds;
             insights.push({
@@ -59,13 +63,13 @@ export const getInsights = async (req, res) => {
                     const daysLate = Math.ceil((now.getTime() - dueDate.getTime()) / (1000 * 60 * 60 * 24));
                     const accruedFees = daysLate * task.financials.lateFeePerDay;
                     insights.push({
-                        id: `latefee-${task._id}`,
+                        id: `latefee-${task.id}`,
                         type: "BUDGET_WARNING",
                         priority: "CRITICAL",
                         title: `Late Fee Accruing: ${task.title}`,
                         message: `Task is ${daysLate} day(s) overdue. Accrued fees: ₦${accruedFees.toLocaleString()}`,
                         actionable: true,
-                        taskId: task._id.toString(),
+                        taskId: task.id,
                         suggestedAction: "Complete this task immediately",
                         financialImpact: -accruedFees,
                         createdAt: now,
@@ -82,7 +86,12 @@ export const getInsights = async (req, res) => {
 export const getRecommendations = async (req, res) => {
     try {
         const [tasks] = await Promise.all([
-            Task.find({ userId: req.userId, status: { $ne: TaskStatus.COMPLETED } }),
+            prisma.task.findMany({
+                where: {
+                    userId: req.userId,
+                    status: { not: TaskStatus.COMPLETED },
+                },
+            }),
         ]);
         const recommendations = tasks
             .map((task) => {
@@ -104,7 +113,7 @@ export const getRecommendations = async (req, res) => {
                 score += 40;
             }
             return {
-                taskId: task._id.toString(),
+                taskId: task.id,
                 task: task,
                 urgencyScore: Math.min(100, score),
             };

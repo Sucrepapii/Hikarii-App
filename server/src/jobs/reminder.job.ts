@@ -30,7 +30,7 @@ export const startReminderJob = () => {
         if (overdueTasks.length > 0) {
           const taskListHtml = overdueTasks
             .map(
-              (t) =>
+              (t: any) =>
                 `<li><strong>${t.title}</strong> (Due: ${t.dueDate ? new Date(t.dueDate).toLocaleDateString() : "No date"})</li>`,
             )
             .join("");

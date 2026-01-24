@@ -1,7 +1,7 @@
 import express, { Express, Request, Response } from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import connectDB from "./config/database";
+// import connectDB from "./config/database";
 import { errorHandler } from "./middleware/errorHandler";
 
 // Import routes
@@ -46,15 +46,15 @@ app.use(
   }),
 );
 
-// Database connection middleware
-app.use((_req: any, res: any, next: any) => {
-  connectDB()
-    .then(() => next())
-    .catch((err) => {
-      console.error("DB Connection Failure:", err);
-      res.status(500).json({ error: "Database connection failed" });
-    });
-});
+// Database connection middleware - Prisma auto-connects
+// app.use((_req: any, res: any, next: any) => {
+//   connectDB()
+//     .then(() => next())
+//     .catch((err) => {
+//       console.error("DB Connection Failure:", err);
+//       res.status(500).json({ error: "Database connection failed" });
+//     });
+// });
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
