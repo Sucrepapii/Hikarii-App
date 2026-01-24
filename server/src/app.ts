@@ -2,8 +2,24 @@ import app from "./server.js";
 import express from "express";
 import path from "path";
 
+import fs from "fs";
+
 // Serve static files from the React app
 const clientBuildPath = path.join(process.cwd(), "dist");
+console.log("📂 Static files path:", clientBuildPath);
+
+if (fs.existsSync(clientBuildPath)) {
+  console.log("✅ dist folder exists");
+  if (fs.existsSync(path.join(clientBuildPath, "index.html"))) {
+    console.log("✅ index.html found");
+  } else {
+    console.error("❌ index.html MISSING in dist!");
+  }
+} else {
+  console.error("❌ dist folder MISSING at:", clientBuildPath);
+  console.log("📂 Current directory contents:", fs.readdirSync(process.cwd()));
+}
+
 app.use(express.static(clientBuildPath));
 
 // The "catchall" handler: for any request that doesn't
