@@ -187,6 +187,14 @@ export const Login: React.FC = () => {
                                 {errors.password && (
                                     <p className="mt-2 text-sm text-danger-500">{errors.password.message}</p>
                                 )}
+                                <div className="mt-2 text-right">
+                                    <Link
+                                        to="/forgot-password"
+                                        className="text-sm text-primary-600 hover:text-primary-700 dark:text-primary-400 font-medium"
+                                    >
+                                        Forgot Password?
+                                    </Link>
+                                </div>
                             </div>
 
                             {/* Error Message */}

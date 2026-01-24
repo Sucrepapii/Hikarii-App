@@ -1,4 +1,4 @@
-import { Response } from "express";
+import { Request, Response } from "express";
 import prisma from "../config/db";
 import { generateToken } from "../utils/jwt";
 import { AuthRequest } from "../middleware/auth.middleware";
@@ -277,6 +277,122 @@ export const getMe = async (req: AuthRequest, res: Response): Promise<void> => {
     res.status(500).json({ error: error.message });
   }
 };
+// Forgot Password - Send OTP
+export const forgotPassword = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      res.status(400).json({ error: "Email is required" });
+      return;
+    }
+
+    const user = await prisma.user.findUnique({ where: { email } });
+
+    if (!user) {
+      // For security, don't reveal if user exists, but we can log internally
+      console.log("Forgot password attempt for non-existent email:", email);
+      res.json({
+        message:
+          "If an account exists with that email, a reset code has been sent.",
+      });
+      return;
+    }
+
+    // Generate 6-digit OTP
+    const otp = generateOTP();
+    const otpExpires = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes for reset
+
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        resetPasswordToken: otp,
+        resetPasswordExpires: otpExpires,
+      },
+    });
+
+    // Send Reset Email
+    try {
+      await sendEmail(
+        email,
+        "Reset your Checkmate Password",
+        `<h1>Password Reset Code</h1>
+               <p>Hello ${user.name},</p>
+               <p>Your password reset code is: <strong>${otp}</strong></p>
+               <p>This code expires in 15 minutes.</p>
+               <p>If you did not request this, please ignore this email.</p>`,
+      );
+    } catch (emailError) {
+      console.error("Failed to send reset email:", emailError);
+    }
+
+    res.json({
+      message:
+        "If an account exists with that email, a reset code has been sent.",
+    });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Reset Password - Verify OTP and set new password
+export const resetPassword = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  try {
+    const { email, code, newPassword } = req.body;
+
+    if (!email || !code || !newPassword) {
+      res
+        .status(400)
+        .json({ error: "Email, code, and new password are required" });
+      return;
+    }
+
+    const user = await prisma.user.findUnique({ where: { email } });
+
+    if (!user) {
+      res.status(404).json({ error: "User not found" });
+      return;
+    }
+
+    // Validate token
+    if (user.resetPasswordToken !== code) {
+      res.status(400).json({ error: "Invalid or expired reset code" });
+      return;
+    }
+
+    if (!user.resetPasswordExpires || user.resetPasswordExpires < new Date()) {
+      res.status(400).json({ error: "Reset code has expired" });
+      return;
+    }
+
+    // Hash new password
+    const bcrypt = await import("bcryptjs");
+    const salt = await bcrypt.default.genSalt(10);
+    const hashedPassword = await bcrypt.default.hash(newPassword, salt);
+
+    // Update user
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        password: hashedPassword,
+        resetPasswordToken: null,
+        resetPasswordExpires: null,
+        isVerified: true, // Resetting password counts as verification if they were stuck
+      },
+    });
+
+    res.json({ message: "Password reset successful. You can now login." });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 export const debugInfo = async (_req: any, res: Response) => {
   res.json({
     env: {

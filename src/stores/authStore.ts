@@ -17,6 +17,12 @@ interface AuthState {
   signup: (name: string, email: string, password: string) => Promise<any>;
   verifyEmail: (email: string, code: string) => Promise<void>;
   resendCode: (email: string) => Promise<void>;
+  forgotPassword: (email: string) => Promise<void>;
+  resetPassword: (
+    email: string,
+    code: string,
+    newPassword: string,
+  ) => Promise<void>;
   logout: () => void;
   checkAuth: () => Promise<void>;
 }
@@ -103,6 +109,35 @@ export const useAuthStore = create<AuthState>((set) => ({
       set({ isLoading: false });
     } catch (error: any) {
       const message = error.response?.data?.error || "Resend failed";
+      set({ error: message, isLoading: false });
+      throw new Error(message);
+    }
+  },
+
+  forgotPassword: async (email: string) => {
+    try {
+      set({ isLoading: true, error: null });
+      await apiClient.post("/auth/forgot-password", { email });
+      set({ isLoading: false });
+    } catch (error: any) {
+      const message =
+        error.response?.data?.error || "Forgot password request failed";
+      set({ error: message, isLoading: false });
+      throw new Error(message);
+    }
+  },
+
+  resetPassword: async (email: string, code: string, newPassword: string) => {
+    try {
+      set({ isLoading: true, error: null });
+      await apiClient.post("/auth/reset-password", {
+        email,
+        code,
+        newPassword,
+      });
+      set({ isLoading: false });
+    } catch (error: any) {
+      const message = error.response?.data?.error || "Reset password failed";
       set({ error: message, isLoading: false });
       throw new Error(message);
     }

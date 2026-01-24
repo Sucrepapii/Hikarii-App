@@ -10,6 +10,7 @@ import { Reports } from './pages/Reports';
 import { Calendar } from './pages/Calendar';
 import { Login } from './pages/Login';
 import { Signup } from './pages/Signup';
+import { ForgotPassword } from './pages/ForgotPassword';
 import { useAuthStore } from './stores/authStore';
 import './index.css';
 
@@ -28,6 +29,10 @@ function App() {
                 <Route
                     path="/signup"
                     element={isAuthenticated ? <Navigate to="/" replace /> : <Signup />}
+                />
+                <Route
+                    path="/forgot-password"
+                    element={isAuthenticated ? <Navigate to="/" replace /> : <ForgotPassword />}
                 />
 
                 {/* Protected Routes */}

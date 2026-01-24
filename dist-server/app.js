@@ -106,7 +106,7 @@ var init_email_service = __esm({
 });
 
 // server/src/controllers/auth.controller.ts
-var generateOTP, signup, login, verifyEmail, resendVerification, getMe, debugInfo;
+var generateOTP, signup, login, verifyEmail, resendVerification, getMe, forgotPassword, resetPassword, debugInfo;
 var init_auth_controller = __esm({
   "server/src/controllers/auth.controller.ts"() {
     init_db();
@@ -309,6 +309,88 @@ var init_auth_controller = __esm({
         res.status(500).json({ error: error.message });
       }
     };
+    forgotPassword = async (req, res) => {
+      try {
+        const { email } = req.body;
+        if (!email) {
+          res.status(400).json({ error: "Email is required" });
+          return;
+        }
+        const user = await db_default.user.findUnique({ where: { email } });
+        if (!user) {
+          console.log("Forgot password attempt for non-existent email:", email);
+          res.json({
+            message: "If an account exists with that email, a reset code has been sent."
+          });
+          return;
+        }
+        const otp = generateOTP();
+        const otpExpires = new Date(Date.now() + 15 * 60 * 1e3);
+        await db_default.user.update({
+          where: { id: user.id },
+          data: {
+            resetPasswordToken: otp,
+            resetPasswordExpires: otpExpires
+          }
+        });
+        try {
+          await sendEmail(
+            email,
+            "Reset your Checkmate Password",
+            `<h1>Password Reset Code</h1>
+               <p>Hello ${user.name},</p>
+               <p>Your password reset code is: <strong>${otp}</strong></p>
+               <p>This code expires in 15 minutes.</p>
+               <p>If you did not request this, please ignore this email.</p>`
+          );
+        } catch (emailError) {
+          console.error("Failed to send reset email:", emailError);
+        }
+        res.json({
+          message: "If an account exists with that email, a reset code has been sent."
+        });
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+    };
+    resetPassword = async (req, res) => {
+      try {
+        const { email, code, newPassword } = req.body;
+        if (!email || !code || !newPassword) {
+          res.status(400).json({ error: "Email, code, and new password are required" });
+          return;
+        }
+        const user = await db_default.user.findUnique({ where: { email } });
+        if (!user) {
+          res.status(404).json({ error: "User not found" });
+          return;
+        }
+        if (user.resetPasswordToken !== code) {
+          res.status(400).json({ error: "Invalid or expired reset code" });
+          return;
+        }
+        if (!user.resetPasswordExpires || user.resetPasswordExpires < /* @__PURE__ */ new Date()) {
+          res.status(400).json({ error: "Reset code has expired" });
+          return;
+        }
+        const bcrypt = await import("bcryptjs");
+        const salt = await bcrypt.default.genSalt(10);
+        const hashedPassword = await bcrypt.default.hash(newPassword, salt);
+        await db_default.user.update({
+          where: { id: user.id },
+          data: {
+            password: hashedPassword,
+            resetPasswordToken: null,
+            resetPasswordExpires: null,
+            isVerified: true
+            // Resetting password counts as verification if they were stuck
+          }
+        });
+        res.json({ message: "Password reset successful. You can now login." });
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+    };
     debugInfo = async (_req, res) => {
       res.json({
         env: {
@@ -361,6 +443,8 @@ var init_auth_routes = __esm({
     router.post("/login", login);
     router.post("/verify-email", verifyEmail);
     router.post("/resend-verification", resendVerification);
+    router.post("/forgot-password", forgotPassword);
+    router.post("/reset-password", resetPassword);
     router.get("/me", authenticate, getMe);
     router.get("/debug", debugInfo);
     auth_routes_default = router;
