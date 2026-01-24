@@ -873,9 +873,6 @@ var init_server = __esm({
     app.use("/api/tasks", task_routes_default);
     app.use("/api", budget_routes_default);
     app.use("/api/insights", insights_routes_default);
-    app.use((_req, res) => {
-      res.status(404).json({ error: "Route not found" });
-    });
     app.use(errorHandler);
     server_default = app;
   }

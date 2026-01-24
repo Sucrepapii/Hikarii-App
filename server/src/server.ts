@@ -75,9 +75,10 @@ app.use("/api", budgetRoutes); // Contains /budgets and /expenses
 app.use("/api/insights", insightsRoutes);
 
 // 404 handler
-app.use((_req: Request, res: Response) => {
-  res.status(404).json({ error: "Route not found" });
-});
+// 404 handler removed - logic moved to app.ts
+// app.use((_req: Request, res: Response) => {
+//   res.status(404).json({ error: "Route not found" });
+// });
 
 // Error handler (must be last)
 app.use(errorHandler);
