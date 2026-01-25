@@ -3,12 +3,12 @@ generator client {
 }
 
 datasource db {
-  provider = "mongodb"
-  url      = env("MONGODB_URI")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
-  id                      String   @id @default(auto()) @map("_id") @db.ObjectId
+  id                      String   @id @default(uuid())
   name                    String
   email                   String   @unique
   password                String
@@ -27,17 +27,17 @@ model User {
 }
 
 model Task {
-  id             String      @id @default(auto()) @map("_id") @db.ObjectId
+  id             String      @id @default(uuid())
   title          String
   description    String?
   status         TaskStatus  @default(TODO)
   priority       TaskPriority @default(MEDIUM)
   dueDate        DateTime?
-  tags           String[]
+  tags           String[]    // Prisma supports array types in Postgres
   
   financials     Json? 
 
-  userId         String      @db.ObjectId
+  userId         String
   user           User        @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   createdAt      DateTime    @default(now())
@@ -48,13 +48,13 @@ model Task {
 }
 
 model Budget {
-  id        String          @id @default(auto()) @map("_id") @db.ObjectId
+  id        String          @id @default(uuid())
   category  ExpenseCategory
   limit     Float
   spent     Float           @default(0)
   period    BudgetPeriod    @default(MONTHLY)
 
-  userId    String          @db.ObjectId
+  userId    String
   user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   createdAt DateTime        @default(now())
@@ -64,7 +64,7 @@ model Budget {
 }
 
 model Expense {
-  id             String          @id @default(auto()) @map("_id") @db.ObjectId
+  id             String          @id @default(uuid())
   title          String
   amount         Float
   category       ExpenseCategory
@@ -73,7 +73,7 @@ model Expense {
   linkedTaskId   String?         // Optional link to a task
   isAutoCreated  Boolean         @default(false)
 
-  userId         String          @db.ObjectId
+  userId         String
   user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   createdAt      DateTime        @default(now())
