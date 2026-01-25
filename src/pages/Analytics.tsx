@@ -12,17 +12,39 @@ import {
     ResponsiveContainer,
     BarChart,
     Bar,
-    Legend
+    Legend,
+    PieChart,
+    Pie,
+    Cell
 } from 'recharts';
 import { format, subDays, eachDayOfInterval, isSameDay } from 'date-fns';
 import { TrendingUp, CheckCircle, AlertCircle } from 'lucide-react';
-import { TaskStatus } from '../types/task.types';
+import { SpendingChart } from '../components/budget/Charts/SpendingChart';
+import { BudgetProgress } from '../components/budget/Charts/BudgetProgress';
+import { TaskStatus, TaskPriority } from '../types/task.types';
 import { TaskRecommendationCard } from '../components/intelligence/TaskRecommendationCard';
 import { IntelligenceService } from '../utils/intelligenceService';
 
 export const Analytics: React.FC = () => {
     const { tasks } = useTaskStore();
     const { expenses, budgets } = useBudgetStore();
+
+    // Reports Data: Task Status Distribution
+    const taskStatusData = [
+        { name: 'Completed', value: tasks.filter((t) => t.status === TaskStatus.COMPLETED).length },
+        { name: 'In Progress', value: tasks.filter((t) => t.status === TaskStatus.IN_PROGRESS).length },
+        { name: 'To Do', value: tasks.filter((t) => t.status === TaskStatus.TODO).length },
+    ].filter((d) => d.value > 0);
+
+    // Reports Data: Task Priority Distribution
+    const taskPriorityData = [
+        { name: 'Urgent', value: tasks.filter((t) => t.priority === TaskPriority.URGENT).length },
+        { name: 'High', value: tasks.filter((t) => t.priority === TaskPriority.HIGH).length },
+        { name: 'Medium', value: tasks.filter((t) => t.priority === TaskPriority.MEDIUM).length },
+        { name: 'Low', value: tasks.filter((t) => t.priority === TaskPriority.LOW).length },
+    ].filter((d) => d.value > 0);
+
+    const COLORS = ['#a855f7', '#6366f1', '#10b981', '#f59e0b'];
 
     // 1. Prepare Cash Flow Trend Data (Last 30 Days)
     const today = new Date();
@@ -75,10 +97,10 @@ export const Analytics: React.FC = () => {
         <div className="animate-fade-in space-y-6">
             <div className="mb-8">
                 <h1 className="text-3xl font-display font-bold gradient-text mb-2">
-                    Analytics Dashboard
+                    Analytics & Reports
                 </h1>
                 <p className="text-slate-600 dark:text-slate-400">
-                    Deep dive into your productivity and financial trends
+                    Comprehensive view of your productivity, spending, and insights
                 </p>
             </div>
 
@@ -92,7 +114,6 @@ export const Analytics: React.FC = () => {
                         <h3 className="font-medium text-slate-600 dark:text-slate-400">Net Cash Flow (30d)</h3>
                     </div>
                     <p className="text-2xl font-bold text-slate-800 dark:text-slate-200">
-                        {/* Calculate Net */}
                         ₦{(cashFlowData.reduce((acc, curr) => acc + curr.Income - curr.Expenses, 0)).toLocaleString()}
                     </p>
                 </Card>
@@ -122,9 +143,10 @@ export const Analytics: React.FC = () => {
                 </Card>
             </div>
 
+            {/* Main Financial Charts */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Cash Flow Chart */}
-                <Card className="lg:col-span-2">
+                {/* Cash Flow Chart - From Analytics */}
+                <Card className="lg:col-span-1">
                     <h2 className="text-lg font-semibold mb-6 text-slate-800 dark:text-slate-200">
                         Income vs Expenses (Last 30 Days)
                     </h2>
@@ -176,41 +198,16 @@ export const Analytics: React.FC = () => {
                     </div>
                 </Card>
 
-                {/* AI Insights Panel */}
-                <div className="space-y-6">
-                    <h2 className="text-xl font-bold gradient-text">Hikari Insights</h2>
-                    {recommendations.length > 0 ? (
-                        recommendations.map((rec) => (
-                            <TaskRecommendationCard
-                                key={rec.taskId}
-                                recommendation={rec}
-                                onTaskClick={() => { }} // Could link to task edit
-                            />
-                        ))
-                    ) : (
-                        <Card>
-                            <p className="text-slate-500 text-center py-4">
-                                No urgent recommendations right now. You are doing great!
-                            </p>
-                        </Card>
-                    )}
+                {/* Spending Breakdown Chart - From Reports */}
+                <SpendingChart />
+            </div>
 
-                    {insights.filter(i => i.type !== 'TASK_RECOMMENDATION').map(insight => (
-                        <div key={insight.id} className="p-4 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800">
-                            <div className="flex items-start gap-3">
-                                <div className="p-2 bg-indigo-100 dark:bg-indigo-800 text-indigo-600 dark:text-indigo-300 rounded-lg">
-                                    <TrendingUp className="w-5 h-5" />
-                                </div>
-                                <div>
-                                    <h4 className="font-semibold text-slate-800 dark:text-slate-200">{insight.title}</h4>
-                                    <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">{insight.message}</p>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
+            {/* Budget & Task Progress */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Budget Progress - From Reports */}
+                <BudgetProgress />
 
-                {/* Task Stats Bar Chart */}
+                {/* Task Completion Bar Chart - From Analytics */}
                 <Card>
                     <h2 className="text-lg font-semibold mb-6 text-slate-800 dark:text-slate-200">
                         Task Status Distribution
@@ -227,6 +224,107 @@ export const Analytics: React.FC = () => {
                         </ResponsiveContainer>
                     </div>
                 </Card>
+            </div>
+
+            {/* Task Distributions (Pie Charts) - From Reports */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <Card>
+                    <h3 className="text-xl font-semibold mb-4">Task Status (Detailed)</h3>
+                    {taskStatusData.length > 0 ? (
+                        <ResponsiveContainer width="100%" height={300}>
+                            <PieChart>
+                                <Pie
+                                    data={taskStatusData}
+                                    cx="50%"
+                                    cy="50%"
+                                    labelLine={false}
+                                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                                    outerRadius={100}
+                                    fill="#8884d8"
+                                    dataKey="value"
+                                >
+                                    {taskStatusData.map((_, index) => (
+                                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                    ))}
+                                </Pie>
+                                <Tooltip />
+                                <Legend />
+                            </PieChart>
+                        </ResponsiveContainer>
+                    ) : (
+                        <p className="text-center text-slate-500 py-8">No task data available</p>
+                    )}
+                </Card>
+
+                <Card>
+                    <h3 className="text-xl font-semibold mb-4">Task Priority Distribution</h3>
+                    {taskPriorityData.length > 0 ? (
+                        <ResponsiveContainer width="100%" height={300}>
+                            <PieChart>
+                                <Pie
+                                    data={taskPriorityData}
+                                    cx="50%"
+                                    cy="50%"
+                                    labelLine={false}
+                                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                                    outerRadius={100}
+                                    fill="#8884d8"
+                                    dataKey="value"
+                                >
+                                    {taskPriorityData.map((_, index) => (
+                                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                    ))}
+                                </Pie>
+                                <Tooltip />
+                                <Legend />
+                            </PieChart>
+                        </ResponsiveContainer>
+                    ) : (
+                        <p className="text-center text-slate-500 py-8">No task data available</p>
+                    )}
+                </Card>
+            </div>
+
+            {/* AI Insights Section */}
+            <div className="pt-4 border-t border-slate-200 dark:border-slate-800">
+                <h2 className="text-2xl font-bold gradient-text mb-6">Hikari Intelligence Insights</h2>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-300">Smart Recommendations</h3>
+                        {recommendations.length > 0 ? (
+                            recommendations.map((rec) => (
+                                <TaskRecommendationCard
+                                    key={rec.taskId}
+                                    recommendation={rec}
+                                    onTaskClick={() => { }}
+                                />
+                            ))
+                        ) : (
+                            <Card>
+                                <p className="text-slate-500 text-center py-4">
+                                    No urgent recommendations right now. You are doing great!
+                                </p>
+                            </Card>
+                        )}
+                    </div>
+
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-300">Financial & Productivity Insights</h3>
+                        {insights.filter(i => i.type !== 'TASK_RECOMMENDATION').map(insight => (
+                            <div key={insight.id} className="p-4 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800">
+                                <div className="flex items-start gap-3">
+                                    <div className="p-2 bg-indigo-100 dark:bg-indigo-800 text-indigo-600 dark:text-indigo-300 rounded-lg">
+                                        <TrendingUp className="w-5 h-5" />
+                                    </div>
+                                    <div>
+                                        <h4 className="font-semibold text-slate-800 dark:text-slate-200">{insight.title}</h4>
+                                        <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">{insight.message}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
             </div>
         </div>
     );

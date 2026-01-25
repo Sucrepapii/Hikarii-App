@@ -6,7 +6,6 @@ import { ProtectedRoute } from './components/auth/ProtectedRoute';
 import { Dashboard } from './pages/Dashboard';
 import { Tasks } from './pages/Tasks';
 import { Budget } from './pages/Budget';
-import { Reports } from './pages/Reports';
 import { Calendar } from './pages/Calendar';
 import { Login } from './pages/Login';
 import { Signup } from './pages/Signup';
@@ -78,25 +77,14 @@ function App() {
                         </ProtectedRoute>
                     }
                 />
-                <Route
-                    path="/reports"
-                    element={
-                        <ProtectedRoute>
-                            <DashboardLayout>
-                                <Reports />
-                            </DashboardLayout>
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/analytics"
-                    element={
-                        <ProtectedRoute>
-                            <DashboardLayout>
-                                <Analytics />
-                            </DashboardLayout>
-                        </ProtectedRoute>
-                    }
+                path="/analytics"
+                element={
+                    <ProtectedRoute>
+                        <DashboardLayout>
+                            <Analytics />
+                        </DashboardLayout>
+                    </ProtectedRoute>
+                }
                 />
                 <Route
                     path="/settings"
