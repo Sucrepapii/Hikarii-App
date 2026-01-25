@@ -10,6 +10,7 @@ import {
     CartesianGrid,
     Tooltip,
     ResponsiveContainer,
+    Legend
 } from 'recharts';
 import { format, subDays, eachDayOfInterval, isSameDay } from 'date-fns';
 import { TrendingUp, CheckCircle, AlertCircle } from 'lucide-react';
