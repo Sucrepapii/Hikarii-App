@@ -1,11 +1,17 @@
 var __defProp = Object.defineProperty;
 var __getOwnPropNames = Object.getOwnPropertyNames;
-var __esm = (fn, res) => function __init() {
-  return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
-};
-var __commonJS = (cb, mod) => function __require() {
-  return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
-};
+var __esm = (fn, res) =>
+  function __init() {
+    return (fn && (res = (0, fn[__getOwnPropNames(fn)[0]])((fn = 0))), res);
+  };
+var __commonJS = (cb, mod) =>
+  function __require() {
+    return (
+      mod ||
+        (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod),
+      mod.exports
+    );
+  };
 var __export = (target, all) => {
   for (var name in all)
     __defProp(target, name, { get: all[name], enumerable: true });
@@ -22,19 +28,21 @@ var init_errorHandler = __esm({
       if (process.env.NODE_ENV === "production" || !process.env.VERCEL) {
         if (err.code && err.code.startsWith("P")) {
           console.log("Caught technical database error:", err.code);
-          message = "Signup failed: A database error occurred. Please try again later.";
+          message =
+            "Signup failed: A database error occurred. Please try again later.";
           statusCode = 500;
         } else if (err.message && err.message.includes("invocation:")) {
-          message = "Signup failed: Server configuration issue. Please contact support.";
+          message =
+            "Signup failed: Server configuration issue. Please contact support.";
           statusCode = 500;
         }
       }
       res.status(statusCode).json({
         error: message,
-        ...process.env.NODE_ENV === "development" && { stack: err.stack }
+        ...(process.env.NODE_ENV === "development" && { stack: err.stack }),
       });
     };
-  }
+  },
 });
 
 // server/src/config/db.ts
@@ -44,7 +52,7 @@ var init_db = __esm({
   "server/src/config/db.ts"() {
     prisma = new PrismaClient();
     db_default = prisma;
-  }
+  },
 });
 
 // server/src/utils/jwt.ts
@@ -56,7 +64,7 @@ var init_jwt = __esm({
     JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "7d";
     generateToken = (payload) => {
       const options = {
-        expiresIn: JWT_EXPIRES_IN
+        expiresIn: JWT_EXPIRES_IN,
       };
       return jwt.sign(payload, JWT_SECRET, options);
     };
@@ -67,7 +75,7 @@ var init_jwt = __esm({
         throw new Error("Invalid or expired token");
       }
     };
-  }
+  },
 });
 
 // server/src/services/email.service.ts
@@ -89,7 +97,7 @@ var init_email_service = __esm({
           from: "Hikari<onboarding@resend.dev>",
           to: [to],
           subject,
-          html
+          html,
         });
         if (error) {
           console.error("Resend API Error:", error);
@@ -102,11 +110,19 @@ var init_email_service = __esm({
         throw error;
       }
     };
-  }
+  },
 });
 
 // server/src/controllers/auth.controller.ts
-var generateOTP, signup, login, verifyEmail, resendVerification, getMe, forgotPassword, resetPassword, debugInfo;
+var generateOTP,
+  signup,
+  login,
+  verifyEmail,
+  resendVerification,
+  getMe,
+  forgotPassword,
+  resetPassword,
+  debugInfo;
 var init_auth_controller = __esm({
   "server/src/controllers/auth.controller.ts"() {
     init_db();
@@ -119,14 +135,20 @@ var init_auth_controller = __esm({
         const { name, email, password } = req.body;
         if (!name || !email || !password) {
           console.log("Missing fields in signup request");
-          res.status(400).json({ error: "Name, email, and password are required" });
+          res
+            .status(400)
+            .json({ error: "Name, email, and password are required" });
           return;
         }
         console.log("Finding existing user...");
-        const existingUser = await db_default.user.findUnique({ where: { email } });
+        const existingUser = await db_default.user.findUnique({
+          where: { email },
+        });
         if (existingUser) {
           console.log("User already exists:", email);
-          res.status(400).json({ error: "User already exists with this email" });
+          res
+            .status(400)
+            .json({ error: "User already exists with this email" });
           return;
         }
         console.log("Creating new user...");
@@ -142,8 +164,8 @@ var init_auth_controller = __esm({
             password: hashedPassword,
             isVerified: false,
             verificationToken: otp,
-            verificationTokenExpires: otpExpires
-          }
+            verificationTokenExpires: otpExpires,
+          },
         });
         try {
           await sendEmail(
@@ -152,15 +174,16 @@ var init_auth_controller = __esm({
             `<h1>Verification Code</h1>
              <p>Hello ${name},</p>
              <p>Your verification code is: <strong>${otp}</strong></p>
-             <p>This code expires in 1 hour.</p>`
+             <p>This code expires in 1 hour.</p>`,
           );
         } catch (emailError) {
           console.error("Failed to send verification email:", emailError);
         }
         res.status(201).json({
-          message: "Registration successful. Please check your email for a verification code.",
+          message:
+            "Registration successful. Please check your email for a verification code.",
           email: user.email,
-          requiresVerification: true
+          requiresVerification: true,
         });
       } catch (error) {
         res.status(500).json({ error: error.message });
@@ -178,7 +201,7 @@ var init_auth_controller = __esm({
           res.status(403).json({
             error: "Account not verified. Please verify your email.",
             requiresVerification: true,
-            email: user.email
+            email: user.email,
           });
           return;
         }
@@ -192,7 +215,7 @@ var init_auth_controller = __esm({
         }
         const token = generateToken({
           userId: user.id,
-          email: user.email
+          email: user.email,
         });
         res.json({
           user: {
@@ -200,9 +223,9 @@ var init_auth_controller = __esm({
             // Prisma uses 'id' not '_id'
             name: user.name,
             email: user.email,
-            createdAt: user.createdAt
+            createdAt: user.createdAt,
           },
-          token
+          token,
         });
       } catch (error) {
         res.status(500).json({ error: error.message });
@@ -217,16 +240,21 @@ var init_auth_controller = __esm({
           return;
         }
         if (user.isVerified) {
-          res.status(400).json({ error: "User already verified. Please login." });
+          res
+            .status(400)
+            .json({ error: "User already verified. Please login." });
           return;
         }
         if (user.verificationToken !== code) {
           res.status(400).json({ error: "Invalid verification code" });
           return;
         }
-        if (!user.verificationTokenExpires || user.verificationTokenExpires < /* @__PURE__ */ new Date()) {
+        if (
+          !user.verificationTokenExpires ||
+          user.verificationTokenExpires < /* @__PURE__ */ new Date()
+        ) {
           res.status(400).json({
-            error: "Verification code expired. Please request a new one."
+            error: "Verification code expired. Please request a new one.",
           });
           return;
         }
@@ -235,12 +263,12 @@ var init_auth_controller = __esm({
           data: {
             isVerified: true,
             verificationToken: null,
-            verificationTokenExpires: null
-          }
+            verificationTokenExpires: null,
+          },
         });
         const token = generateToken({
           userId: user.id,
-          email: user.email
+          email: user.email,
         });
         res.json({
           message: "Email verified successfully",
@@ -248,9 +276,9 @@ var init_auth_controller = __esm({
             id: user.id,
             name: user.name,
             email: user.email,
-            createdAt: user.createdAt
+            createdAt: user.createdAt,
           },
-          token
+          token,
         });
       } catch (error) {
         res.status(500).json({ error: error.message });
@@ -274,8 +302,8 @@ var init_auth_controller = __esm({
           where: { id: user.id },
           data: {
             verificationToken: otp,
-            verificationTokenExpires: otpExpires
-          }
+            verificationTokenExpires: otpExpires,
+          },
         });
         await sendEmail(
           email,
@@ -283,7 +311,7 @@ var init_auth_controller = __esm({
           `<h1>Verification Code</h1>
               <p>Hello ${user.name},</p>
               <p>Your new verification code is: <strong>${otp}</strong></p>
-              <p>This code expires in 1 hour.</p>`
+              <p>This code expires in 1 hour.</p>`,
         );
         res.json({ message: "Verification code resent" });
       } catch (error) {
@@ -292,7 +320,9 @@ var init_auth_controller = __esm({
     };
     getMe = async (req, res) => {
       try {
-        const user = await db_default.user.findUnique({ where: { id: req.userId } });
+        const user = await db_default.user.findUnique({
+          where: { id: req.userId },
+        });
         if (!user) {
           res.status(404).json({ error: "User not found" });
           return;
@@ -302,8 +332,8 @@ var init_auth_controller = __esm({
             id: user.id,
             name: user.name,
             email: user.email,
-            createdAt: user.createdAt
-          }
+            createdAt: user.createdAt,
+          },
         });
       } catch (error) {
         res.status(500).json({ error: error.message });
@@ -320,7 +350,8 @@ var init_auth_controller = __esm({
         if (!user) {
           console.log("Forgot password attempt for non-existent email:", email);
           res.json({
-            message: "If an account exists with that email, a reset code has been sent."
+            message:
+              "If an account exists with that email, a reset code has been sent.",
           });
           return;
         }
@@ -330,8 +361,8 @@ var init_auth_controller = __esm({
           where: { id: user.id },
           data: {
             resetPasswordToken: otp,
-            resetPasswordExpires: otpExpires
-          }
+            resetPasswordExpires: otpExpires,
+          },
         });
         try {
           await sendEmail(
@@ -341,13 +372,14 @@ var init_auth_controller = __esm({
                <p>Hello ${user.name},</p>
                <p>Your password reset code is: <strong>${otp}</strong></p>
                <p>This code expires in 15 minutes.</p>
-               <p>If you did not request this, please ignore this email.</p>`
+               <p>If you did not request this, please ignore this email.</p>`,
           );
         } catch (emailError) {
           console.error("Failed to send reset email:", emailError);
         }
         res.json({
-          message: "If an account exists with that email, a reset code has been sent."
+          message:
+            "If an account exists with that email, a reset code has been sent.",
         });
       } catch (error) {
         res.status(500).json({ error: error.message });
@@ -357,7 +389,9 @@ var init_auth_controller = __esm({
       try {
         const { email, code, newPassword } = req.body;
         if (!email || !code || !newPassword) {
-          res.status(400).json({ error: "Email, code, and new password are required" });
+          res
+            .status(400)
+            .json({ error: "Email, code, and new password are required" });
           return;
         }
         const user = await db_default.user.findUnique({ where: { email } });
@@ -369,7 +403,10 @@ var init_auth_controller = __esm({
           res.status(400).json({ error: "Invalid or expired reset code" });
           return;
         }
-        if (!user.resetPasswordExpires || user.resetPasswordExpires < /* @__PURE__ */ new Date()) {
+        if (
+          !user.resetPasswordExpires ||
+          user.resetPasswordExpires < /* @__PURE__ */ new Date()
+        ) {
           res.status(400).json({ error: "Reset code has expired" });
           return;
         }
@@ -382,9 +419,9 @@ var init_auth_controller = __esm({
             password: hashedPassword,
             resetPasswordToken: null,
             resetPasswordExpires: null,
-            isVerified: true
+            isVerified: true,
             // Resetting password counts as verification if they were stuck
-          }
+          },
         });
         res.json({ message: "Password reset successful. You can now login." });
       } catch (error) {
@@ -399,13 +436,13 @@ var init_auth_controller = __esm({
           HAS_DATABASE_URL: !!process.env.DATABASE_URL,
           HAS_JWT_SECRET: !!process.env.JWT_SECRET,
           HAS_RESEND_KEY: !!process.env.RESEND_API_KEY,
-          CLIENT_URL: process.env.CLIENT_URL
+          CLIENT_URL: process.env.CLIENT_URL,
         },
-        dbStatus: "connected"
+        dbStatus: "connected",
         // Prisma manages connection pool
       });
     };
-  }
+  },
 });
 
 // server/src/middleware/auth.middleware.ts
@@ -428,7 +465,7 @@ var init_auth_middleware = __esm({
         res.status(401).json({ error: "Invalid or expired token" });
       }
     };
-  }
+  },
 });
 
 // server/src/routes/auth.routes.ts
@@ -448,13 +485,12 @@ var init_auth_routes = __esm({
     router.get("/me", authenticate, getMe);
     router.get("/debug", debugInfo);
     auth_routes_default = router;
-  }
+  },
 });
 
 // server/src/models/types.ts
 var init_types = __esm({
-  "server/src/models/types.ts"() {
-  }
+  "server/src/models/types.ts"() {},
 });
 
 // server/src/controllers/task.controller.ts
@@ -467,7 +503,7 @@ var init_task_controller = __esm({
       try {
         const tasks = await db_default.task.findMany({
           where: { userId: req.userId },
-          orderBy: { createdAt: "desc" }
+          orderBy: { createdAt: "desc" },
         });
         res.json(tasks);
       } catch (error) {
@@ -479,8 +515,8 @@ var init_task_controller = __esm({
         const task = await db_default.task.create({
           data: {
             ...req.body,
-            userId: req.userId
-          }
+            userId: req.userId,
+          },
         });
         res.status(201).json(task);
       } catch (error) {
@@ -492,8 +528,8 @@ var init_task_controller = __esm({
         const task = await db_default.task.findFirst({
           where: {
             id: req.params.id,
-            userId: req.userId
-          }
+            userId: req.userId,
+          },
         });
         if (!task) {
           res.status(404).json({ error: "Task not found" });
@@ -507,7 +543,7 @@ var init_task_controller = __esm({
     updateTask = async (req, res) => {
       try {
         const existingTask = await db_default.task.findFirst({
-          where: { id: req.params.id, userId: req.userId }
+          where: { id: req.params.id, userId: req.userId },
         });
         if (!existingTask) {
           res.status(404).json({ error: "Task not found" });
@@ -515,7 +551,7 @@ var init_task_controller = __esm({
         }
         const task = await db_default.task.update({
           where: { id: req.params.id },
-          data: req.body
+          data: req.body,
         });
         res.json(task);
       } catch (error) {
@@ -525,14 +561,14 @@ var init_task_controller = __esm({
     deleteTask = async (req, res) => {
       try {
         const existingTask = await db_default.task.findFirst({
-          where: { id: req.params.id, userId: req.userId }
+          where: { id: req.params.id, userId: req.userId },
         });
         if (!existingTask) {
           res.status(404).json({ error: "Task not found" });
           return;
         }
         await db_default.task.delete({
-          where: { id: req.params.id }
+          where: { id: req.params.id },
         });
         res.json({ message: "Task deleted successfully" });
       } catch (error) {
@@ -544,24 +580,27 @@ var init_task_controller = __esm({
         const task = await db_default.task.findFirst({
           where: {
             id: req.params.id,
-            userId: req.userId
-          }
+            userId: req.userId,
+          },
         });
         if (!task) {
           res.status(404).json({ error: "Task not found" });
           return;
         }
-        const newStatus = task.status === "COMPLETED" /* COMPLETED */ ? "TODO" /* TODO */ : "COMPLETED" /* COMPLETED */;
+        const newStatus =
+          task.status === "COMPLETED" /* COMPLETED */
+            ? "TODO" /* TODO */
+            : "COMPLETED"; /* COMPLETED */
         const updatedTask = await db_default.task.update({
           where: { id: task.id },
-          data: { status: newStatus }
+          data: { status: newStatus },
         });
         res.json(updatedTask);
       } catch (error) {
         res.status(500).json({ error: error.message });
       }
     };
-  }
+  },
 });
 
 // server/src/routes/task.routes.ts
@@ -580,18 +619,24 @@ var init_task_routes = __esm({
     router2.delete("/:id", deleteTask);
     router2.patch("/:id/toggle", toggleTaskStatus);
     task_routes_default = router2;
-  }
+  },
 });
 
 // server/src/controllers/budget.controller.ts
-var getBudgets, createBudget, deleteBudget, getExpenses, createExpense, updateExpense, deleteExpense;
+var getBudgets,
+  createBudget,
+  deleteBudget,
+  getExpenses,
+  createExpense,
+  updateExpense,
+  deleteExpense;
 var init_budget_controller = __esm({
   "server/src/controllers/budget.controller.ts"() {
     init_db();
     getBudgets = async (req, res) => {
       try {
         const budgets = await db_default.budget.findMany({
-          where: { userId: req.userId }
+          where: { userId: req.userId },
         });
         res.json(budgets);
       } catch (error) {
@@ -603,27 +648,27 @@ var init_budget_controller = __esm({
         const expenses = await db_default.expense.findMany({
           where: {
             userId: req.userId,
-            category: req.body.category
-          }
+            category: req.body.category,
+          },
         });
         const spent = expenses.reduce((sum, exp) => sum + exp.amount, 0);
         const existingBudget = await db_default.budget.findUnique({
           where: {
             userId_category: {
               userId: req.userId,
-              category: req.body.category
-            }
-          }
+              category: req.body.category,
+            },
+          },
         });
         let budget;
         if (existingBudget) {
           budget = await db_default.budget.update({
             where: { id: existingBudget.id },
-            data: { ...req.body, spent }
+            data: { ...req.body, spent },
           });
         } else {
           budget = await db_default.budget.create({
-            data: { ...req.body, userId: req.userId, spent }
+            data: { ...req.body, userId: req.userId, spent },
           });
         }
         res.status(201).json(budget);
@@ -634,7 +679,7 @@ var init_budget_controller = __esm({
     deleteBudget = async (req, res) => {
       try {
         const existing = await db_default.budget.findFirst({
-          where: { id: req.params.id, userId: req.userId }
+          where: { id: req.params.id, userId: req.userId },
         });
         if (!existing) {
           res.status(404).json({ error: "Budget not found" });
@@ -650,7 +695,7 @@ var init_budget_controller = __esm({
       try {
         const expenses = await db_default.expense.findMany({
           where: { userId: req.userId },
-          orderBy: { date: "desc" }
+          orderBy: { date: "desc" },
         });
         res.json(expenses);
       } catch (error) {
@@ -662,21 +707,21 @@ var init_budget_controller = __esm({
         const expense = await db_default.expense.create({
           data: {
             ...req.body,
-            userId: req.userId
-          }
+            userId: req.userId,
+          },
         });
         const budget = await db_default.budget.findUnique({
           where: {
             userId_category: {
               userId: req.userId,
-              category: expense.category
-            }
-          }
+              category: expense.category,
+            },
+          },
         });
         if (budget) {
           await db_default.budget.update({
             where: { id: budget.id },
-            data: { spent: { increment: expense.amount } }
+            data: { spent: { increment: expense.amount } },
           });
         }
         res.status(201).json(expense);
@@ -689,8 +734,8 @@ var init_budget_controller = __esm({
         const existingExpense = await db_default.expense.findFirst({
           where: {
             id: req.params.id,
-            userId: req.userId
-          }
+            userId: req.userId,
+          },
         });
         if (!existingExpense) {
           res.status(404).json({ error: "Expense not found" });
@@ -698,35 +743,38 @@ var init_budget_controller = __esm({
         }
         const updatedExpense = await db_default.expense.update({
           where: { id: req.params.id },
-          data: req.body
+          data: req.body,
         });
-        if (existingExpense.amount !== updatedExpense.amount || existingExpense.category !== updatedExpense.category) {
+        if (
+          existingExpense.amount !== updatedExpense.amount ||
+          existingExpense.category !== updatedExpense.category
+        ) {
           const oldBudget = await db_default.budget.findUnique({
             where: {
               userId_category: {
                 userId: req.userId,
-                category: existingExpense.category
-              }
-            }
+                category: existingExpense.category,
+              },
+            },
           });
           if (oldBudget) {
             await db_default.budget.update({
               where: { id: oldBudget.id },
-              data: { spent: { decrement: existingExpense.amount } }
+              data: { spent: { decrement: existingExpense.amount } },
             });
           }
           const newBudget = await db_default.budget.findUnique({
             where: {
               userId_category: {
                 userId: req.userId,
-                category: updatedExpense.category
-              }
-            }
+                category: updatedExpense.category,
+              },
+            },
           });
           if (newBudget) {
             await db_default.budget.update({
               where: { id: newBudget.id },
-              data: { spent: { increment: updatedExpense.amount } }
+              data: { spent: { increment: updatedExpense.amount } },
             });
           }
         }
@@ -738,27 +786,27 @@ var init_budget_controller = __esm({
     deleteExpense = async (req, res) => {
       try {
         const existingExpense = await db_default.expense.findFirst({
-          where: { id: req.params.id, userId: req.userId }
+          where: { id: req.params.id, userId: req.userId },
         });
         if (!existingExpense) {
           res.status(404).json({ error: "Expense not found" });
           return;
         }
         const deletedExpense = await db_default.expense.delete({
-          where: { id: req.params.id }
+          where: { id: req.params.id },
         });
         const budget = await db_default.budget.findUnique({
           where: {
             userId_category: {
               userId: req.userId,
-              category: deletedExpense.category
-            }
-          }
+              category: deletedExpense.category,
+            },
+          },
         });
         if (budget) {
           await db_default.budget.update({
             where: { id: budget.id },
-            data: { spent: { decrement: deletedExpense.amount } }
+            data: { spent: { decrement: deletedExpense.amount } },
           });
         }
         res.json({ message: "Expense deleted successfully" });
@@ -766,7 +814,7 @@ var init_budget_controller = __esm({
         res.status(500).json({ error: error.message });
       }
     };
-  }
+  },
 });
 
 // server/src/routes/budget.routes.ts
@@ -786,7 +834,7 @@ var init_budget_routes = __esm({
     router3.put("/expenses/:id", updateExpense);
     router3.delete("/expenses/:id", deleteExpense);
     budget_routes_default = router3;
-  }
+  },
 });
 
 // server/src/controllers/insights.controller.ts
@@ -799,16 +847,18 @@ var init_insights_controller = __esm({
       try {
         const [tasks, budgets] = await Promise.all([
           db_default.task.findMany({ where: { userId: req.userId } }),
-          db_default.budget.findMany({ where: { userId: req.userId } })
+          db_default.budget.findMany({ where: { userId: req.userId } }),
         ]);
         const insights = [];
         const availableFunds = budgets.reduce(
           (sum, b) => sum + (b.limit - b.spent),
-          0
+          0,
         );
         if (availableFunds < 1e4) {
           const incomeTasks = tasks.filter(
-            (t) => t.financials?.type === "INCOME" /* INCOME */ && t.status !== "COMPLETED" /* COMPLETED */
+            (t) =>
+              t.financials?.type === "INCOME" /* INCOME */ &&
+              t.status !== "COMPLETED" /* COMPLETED */,
           );
           insights.push({
             id: `cashflow-${Date.now()}`,
@@ -817,17 +867,24 @@ var init_insights_controller = __esm({
             title: "Low Cash Flow Alert",
             message: `Only \u20A6${availableFunds.toLocaleString()} remaining in budgets. ${incomeTasks.length > 0 ? `Prioritize ${incomeTasks.length} income task(s).` : "Consider adding income tasks."}`,
             actionable: incomeTasks.length > 0,
-            suggestedAction: incomeTasks.length > 0 ? "Focus on income-generating tasks" : void 0,
+            suggestedAction:
+              incomeTasks.length > 0
+                ? "Focus on income-generating tasks"
+                : void 0,
             financialImpact: availableFunds,
-            createdAt: /* @__PURE__ */ new Date()
+            createdAt: /* @__PURE__ */ new Date(),
           });
         }
-        const pendingExpenses = tasks.filter(
-          (t) => t.financials?.type === "EXPENSE" /* EXPENSE */ && t.status !== "COMPLETED" /* COMPLETED */
-        ).reduce((sum, t) => {
-          const est = t.financials?.estimatedCost || 0;
-          return sum + est;
-        }, 0);
+        const pendingExpenses = tasks
+          .filter(
+            (t) =>
+              t.financials?.type === "EXPENSE" /* EXPENSE */ &&
+              t.status !== "COMPLETED" /* COMPLETED */,
+          )
+          .reduce((sum, t) => {
+            const est = t.financials?.estimatedCost || 0;
+            return sum + est;
+          }, 0);
         if (pendingExpenses > availableFunds) {
           const deficit = pendingExpenses - availableFunds;
           insights.push({
@@ -837,19 +894,24 @@ var init_insights_controller = __esm({
             title: "Budget Conflict Detected",
             message: `Pending expense tasks (\u20A6${pendingExpenses.toLocaleString()}) exceed available budget (\u20A6${availableFunds.toLocaleString()}). Shortfall: \u20A6${deficit.toLocaleString()}`,
             actionable: true,
-            suggestedAction: "Postpone low-priority expense tasks or increase budget",
+            suggestedAction:
+              "Postpone low-priority expense tasks or increase budget",
             financialImpact: -deficit,
-            createdAt: /* @__PURE__ */ new Date()
+            createdAt: /* @__PURE__ */ new Date(),
           });
         }
         const now = /* @__PURE__ */ new Date();
         tasks.forEach((task) => {
-          if (task.financials?.lateFeePerDay && task.dueDate && task.status !== "COMPLETED" /* COMPLETED */) {
+          if (
+            task.financials?.lateFeePerDay &&
+            task.dueDate &&
+            task.status !== "COMPLETED" /* COMPLETED */
+          ) {
             const dueDate = new Date(task.dueDate);
             const isOverdue = dueDate < now;
             if (isOverdue) {
               const daysLate = Math.ceil(
-                (now.getTime() - dueDate.getTime()) / (1e3 * 60 * 60 * 24)
+                (now.getTime() - dueDate.getTime()) / (1e3 * 60 * 60 * 24),
               );
               const accruedFees = daysLate * task.financials.lateFeePerDay;
               insights.push({
@@ -862,7 +924,7 @@ var init_insights_controller = __esm({
                 taskId: task.id,
                 suggestedAction: "Complete this task immediately",
                 financialImpact: -accruedFees,
-                createdAt: now
+                createdAt: now,
               });
             }
           }
@@ -878,37 +940,47 @@ var init_insights_controller = __esm({
           db_default.task.findMany({
             where: {
               userId: req.userId,
-              status: { not: "COMPLETED" /* COMPLETED */ }
-            }
-          })
+              status: { not: "COMPLETED" /* COMPLETED */ },
+            },
+          }),
         ]);
-        const recommendations = tasks.map((task) => {
-          let score = 0;
-          const priorityScores = { LOW: 10, MEDIUM: 30, HIGH: 60, URGENT: 90 };
-          score += priorityScores[task.priority] || 0;
-          if (task.dueDate) {
-            const daysUntilDue = Math.ceil(
-              (new Date(task.dueDate).getTime() - Date.now()) / (1e3 * 60 * 60 * 24)
-            );
-            if (daysUntilDue < 0) score += 50;
-            else if (daysUntilDue <= 1) score += 30;
-            else if (daysUntilDue <= 3) score += 20;
-          }
-          if (task.financials?.lateFeePerDay) {
-            score += 40;
-          }
-          return {
-            taskId: task.id,
-            task,
-            urgencyScore: Math.min(100, score)
-          };
-        }).filter((r) => r.urgencyScore > 50).sort((a, b) => b.urgencyScore - a.urgencyScore).slice(0, 5);
+        const recommendations = tasks
+          .map((task) => {
+            let score = 0;
+            const priorityScores = {
+              LOW: 10,
+              MEDIUM: 30,
+              HIGH: 60,
+              URGENT: 90,
+            };
+            score += priorityScores[task.priority] || 0;
+            if (task.dueDate) {
+              const daysUntilDue = Math.ceil(
+                (new Date(task.dueDate).getTime() - Date.now()) /
+                  (1e3 * 60 * 60 * 24),
+              );
+              if (daysUntilDue < 0) score += 50;
+              else if (daysUntilDue <= 1) score += 30;
+              else if (daysUntilDue <= 3) score += 20;
+            }
+            if (task.financials?.lateFeePerDay) {
+              score += 40;
+            }
+            return {
+              taskId: task.id,
+              task,
+              urgencyScore: Math.min(100, score),
+            };
+          })
+          .filter((r) => r.urgencyScore > 50)
+          .sort((a, b) => b.urgencyScore - a.urgencyScore)
+          .slice(0, 5);
         res.json({ recommendations });
       } catch (error) {
         res.status(500).json({ error: error.message });
       }
     };
-  }
+  },
 });
 
 // server/src/routes/insights.routes.ts
@@ -923,7 +995,7 @@ var init_insights_routes = __esm({
     router4.get("/", getInsights);
     router4.get("/recommendations", getRecommendations);
     insights_routes_default = router4;
-  }
+  },
 });
 
 // server/src/server.ts
@@ -941,11 +1013,17 @@ var init_server = __esm({
     dotenv2.config();
     app = express();
     PORT = process.env.PORT || 5e3;
-    allowedOrigins = (process.env.CLIENT_URL || "http://localhost:5173,http://localhost:5174").split(",");
+    allowedOrigins = (
+      process.env.CLIENT_URL || "http://localhost:5173,http://localhost:5174"
+    ).split(",");
     app.use(
       cors({
         origin: (origin, callback) => {
-          if (!origin || process.env.NODE_ENV === "production" || allowedOrigins.includes("*")) {
+          if (
+            !origin ||
+            process.env.NODE_ENV === "production" ||
+            allowedOrigins.includes("*")
+          ) {
             return callback(null, true);
           }
           if (allowedOrigins.indexOf(origin) !== -1) {
@@ -955,8 +1033,8 @@ var init_server = __esm({
             callback(null, false);
           }
         },
-        credentials: true
-      })
+        credentials: true,
+      }),
     );
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
@@ -964,7 +1042,7 @@ var init_server = __esm({
       res.json({
         status: "OK",
         message: "Server is running",
-        timestamp: /* @__PURE__ */ new Date()
+        timestamp: /* @__PURE__ */ new Date(),
       });
     });
     app.use("/api/auth", auth_routes_default);
@@ -973,13 +1051,13 @@ var init_server = __esm({
     app.use("/api/insights", insights_routes_default);
     app.use(errorHandler);
     server_default = app;
-  }
+  },
 });
 
 // server/src/jobs/reminder.job.ts
 var reminder_job_exports = {};
 __export(reminder_job_exports, {
-  startReminderJob: () => startReminderJob
+  startReminderJob: () => startReminderJob,
 });
 import cron from "node-cron";
 var startReminderJob;
@@ -990,7 +1068,7 @@ var init_reminder_job = __esm({
     startReminderJob = () => {
       if (process.env.VERCEL) {
         console.log(
-          "Cron jobs are not supported on Vercel Serverless. Skipping..."
+          "Cron jobs are not supported on Vercel Serverless. Skipping...",
         );
         return;
       }
@@ -1006,13 +1084,16 @@ var init_reminder_job = __esm({
                 userId: user.id,
                 status: { not: "COMPLETED" },
                 // Prisma enum string matching
-                dueDate: { lt: today }
-              }
+                dueDate: { lt: today },
+              },
             });
             if (overdueTasks.length > 0) {
-              const taskListHtml = overdueTasks.map(
-                (t) => `<li><strong>${t.title}</strong> (Due: ${t.dueDate ? new Date(t.dueDate).toLocaleDateString() : "No date"})</li>`
-              ).join("");
+              const taskListHtml = overdueTasks
+                .map(
+                  (t) =>
+                    `<li><strong>${t.title}</strong> (Due: ${t.dueDate ? new Date(t.dueDate).toLocaleDateString() : "No date"})</li>`,
+                )
+                .join("");
               const html = `
                         <h2>Action Required: Overdue Tasks</h2>
                         <p>Hello ${user.name},</p>
@@ -1027,7 +1108,7 @@ var init_reminder_job = __esm({
               await sendEmail(
                 user.email,
                 `Overdue Tasks Alert (${overdueTasks.length})`,
-                html
+                html,
               );
             }
           }
@@ -1036,7 +1117,7 @@ var init_reminder_job = __esm({
         }
       });
     };
-  }
+  },
 });
 
 // server/src/app.ts
@@ -1057,13 +1138,16 @@ var require_app = __commonJS({
     var PORT2 = process.env.PORT || 5e3;
     server_default.listen(PORT2, () => {
       if (process.env.NODE_ENV === "production" && !process.env.VERCEL) {
-        Promise.resolve().then(() => (init_reminder_job(), reminder_job_exports)).then(({ startReminderJob: startReminderJob2 }) => {
-          startReminderJob2();
-        }).catch((err) => console.error("Failed to load cron job:", err));
+        Promise.resolve()
+          .then(() => (init_reminder_job(), reminder_job_exports))
+          .then(({ startReminderJob: startReminderJob2 }) => {
+            startReminderJob2();
+          })
+          .catch((err) => console.error("Failed to load cron job:", err));
       }
       console.log(`
 \u{1F680} Server is running on port ${PORT2}`);
     });
-  }
+  },
 });
 export default require_app();
