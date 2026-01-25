@@ -78,7 +78,7 @@ CLIENT_URL=http://localhost:5174
 
 ## Scripts
 
--`npm run dev` - Start development server with auto-reload
+- `npm run dev` - Start development server with auto-reload
 
 - `npm run build` - Build for production
 - `npm start` - Start production server
@@ -87,6 +87,6 @@ CLIENT_URL=http://localhost:5174
 
 - Node.js + Express
 - TypeScript
-- MongoDB + Mongoose
+- MongoDB + Prisma
 - JWT Authentication
 - bcryptjs for password hashing
