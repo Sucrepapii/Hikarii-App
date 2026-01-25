@@ -10,18 +10,11 @@ import {
     CartesianGrid,
     Tooltip,
     ResponsiveContainer,
-    BarChart,
-    Bar,
-    Legend,
-    PieChart,
-    Pie,
-    Cell
 } from 'recharts';
 import { format, subDays, eachDayOfInterval, isSameDay } from 'date-fns';
 import { TrendingUp, CheckCircle, AlertCircle } from 'lucide-react';
 import { SpendingChart } from '../components/budget/Charts/SpendingChart';
-import { BudgetProgress } from '../components/budget/Charts/BudgetProgress';
-import { TaskStatus, TaskPriority } from '../types/task.types';
+import { TaskStatus } from '../types/task.types'; // Kept for data calculations
 import { TaskRecommendationCard } from '../components/intelligence/TaskRecommendationCard';
 import { IntelligenceService } from '../utils/intelligenceService';
 
@@ -29,22 +22,6 @@ export const Analytics: React.FC = () => {
     const { tasks } = useTaskStore();
     const { expenses, budgets } = useBudgetStore();
 
-    // Reports Data: Task Status Distribution
-    const taskStatusData = [
-        { name: 'Completed', value: tasks.filter((t) => t.status === TaskStatus.COMPLETED).length },
-        { name: 'In Progress', value: tasks.filter((t) => t.status === TaskStatus.IN_PROGRESS).length },
-        { name: 'To Do', value: tasks.filter((t) => t.status === TaskStatus.TODO).length },
-    ].filter((d) => d.value > 0);
-
-    // Reports Data: Task Priority Distribution
-    const taskPriorityData = [
-        { name: 'Urgent', value: tasks.filter((t) => t.priority === TaskPriority.URGENT).length },
-        { name: 'High', value: tasks.filter((t) => t.priority === TaskPriority.HIGH).length },
-        { name: 'Medium', value: tasks.filter((t) => t.priority === TaskPriority.MEDIUM).length },
-        { name: 'Low', value: tasks.filter((t) => t.priority === TaskPriority.LOW).length },
-    ].filter((d) => d.value > 0);
-
-    const COLORS = ['#a855f7', '#6366f1', '#10b981', '#f59e0b'];
 
     // 1. Prepare Cash Flow Trend Data (Last 30 Days)
     const today = new Date();
@@ -74,14 +51,7 @@ export const Analytics: React.FC = () => {
         };
     });
 
-    // 2. Prepare Task Completion Data
     const completedTasks = tasks.filter(t => t.status === TaskStatus.COMPLETED).length;
-    const pendingTasks = tasks.filter(t => t.status !== TaskStatus.COMPLETED).length;
-
-    const taskStats = [
-        { name: 'Completed', value: completedTasks, fill: '#10b981' }, // Emerald-500
-        { name: 'Pending', value: pendingTasks, fill: '#f59e0b' }      // Amber-500
-    ];
 
     // 3. Generate Intelligence Insights
     // Note: IntelligenceService expects non-null/undefined for financials mostly
@@ -202,88 +172,6 @@ export const Analytics: React.FC = () => {
                 <SpendingChart />
             </div>
 
-            {/* Budget & Task Progress */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Budget Progress - From Reports */}
-                <BudgetProgress />
-
-                {/* Task Completion Bar Chart - From Analytics */}
-                <Card>
-                    <h2 className="text-lg font-semibold mb-6 text-slate-800 dark:text-slate-200">
-                        Task Status Distribution
-                    </h2>
-                    <div className="h-[300px] w-full">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={taskStats} layout="vertical">
-                                <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} />
-                                <XAxis type="number" hide />
-                                <YAxis dataKey="name" type="category" width={80} />
-                                <Tooltip cursor={{ fill: 'transparent' }} />
-                                <Bar dataKey="value" radius={[0, 4, 4, 0]} barSize={40} />
-                            </BarChart>
-                        </ResponsiveContainer>
-                    </div>
-                </Card>
-            </div>
-
-            {/* Task Distributions (Pie Charts) - From Reports */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <Card>
-                    <h3 className="text-xl font-semibold mb-4">Task Status (Detailed)</h3>
-                    {taskStatusData.length > 0 ? (
-                        <ResponsiveContainer width="100%" height={300}>
-                            <PieChart>
-                                <Pie
-                                    data={taskStatusData}
-                                    cx="50%"
-                                    cy="50%"
-                                    labelLine={false}
-                                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                                    outerRadius={100}
-                                    fill="#8884d8"
-                                    dataKey="value"
-                                >
-                                    {taskStatusData.map((_, index) => (
-                                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                    ))}
-                                </Pie>
-                                <Tooltip />
-                                <Legend />
-                            </PieChart>
-                        </ResponsiveContainer>
-                    ) : (
-                        <p className="text-center text-slate-500 py-8">No task data available</p>
-                    )}
-                </Card>
-
-                <Card>
-                    <h3 className="text-xl font-semibold mb-4">Task Priority Distribution</h3>
-                    {taskPriorityData.length > 0 ? (
-                        <ResponsiveContainer width="100%" height={300}>
-                            <PieChart>
-                                <Pie
-                                    data={taskPriorityData}
-                                    cx="50%"
-                                    cy="50%"
-                                    labelLine={false}
-                                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                                    outerRadius={100}
-                                    fill="#8884d8"
-                                    dataKey="value"
-                                >
-                                    {taskPriorityData.map((_, index) => (
-                                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                    ))}
-                                </Pie>
-                                <Tooltip />
-                                <Legend />
-                            </PieChart>
-                        </ResponsiveContainer>
-                    ) : (
-                        <p className="text-center text-slate-500 py-8">No task data available</p>
-                    )}
-                </Card>
-            </div>
 
             {/* AI Insights Section */}
             <div className="pt-4 border-t border-slate-200 dark:border-slate-800">
