@@ -11,6 +11,8 @@ import { Calendar } from './pages/Calendar';
 import { Login } from './pages/Login';
 import { Signup } from './pages/Signup';
 import { ForgotPassword } from './pages/ForgotPassword';
+import { Settings } from './pages/Settings';
+import { Analytics } from './pages/Analytics';
 import { useAuthStore } from './stores/authStore';
 import './index.css';
 
@@ -82,6 +84,26 @@ function App() {
                         <ProtectedRoute>
                             <DashboardLayout>
                                 <Reports />
+                            </DashboardLayout>
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/analytics"
+                    element={
+                        <ProtectedRoute>
+                            <DashboardLayout>
+                                <Analytics />
+                            </DashboardLayout>
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/settings"
+                    element={
+                        <ProtectedRoute>
+                            <DashboardLayout>
+                                <Settings />
                             </DashboardLayout>
                         </ProtectedRoute>
                     }
