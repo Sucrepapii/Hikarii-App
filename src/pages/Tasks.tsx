@@ -63,7 +63,7 @@ export const Tasks: React.FC = () => {
 
         try {
             if (editingTask) {
-                await updateTask(editingTask._id, taskData);
+                await updateTask(editingTask.id, taskData);
                 toast.success('Task updated successfully');
             } else {
                 await addTask(taskData);

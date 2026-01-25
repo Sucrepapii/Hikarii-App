@@ -19,7 +19,7 @@ interface BudgetStore {
   fetchExpenses: () => Promise<void>;
 
   // Expense operations
-  addExpense: (expense: Omit<Expense, "_id">) => Promise<void>;
+  addExpense: (expense: Omit<Expense, "id">) => Promise<void>;
   updateExpense: (id: string, updates: Partial<Expense>) => Promise<void>;
   deleteExpense: (id: string) => Promise<void>;
 
@@ -108,7 +108,7 @@ export const useBudgetStore = create<BudgetStore>((set, get) => ({
       const response = await apiClient.put(`/expenses/${id}`, updates);
       set((state) => ({
         expenses: state.expenses.map((expense) =>
-          expense._id === id ? response.data : expense,
+          expense.id === id ? response.data : expense,
         ),
         isLoading: false,
       }));
@@ -129,7 +129,7 @@ export const useBudgetStore = create<BudgetStore>((set, get) => ({
       set({ isLoading: true, error: null });
       await apiClient.delete(`/expenses/${id}`);
       set((state) => ({
-        expenses: state.expenses.filter((e) => e._id !== id),
+        expenses: state.expenses.filter((e) => e.id !== id),
         isLoading: false,
       }));
 
@@ -183,7 +183,7 @@ export const useBudgetStore = create<BudgetStore>((set, get) => ({
       set({ isLoading: true, error: null });
       await apiClient.delete(`/budgets/${id}`);
       set((state) => ({
-        budgets: state.budgets.filter((b) => b._id !== id),
+        budgets: state.budgets.filter((b) => b.id !== id),
         isLoading: false,
       }));
     } catch (error: any) {
@@ -236,6 +236,6 @@ export const useBudgetStore = create<BudgetStore>((set, get) => ({
     const taskExpenses = get().expenses.filter(
       (e) => e.linkedTaskId === taskId,
     );
-    await Promise.all(taskExpenses.map((e) => get().deleteExpense(e._id)));
+    await Promise.all(taskExpenses.map((e) => get().deleteExpense(e.id)));
   },
 }));

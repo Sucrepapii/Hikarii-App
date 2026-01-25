@@ -36,7 +36,7 @@ export const TaskList: React.FC<TaskListProps> = ({
         <div className="space-y-4">
             {tasks.map((task) => (
                 <TaskItem
-                    key={task._id}
+                    key={task.id}
                     task={task}
                     onToggle={onToggle}
                     onEdit={onEdit}

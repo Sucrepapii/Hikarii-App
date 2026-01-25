@@ -52,7 +52,7 @@ export const Dashboard: React.FC = () => {
     const handleUpdateTask = async (data: TaskFormData) => {
         if (editingTask) {
             try {
-                await updateTask(editingTask._id, data);
+                await updateTask(editingTask.id, data);
                 toast.success('Task updated successfully');
                 setIsEditModalOpen(false);
                 setEditingTask(null);
@@ -88,7 +88,7 @@ export const Dashboard: React.FC = () => {
                         </p>
                         <div className="flex flex-wrap gap-2">
                             {overdueTasks.slice(0, 3).map(task => (
-                                <span key={task._id} className="inline-flex items-center px-2 py-1 rounded-md bg-red-100 dark:bg-red-900/30 text-xs font-medium text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800">
+                                <span key={task.id} className="inline-flex items-center px-2 py-1 rounded-md bg-red-100 dark:bg-red-900/30 text-xs font-medium text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800">
                                     {task.title}
                                 </span>
                             ))}
@@ -186,7 +186,7 @@ export const Dashboard: React.FC = () => {
                         <div className="space-y-3">
                             {recentTasks.map((task) => (
                                 <TaskItem
-                                    key={task._id}
+                                    key={task.id}
                                     task={task}
                                     onToggle={toggleTaskStatus}
                                     onEdit={handleEditTask}
@@ -207,7 +207,7 @@ export const Dashboard: React.FC = () => {
                         <div className="space-y-3">
                             {recentExpenses.map((expense) => (
                                 <div
-                                    key={expense._id}
+                                    key={expense.id}
                                     className="flex items-center justify-between p-3 rounded-lg glass"
                                 >
                                     <div>

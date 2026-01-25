@@ -62,7 +62,7 @@ export const ExpenseList: React.FC<ExpenseListProps> = ({
                 const CategoryIcon = categoryIcons[expense.category];
 
                 return (
-                    <Card key={expense._id} className="group">
+                    <Card key={expense.id} className="group">
                         <div className="flex items-center gap-4">
                             {/* Category Icon */}
                             <div
@@ -116,7 +116,7 @@ export const ExpenseList: React.FC<ExpenseListProps> = ({
                                 <Button
                                     variant="ghost"
                                     size="sm"
-                                    onClick={() => onDelete(expense._id)}
+                                    onClick={() => onDelete(expense.id)}
                                     className="p-2.5 bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 rounded-xl transition-smooth flex items-center gap-2"
                                 >
                                     <Trash2 className="w-5 h-5" />

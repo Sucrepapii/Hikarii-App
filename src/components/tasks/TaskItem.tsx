@@ -59,7 +59,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({
             <div className="flex items-start gap-4">
                 {/* Checkbox */}
                 <button
-                    onClick={() => onToggle(task._id)}
+                    onClick={() => onToggle(task.id)}
                     className={clsx(
                         'mt-1 w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-smooth',
                         task.status === TaskStatus.COMPLETED
@@ -182,7 +182,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({
                             <Button
                                 variant="ghost"
                                 size="sm"
-                                onClick={() => onDelete(task._id)}
+                                onClick={() => onDelete(task.id)}
                                 className="p-2.5 bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 rounded-xl transition-smooth flex items-center gap-2"
                             >
                                 <Trash2 className="w-5 h-5" />

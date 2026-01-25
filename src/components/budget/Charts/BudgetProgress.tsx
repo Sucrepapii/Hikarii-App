@@ -52,7 +52,7 @@ export const BudgetProgress: React.FC<BudgetProgressProps> = ({ selectedDate = n
                         budget.period === BudgetPeriod.WEEKLY ? 'This Week' : 'Monthly';
 
                     return (
-                        <div key={budget._id}>
+                        <div key={budget.id}>
                             <div className="flex items-center justify-between mb-2">
                                 <span className="font-medium text-slate-700 dark:text-slate-300">
                                     {budget.category} <span className="text-xs text-slate-400 font-normal">({periodLabel})</span>

@@ -9,7 +9,7 @@ interface TaskStore {
 
   // CRUD operations
   fetchTasks: () => Promise<void>;
-  addTask: (task: Omit<Task, "_id" | "createdAt">) => Promise<void>;
+  addTask: (task: Omit<Task, "id" | "createdAt">) => Promise<void>;
   updateTask: (id: string, updates: Partial<Task>) => Promise<void>;
   deleteTask: (id: string) => Promise<void>;
   toggleTaskStatus: (id: string) => Promise<void>;
@@ -66,7 +66,7 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
       const response = await apiClient.put(`/tasks/${id}`, updates);
       set((state) => ({
         tasks: state.tasks.map((task) =>
-          task._id === id ? response.data : task,
+          task.id === id ? response.data : task,
         ),
         isLoading: false,
       }));
@@ -84,7 +84,7 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
       set({ isLoading: true, error: null });
       await apiClient.delete(`/tasks/${id}`);
       set((state) => ({
-        tasks: state.tasks.filter((task) => task._id !== id),
+        tasks: state.tasks.filter((task) => task.id !== id),
         isLoading: false,
       }));
     } catch (error: any) {
@@ -101,7 +101,7 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
       const response = await apiClient.patch(`/tasks/${id}/toggle`);
       set((state) => ({
         tasks: state.tasks.map((task) =>
-          task._id === id ? response.data : task,
+          task.id === id ? response.data : task,
         ),
       }));
     } catch (error: any) {
@@ -111,11 +111,11 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
   },
 
   getTaskById: (id) => {
-    return get().tasks.find((task) => task._id === id);
+    return get().tasks.find((task) => task.id === id);
   },
 
   updateTaskFinancials: async (id, financials) => {
-    const task = get().tasks.find((t) => t._id === id);
+    const task = get().tasks.find((t) => t.id === id);
     if (!task) return;
 
     const updatedFinancials = {

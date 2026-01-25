@@ -29,7 +29,7 @@ export interface TaskFinancials {
 }
 
 export interface Task {
-  _id: string; // MongoDB ID
+  id: string; // MongoDB ID (mapped from Prisma)
   title: string;
   description?: string;
   status: TaskStatus;

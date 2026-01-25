@@ -16,7 +16,7 @@ export enum BudgetPeriod {
 }
 
 export interface Expense {
-  _id: string;
+  id: string;
   title: string;
   amount: number;
   category: ExpenseCategory;
@@ -27,7 +27,7 @@ export interface Expense {
 }
 
 export interface Budget {
-  _id: string;
+  id: string;
   category: ExpenseCategory;
   limit: number;
   spent: number;

@@ -23,7 +23,7 @@ export const Budget: React.FC = () => {
     const handleExpenseSubmit = async (data: ExpenseFormData) => {
         try {
             if (editingExpense) {
-                await updateExpense(editingExpense._id, data);
+                await updateExpense(editingExpense.id, data);
                 toast.success('Expense updated');
             } else {
                 await addExpense(data);
@@ -53,7 +53,7 @@ export const Budget: React.FC = () => {
     const handleDeleteBudget = async (category: ExpenseCategory) => {
         const budget = budgets.find(b => b.category === category);
         if (budget) {
-            await deleteBudget(budget._id);
+            await deleteBudget(budget.id);
             toast.success('Budget removed');
         }
     };

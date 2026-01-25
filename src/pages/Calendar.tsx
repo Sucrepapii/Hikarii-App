@@ -122,7 +122,7 @@ export const Calendar: React.FC = () => {
                                                 const isOverdue = !isDone && new Date(t.dueDate!) < new Date() && !isToday(new Date(t.dueDate!));
                                                 return (
                                                     <div
-                                                        key={t._id}
+                                                        key={t.id}
                                                         className={`
                                                             w-2 h-2 rounded-full 
                                                             ${isDone ? 'bg-emerald-400' : isOverdue ? 'bg-red-500' : 'bg-blue-400'}
@@ -138,7 +138,7 @@ export const Calendar: React.FC = () => {
                                         {dayExpenses.length > 0 && (
                                             <div className="mt-1 flex gap-0.5">
                                                 {dayExpenses.map((e, i) => i < 3 && (
-                                                    <div key={e._id} className="w-2 h-0.5 bg-purple-400 rounded-full" />
+                                                    <div key={e.id} className="w-2 h-0.5 bg-purple-400 rounded-full" />
                                                 ))}
                                             </div>
                                         )}
@@ -167,7 +167,7 @@ export const Calendar: React.FC = () => {
                             {selectedDay && getDayItems(selectedDay).dayTasks.length > 0 ? (
                                 getDayItems(selectedDay).dayTasks.map(task => (
                                     <TaskItem
-                                        key={task._id}
+                                        key={task.id}
                                         task={task}
                                         onToggle={toggleTaskStatus}
                                         onEdit={() => { }} // Read-only in calendar for now
@@ -189,7 +189,7 @@ export const Calendar: React.FC = () => {
                         {selectedDay && getDayItems(selectedDay).dayExpenses.length > 0 ? (
                             <div className="space-y-2">
                                 {getDayItems(selectedDay).dayExpenses.map(expense => (
-                                    <div key={expense._id} className="flex items-center justify-between p-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
+                                    <div key={expense.id} className="flex items-center justify-between p-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
                                         <div>
                                             <p className="font-medium text-slate-700 dark:text-slate-200">{expense.title}</p>
                                             <p className="text-xs text-slate-500">{expense.category}</p>

@@ -59,7 +59,7 @@ export class IntelligenceService {
       const urgencyScore = this.calculateUrgencyScore(task, budgets);
       if (urgencyScore > 50) {
         recommendations.push({
-          taskId: task._id,
+          taskId: task.id,
           reason: this.getUrgencyReason(task, budgets),
           urgencyScore,
           financialContext: this.getFinancialContext(task, budgets),
@@ -322,7 +322,7 @@ export class IntelligenceService {
             title: `Late Fee Accruing: ${task.title}`,
             message: `Task is ${daysLate} day(s) overdue. Accrued fees: ₦${accruedFees.toLocaleString()}`,
             actionable: true,
-            taskId: task._id,
+            taskId: task.id,
             suggestedAction: "Complete this task immediately",
             financialImpact: -accruedFees,
             createdAt: now,
@@ -335,7 +335,7 @@ export class IntelligenceService {
             title: `Upcoming Late Fee: ${task.title}`,
             message: `Due in ${daysUntilDue} day(s). Late fee: ₦${task.financials.lateFeePerDay.toLocaleString()}/day`,
             actionable: true,
-            taskId: task._id,
+            taskId: task.id,
             suggestedAction: "Prioritize to avoid late fees",
             financialImpact: 0,
             createdAt: now,
@@ -377,7 +377,7 @@ export class IntelligenceService {
           title: `${task.title}: Income ${isPositive ? "Exceeded" : "Shortfall"}`,
           message: `Expected ₦${estimated.toLocaleString()}, received ₦${actual.toLocaleString()} (${isPositive ? "+" : ""}${percentDiff}%)`,
           actionable: false,
-          taskId: task._id,
+          taskId: task.id,
           financialImpact: difference,
           createdAt: new Date(),
         });
