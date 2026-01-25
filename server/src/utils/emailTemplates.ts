@@ -138,7 +138,9 @@ export const getOverdueReminderTemplate = (name: string, tasksHtml: string) => {
     <p>Keeping your workspace clean helps the Hikari intelligence engine give you better insights!</p>
   `;
 
-  const clientUrl = process.env.CLIENT_URL || "https://hikari-app.vercel.app";
+  const clientUrl =
+    process.env.CLIENT_URL ||
+    "https://checkmate-production-7067.up.railway.app/";
 
   return getBaseTemplate(
     "Action Required: Overdue Tasks",
