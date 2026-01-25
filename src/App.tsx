@@ -77,14 +77,15 @@ function App() {
                         </ProtectedRoute>
                     }
                 />
-                path="/analytics"
-                element={
-                    <ProtectedRoute>
-                        <DashboardLayout>
-                            <Analytics />
-                        </DashboardLayout>
-                    </ProtectedRoute>
-                }
+                <Route
+                    path="/analytics"
+                    element={
+                        <ProtectedRoute>
+                            <DashboardLayout>
+                                <Analytics />
+                            </DashboardLayout>
+                        </ProtectedRoute>
+                    }
                 />
                 <Route
                     path="/settings"
