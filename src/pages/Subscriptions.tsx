@@ -1,6 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useAuthStore } from '../stores/authStore';
+import apiClient from '../api/client';
 import { Card } from '../components/common/Card';
 import { Calendar, CheckCircle, XCircle, RefreshCw, AlertCircle, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
@@ -26,11 +27,8 @@ export const Subscriptions: React.FC = () => {
     const fetchPatterns = async () => {
         setLoading(true);
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/patterns`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            const data = await res.json();
-            setPatterns(data);
+            const res = await apiClient.get('/patterns');
+            setPatterns(res.data);
         } catch (err) {
             toast.error("Failed to load subscriptions");
         } finally {
@@ -41,13 +39,9 @@ export const Subscriptions: React.FC = () => {
     const handleScan = async () => {
         setScanning(true);
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/patterns/detect`, {
-                method: 'POST',
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            const data = await res.json();
-            toast.success(`Scan complete! Found ${data.newlyDetected} new patterns.`);
-            setPatterns(data.patterns); // Update list
+            const res = await apiClient.post('/patterns/detect');
+            toast.success(`Scan complete! Found ${res.data.newlyDetected} new patterns.`);
+            setPatterns(res.data.patterns); // Update list
         } catch (err) {
             toast.error("Scan failed");
         } finally {
@@ -57,10 +51,7 @@ export const Subscriptions: React.FC = () => {
 
     const confirmPattern = async (id: string) => {
         try {
-            await fetch(`${import.meta.env.VITE_API_URL}/api/patterns/${id}/confirm`, {
-                method: 'PATCH',
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            await apiClient.patch(`/patterns/${id}/confirm`);
             toast.success("Subscription confirmed");
             fetchPatterns();
         } catch (err) {
@@ -71,10 +62,7 @@ export const Subscriptions: React.FC = () => {
     const deletePattern = async (id: string) => {
         if (!confirm("Are you sure you want to ignore this subscription?")) return;
         try {
-            await fetch(`${import.meta.env.VITE_API_URL}/api/patterns/${id}`, {
-                method: 'DELETE',
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            await apiClient.delete(`/patterns/${id}`);
             toast.success("Subscription removed");
             setPatterns(patterns.filter(p => p.id !== id));
         } catch (err) {
