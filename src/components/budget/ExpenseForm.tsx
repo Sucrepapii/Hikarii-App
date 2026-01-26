@@ -6,6 +6,7 @@ import { ExpenseCategory } from '../../types/budget.types';
 import { Input } from '../common/Input';
 import { Button } from '../common/Button';
 import { DollarSign, Calendar } from 'lucide-react';
+import { useTaskStore } from '../../stores/taskStore';
 
 interface ExpenseFormProps {
     onSubmit: (data: ExpenseFormData) => void;
@@ -18,6 +19,8 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
     onCancel,
     defaultValues,
 }) => {
+    const { tasks } = useTaskStore();
+
     const {
         register,
         handleSubmit,
@@ -75,6 +78,26 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
                     setValueAs: (v) => (v ? new Date(v) : new Date()),
                 })}
             />
+
+            <div>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                    Link to Task (Optional)
+                </label>
+                <select
+                    className="w-full px-4 py-2.5 rounded-xl glass border-2 border-white/20 dark:border-white/10 transition-smooth text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    {...register('linkedTaskId')}
+                >
+                    <option value="">None</option>
+                    {tasks.map(task => (
+                        <option key={task.id} value={task.id}>
+                            {task.title}
+                        </option>
+                    ))}
+                </select>
+                <p className="text-xs text-slate-500 mt-1">
+                    Link this expense to a task to track project spending.
+                </p>
+            </div>
 
             <div>
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">

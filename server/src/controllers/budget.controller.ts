@@ -111,6 +111,7 @@ export const createExpense = async (
       data: {
         ...req.body,
         userId: req.userId,
+        linkedTaskId: req.body.linkedTaskId || null, // Explicitly handle linkedTaskId
       },
     });
 
@@ -157,7 +158,10 @@ export const updateExpense = async (
 
     const updatedExpense = await prisma.expense.update({
       where: { id: req.params.id as string },
-      data: req.body,
+      data: {
+        ...req.body,
+        linkedTaskId: req.body.linkedTaskId, // Allow updating link
+      },
     });
 
     // Update budget if amount or category changed

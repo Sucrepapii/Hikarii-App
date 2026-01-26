@@ -6,6 +6,8 @@ import { Check, Clock, Trash2, Edit, AlertCircle } from 'lucide-react';
 import { formatRelativeDate, isOverdue } from '../../utils/dateUtils';
 import { clsx } from 'clsx';
 import { FinancialImpactBadge } from '../intelligence/FinancialImpactBadge';
+import { useBudgetStore } from '../../stores/budgetStore';
+import { formatCurrency } from '../../utils/currencyFormatter';
 
 interface TaskItemProps {
     task: Task;
@@ -33,6 +35,10 @@ export const TaskItem: React.FC<TaskItemProps> = ({
     onEdit,
     onDelete,
 }) => {
+    const { expenses } = useBudgetStore();
+    const linkedExpenses = expenses.filter(e => e.linkedTaskId === task.id);
+    const totalLinkedSpent = linkedExpenses.reduce((sum, e) => sum + e.amount, 0);
+
     const StatusIcon = statusIcons[task.status];
     const isTaskOverdue = task.dueDate && isOverdue(task.dueDate);
 
@@ -166,6 +172,27 @@ export const TaskItem: React.FC<TaskItemProps> = ({
                                         </div>
                                     </div>
                                 )}
+
+                            {/* Linked Expenses Progress */}
+                            {task.financials && task.financials.type === TaskType.EXPENSE && task.financials.estimatedCost && (
+                                <div className="mt-3">
+                                    <div className="flex justify-between text-xs mb-1">
+                                        <span className="text-slate-600 dark:text-slate-400">Budget Progress</span>
+                                        <span className="font-medium text-slate-700 dark:text-slate-300">
+                                            {formatCurrency(totalLinkedSpent, 'NGN')} / {formatCurrency(task.financials.estimatedCost, 'NGN')}
+                                        </span>
+                                    </div>
+                                    <div className="h-1.5 w-full bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                                        <div
+                                            className={clsx(
+                                                "h-full rounded-full transition-all duration-500",
+                                                totalLinkedSpent > task.financials.estimatedCost ? "bg-red-500" : "bg-primary-500"
+                                            )}
+                                            style={{ width: `${Math.min((totalLinkedSpent / task.financials.estimatedCost) * 100, 100)}%` }}
+                                        />
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
                         {/* Actions */}
