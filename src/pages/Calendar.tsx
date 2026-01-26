@@ -108,7 +108,7 @@ export const Calendar: React.FC = () => {
                                                 {format(dayItem, 'd')}
                                             </span>
                                             {totalExpense > 0 && (
-                                                <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded-full truncate max-w-[40px] block">
+                                                <span className="text-[9px] sm:text-[10px] font-bold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded-full break-all">
                                                     {formatCurrency(totalExpense, currency).split('.')[0]}
                                                 </span>
                                             )}

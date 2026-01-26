@@ -26,7 +26,7 @@ export const BudgetSummary: React.FC = () => {
                             Total Spent
                         </span>
                     </div>
-                    <p className="text-2xl md:text-3xl font-bold gradient-text truncate">
+                    <p className="text-lg sm:text-2xl md:text-3xl font-bold gradient-text break-all">
                         {formatCurrency(totalSpent, currency)}
                     </p>
                     <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
@@ -47,7 +47,7 @@ export const BudgetSummary: React.FC = () => {
                             Total Budget
                         </span>
                     </div>
-                    <p className="text-2xl md:text-3xl font-bold gradient-text truncate">
+                    <p className="text-lg sm:text-2xl md:text-3xl font-bold gradient-text break-all">
                         {formatCurrency(totalBudget, currency)}
                     </p>
                     <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
@@ -68,7 +68,7 @@ export const BudgetSummary: React.FC = () => {
                             Remaining
                         </span>
                     </div>
-                    <p className="text-2xl md:text-3xl font-bold gradient-text truncate">
+                    <p className="text-lg sm:text-2xl md:text-3xl font-bold gradient-text break-all">
                         {formatCurrency(remaining, currency)}
                     </p>
                     <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">

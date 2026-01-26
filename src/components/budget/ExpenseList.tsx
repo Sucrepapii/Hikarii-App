@@ -97,7 +97,7 @@ export const ExpenseList: React.FC<ExpenseListProps> = ({
 
                             {/* Amount */}
                             <div className="text-right">
-                                <p className="text-sm md:text-lg font-bold gradient-text whitespace-nowrap">
+                                <p className="text-xs sm:text-sm md:text-lg font-bold gradient-text break-all">
                                     {formatCurrency(expense.amount, currency)}
                                 </p>
                             </div>
