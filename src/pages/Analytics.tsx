@@ -15,6 +15,7 @@ import {
 import { format, subDays, eachDayOfInterval, isSameDay } from 'date-fns';
 import { TrendingUp, CheckCircle, AlertCircle } from 'lucide-react';
 import { SpendingChart } from '../components/budget/Charts/SpendingChart';
+import { formatCurrency } from '../utils/currencyFormatter';
 import { TaskStatus } from '../types/task.types'; // Kept for data calculations
 import { TaskRecommendationCard } from '../components/intelligence/TaskRecommendationCard';
 import { IntelligenceService } from '../utils/intelligenceService';
@@ -47,8 +48,8 @@ export const Analytics: React.FC = () => {
 
         return {
             date: format(date, 'MMM dd'),
-            Income: dayIncome,
-            Expenses: dayExpenses
+            Income: useBudgetStore.getState().getConvertedAmount(dayIncome, useBudgetStore.getState().currency),
+            Expenses: useBudgetStore.getState().getConvertedAmount(dayExpenses, useBudgetStore.getState().currency)
         };
     });
 
@@ -62,7 +63,7 @@ export const Analytics: React.FC = () => {
 
     const insights = React.useMemo(() =>
         IntelligenceService.generateInsights(tasks, expenses || [], budgets).slice(0, 4)
-        , [tasks, expenses, budgets]);
+        , [tasks, expenses, budgets, useBudgetStore.getState().currency]);
 
     return (
         <div className="animate-fade-in space-y-6">
@@ -137,7 +138,7 @@ export const Analytics: React.FC = () => {
                                     fontSize={12}
                                     tickLine={false}
                                     axisLine={false}
-                                    tickFormatter={(value) => `₦${value / 1000}k`}
+                                    tickFormatter={(value) => `${useBudgetStore.getState().currency === 'NGN' ? '₦' : useBudgetStore.getState().currency === 'USD' ? '$' : useBudgetStore.getState().currency === 'GBP' ? '£' : '€'}${useBudgetStore.getState().getConvertedAmount(value, useBudgetStore.getState().currency) / 1000}k`}
                                 />
                                 <Tooltip
                                     contentStyle={{
@@ -146,7 +147,10 @@ export const Analytics: React.FC = () => {
                                         boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
                                         border: 'none'
                                     }}
-                                />
+                                    formatter={(value: number) => [
+                                        formatCurrency(useBudgetStore.getState().getConvertedAmount(value, useBudgetStore.getState().currency), useBudgetStore.getState().currency),
+                                        // Name is automatically handled by dataKey
+                                    ]}
                                 <Legend />
                                 <Line
                                     type="monotone"

@@ -140,7 +140,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({
                                 {/* Late Fee Warning */}
                                 {hasLateFee && task.status !== TaskStatus.COMPLETED && (
                                     <span className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/30">
-                                        ⚠️ ₦{task.financials?.lateFeePerDay?.toLocaleString() || 0}/day late fee
+                                        ⚠️ {formatCurrency(useBudgetStore.getState().getConvertedAmount(task.financials?.lateFeePerDay || 0, useBudgetStore.getState().currency), useBudgetStore.getState().currency)}/day late fee
                                     </span>
                                 )}
                             </div>
@@ -155,7 +155,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({
                                         <div className="flex items-center justify-between text-xs">
                                             <span className="text-slate-600 dark:text-slate-400">Expected:</span>
                                             <span className="font-semibold text-slate-700 dark:text-slate-300">
-                                                ₦{task.financials.estimatedIncome.toLocaleString()}
+                                                {formatCurrency(useBudgetStore.getState().getConvertedAmount(task.financials.estimatedIncome, useBudgetStore.getState().currency), useBudgetStore.getState().currency)}
                                             </span>
                                         </div>
                                         <div className="flex items-center justify-between text-xs mt-1">
@@ -166,7 +166,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({
                                                     ? "text-green-600 dark:text-green-400"
                                                     : "text-orange-600 dark:text-orange-400"
                                             )}>
-                                                ₦{task.financials.actualIncome.toLocaleString()}
+                                                {formatCurrency(useBudgetStore.getState().getConvertedAmount(task.financials.actualIncome, useBudgetStore.getState().currency), useBudgetStore.getState().currency)}
                                                 {task.financials.actualIncome >= task.financials.estimatedIncome ? ' ✓' : ' ⚠️'}
                                             </span>
                                         </div>

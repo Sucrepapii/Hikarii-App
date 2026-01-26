@@ -17,17 +17,20 @@
 ### 💰 Financial Integration
 
 - **Smart Budgeting**: Set monthly, weekly, or daily budget limits.
-- **Expense Tracking**: Link financial values directly to tasks (Costs vs. Income).
+- **Task-Expense Linking**: Connect expenses to tasks to track project-specific costs (e.g., "Office Renovation").
+- **Multi-Currency Support**: Switch between NGN, USD, GBP, and EUR with automatic conversion.
 - **Visual Analytics**: Interactive charts showing spending vs. budget in real-time.
 - **Filtered Views**: Drill down into financial history by month and year.
 
 ### 🧠 Intelligence & Insights
 
 - **Smart Recommendations**: Get AI-driven suggestions on what to tackle next based on priority and deadlines.
+- **Predictive Spending**: Forecast end-of-month spending based on current habits.
+- **Pattern Recognition**: Detect recurring expenses like subscriptions automatically.
 - **Financial Health**: Automated assessment of your spending habits.
 - **Notifications**: System-wide alerts for budget thresholds and upcoming deadlines.
 
-### 🔒 Security & accounts
+### 🔒 Security & Accounts
 
 - **Secure Authentication**: JWT-based auth with secure cookies/headers.
 - **Email Verification**: OTP-based email verification for new accounts.

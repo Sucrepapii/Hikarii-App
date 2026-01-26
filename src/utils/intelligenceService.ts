@@ -6,6 +6,8 @@ import {
   InsightPriority,
   TaskRecommendation,
 } from "../types/intelligence.types";
+import { useBudgetStore } from "../stores/budgetStore";
+import { formatCurrency } from "./currencyFormatter";
 
 /**
  * Intelligence Service - Core decision-making logic for task-money integration
@@ -137,6 +139,17 @@ export class IntelligenceService {
   }
 
   /**
+   * Helper to format currency dynamically
+   */
+  private static fmt(amount: number): string {
+    const state = useBudgetStore.getState();
+    return formatCurrency(
+      state.getConvertedAmount(amount, state.currency),
+      state.currency,
+    );
+  }
+
+  /**
    * Get human-readable reason for task urgency
    */
   private static getUrgencyReason(task: Task, budgets: Budget[]): string {
@@ -147,9 +160,7 @@ export class IntelligenceService {
     }
 
     if (task.financials?.lateFeePerDay) {
-      reasons.push(
-        `Late fee: ₦${task.financials.lateFeePerDay.toLocaleString()}/day`,
-      );
+      reasons.push(`Late fee: ${this.fmt(task.financials.lateFeePerDay)}/day`);
     }
 
     if (task.financials?.type === TaskType.INCOME) {
@@ -157,6 +168,7 @@ export class IntelligenceService {
         (sum, b) => sum + (b.limit - b.spent),
         0,
       );
+      // Threshold 10000 NGN
       if (totalRemaining < 10000) {
         reasons.push("💰 Cash flow needs boost");
       }
@@ -188,7 +200,7 @@ export class IntelligenceService {
 
     if (type === TaskType.EXPENSE && estimatedCost) {
       const canAfford = estimatedCost <= availableFunds;
-      return `Cost: ₦${estimatedCost.toLocaleString()} ${
+      return `Cost: ${this.fmt(estimatedCost)} ${
         canAfford ? "✓ Affordable" : "⚠️ Budget tight"
       }`;
     }
@@ -197,9 +209,9 @@ export class IntelligenceService {
       if (task.status === TaskStatus.COMPLETED && actualIncome) {
         const difference = actualIncome - (estimatedIncome || 0);
         const emoji = difference >= 0 ? "✓" : "⚠️";
-        return `Expected: ₦${estimatedIncome?.toLocaleString() || 0} | Actual: ₦${actualIncome.toLocaleString()} ${emoji}`;
+        return `Expected: ${this.fmt(estimatedIncome || 0)} | Actual: ${this.fmt(actualIncome)} ${emoji}`;
       }
-      return `Expected: ₦${estimatedIncome?.toLocaleString() || 0}`;
+      return `Expected: ${this.fmt(estimatedIncome || 0)}`;
     }
 
     return "";
@@ -218,7 +230,7 @@ export class IntelligenceService {
       0,
     );
 
-    // Low funds warning
+    // Low funds warning (10000 NGN threshold)
     if (availableFunds < 10000) {
       const incomeTasks = tasks.filter(
         (t) =>
@@ -231,7 +243,7 @@ export class IntelligenceService {
         type: InsightType.CASH_FLOW_ALERT,
         priority: InsightPriority.CRITICAL,
         title: "Low Cash Flow Alert",
-        message: `Only ₦${availableFunds.toLocaleString()} remaining in budgets. ${
+        message: `Only ${this.fmt(availableFunds)} remaining in budgets. ${
           incomeTasks.length > 0
             ? `Prioritize ${incomeTasks.length} income task(s).`
             : "Consider adding income tasks."
@@ -278,7 +290,7 @@ export class IntelligenceService {
         type: InsightType.BUDGET_WARNING,
         priority: InsightPriority.HIGH,
         title: "Budget Conflict Detected",
-        message: `Pending expense tasks (₦${pendingExpenses.toLocaleString()}) exceed available budget (₦${availableFunds.toLocaleString()}). Shortfall: ₦${deficit.toLocaleString()}`,
+        message: `Pending expense tasks (${this.fmt(pendingExpenses)}) exceed available budget (${this.fmt(availableFunds)}). Shortfall: ${this.fmt(deficit)}`,
         actionable: true,
         suggestedAction:
           "Postpone low-priority expense tasks or increase budget",
@@ -320,7 +332,7 @@ export class IntelligenceService {
             type: InsightType.BUDGET_WARNING,
             priority: InsightPriority.CRITICAL,
             title: `Late Fee Accruing: ${task.title}`,
-            message: `Task is ${daysLate} day(s) overdue. Accrued fees: ₦${accruedFees.toLocaleString()}`,
+            message: `Task is ${daysLate} day(s) overdue. Accrued fees: ${this.fmt(accruedFees)}`,
             actionable: true,
             taskId: task.id,
             suggestedAction: "Complete this task immediately",
@@ -333,7 +345,7 @@ export class IntelligenceService {
             type: InsightType.BUDGET_WARNING,
             priority: InsightPriority.HIGH,
             title: `Upcoming Late Fee: ${task.title}`,
-            message: `Due in ${daysUntilDue} day(s). Late fee: ₦${task.financials.lateFeePerDay.toLocaleString()}/day`,
+            message: `Due in ${daysUntilDue} day(s). Late fee: ${this.fmt(task.financials.lateFeePerDay)}/day`,
             actionable: true,
             taskId: task.id,
             suggestedAction: "Prioritize to avoid late fees",
@@ -375,7 +387,7 @@ export class IntelligenceService {
           type: InsightType.TASK_RECOMMENDATION,
           priority: isPositive ? InsightPriority.LOW : InsightPriority.MEDIUM,
           title: `${task.title}: Income ${isPositive ? "Exceeded" : "Shortfall"}`,
-          message: `Expected ₦${estimated.toLocaleString()}, received ₦${actual.toLocaleString()} (${isPositive ? "+" : ""}${percentDiff}%)`,
+          message: `Expected ${this.fmt(estimated)}, received ${this.fmt(actual)} (${isPositive ? "+" : ""}${percentDiff}%)`,
           actionable: false,
           taskId: task.id,
           financialImpact: difference,

@@ -10,7 +10,7 @@ interface SpendingChartProps {
 }
 
 export const SpendingChart: React.FC<SpendingChartProps> = ({ selectedDate = new Date() }) => {
-    const { expenses, budgets, currency } = useBudgetStore();
+    const { expenses, budgets, currency, getConvertedAmount } = useBudgetStore();
 
     // Group expenses by category
     const categoryData = Object.values(ExpenseCategory).map((category) => {
@@ -25,8 +25,8 @@ export const SpendingChart: React.FC<SpendingChartProps> = ({ selectedDate = new
 
         return {
             category,
-            spent,
-            budget: budget?.limit || 0,
+            spent: getConvertedAmount(spent, currency),
+            budget: getConvertedAmount(budget?.limit || 0, currency),
         };
     }).filter((data) => data.spent > 0 || data.budget > 0);
 
@@ -55,7 +55,7 @@ export const SpendingChart: React.FC<SpendingChartProps> = ({ selectedDate = new
                     <YAxis
                         stroke="#94a3b8"
                         tick={{ fill: '#94a3b8', fontSize: 12 }}
-                        tickFormatter={(value) => `$${value}`}
+                        tickFormatter={(value) => `${currency === 'NGN' ? '₦' : currency === 'USD' ? '$' : currency === 'GBP' ? '£' : '€'}${value}`}
                     />
                     <Tooltip
                         contentStyle={{
