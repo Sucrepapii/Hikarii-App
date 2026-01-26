@@ -151,6 +151,7 @@ export const Analytics: React.FC = () => {
                                         formatCurrency(useBudgetStore.getState().getConvertedAmount(value, useBudgetStore.getState().currency), useBudgetStore.getState().currency),
                                         // Name is automatically handled by dataKey
                                     ]}
+                                />
                                 <Legend />
                                 <Line
                                     type="monotone"
