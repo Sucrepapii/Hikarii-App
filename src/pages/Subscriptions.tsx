@@ -1,0 +1,176 @@
+
+import React, { useEffect, useState } from 'react';
+import { useAuthStore } from '../stores/authStore';
+import { Card } from '../components/common/Card';
+import { Calendar, CheckCircle, XCircle, RefreshCw, AlertCircle, Trash2 } from 'lucide-react';
+import { format } from 'date-fns';
+import { toast } from 'react-hot-toast';
+
+interface RecurringExpense {
+    id: string;
+    merchantName: string;
+    amount: number;
+    frequency: string;
+    nextDueDate: string;
+    confidenceScore: number;
+    isConfirmed: boolean;
+    isActive: boolean;
+}
+
+export const Subscriptions: React.FC = () => {
+    const { token } = useAuthStore();
+    const [patterns, setPatterns] = useState<RecurringExpense[]>([]);
+    const [loading, setLoading] = useState(false);
+    const [scanning, setScanning] = useState(false);
+
+    const fetchPatterns = async () => {
+        setLoading(true);
+        try {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/patterns`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            const data = await res.json();
+            setPatterns(data);
+        } catch (err) {
+            toast.error("Failed to load subscriptions");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleScan = async () => {
+        setScanning(true);
+        try {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/patterns/detect`, {
+                method: 'POST',
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            const data = await res.json();
+            toast.success(`Scan complete! Found ${data.newlyDetected} new patterns.`);
+            setPatterns(data.patterns); // Update list
+        } catch (err) {
+            toast.error("Scan failed");
+        } finally {
+            setScanning(false);
+        }
+    };
+
+    const confirmPattern = async (id: string) => {
+        try {
+            await fetch(`${import.meta.env.VITE_API_URL}/api/patterns/${id}/confirm`, {
+                method: 'PATCH',
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            toast.success("Subscription confirmed");
+            fetchPatterns();
+        } catch (err) {
+            toast.error("Action failed");
+        }
+    };
+
+    const deletePattern = async (id: string) => {
+        if (!confirm("Are you sure you want to ignore this subscription?")) return;
+        try {
+            await fetch(`${import.meta.env.VITE_API_URL}/api/patterns/${id}`, {
+                method: 'DELETE',
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            toast.success("Subscription removed");
+            setPatterns(patterns.filter(p => p.id !== id));
+        } catch (err) {
+            toast.error("Action failed");
+        }
+    };
+
+    useEffect(() => {
+        fetchPatterns();
+    }, []);
+
+    return (
+        <div className="animate-fade-in space-y-6">
+            <div className="flex justify-between items-center mb-8">
+                <div>
+                    <h1 className="text-3xl font-display font-bold gradient-text mb-2">
+                        Subscriptions & Recurring
+                    </h1>
+                    <p className="text-slate-600 dark:text-slate-400">
+                        Manage your predicted recurring expenses and bills
+                    </p>
+                </div>
+                <button
+                    onClick={handleScan}
+                    disabled={scanning}
+                    className="btn btn-primary flex items-center gap-2"
+                >
+                    <RefreshCw className={`w-4 h-4 ${scanning ? 'animate-spin' : ''}`} />
+                    {scanning ? 'Scanning...' : 'Scan for Patterns'}
+                </button>
+            </div>
+
+            {loading ? (
+                <div className="text-center py-12">Loading...</div>
+            ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {patterns.length === 0 ? (
+                        <div className="col-span-full text-center py-12 bg-slate-50 dark:bg-slate-900 rounded-xl border border-dashed border-slate-300 dark:border-slate-700">
+                            <RefreshCw className="w-12 h-12 text-slate-400 mx-auto mb-4" />
+                            <h3 className="text-lg font-medium text-slate-600 dark:text-slate-300">No subscriptions detected yet</h3>
+                            <p className="text-slate-500 mb-6">Run a scan to analyze your expense history</p>
+                            <button onClick={handleScan} className="btn btn-secondary">Run Analysis</button>
+                        </div>
+                    ) : (
+                        patterns.map(pattern => (
+                            <Card key={pattern.id} className={`border-l-4 ${pattern.isConfirmed ? 'border-l-emerald-500' : 'border-l-amber-500'}`}>
+                                <div className="flex justify-between items-start mb-4">
+                                    <div>
+                                        <h3 className="font-bold text-lg text-slate-800 dark:text-slate-200">{pattern.merchantName}</h3>
+                                        <div className="flex items-center gap-2 text-sm text-slate-500 mt-1">
+                                            <Calendar className="w-3 h-3" />
+                                            {pattern.frequency} • Next: {format(new Date(pattern.nextDueDate), 'MMM dd')}
+                                        </div>
+                                    </div>
+                                    <div className="text-right">
+                                        <p className="text-xl font-bold text-slate-800 dark:text-slate-200">
+                                            ₦{pattern.amount.toLocaleString()}
+                                        </p>
+                                        {!pattern.isConfirmed && (
+                                            <span className="text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">
+                                                Unconfirmed
+                                            </span>
+                                        )}
+                                    </div>
+                                </div>
+
+                                {pattern.isConfirmed ? (
+                                    <div className="flex justify-end pt-4 border-t border-slate-100 dark:border-slate-800">
+                                        <button
+                                            onClick={() => deletePattern(pattern.id)}
+                                            className="text-red-500 hover:text-red-600 text-sm flex items-center gap-1 transition-colors"
+                                        >
+                                            <Trash2 className="w-3 h-3" /> Remove
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <div className="flex gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+                                        <button
+                                            onClick={() => confirmPattern(pattern.id)}
+                                            className="flex-1 btn btn-sm bg-emerald-100 text-emerald-700 hover:bg-emerald-200 border-transparent"
+                                        >
+                                            <CheckCircle className="w-3 h-3 mr-1" /> Confirm
+                                        </button>
+                                        <button
+                                            onClick={() => deletePattern(pattern.id)}
+                                            className="flex-1 btn btn-sm bg-slate-100 text-slate-600 hover:bg-slate-200 border-transparent"
+                                        >
+                                            <XCircle className="w-3 h-3 mr-1" /> Ignore
+                                        </button>
+                                    </div>
+                                )}
+                            </Card>
+                        ))
+                    )}
+                </div>
+            )}
+        </div>
+    );
+};

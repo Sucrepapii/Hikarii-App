@@ -4,12 +4,14 @@ import {
   Budget,
   ExpenseCategory,
   BudgetPeriod,
+  ForecastResult,
 } from "../types/budget.types";
 import apiClient from "../api/client";
 
 interface BudgetStore {
   expenses: Expense[];
   budgets: Budget[];
+  forecasts: ForecastResult[];
   currency: string;
   isLoading: boolean;
   error: string | null;
@@ -17,6 +19,7 @@ interface BudgetStore {
   // Fetch data
   fetchBudgets: () => Promise<void>;
   fetchExpenses: () => Promise<void>;
+  fetchForecasts: () => Promise<void>;
 
   // Expense operations
   addExpense: (expense: Omit<Expense, "id">) => Promise<void>;
@@ -52,6 +55,7 @@ interface BudgetStore {
 export const useBudgetStore = create<BudgetStore>((set, get) => ({
   expenses: [],
   budgets: [],
+  forecasts: [],
   currency: localStorage.getItem("currency") || "NGN",
   isLoading: false,
   error: null,
@@ -79,6 +83,16 @@ export const useBudgetStore = create<BudgetStore>((set, get) => ({
         error: error.response?.data?.error || "Failed to fetch expenses",
         isLoading: false,
       });
+    }
+  },
+
+  fetchForecasts: async () => {
+    try {
+      // No loading state toggle to avoid flicker, seamless update
+      const response = await apiClient.get("/forecast");
+      set({ forecasts: response.data });
+    } catch (error: any) {
+      console.error("Failed to fetch forecasts", error);
     }
   },
 

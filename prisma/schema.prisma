@@ -20,7 +20,8 @@ model User {
   
   tasks     Task[]
   budgets   Budget[]
-  expenses  Expense[]
+  expenses          Expense[]
+  recurringExpenses RecurringExpense[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -118,4 +119,23 @@ enum ExpenseCategory {
   SHOPPING
   HEALTH
   OTHER
+}
+
+model RecurringExpense {
+  id              String   @id @default(uuid())
+  merchantName    String
+  amount          Float    // Average amount
+  frequency       String   // "WEEKLY", "MONTHLY", "YEARLY"
+  nextDueDate     DateTime
+  confidenceScore Float    // 0.0 to 1.0
+  isConfirmed     Boolean  @default(false) // User has manually verified
+  isActive        Boolean  @default(true)
+  
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([userId, isActive])
 }

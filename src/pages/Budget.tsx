@@ -5,6 +5,7 @@ import { ExpenseList } from '../components/budget/ExpenseList';
 import { ExpenseForm } from '../components/budget/ExpenseForm';
 import { BudgetProgress } from '../components/budget/Charts/BudgetProgress';
 import { SpendingChart } from '../components/budget/Charts/SpendingChart';
+import { BudgetProjection } from '../components/budget/BudgetProjection';
 import { Modal } from '../components/common/Modal';
 import { Button } from '../components/common/Button';
 import { Card } from '../components/common/Card';
@@ -15,7 +16,7 @@ import { ExpenseFormData } from '../utils/validationSchemas';
 import { useAuthStore } from '../stores/authStore';
 
 export const Budget: React.FC = () => {
-    const { expenses, addExpense, updateExpense, deleteExpense, setBudget, deleteBudget, budgets, currency, setCurrency } = useBudgetStore();
+    const { expenses, addExpense, updateExpense, deleteExpense, setBudget, deleteBudget, budgets, currency, setCurrency, forecasts, fetchForecasts } = useBudgetStore();
     const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
     const [isBudgetModalOpen, setIsBudgetModalOpen] = useState(false);
     const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
@@ -78,6 +79,10 @@ export const Budget: React.FC = () => {
             setViewYear(selectedDate.getFullYear());
         }
     }, [isDatePickerOpen, selectedDate]);
+
+    React.useEffect(() => {
+        fetchForecasts();
+    }, [expenses, budgets]); // Re-fetch when underlying data changes
 
     const isMinMonth = selectedDate.getMonth() === minDate.getMonth() &&
         selectedDate.getFullYear() === minDate.getFullYear();
@@ -230,7 +235,10 @@ export const Budget: React.FC = () => {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                 <SpendingChart selectedDate={selectedDate} />
-                <BudgetProgress selectedDate={selectedDate} />
+                <div className="space-y-6">
+                    <BudgetProgress selectedDate={selectedDate} />
+                    <BudgetProjection forecasts={forecasts} currency={currency} />
+                </div>
             </div>
 
             <Card>

@@ -44,3 +44,18 @@ export interface BudgetSummaryData {
     budget: number;
   }[];
 }
+
+export interface ForecastResult {
+  budgetId: string;
+  category: ExpenseCategory;
+  budgetLimit: number;
+  currentSpent: number;
+  projectedTotal: number;
+  status: "SAFE" | "WARNING" | "CRITICAL";
+  confidence: number;
+  upcomingRecurrings: {
+    name: string;
+    amount: number;
+    date: Date;
+  }[];
+}

@@ -12,6 +12,7 @@ import { Signup } from './pages/Signup';
 import { ForgotPassword } from './pages/ForgotPassword';
 import { Settings } from './pages/Settings';
 import { Analytics } from './pages/Analytics';
+import { Subscriptions } from './pages/Subscriptions';
 import { useAuthStore } from './stores/authStore';
 import './index.css';
 
@@ -83,6 +84,16 @@ function App() {
                         <ProtectedRoute>
                             <DashboardLayout>
                                 <Analytics />
+                            </DashboardLayout>
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/subscriptions"
+                    element={
+                        <ProtectedRoute>
+                            <DashboardLayout>
+                                <Subscriptions />
                             </DashboardLayout>
                         </ProtectedRoute>
                     }

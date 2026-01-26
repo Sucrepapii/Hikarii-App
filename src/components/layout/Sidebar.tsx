@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, CheckSquare, Wallet, X, Calendar, LineChart, Settings } from 'lucide-react';
+import { LayoutDashboard, CheckSquare, Wallet, X, Calendar, LineChart, Settings, RefreshCw } from 'lucide-react';
 import { clsx } from 'clsx';
 
 const navItems = [
@@ -9,6 +9,7 @@ const navItems = [
     { to: '/budget', icon: Wallet, label: 'Budget' },
     { to: '/calendar', icon: Calendar, label: 'Calendar' },
     { to: '/analytics', icon: LineChart, label: 'Analytics' },
+    { to: '/subscriptions', icon: RefreshCw, label: 'Subscriptions' },
     { to: '/settings', icon: Settings, label: 'Settings' },
 ];
 
