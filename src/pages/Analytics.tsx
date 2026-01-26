@@ -84,7 +84,7 @@ export const Analytics: React.FC = () => {
                         </div>
                         <h3 className="font-medium text-slate-600 dark:text-slate-400">Net Cash Flow (30d)</h3>
                     </div>
-                    <p className="text-2xl font-bold text-slate-800 dark:text-slate-200">
+                    <p className="text-xl md:text-2xl font-bold text-slate-800 dark:text-slate-200 truncate">
                         ₦{(cashFlowData.reduce((acc, curr) => acc + curr.Income - curr.Expenses, 0)).toLocaleString()}
                     </p>
                 </Card>

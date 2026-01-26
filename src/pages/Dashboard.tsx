@@ -165,7 +165,7 @@ export const Dashboard: React.FC = () => {
                                 Total Spent
                             </span>
                         </div>
-                        <p className="text-2xl font-bold gradient-text">
+                        <p className="text-xl md:text-3xl font-bold gradient-text truncate">
                             {formatCurrency(totalSpent, currency)}
                         </p>
                     </div>

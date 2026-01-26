@@ -40,7 +40,7 @@ export const BudgetProjection: React.FC<BudgetProjectionProps> = ({ forecasts, c
                                     {forecast.category}
                                 </span>
                                 <span className={clsx(
-                                    "font-bold",
+                                    "font-bold whitespace-nowrap text-sm md:text-base",
                                     isOver ? "text-red-500" : "text-amber-500"
                                 )}>
                                     Est. {currency}{forecast.projectedTotal.toLocaleString()}
