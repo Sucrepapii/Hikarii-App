@@ -109,7 +109,7 @@ export const Calendar: React.FC = () => {
                                             </span>
                                             {totalExpense > 0 && (
                                                 <span className="text-[9px] sm:text-[10px] font-bold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded-full break-all">
-                                                    {formatCurrency(totalExpense, currency).split('.')[0]}
+                                                    {formatCurrency(useBudgetStore.getState().getConvertedAmount(totalExpense, currency), currency).split('.')[0]}
                                                 </span>
                                             )}
                                         </div>
@@ -195,14 +195,14 @@ export const Calendar: React.FC = () => {
                                             <p className="text-xs text-slate-500">{expense.category}</p>
                                         </div>
                                         <span className="font-bold text-purple-600 dark:text-purple-400">
-                                            {formatCurrency(expense.amount, currency)}
+                                            {formatCurrency(useBudgetStore.getState().getConvertedAmount(expense.amount, currency), currency)}
                                         </span>
                                     </div>
                                 ))}
                                 <div className="pt-2 border-t border-slate-200 dark:border-slate-700 flex justify-between items-center text-sm font-bold">
                                     <span>Total Day Spending</span>
                                     <span className="text-slate-900 dark:text-white">
-                                        {formatCurrency(getDayItems(selectedDay).dayExpenses.reduce((s, e) => s + e.amount, 0), currency)}
+                                        {formatCurrency(useBudgetStore.getState().getConvertedAmount(getDayItems(selectedDay).dayExpenses.reduce((s, e) => s + e.amount, 0), currency), currency)}
                                     </span>
                                 </div>
                             </div>

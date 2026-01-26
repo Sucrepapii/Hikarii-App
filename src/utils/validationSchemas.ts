@@ -44,6 +44,7 @@ export const expenseSchema = z.object({
   category: z.nativeEnum(ExpenseCategory),
   date: z.date(),
   description: z.string().max(300, "Description is too long").optional(),
+  linkedTaskId: z.string().optional(),
 });
 
 export const budgetSchema = z.object({

@@ -17,7 +17,7 @@ import toast from 'react-hot-toast';
 
 export const Dashboard: React.FC = () => {
     const { tasks, fetchTasks, toggleTaskStatus, updateTask, deleteTask } = useTaskStore();
-    const { expenses, fetchExpenses, currency } = useBudgetStore();
+    const { expenses, fetchExpenses, currency, getConvertedAmount } = useBudgetStore();
 
     // Edit State
     const [editingTask, setEditingTask] = useState<Task | null>(null);
@@ -166,7 +166,7 @@ export const Dashboard: React.FC = () => {
                             </span>
                         </div>
                         <p className="text-lg sm:text-2xl md:text-3xl font-bold gradient-text break-all">
-                            {formatCurrency(totalSpent, currency)}
+                            {formatCurrency(getConvertedAmount(totalSpent, currency), currency)}
                         </p>
                     </div>
                 </Card>
@@ -219,7 +219,7 @@ export const Dashboard: React.FC = () => {
                                         </p>
                                     </div>
                                     <p className="font-bold gradient-text">
-                                        {formatCurrency(expense.amount, currency)}
+                                        {formatCurrency(getConvertedAmount(expense.amount, currency), currency)}
                                     </p>
                                 </div>
                             ))}

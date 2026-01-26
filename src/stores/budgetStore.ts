@@ -39,6 +39,7 @@ interface BudgetStore {
   getBudgetByCategory: (category: ExpenseCategory) => Budget | undefined;
   getExpensesByCategory: (category: ExpenseCategory) => Expense[];
   getTotalSpent: () => number;
+  getConvertedAmount: (amount: number, targetCurrency: string) => number;
 
   // Task integration methods
   createExpenseFromTask: (
@@ -59,6 +60,23 @@ export const useBudgetStore = create<BudgetStore>((set, get) => ({
   currency: localStorage.getItem("currency") || "NGN",
   isLoading: false,
   error: null,
+
+  // Exchange Rates (Base: NGN)
+  // 1 NGN = X Target
+  exchangeRates: {
+    NGN: 1,
+    USD: 0.00067, // ~1500 NGN
+    GBP: 0.00053, // ~1900 NGN
+    EUR: 0.00063, // ~1600 NGN
+  } as Record<string, number>,
+
+  getConvertedAmount: (amount: number, targetCurrency: string) => {
+    // Assuming amount is always stored in NGN
+    const store = get();
+    // @ts-ignore
+    const rate = store.exchangeRates[targetCurrency] || 1;
+    return amount * rate;
+  },
 
   fetchBudgets: async () => {
     try {

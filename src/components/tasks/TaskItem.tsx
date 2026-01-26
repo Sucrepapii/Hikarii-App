@@ -179,7 +179,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({
                                     <div className="flex justify-between text-xs mb-1">
                                         <span className="text-slate-600 dark:text-slate-400">Budget Progress</span>
                                         <span className="font-medium text-slate-700 dark:text-slate-300">
-                                            {formatCurrency(totalLinkedSpent, 'NGN')} / {formatCurrency(task.financials.estimatedCost, 'NGN')}
+                                            {formatCurrency(useBudgetStore.getState().getConvertedAmount(totalLinkedSpent, useBudgetStore.getState().currency), useBudgetStore.getState().currency)} / {formatCurrency(useBudgetStore.getState().getConvertedAmount(task.financials.estimatedCost, useBudgetStore.getState().currency), useBudgetStore.getState().currency)}
                                         </span>
                                     </div>
                                     <div className="h-1.5 w-full bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">

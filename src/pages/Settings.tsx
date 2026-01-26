@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card } from '../components/common/Card';
 import { Button } from '../components/common/Button';
-import { Download, Database, Shield } from 'lucide-react';
+import { Download, Database, Shield, DollarSign } from 'lucide-react';
 import { useTaskStore } from '../stores/taskStore';
 import { useBudgetStore } from '../stores/budgetStore';
 import { exportTasks, exportExpenses } from '../utils/exportUtils';

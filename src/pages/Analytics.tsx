@@ -85,7 +85,7 @@ export const Analytics: React.FC = () => {
                         <h3 className="font-medium text-slate-600 dark:text-slate-400">Net Cash Flow (30d)</h3>
                     </div>
                     <p className="text-lg sm:text-xl md:text-2xl font-bold text-slate-800 dark:text-slate-200 break-all">
-                        ₦{(cashFlowData.reduce((acc, curr) => acc + curr.Income - curr.Expenses, 0)).toLocaleString()}
+                        {useBudgetStore.getState().currency}{(useBudgetStore.getState().getConvertedAmount(cashFlowData.reduce((acc, curr) => acc + curr.Income - curr.Expenses, 0), useBudgetStore.getState().currency)).toLocaleString()}
                     </p>
                 </Card>
 

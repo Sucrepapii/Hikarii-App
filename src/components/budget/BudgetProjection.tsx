@@ -4,6 +4,7 @@ import { ForecastResult } from '../../types/budget.types';
 import { Card } from '../common/Card';
 import { AlertTriangle, TrendingUp } from 'lucide-react';
 import { clsx } from 'clsx';
+import { useBudgetStore } from '../../stores/budgetStore';
 
 interface BudgetProjectionProps {
     forecasts: ForecastResult[];
@@ -43,7 +44,7 @@ export const BudgetProjection: React.FC<BudgetProjectionProps> = ({ forecasts, c
                                     "font-bold text-xs sm:text-sm md:text-base break-all",
                                     isOver ? "text-red-500" : "text-amber-500"
                                 )}>
-                                    Est. {currency}{forecast.projectedTotal.toLocaleString()}
+                                    Est. {currency}{useBudgetStore.getState().getConvertedAmount(forecast.projectedTotal, currency).toLocaleString(undefined, { maximumFractionDigits: 0 })}
                                 </span>
                             </div>
 
@@ -68,7 +69,7 @@ export const BudgetProjection: React.FC<BudgetProjectionProps> = ({ forecasts, c
                             </div>
 
                             <div className="flex justify-between text-xs text-slate-500">
-                                <span>Limit: {currency}{forecast.budgetLimit.toLocaleString()}</span>
+                                <span>Limit: {currency}{useBudgetStore.getState().getConvertedAmount(forecast.budgetLimit, currency).toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
                                 {isOver && (
                                     <span className="flex items-center gap-1 text-red-500 font-medium">
                                         <AlertTriangle className="w-3 h-3" /> Projected Overspend

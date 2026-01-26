@@ -5,7 +5,7 @@ import { formatCurrency } from '../../utils/currencyFormatter';
 import { useBudgetStore } from '../../stores/budgetStore';
 
 export const BudgetSummary: React.FC = () => {
-    const { expenses, budgets, currency } = useBudgetStore();
+    const { expenses, budgets, currency, getConvertedAmount } = useBudgetStore();
 
     const totalSpent = expenses.reduce((sum, expense) => sum + expense.amount, 0);
     const totalBudget = budgets.reduce((sum, budget) => sum + budget.limit, 0);
@@ -27,7 +27,7 @@ export const BudgetSummary: React.FC = () => {
                         </span>
                     </div>
                     <p className="text-lg sm:text-2xl md:text-3xl font-bold gradient-text break-all">
-                        {formatCurrency(totalSpent, currency)}
+                        {formatCurrency(getConvertedAmount(totalSpent, currency), currency)}
                     </p>
                     <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
                         {expenses.length} expenses
@@ -48,7 +48,7 @@ export const BudgetSummary: React.FC = () => {
                         </span>
                     </div>
                     <p className="text-lg sm:text-2xl md:text-3xl font-bold gradient-text break-all">
-                        {formatCurrency(totalBudget, currency)}
+                        {formatCurrency(getConvertedAmount(totalBudget, currency), currency)}
                     </p>
                     <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
                         {budgets.length} categories
@@ -69,7 +69,7 @@ export const BudgetSummary: React.FC = () => {
                         </span>
                     </div>
                     <p className="text-lg sm:text-2xl md:text-3xl font-bold gradient-text break-all">
-                        {formatCurrency(remaining, currency)}
+                        {formatCurrency(getConvertedAmount(remaining, currency), currency)}
                     </p>
                     <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
                         {percentageUsed.toFixed(1)}% used
