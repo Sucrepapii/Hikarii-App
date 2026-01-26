@@ -77,7 +77,7 @@ export const Settings: React.FC = () => {
                     </div>
 
                     <div className="space-y-4">
-                        <div className="flex items-center justify-between p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
                             <div>
                                 <h3 className="font-medium text-slate-800 dark:text-slate-200">Export Tasks</h3>
                                 <p className="text-sm text-slate-500">
@@ -87,7 +87,7 @@ export const Settings: React.FC = () => {
                             <Button
                                 variant="secondary"
                                 onClick={() => exportTasks(tasks)}
-                                className="gap-2"
+                                className="gap-2 w-full sm:w-auto"
                                 disabled={tasks.length === 0}
                             >
                                 <Download className="w-4 h-4" />
@@ -95,7 +95,7 @@ export const Settings: React.FC = () => {
                             </Button>
                         </div>
 
-                        <div className="flex items-center justify-between p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
                             <div>
                                 <h3 className="font-medium text-slate-800 dark:text-slate-200">Export Expenses</h3>
                                 <p className="text-sm text-slate-500">
@@ -105,7 +105,7 @@ export const Settings: React.FC = () => {
                             <Button
                                 variant="secondary"
                                 onClick={() => exportExpenses(expenses)}
-                                className="gap-2"
+                                className="gap-2 w-full sm:w-auto"
                                 disabled={expenses.length === 0}
                             >
                                 <Download className="w-4 h-4" />

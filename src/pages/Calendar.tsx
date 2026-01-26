@@ -45,7 +45,7 @@ export const Calendar: React.FC = () => {
 
     return (
         <div className="animate-fade-in">
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-0 mb-6">
                 <div>
                     <h1 className="text-3xl font-display font-bold gradient-text mb-2">
                         Calendar
@@ -54,7 +54,7 @@ export const Calendar: React.FC = () => {
                         View your schedule and spending
                     </p>
                 </div>
-                <div className="flex items-center gap-4 bg-white dark:bg-slate-800 p-1 rounded-xl border border-slate-200 dark:border-slate-700">
+                <div className="flex items-center gap-4 bg-white dark:bg-slate-800 p-1 rounded-xl border border-slate-200 dark:border-slate-700 self-start md:self-auto">
                     <button onClick={prevMonth} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg">
                         <ChevronLeft className="w-5 h-5" />
                     </button>

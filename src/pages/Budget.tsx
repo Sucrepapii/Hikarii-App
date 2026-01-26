@@ -103,7 +103,7 @@ export const Budget: React.FC = () => {
 
     return (
         <div className="animate-fade-in">
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-0 mb-6">
                 <div>
                     <h1 className="text-3xl font-display font-bold gradient-text mb-2">
                         Budget
@@ -112,7 +112,7 @@ export const Budget: React.FC = () => {
                         Track your expenses and manage your budget
                     </p>
                 </div>
-                <div className="flex gap-3">
+                <div className="flex flex-wrap gap-3">
                     {/* Month Picker */}
                     {/* Month Picker */}
                     <div className="relative">
