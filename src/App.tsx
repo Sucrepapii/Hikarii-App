@@ -16,8 +16,20 @@ import { Subscriptions } from './pages/Subscriptions';
 import { useAuthStore } from './stores/authStore';
 import './index.css';
 
+import { useInactivity } from './hooks/useInactivity';
+import toast from 'react-hot-toast';
+
 function App() {
     const isAuthenticated = useAuthStore((state) => !!state.token);
+    const logout = useAuthStore((state) => state.logout);
+
+    // Auto-logout after 20 minutes (20 * 60 * 1000 = 1200000ms)
+    useInactivity(20 * 60 * 1000, () => {
+        if (isAuthenticated) {
+            logout();
+            toast.error('Session timed out due to inactivity');
+        }
+    });
 
     return (
         <BrowserRouter>
