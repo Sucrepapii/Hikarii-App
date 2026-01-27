@@ -6,6 +6,7 @@ export const getBaseTemplate = (
   content: string,
   buttonText?: string,
   buttonUrl?: string,
+  footerText?: string,
 ) => {
   const buttonHtml =
     buttonText && buttonUrl
@@ -16,6 +17,9 @@ export const getBaseTemplate = (
         </a>
       </div>`
       : "";
+
+  const defaultFooter =
+    "This email was sent to identify and secure your account.";
 
   return `
     <!DOCTYPE html>
@@ -73,7 +77,7 @@ export const getBaseTemplate = (
           <!-- Footer -->
           <div class="footer">
             <p style="margin-bottom: 8px;">&copy; ${new Date().getFullYear()} Hikari App. All rights reserved.</p>
-            <p style="margin: 0;">This email was sent to identify and secure your account.</p>
+            <p style="margin: 0;">${footerText || defaultFooter}</p>
           </div>
         </div>
       </div>
@@ -147,5 +151,6 @@ export const getOverdueReminderTemplate = (name: string, tasksHtml: string) => {
     content,
     "Go to Workspace",
     clientUrl,
+    "You received this email because you have pending tasks in your Hikari workspace.",
   );
 };
