@@ -305,7 +305,10 @@ export const Budget: React.FC = () => {
                                             const row = e.target.parentElement;
                                             const select = row?.querySelector('select');
                                             const selectedPeriod = (select?.value as BudgetPeriod) || BudgetPeriod.MONTHLY;
-                                            handleSetBudget(category, value, selectedPeriod);
+
+                                            // Convert input amount to NGN before saving
+                                            const amountInNGN = useBudgetStore.getState().getAmountInBaseCurrency(value, currency);
+                                            handleSetBudget(category, amountInNGN, selectedPeriod);
                                         }
                                     }}
                                 />
@@ -332,16 +335,11 @@ export const Budget: React.FC = () => {
                             onChange={(e) => setCurrency(e.target.value)}
                             className="w-full px-4 py-2.5 rounded-lg glass border-2 border-white/20 dark:border-white/10 text-slate-900 dark:text-slate-100 focus:border-primary-500 transition-smooth"
                         >
-                            <option value="AUD">AUD - Australian Dollar</option>
-                            <option value="CAD">CAD - Canadian Dollar</option>
-                            <option value="CHF">CHF - Swiss Franc</option>
-                            <option value="CNY">CNY - Chinese Yuan</option>
-                            <option value="EUR">EUR - Euro</option>
-                            <option value="GBP">GBP - British Pound</option>
-                            <option value="INR">INR - Indian Rupee</option>
-                            <option value="JPY">JPY - Japanese Yen</option>
                             <option value="NGN">NGN - Nigerian Naira</option>
                             <option value="USD">USD - US Dollar</option>
+                            <option value="GBP">GBP - British Pound</option>
+                            <option value="EUR">EUR - Euro</option>
+                            <option value="CAD">CAD - Canadian Dollar</option>
                         </select>
                     </div>
 
