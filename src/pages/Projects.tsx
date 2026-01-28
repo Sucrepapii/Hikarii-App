@@ -115,11 +115,10 @@ export const Projects: React.FC = () => {
                                     </div>
                                 )}
                             </div>
-                        </div>
                         </Card>
-            ))
+                    ))
                 )}
-        </div>
+            </div>
         </div >
     );
 };
