@@ -84,18 +84,23 @@ export const Projects: React.FC = () => {
                                     </span>
                                 </div>
                                 <div className="flex items-center gap-1">
-                                    <Link
-                                        to={`/projects/edit/${project.id}`}
-                                        className="p-2 bg-slate-100 dark:bg-slate-800 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-500 hover:text-slate-700 transition"
-                                    >
-                                        <Edit2 className="w-4 h-4" />
+                                    <Link to={`/projects/edit/${project.id}`}>
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className="p-2 bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 dark:text-blue-400 rounded-lg transition-smooth"
+                                        >
+                                            <Edit2 className="w-4 h-4" />
+                                        </Button>
                                     </Link>
-                                    <button
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
                                         onClick={() => handleDelete(project.id)}
-                                        className="p-2 bg-red-50 dark:bg-red-900/20 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/40 text-red-500 hover:text-red-700 transition"
+                                        className="p-2 bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 rounded-lg transition-smooth"
                                     >
                                         <Trash2 className="w-4 h-4" />
-                                    </button>
+                                    </Button>
                                 </div>
                             </div>
 

@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Project } from '../../types/project.types';
 import { projectService } from '../../services/project.service';
 import { Card } from '../common/Card';
-import { Plus, Briefcase, ChevronRight } from 'lucide-react';
+import { Plus, Briefcase, ChevronRight, Edit2, Trash2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { Button } from '../common/Button';
+import toast from 'react-hot-toast';
 
 export const ProjectCarousel: React.FC = () => {
     const [projects, setProjects] = useState<Project[]>([]);
@@ -22,6 +24,17 @@ export const ProjectCarousel: React.FC = () => {
         };
         loadProjects();
     }, []);
+
+    const handleDelete = async (id: string) => {
+        if (!confirm("Are you sure you want to delete this project?")) return;
+        try {
+            await projectService.deleteProject(id);
+            toast.success("Project deleted");
+            setProjects(projects.filter(p => p.id !== id));
+        } catch (err) {
+            toast.error("Failed to delete project");
+        }
+    };
 
     if (loading) return <div className="h-40 animate-pulse bg-slate-100 dark:bg-slate-800 rounded-2xl" />;
 
@@ -48,7 +61,7 @@ export const ProjectCarousel: React.FC = () => {
                 </Link>
 
                 {projects.slice(0, 2).map(project => (
-                    <Card key={project.id} className="h-48 relative overflow-hidden group hover:shadow-lg transition-all cursor-pointer border border-transparent hover:border-primary-200 dark:hover:border-primary-800">
+                    <Card key={project.id} className="h-48 relative overflow-hidden group hover:shadow-lg transition-all border border-transparent hover:border-primary-200 dark:hover:border-primary-800">
                         <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary-500/10 to-transparent rounded-full blur-2xl group-hover:from-primary-500/20 transition-all" />
 
                         <div className="relative h-full flex flex-col justify-between">
@@ -57,11 +70,28 @@ export const ProjectCarousel: React.FC = () => {
                                     <span className="px-2 py-1 rounded-md bg-green-100 dark:bg-green-900/30 text-xs font-bold text-green-700 dark:text-green-300">
                                         {project.status}
                                     </span>
-                                    {project.endDate && (
-                                        <span className="text-xs text-slate-400">
-                                            Due {new Date(project.endDate).toLocaleDateString()}
-                                        </span>
-                                    )}
+                                    <div className="flex items-center gap-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
+                                        <Link to={`/projects/edit/${project.id}`}>
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                className="p-1.5 h-auto bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 dark:text-blue-400 rounded-lg"
+                                            >
+                                                <Edit2 className="w-3.5 h-3.5" />
+                                            </Button>
+                                        </Link>
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                handleDelete(project.id);
+                                            }}
+                                            className="p-1.5 h-auto bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 rounded-lg"
+                                        >
+                                            <Trash2 className="w-3.5 h-3.5" />
+                                        </Button>
+                                    </div>
                                 </div>
                                 <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-1 line-clamp-1">
                                     {project.title}
