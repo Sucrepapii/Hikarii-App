@@ -2,27 +2,41 @@ import React, { useEffect, useState } from 'react';
 import { Project } from '../types/project.types';
 import { projectService } from '../services/project.service';
 import { Card } from '../components/common/Card';
-import { Plus, Briefcase, Calendar } from 'lucide-react';
+import { Plus, Briefcase, Calendar, Edit2, Trash2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '../components/common/Button';
+import toast from 'react-hot-toast';
 
 export const Projects: React.FC = () => {
     const [projects, setProjects] = useState<Project[]>([]);
     const [loading, setLoading] = useState(true);
 
+    const loadProjects = async () => {
+        try {
+            const data = await projectService.getProjects();
+            setProjects(data);
+        } catch (error) {
+            console.error("Failed to load projects", error);
+            toast.error("Failed to load projects");
+        } finally {
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
-        const loadProjects = async () => {
-            try {
-                const data = await projectService.getProjects();
-                setProjects(data);
-            } catch (error) {
-                console.error("Failed to load projects", error);
-            } finally {
-                setLoading(false);
-            }
-        };
         loadProjects();
     }, []);
+
+    const handleDelete = async (id: string) => {
+        if (!confirm("Are you sure you want to delete this project? This cannot be undone.")) return;
+        try {
+            await projectService.deleteProject(id);
+            toast.success("Project deleted");
+            setProjects(projects.filter(p => p.id !== id));
+        } catch (err) {
+            toast.error("Failed to delete project");
+        }
+    };
 
     if (loading) return <div className="p-8 text-center">Loading projects...</div>;
 
@@ -61,37 +75,51 @@ export const Projects: React.FC = () => {
                             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary-500/10 to-transparent rounded-full blur-2xl group-hover:from-primary-500/20 transition-all" />
 
                             <div className="relative">
-                                <div className="flex justify-between items-start mb-4">
+                                <div className="flex items-center gap-2">
                                     <span className={`px-2 py-1 rounded-md text-xs font-bold ${project.status === 'COMPLETED' ? 'bg-green-100 text-green-700' :
                                         project.status === 'ARCHIVED' ? 'bg-slate-100 text-slate-700' :
                                             'bg-blue-100 text-primary-700'
                                         }`}>
                                         {project.status}
                                     </span>
-                                    {project.endDate && (
-                                        <div className="flex items-center gap-1 text-xs text-slate-400">
-                                            <Calendar className="w-3 h-3" />
-                                            {new Date(project.endDate).toLocaleDateString()}
-                                        </div>
-                                    )}
                                 </div>
-
-                                <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">
-                                    {project.title}
-                                </h3>
-                                <p className="text-sm text-slate-500 dark:text-slate-400 line-clamp-2 mb-4">
-                                    {project.description || 'No description provided'}
-                                </p>
-
-                                <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center text-sm text-slate-500">
-                                    <span>{project.budgetLimit ? `Budget: ₦${project.budgetLimit.toLocaleString()}` : 'No Budget'}</span>
-                                    {/* Placeholder for task count if available */}
+                                <div className="flex items-center gap-1">
+                                    <Link
+                                        to={`/projects/edit/${project.id}`}
+                                        className="p-2 bg-slate-100 dark:bg-slate-800 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-500 hover:text-slate-700 transition"
+                                    >
+                                        <Edit2 className="w-4 h-4" />
+                                    </Link>
+                                    <button
+                                        onClick={() => handleDelete(project.id)}
+                                        className="p-2 bg-red-50 dark:bg-red-900/20 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/40 text-red-500 hover:text-red-700 transition"
+                                    >
+                                        <Trash2 className="w-4 h-4" />
+                                    </button>
                                 </div>
                             </div>
+
+                            <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">
+                                {project.title}
+                            </h3>
+                            <p className="text-sm text-slate-500 dark:text-slate-400 line-clamp-2 mb-4">
+                                {project.description || 'No description provided'}
+                            </p>
+
+                            <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center text-sm text-slate-500">
+                                <span>{project.budgetLimit ? `Budget: ₦${project.budgetLimit.toLocaleString()}` : 'No Budget'}</span>
+                                {project.endDate && (
+                                    <div className="flex items-center gap-1 text-xs text-slate-400">
+                                        <Calendar className="w-3 h-3" />
+                                        {new Date(project.endDate).toLocaleDateString()}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
                         </Card>
-                    ))
+            ))
                 )}
-            </div>
         </div>
+        </div >
     );
 };

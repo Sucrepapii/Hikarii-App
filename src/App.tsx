@@ -133,6 +133,16 @@ function App() {
                     }
                 />
                 <Route
+                    path="/projects/edit/:id"
+                    element={
+                        <ProtectedRoute>
+                            <DashboardLayout>
+                                <ProjectForm />
+                            </DashboardLayout>
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
                     path="/settings"
                     element={
                         <ProtectedRoute>

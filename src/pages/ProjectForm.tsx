@@ -1,30 +1,63 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { projectService } from '../services/project.service';
 import { Card } from '../components/common/Card';
 import { Button } from '../components/common/Button';
 import { CreateProjectData } from '../types/project.types';
 import toast from 'react-hot-toast';
+import { useEffect } from 'react';
 
 export const ProjectForm: React.FC = () => {
     const navigate = useNavigate();
-    const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<CreateProjectData>();
+    const { id } = useParams<{ id: string }>();
+    const isEditing = !!id;
+
+    const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<CreateProjectData>();
+
+    // Load existing data if editing
+    useEffect(() => {
+        if (isEditing && id) {
+            const loadProject = async () => {
+                try {
+                    const project = await projectService.getProject(id);
+                    reset({
+                        title: project.title,
+                        description: project.description,
+                        startDate: project.startDate ? project.startDate.split('T')[0] : '', // Format for date input
+                        endDate: project.endDate ? project.endDate.split('T')[0] : '',
+                        budgetLimit: project.budgetLimit
+                    });
+                } catch (error) {
+                    toast.error("Failed to load project details");
+                    navigate('/projects');
+                }
+            };
+            loadProject();
+        }
+    }, [id, isEditing, reset, navigate]);
 
     const onSubmit = async (data: CreateProjectData) => {
         try {
-            await projectService.createProject(data);
-            toast.success('Project created successfully!');
-            navigate('/tasks'); // Redirect back to tasks or projects listing
+            if (isEditing && id) {
+                await projectService.updateProject(id, data);
+                toast.success('Project updated successfully!');
+            } else {
+                await projectService.createProject(data);
+                toast.success('Project created successfully!');
+            }
+            navigate('/projects');
         } catch (error) {
             console.error(error);
-            toast.error('Failed to create project');
+            toast.error(isEditing ? 'Failed to update project' : 'Failed to create project');
         }
     };
 
     return (
         <div className="max-w-2xl mx-auto animate-fade-in">
-            <h1 className="text-2xl font-bold mb-6 text-slate-900 dark:text-slate-100">Create New Project</h1>
+            <h1 className="text-2xl font-bold mb-6 text-slate-900 dark:text-slate-100">
+                {isEditing ? 'Edit Project' : 'Create New Project'}
+            </h1>
             <Card>
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                     <div>
@@ -93,7 +126,7 @@ export const ProjectForm: React.FC = () => {
                             Cancel
                         </Button>
                         <Button type="submit" variant="primary" disabled={isSubmitting}>
-                            {isSubmitting ? 'Creating...' : 'Create Project'}
+                            {isSubmitting ? (isEditing ? 'Updating...' : 'Creating...') : (isEditing ? 'Update Project' : 'Create Project')}
                         </Button>
                     </div>
                 </form>
