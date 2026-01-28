@@ -42,7 +42,12 @@ export const Dashboard: React.FC = () => {
     const completedTasks = tasks.filter((t) => t.status === TaskStatus.COMPLETED).length;
     const pendingTasks = totalTasks - completedTasks;
     const totalSpent = expenses.reduce((sum, e) => sum + e.amount, 0);
-    const recentTasks = tasks.slice(-4).reverse();
+
+    // Sort: Active First (Newest->Oldest), then Completed (Newest->Oldest)
+    const activeTasks = tasks.filter(t => t.status !== TaskStatus.COMPLETED).reverse();
+    const completedHistory = tasks.filter(t => t.status === TaskStatus.COMPLETED).reverse();
+    const recentTasks = [...activeTasks, ...completedHistory].slice(0, 4);
+
     const recentExpenses = expenses.slice(-3).reverse();
 
     const handleEditTask = (task: Task) => {
