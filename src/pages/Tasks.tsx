@@ -48,6 +48,7 @@ export const Tasks: React.FC = () => {
             priority: data.priority,
             dueDate: data.dueDate,
             tags: data.tags || [],
+            projectId: data.projectId,
         };
 
         if (data.taskType) {

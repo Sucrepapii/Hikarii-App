@@ -54,13 +54,13 @@ export const TaskFilters: React.FC<TaskFiltersProps> = ({
                     isExpanded || hasActiveFilters ? "shadow-xl ring-2 ring-primary-500/20" : ""
                 )}
             >
-                <div className="p-2">
+                <div className="p-1">
                     <Input
                         placeholder="Search tasks or filter..."
                         value={searchQuery}
                         onChange={(e) => onSearchChange(e.target.value)}
                         onFocus={() => setIsExpanded(true)}
-                        className="border-none focus:ring-0 bg-transparent"
+                        className="border-none focus:ring-0 bg-transparent py-2"
                         icon={<Search className={clsx("w-5 h-5", isExpanded ? "text-primary-500" : "text-slate-400")} />}
                     />
                 </div>

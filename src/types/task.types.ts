@@ -38,6 +38,7 @@ export interface Task {
   createdAt: Date;
   tags: string[];
   financials?: TaskFinancials; // Financial data for task-money intelligence
+  projectId?: string;
 }
 
 export interface TaskFilters {

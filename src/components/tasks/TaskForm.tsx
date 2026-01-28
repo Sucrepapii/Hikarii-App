@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { taskSchema, TaskFormData } from '../../utils/validationSchemas';
 import { TaskStatus, TaskPriority, TaskType } from '../../types/task.types';
 import { ExpenseCategory } from '../../types/budget.types';
+import { Project } from '../../types/project.types';
+import { projectService } from '../../services/project.service';
 import { Input } from '../common/Input';
 import { Button } from '../common/Button';
-import { Calendar, DollarSign, TrendingUp, TrendingDown, AlertTriangle } from 'lucide-react';
+import { Calendar, DollarSign, TrendingUp, TrendingDown, AlertTriangle, Briefcase } from 'lucide-react';
 
 interface TaskFormProps {
     onSubmit: (data: TaskFormData) => void;
@@ -35,6 +37,20 @@ export const TaskForm: React.FC<TaskFormProps> = ({
         },
     });
 
+    const [projects, setProjects] = useState<Project[]>([]);
+
+    useEffect(() => {
+        const loadProjects = async () => {
+            try {
+                const data = await projectService.getProjects();
+                setProjects(data);
+            } catch (err) {
+                console.error("Failed to load projects", err);
+            }
+        };
+        loadProjects();
+    }, []);
+
     const selectedTaskType = watch('taskType');
 
     return (
@@ -59,6 +75,27 @@ export const TaskForm: React.FC<TaskFormProps> = ({
                 {errors.description && (
                     <p className="mt-1.5 text-sm text-danger-500">{errors.description.message}</p>
                 )}
+            </div>
+
+            {/* Project Selection */}
+            <div>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                    Project (Optional)
+                </label>
+                <div className="relative">
+                    <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
+                    <select
+                        className="w-full pl-10 pr-4 py-2.5 rounded-xl glass border-2 border-white/20 dark:border-white/10 transition-smooth text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                        {...register('projectId')}
+                    >
+                        <option value="">No Project</option>
+                        {projects.map(project => (
+                            <option key={project.id} value={project.id}>
+                                {project.title}
+                            </option>
+                        ))}
+                    </select>
+                </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
