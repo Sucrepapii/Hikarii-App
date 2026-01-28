@@ -25,6 +25,32 @@ model User {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  
+  projects Project[]
+}
+
+model Project {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  status      String   @default("ACTIVE") // ACTIVE, ARCHIVED, COMPLETED
+  
+  startDate   DateTime?
+  endDate     DateTime?
+  
+  budgetLimit Float?   // Optional overall budget for the project
+  
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  tasks       Task[]
+  budgets     Budget[] // Budget allocations specific to this project
+  expenses    Expense[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
 }
 
 model Task {
@@ -40,6 +66,9 @@ model Task {
 
   userId         String
   user           User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  projectId      String?
+  project        Project?    @relation(fields: [projectId], references: [id], onDelete: SetNull)
 
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @updatedAt
@@ -57,6 +86,9 @@ model Budget {
 
   userId    String
   user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  projectId String?
+  project   Project?        @relation(fields: [projectId], references: [id], onDelete: SetNull)
 
   createdAt DateTime        @default(now())
   updatedAt DateTime        @updatedAt
@@ -76,6 +108,9 @@ model Expense {
 
   userId         String
   user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  projectId      String?
+  project        Project?        @relation(fields: [projectId], references: [id], onDelete: SetNull)
 
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt

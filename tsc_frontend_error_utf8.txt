@@ -1,0 +1,4 @@
+﻿src/components/intelligence/NotificationBell.tsx(119,57): error TS7053: Element implicitly has an 'any' type because expression of type 'InsightType' can't be used to index type '{ TASK_RECOMMENDATION: LucideIcon; BUDGET_WARNING: LucideIcon; CASH_FLOW_ALERT: LucideIcon; POSTPONE_SUGGESTION: LucideIcon; }'.
+  Property '[InsightType.SUBSCRIPTION_ALERT]' does not exist on type '{ TASK_RECOMMENDATION: LucideIcon; BUDGET_WARNING: LucideIcon; CASH_FLOW_ALERT: LucideIcon; POSTPONE_SUGGESTION: LucideIcon; }'.
+src/pages/Subscriptions.tsx(6,53): error TS6133: 'AlertCircle' is declared but its value is never read.
+src/pages/Subscriptions.tsx(22,11): error TS6133: 'token' is declared but its value is never read.

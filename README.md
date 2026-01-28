@@ -4,6 +4,32 @@
 
 ![Hikari Logo](public/logo.png)
 
+## 💡 Why Hikari Stands Out
+
+Hikari isn't just another budget tracker. It is built for **Project-Centric Users** who need clarity on specific goals—whether it's a home renovation, a wedding, or a startup launch.
+
+### 1. Project-Centric Focus
+
+Manage specific goals with dedicated timelines and budgets. No more mixing your "Vacation Fund" with your "Groceries".
+
+### 2. Visual Clarity
+
+A "Light & Clarity" theme that goes beyond aesthetics. Accessible color coding, motivational progress visualization, and a dashboard designed to show status at a glance.
+
+### 3. Smart Defaults & Customization
+
+Intelligent auto-categorization that learns from you. One-click fixes for uncategorized items and flexible rules that adapt to your workflow.
+
+### 4. Actionable Insights
+
+We simply don't say "Spend less". Hikari tells you:
+
+- _"Cancel this subscription you haven't used in 60 days"_
+- _"This task is overdue and has cost $X in delays"_
+- _"Switch phone carriers to save $240/year based on usage"_
+
+---
+
 ## 🌟 Features
 
 ### 📝 Task Management

@@ -48,7 +48,7 @@ export const confirmPattern = async (
   res: Response,
 ): Promise<void> => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
     const pattern = await prisma.recurringExpense.findFirst({
       where: { id, userId: req.userId },
     });
@@ -74,7 +74,7 @@ export const deletePattern = async (
   res: Response,
 ): Promise<void> => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
     // Verify ownership
     const pattern = await prisma.recurringExpense.findFirst({
       where: { id, userId: req.userId },

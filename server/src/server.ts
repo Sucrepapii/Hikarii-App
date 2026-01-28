@@ -11,6 +11,7 @@ import budgetRoutes from "./routes/budget.routes";
 import insightsRoutes from "./routes/insights.routes";
 import patternRoutes from "./routes/pattern.routes";
 import predictiveRoutes from "./routes/predictive.routes";
+import projectRoutes from "./routes/project.routes";
 
 // Load environment variables
 dotenv.config();
@@ -79,6 +80,7 @@ app.use("/api", budgetRoutes); // Contains /budgets and /expenses
 app.use("/api/insights", insightsRoutes);
 app.use("/api/patterns", patternRoutes);
 app.use("/api", predictiveRoutes); // /api/forecast
+app.use("/api/projects", projectRoutes);
 
 // 404 handler
 // 404 handler removed - logic moved to app.ts

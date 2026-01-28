@@ -1,9 +1,14 @@
 
 import React, { useEffect, useState } from 'react';
-import { useAuthStore } from '../stores/authStore';
+
 import apiClient from '../api/client';
 import { Card } from '../components/common/Card';
-import { Calendar, CheckCircle, XCircle, RefreshCw, AlertCircle, Trash2 } from 'lucide-react';
+import {
+    Calendar, CheckCircle,
+    XCircle,
+    RefreshCw,
+    Trash2
+} from "lucide-react";
 import { format } from 'date-fns';
 import { toast } from 'react-hot-toast';
 
@@ -19,7 +24,7 @@ interface RecurringExpense {
 }
 
 export const Subscriptions: React.FC = () => {
-    const { token } = useAuthStore();
+    // const { token } = useAuthStore();
     const [patterns, setPatterns] = useState<RecurringExpense[]>([]);
     const [loading, setLoading] = useState(false);
     const [scanning, setScanning] = useState(false);

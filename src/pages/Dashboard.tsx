@@ -14,6 +14,7 @@ import { Modal } from '../components/common/Modal';
 import { TaskForm } from '../components/tasks/TaskForm';
 import { TaskFormData } from '../utils/validationSchemas';
 import toast from 'react-hot-toast';
+import { ProjectCarousel } from '../components/dashboard/ProjectCarousel';
 
 export const Dashboard: React.FC = () => {
     const { tasks, fetchTasks, toggleTaskStatus, updateTask, deleteTask } = useTaskStore();
@@ -101,6 +102,9 @@ export const Dashboard: React.FC = () => {
                     </div>
                 </div>
             )}
+
+            {/* Project Centric View */}
+            <ProjectCarousel />
 
             {/* Smart Insights Panel */}
             <div className="mb-6">

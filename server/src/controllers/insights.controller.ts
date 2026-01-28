@@ -122,6 +122,100 @@ export const getInsights = async (
       }
     });
 
+    // 4. Unused Subscription Monitor
+    const subscriptions = await prisma.recurringExpense.findMany({
+      where: { userId: req.userId, isActive: true },
+    });
+
+    subscriptions.forEach((sub) => {
+      const daysSinceUpdate = Math.ceil(
+        (Date.now() - new Date(sub.updatedAt).getTime()) /
+          (1000 * 60 * 60 * 24),
+      );
+      if (daysSinceUpdate > 60) {
+        insights.push({
+          id: `unused-sub-${sub.id}`,
+          type: "SUBSCRIPTION_ALERT",
+          priority: "MEDIUM",
+          title: `Unused Subscription: ${sub.merchantName}`,
+          message: `You haven't engaged with this ${sub.frequency} subscription in over 60 days. Costs: ₦${sub.amount.toLocaleString()}/cycle.`,
+          actionable: true,
+          suggestedAction: "Cancel Subscription",
+          financialImpact: sub.amount,
+          createdAt: new Date(),
+        });
+      }
+    });
+
+    // 5. Project Delay Costs
+    // Define a type for the result including the relation
+    type ProjectWithTasks = {
+      id: string;
+      title: string;
+      tasks: {
+        id: string;
+        financials: any;
+        dueDate: Date | null;
+        status: string;
+      }[];
+    };
+
+    const projects: ProjectWithTasks[] = (await prisma.project.findMany({
+      where: { userId: req.userId, status: "ACTIVE" },
+      include: { tasks: true },
+    })) as unknown as ProjectWithTasks[];
+
+    projects.forEach((project) => {
+      const overdueTasks = project.tasks.filter(
+        (t) =>
+          t.dueDate && new Date(t.dueDate) < now && t.status !== "COMPLETED",
+      );
+      if (overdueTasks.length > 0) {
+        const potentialLoss = overdueTasks.reduce(
+          (sum, t) => sum + (t.financials?.estimatedCost || 0) * 0.1,
+          0,
+        ); // Mock 10% overrun cost
+
+        insights.push({
+          id: `project-delay-${project.id}`,
+          type: "PROJECT_RISK",
+          priority: "HIGH",
+          title: `Project Delay: ${project.title}`,
+          message: `${overdueTasks.length} tasks are overdue. Estimated cost of delay: ₦${potentialLoss.toLocaleString()}`,
+          actionable: true,
+          suggestedAction: "Reschedule or fast-track tasks",
+          financialImpact: -potentialLoss,
+          createdAt: new Date(),
+        });
+      }
+    });
+
+    // 6. Spending Optimization (Mock Intelligence)
+    const phoneExpenses = await prisma.expense.aggregate({
+      where: {
+        userId: req.userId,
+        category: "UTILITIES",
+        description: { contains: "Phone", mode: "insensitive" },
+      },
+      _sum: { amount: true },
+    });
+
+    if ((phoneExpenses._sum.amount || 0) > 50000) {
+      // If spending > 50k on phone
+      insights.push({
+        id: `opt-phone-${Date.now()}`,
+        type: "SPENDING_OPT",
+        priority: "LOW",
+        title: "Optimize Phone Bill",
+        message:
+          "You spent over ₦50,000 on phone bills recently. Switching carriers could save you ~₦15,000/year.",
+        actionable: true,
+        suggestedAction: "Compare Data Plans",
+        financialImpact: 15000,
+        createdAt: new Date(),
+      });
+    }
+
     res.json({ insights });
   } catch (error: any) {
     res.status(500).json({ error: error.message });

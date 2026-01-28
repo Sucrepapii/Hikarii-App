@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useIntelligenceStore } from "../../stores/intelligenceStore";
-import { Bell, X, AlertTriangle, Lightbulb, TrendingUp } from "lucide-react";
+import { Bell, X, AlertTriangle, Lightbulb, TrendingUp, CreditCard, Calendar, DollarSign } from "lucide-react";
 import { InsightType, InsightPriority } from "../../types/intelligence.types";
 import { clsx } from "clsx";
 
@@ -9,6 +9,9 @@ const insightIcons = {
     [InsightType.BUDGET_WARNING]: AlertTriangle,
     [InsightType.CASH_FLOW_ALERT]: TrendingUp,
     [InsightType.POSTPONE_SUGGESTION]: AlertTriangle,
+    [InsightType.SUBSCRIPTION_ALERT]: CreditCard,
+    [InsightType.PROJECT_RISK]: Calendar,
+    [InsightType.SPENDING_OPT]: DollarSign,
 };
 
 const priorityStyles = {
