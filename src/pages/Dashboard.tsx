@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Card } from '../components/common/Card';
+import { Link } from 'react-router-dom';
 import { useTaskStore } from '../stores/taskStore';
 import { useBudgetStore } from '../stores/budgetStore';
 import { CheckSquare, Wallet, TrendingUp, Clock, AlertCircle } from 'lucide-react';
@@ -41,7 +42,7 @@ export const Dashboard: React.FC = () => {
     const completedTasks = tasks.filter((t) => t.status === TaskStatus.COMPLETED).length;
     const pendingTasks = totalTasks - completedTasks;
     const totalSpent = expenses.reduce((sum, e) => sum + e.amount, 0);
-    const recentTasks = tasks.slice(-5).reverse();
+    const recentTasks = tasks.slice(-8).reverse();
     const recentExpenses = expenses.slice(-3).reverse();
 
     const handleEditTask = (task: Task) => {
@@ -186,7 +187,8 @@ export const Dashboard: React.FC = () => {
                     <h2 className="text-xl font-semibold mb-4">Recent Tasks</h2>
                     {recentTasks.length > 0 ? (
                         <div className="space-y-3">
-                            {recentTasks.map((task) => (
+                            {/* Standard View for Top 3 */}
+                            {recentTasks.slice(0, 3).map((task) => (
                                 <TaskItem
                                     key={task.id}
                                     task={task}
@@ -194,6 +196,34 @@ export const Dashboard: React.FC = () => {
                                     onEdit={handleEditTask}
                                     onDelete={deleteTask}
                                 />
+                            ))}
+
+                            {/* Stacked View for Overflow (> 3) */}
+                            {recentTasks.slice(3).map((task) => (
+                                <div
+                                    key={task.id}
+                                    onClick={() => handleEditTask(task)}
+                                    className="group flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 hover:border-primary-200 dark:hover:border-primary-800 cursor-pointer transition-all hover:shadow-md active:scale-[0.99]"
+                                >
+                                    <div className="flex items-center gap-3 overflow-hidden">
+                                        <div className={`w-2 h-2 rounded-full ${task.priority === 'URGENT' ? 'bg-red-500' :
+                                            task.priority === 'HIGH' ? 'bg-orange-500' :
+                                                task.priority === 'MEDIUM' ? 'bg-yellow-500' :
+                                                    'bg-blue-500'
+                                            }`} />
+                                        <span className="font-medium text-slate-700 dark:text-slate-200 truncate group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+                                            {task.title}
+                                        </span>
+                                    </div>
+
+                                    <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full ${task.priority === 'URGENT' ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300' :
+                                        task.priority === 'HIGH' ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300' :
+                                            task.priority === 'MEDIUM' ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300' :
+                                                'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300'
+                                        }`}>
+                                        {task.priority}
+                                    </span>
+                                </div>
                             ))}
                         </div>
                     ) : (
