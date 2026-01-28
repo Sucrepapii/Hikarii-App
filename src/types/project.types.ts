@@ -12,6 +12,7 @@ export interface Project {
   userId: string;
   tasks?: Task[];
   expenses?: Expense[];
+  progress?: number;
   createdAt: string;
   updatedAt: string;
 }

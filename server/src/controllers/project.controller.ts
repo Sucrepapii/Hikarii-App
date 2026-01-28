@@ -32,13 +32,28 @@ export const getProjects = async (req: AuthRequest, res: Response) => {
       where: { userId: req.userId! },
       orderBy: { createdAt: "desc" },
       include: {
-        _count: {
-          select: { tasks: true, budgets: true },
+        tasks: {
+          select: { status: true },
         },
       },
     });
-    console.log("Found projects:", projects.length);
-    res.json(projects);
+
+    const projectsWithProgress = projects.map((project: any) => {
+      const totalTasks = project.tasks.length;
+      const completedTasks = project.tasks.filter(
+        (t: any) => t.status === "COMPLETED",
+      ).length;
+      const progress = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
+
+      return {
+        ...project,
+        progress: Math.round(progress),
+        // specific cleanup if we don't want to send all tasks back, though select: {status} is small
+      };
+    });
+
+    console.log("Found projects:", projectsWithProgress.length);
+    res.json(projectsWithProgress);
   } catch (error: any) {
     console.error("Error fetching projects:", error);
     res.status(500).json({ error: error.message });

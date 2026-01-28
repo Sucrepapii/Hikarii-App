@@ -117,8 +117,24 @@ export class IntelligenceService {
           (sum, b) => sum + (b.limit - b.spent),
           0,
         );
-        if (totalBudget < 10000) score += 30;
-        else if (totalBudget < 50000) score += 15;
+
+        const state = useBudgetStore.getState();
+        const thresholds: Record<string, number> = {
+          NGN: 10000,
+          USD: 50,
+          GBP: 40,
+          EUR: 45,
+          CAD: 60,
+        };
+        const localThreshold = thresholds[state.currency] || 5000;
+        const baseLow = state.getAmountInBaseCurrency(
+          localThreshold,
+          state.currency,
+        );
+        const baseCritical = baseLow * 5; // e.g. 50k NGN or $250
+
+        if (totalBudget < baseLow) score += 30;
+        else if (totalBudget < baseCritical) score += 15;
       }
 
       // Expensive tasks might need postponement if funds low
@@ -168,8 +184,22 @@ export class IntelligenceService {
         (sum, b) => sum + (b.limit - b.spent),
         0,
       );
-      // Threshold 10000 NGN
-      if (totalRemaining < 10000) {
+
+      const state = useBudgetStore.getState();
+      const thresholds: Record<string, number> = {
+        NGN: 10000,
+        USD: 50,
+        GBP: 40,
+        EUR: 45,
+        CAD: 60,
+      };
+      const localThreshold = thresholds[state.currency] || 5000;
+      const baseThreshold = state.getAmountInBaseCurrency(
+        localThreshold,
+        state.currency,
+      );
+
+      if (totalRemaining < baseThreshold) {
         reasons.push("💰 Cash flow needs boost");
       }
     }
@@ -230,8 +260,29 @@ export class IntelligenceService {
       0,
     );
 
-    // Low funds warning (10000 NGN threshold)
-    if (availableFunds < 10000) {
+    // Low funds warning
+    // We determine a "Smart Threshold" based on the user's preferred currency
+    // to match regional purchasing power expectations.
+    const state = useBudgetStore.getState();
+    const currency = state.currency;
+
+    // Define "Low Balance" constants in their respective currencies
+    const thresholds: Record<string, number> = {
+      NGN: 10000,
+      USD: 50, // ~$50 feels like a generic "low" buffer
+      GBP: 40,
+      EUR: 45,
+      CAD: 60,
+    };
+
+    const localThreshold = thresholds[currency] || 5000; // Default fallback
+    // Convert local threshold back to Base Currency (NGN) for comparison against `availableFunds`
+    const baseThreshold = state.getAmountInBaseCurrency(
+      localThreshold,
+      currency,
+    );
+
+    if (availableFunds < baseThreshold) {
       const incomeTasks = tasks.filter(
         (t) =>
           t.financials?.type === TaskType.INCOME &&
@@ -243,7 +294,7 @@ export class IntelligenceService {
         type: InsightType.CASH_FLOW_ALERT,
         priority: InsightPriority.CRITICAL,
         title: "Low Cash Flow Alert",
-        message: `Only ${this.fmt(availableFunds)} remaining in budgets. ${
+        message: `Only ${this.fmt(availableFunds)} remaining in budgets (Threshold: ${this.fmt(baseThreshold)}). ${
           incomeTasks.length > 0
             ? `Prioritize ${incomeTasks.length} income task(s).`
             : "Consider adding income tasks."

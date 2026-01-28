@@ -75,12 +75,12 @@ export const ProjectCarousel: React.FC = () => {
                                 <div className="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-2 mb-2">
                                     <div
                                         className="bg-primary-500 h-2 rounded-full transition-all duration-500"
-                                        style={{ width: '45%' }} // Mock progress for now, will calculate later
+                                        style={{ width: `${project.progress || 0}%` }}
                                     />
                                 </div>
                                 <div className="flex justify-between text-xs text-slate-500">
                                     <span>Progress</span>
-                                    <span>45%</span>
+                                    <span>{project.progress || 0}%</span>
                                 </div>
                             </div>
                         </div>
