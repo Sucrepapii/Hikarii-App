@@ -9,6 +9,7 @@ import { Plus } from 'lucide-react';
 import { useTaskStore } from '../stores/taskStore';
 import { Task, TaskStatus, TaskPriority, TaskType } from '../types/task.types';
 import { TaskFormData } from '../utils/validationSchemas';
+import { ProjectCarousel } from '../components/dashboard/ProjectCarousel';
 // import { useBudgetStore } from '../stores/budgetStore';
 
 export const Tasks: React.FC = () => {
@@ -106,6 +107,10 @@ export const Tasks: React.FC = () => {
                     <Plus className="w-5 h-5" />
                     Add Task
                 </Button>
+            </div>
+
+            <div className="mb-8">
+                <ProjectCarousel />
             </div>
 
             <TaskFilters
