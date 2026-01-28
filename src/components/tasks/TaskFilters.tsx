@@ -11,6 +11,7 @@ interface TaskFiltersProps {
     onStatusFilterChange: (status: TaskStatus | 'ALL') => void;
     priorityFilter: TaskPriority | 'ALL';
     onPriorityFilterChange: (priority: TaskPriority | 'ALL') => void;
+    className?: string;
 }
 
 export const TaskFilters: React.FC<TaskFiltersProps> = ({
@@ -20,6 +21,7 @@ export const TaskFilters: React.FC<TaskFiltersProps> = ({
     onStatusFilterChange,
     priorityFilter,
     onPriorityFilterChange,
+    className,
 }) => {
     const [isExpanded, setIsExpanded] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
@@ -45,7 +47,7 @@ export const TaskFilters: React.FC<TaskFiltersProps> = ({
     const hasActiveFilters = statusFilter !== 'ALL' || priorityFilter !== 'ALL';
 
     return (
-        <div ref={containerRef} className="mb-6 relative z-10">
+        <div ref={containerRef} className={clsx("relative z-10", className)}>
             <div
                 className={clsx(
                     "transition-all duration-300 ease-in-out bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm overflow-hidden",

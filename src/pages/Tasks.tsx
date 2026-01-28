@@ -99,28 +99,34 @@ export const Tasks: React.FC = () => {
                         Manage your tasks and stay productive
                     </p>
                 </div>
-                <Button
-                    variant="primary"
-                    onClick={() => setIsModalOpen(true)}
-                    className="gap-2 w-full md:w-auto justify-center"
-                >
-                    <Plus className="w-5 h-5" />
-                    Add Task
-                </Button>
+                <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto items-stretch md:items-start">
+                    <div className="w-full md:w-72">
+                        <TaskFilters
+                            searchQuery={searchQuery}
+                            onSearchChange={setSearchQuery}
+                            statusFilter={statusFilter}
+                            onStatusFilterChange={setStatusFilter}
+                            priorityFilter={priorityFilter}
+                            onPriorityFilterChange={setPriorityFilter}
+                            className="mb-0"
+                        />
+                    </div>
+                    <Button
+                        variant="primary"
+                        onClick={() => setIsModalOpen(true)}
+                        className="gap-2 justify-center h-[42px]" // Matching input height roughly
+                    >
+                        <Plus className="w-5 h-5" />
+                        Add Task
+                    </Button>
+                </div>
             </div>
 
             <div className="mb-8">
                 <ProjectCarousel />
             </div>
 
-            <TaskFilters
-                searchQuery={searchQuery}
-                onSearchChange={setSearchQuery}
-                statusFilter={statusFilter}
-                onStatusFilterChange={setStatusFilter}
-                priorityFilter={priorityFilter}
-                onPriorityFilterChange={setPriorityFilter}
-            />
+
 
             <TaskList
                 tasks={filteredTasks}
