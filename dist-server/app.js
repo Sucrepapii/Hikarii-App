@@ -1603,7 +1603,9 @@ async function handlePaymentSucceeded(invoice) {
       where: { id: user.id },
       data: {
         subscriptionStatus: "PRO",
-        currentPeriodEnd: new Date(subscription.current_period_end * 1e3)
+        currentPeriodEnd: new Date(
+          subscription.current_period_end * 1e3
+        )
       }
     });
   }
@@ -1622,39 +1624,58 @@ async function handleSubscriptionDeleted(subscription) {
     });
   }
 }
-var stripe, PRO_PRICE_ID, createCheckoutSession, createPortalSession, handleWebhook;
+var stripe, PRO_PRICE_ID, createCheckoutSession, createPortalSession, cancelSubscription, handleWebhook;
 var init_stripe_controller = __esm({
   "server/src/controllers/stripe.controller.ts"() {
     init_db();
     stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
-      apiVersion: "2024-12-18.acacia"
+      apiVersion: "2026-01-28.clover"
       // Use latest API version available
     });
     PRO_PRICE_ID = process.env.STRIPE_PRO_PRICE_ID;
     createCheckoutSession = async (req, res) => {
+      console.log("Stripe: createCheckoutSession started");
+      console.log(
+        "Stripe: Env Check -> PRO_PRICE_ID:",
+        process.env.STRIPE_PRO_PRICE_ID ? "Set" : "Missing"
+      );
       try {
         const userId = req.user?.id;
+        console.log("Stripe: User ID from req:", userId);
         if (!userId) return res.status(401).json({ message: "Unauthorized" });
         const user = await db_default.user.findUnique({ where: { id: userId } });
         if (!user) return res.status(404).json({ message: "User not found" });
         let customerId = user.stripeCustomerId;
+        console.log("Stripe: Existing Customer ID:", customerId);
         if (!customerId) {
+          console.log("Stripe: Creating new Stripe customer...");
           const customer = await stripe.customers.create({
             email: user.email,
             metadata: { userId: user.id }
           });
           customerId = customer.id;
+          console.log("Stripe: New Customer ID created:", customerId);
           await db_default.user.update({
             where: { id: userId },
             data: { stripeCustomerId: customerId }
           });
         }
+        const priceId = PRO_PRICE_ID;
+        if (!priceId) {
+          console.error(
+            "Stripe Error: PRO_PRICE_ID is missing in environment variables"
+          );
+          return res.status(500).json({ message: "Server configuration error: Missing Price ID" });
+        }
+        console.log("Stripe: Creating checkout session with Price ID:", priceId);
+        const clientUrl = process.env.CLIENT_URL || "https://www.hikarii.org";
+        console.log("Stripe: Using Client URL:", clientUrl);
         const session = await stripe.checkout.sessions.create({
           customer: customerId,
           payment_method_types: ["card"],
           line_items: [
             {
-              price: PRO_PRICE_ID,
+              price: priceId,
               quantity: 1
             }
           ],
@@ -1662,12 +1683,13 @@ var init_stripe_controller = __esm({
           subscription_data: {
             trial_period_days: 14
           },
-          success_url: `${process.env.CLIENT_URL}/settings?session_id={CHECKOUT_SESSION_ID}`,
-          cancel_url: `${process.env.CLIENT_URL}/pricing`,
+          success_url: `${clientUrl}/settings?session_id={CHECKOUT_SESSION_ID}`,
+          cancel_url: `${clientUrl}/pricing`,
           metadata: {
             userId
           }
         });
+        console.log("Stripe: Session created successfully:", session.id);
         res.json({ sessionId: session.id, url: session.url });
       } catch (error) {
         console.error("Stripe Checkout Error:", error);
@@ -1684,14 +1706,45 @@ var init_stripe_controller = __esm({
         const user = await db_default.user.findUnique({ where: { id: userId } });
         if (!user || !user.stripeCustomerId)
           return res.status(400).json({ message: "No subscription found" });
+        const clientUrl = process.env.CLIENT_URL || "https://www.hikarii.org";
         const session = await stripe.billingPortal.sessions.create({
           customer: user.stripeCustomerId,
-          return_url: `${process.env.CLIENT_URL}/settings`
+          return_url: `${clientUrl}/settings`
         });
         res.json({ url: session.url });
       } catch (error) {
         console.error("Portal Session Error:", error);
         res.status(500).json({ message: "Failed to create portal session" });
+      }
+    };
+    cancelSubscription = async (req, res) => {
+      try {
+        const userId = req.user?.id;
+        if (!userId) return res.status(401).json({ message: "Unauthorized" });
+        const user = await db_default.user.findUnique({ where: { id: userId } });
+        if (!user || !user.stripeCustomerId) {
+          return res.status(400).json({ message: "No active subscription found" });
+        }
+        const subscriptions = await stripe.subscriptions.list({
+          customer: user.stripeCustomerId,
+          status: "active",
+          limit: 1
+        });
+        if (subscriptions.data.length === 0) {
+          return res.status(400).json({ message: "No active subscription to cancel" });
+        }
+        const subscriptionId = subscriptions.data[0].id;
+        const updatedSubscription = await stripe.subscriptions.update(
+          subscriptionId,
+          { cancel_at_period_end: true }
+        );
+        res.json({
+          message: "Subscription will be cancelled at the end of the billing period",
+          currentPeriodEnd: new Date(updatedSubscription.current_period_end * 1e3)
+        });
+      } catch (error) {
+        console.error("Cancel Subscription Error:", error);
+        res.status(500).json({ message: "Failed to cancel subscription", error: error.message });
       }
     };
     handleWebhook = async (req, res) => {
@@ -1742,6 +1795,7 @@ var init_stripe_routes = __esm({
       createCheckoutSession
     );
     router8.post("/create-portal-session", authenticate, createPortalSession);
+    router8.post("/cancel-subscription", authenticate, cancelSubscription);
     stripe_routes_default = router8;
   }
 });

@@ -88,10 +88,9 @@ export const Settings: React.FC = () => {
                             </div>
                         </div>
                     </div>
-            </div>
-        </Card>
+                </Card>
 
-                {/* Subscription Management */ }
+                {/* Subscription Management */}
                 <Card>
                     <div className="flex items-center gap-4 mb-6">
                         <div className="p-3 rounded-xl bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400">
@@ -125,15 +124,13 @@ export const Settings: React.FC = () => {
                                     <div>
                                         <h3 className="font-semibold text-slate-900 dark:text-white">Pro Plan</h3>
                                         <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
-                                                // I will rely on `user.currentPeriodEnd` if available.
-                                                user.currentPeriodEnd 
-                                                ? `Renews on ${new Date(user.currentPeriodEnd).toLocaleDateString()}` 
-                                                : "Active"
-                                            }
+                                            {user?.currentPeriodEnd
+                                                ? `Renews on ${new Date(user.currentPeriodEnd).toLocaleDateString()}`
+                                                : "Active"}
                                         </p>
                                     </div>
-                                    <Button 
-                                        variant="danger" 
+                                    <Button
+                                        variant="danger"
                                         onClick={handleCancelSubscription}
                                         isLoading={isCanceling}
                                     >
@@ -199,62 +196,63 @@ export const Settings: React.FC = () => {
                                 Note: Exchange rates are estimated (Base: NGN).
                             </p>
                         </div>
+                    </div>
                 </Card>
 
-    {/* Data Management Section */ }
-    <Card>
-        <div className="flex items-center gap-4 mb-6">
-            <div className="p-3 rounded-xl bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400">
-                <Database className="w-6 h-6" />
-            </div>
-            <div>
-                <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
-                    Data Management
-                </h2>
-                <p className="text-sm text-slate-500">
-                    Export your data for external analysis or backup
-                </p>
-            </div>
-        </div>
+                {/* Data Management Section */}
+                <Card>
+                    <div className="flex items-center gap-4 mb-6">
+                        <div className="p-3 rounded-xl bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400">
+                            <Database className="w-6 h-6" />
+                        </div>
+                        <div>
+                            <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
+                                Data Management
+                            </h2>
+                            <p className="text-sm text-slate-500">
+                                Export your data for external analysis or backup
+                            </p>
+                        </div>
+                    </div>
 
-        <div className="space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
-                <div>
-                    <h3 className="font-medium text-slate-800 dark:text-slate-200">Export Tasks</h3>
-                    <p className="text-sm text-slate-500">
-                        Download all your tasks as a CSV file
-                    </p>
-                </div>
-                <Button
-                    variant="secondary"
-                    onClick={() => exportTasks(tasks)}
-                    className="gap-2 w-full sm:w-auto"
-                    disabled={tasks.length === 0}
-                >
-                    <Download className="w-4 h-4" />
-                    Export CSV
-                </Button>
-            </div>
+                    <div className="space-y-4">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
+                            <div>
+                                <h3 className="font-medium text-slate-800 dark:text-slate-200">Export Tasks</h3>
+                                <p className="text-sm text-slate-500">
+                                    Download all your tasks as a CSV file
+                                </p>
+                            </div>
+                            <Button
+                                variant="secondary"
+                                onClick={() => exportTasks(tasks)}
+                                className="gap-2 w-full sm:w-auto"
+                                disabled={tasks.length === 0}
+                            >
+                                <Download className="w-4 h-4" />
+                                Export CSV
+                            </Button>
+                        </div>
 
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
-                <div>
-                    <h3 className="font-medium text-slate-800 dark:text-slate-200">Export Expenses</h3>
-                    <p className="text-sm text-slate-500">
-                        Download all your expenses and budget data as a CSV file
-                    </p>
-                </div>
-                <Button
-                    variant="secondary"
-                    onClick={() => exportExpenses(expenses)}
-                    className="gap-2 w-full sm:w-auto"
-                    disabled={expenses.length === 0}
-                >
-                    <Download className="w-4 h-4" />
-                    Export CSV
-                </Button>
-            </div>
-        </div>
-    </Card>
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
+                            <div>
+                                <h3 className="font-medium text-slate-800 dark:text-slate-200">Export Expenses</h3>
+                                <p className="text-sm text-slate-500">
+                                    Download all your expenses and budget data as a CSV file
+                                </p>
+                            </div>
+                            <Button
+                                variant="secondary"
+                                onClick={() => exportExpenses(expenses)}
+                                className="gap-2 w-full sm:w-auto"
+                                disabled={expenses.length === 0}
+                            >
+                                <Download className="w-4 h-4" />
+                                Export CSV
+                            </Button>
+                        </div>
+                    </div>
+                </Card>
             </div >
         </div >
     );
