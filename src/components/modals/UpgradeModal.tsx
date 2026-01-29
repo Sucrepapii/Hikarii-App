@@ -2,13 +2,10 @@ import React, { useState } from 'react';
 import { X, Check, Zap, Shield, Crown } from 'lucide-react';
 import { Button } from '../common/Button';
 import { loadStripe } from '@stripe/stripe-js';
-import toast from 'react-hot-toast';
+import { STRIPE_CONFIG } from '../../config/stripe';
 
-// Initialize Stripe (same as in Pricing.tsx)
-const stripeKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
-console.log("UpgradeModal: Stripe Key Present?", !!stripeKey, stripeKey ? `Length: ${stripeKey.length}` : 'Empty');
-
-const stripePromise = loadStripe(stripeKey || '');
+// Initialize Stripe
+const stripePromise = loadStripe(STRIPE_CONFIG.publishableKey);
 
 interface UpgradeModalProps {
     isOpen: boolean;

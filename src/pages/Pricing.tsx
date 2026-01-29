@@ -5,9 +5,10 @@ import { Card } from '../components/common/Card';
 import toast from 'react-hot-toast';
 import { useAuthStore } from '../stores/authStore';
 import { loadStripe } from '@stripe/stripe-js';
+import { STRIPE_CONFIG } from '../config/stripe';
 
-// IMPORTANT: Replace with your actual publishable key or env var
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || '');
+// Initialize Stripe
+const stripePromise = loadStripe(STRIPE_CONFIG.publishableKey);
 
 export const Pricing: React.FC = () => {
     const { user } = useAuthStore();
