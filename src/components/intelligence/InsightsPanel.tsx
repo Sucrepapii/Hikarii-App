@@ -5,6 +5,7 @@ import { useTaskStore } from "../../stores/taskStore";
 import { useBudgetStore } from "../../stores/budgetStore";
 import { Card } from "../common/Card";
 import { TaskRecommendationCard } from "./TaskRecommendationCard";
+import { InsightCard } from "./InsightCard";
 import {
     TrendingUp,
     RefreshCw,
@@ -12,7 +13,8 @@ import {
     CheckSquare,
     LineChart,
     Lock,
-    Zap
+    Zap,
+    Lightbulb
 } from "lucide-react";
 
 import { clsx } from "clsx";
@@ -27,7 +29,7 @@ interface InsightsPanelProps {
 
 
 export const InsightsPanel: React.FC<InsightsPanelProps> = ({ onTaskClick }) => {
-    const { recommendations, refreshInsights } =
+    const { insights, recommendations, refreshInsights, dismissInsight } =
         useIntelligenceStore();
     const tasks = useTaskStore((state) => state.tasks);
     const budgets = useBudgetStore((state) => state.budgets);
@@ -107,8 +109,34 @@ export const InsightsPanel: React.FC<InsightsPanelProps> = ({ onTaskClick }) => 
                             {completionRate}%
                         </p>
                     </div>
+
+
                 </Card>
             </div>
+
+            {/* AI Insights List - PRO ONLY */}
+            {isPro && insights.length > 0 && (
+                <div className="space-y-3">
+                    <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+                        <Lightbulb className="w-5 h-5 text-amber-500" />
+                        Key Insights
+                    </h3>
+                    <div className="space-y-3">
+                        {insights.map((insight) => (
+                            <InsightCard
+                                key={insight.id}
+                                insight={insight}
+                                onDismiss={dismissInsight}
+                                onAction={(i) => {
+                                    if (i.taskId && onTaskClick) onTaskClick(i.taskId);
+                                    // Handle other actions or dismiss
+                                }}
+                            />
+                        ))}
+                    </div>
+                </div>
+            )}
+
 
             {/* Actionable Insights (Smart Recommendations) - PRO ONLY */}
             <div className="relative">
