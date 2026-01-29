@@ -15,6 +15,8 @@ import { Modal } from '../components/common/Modal';
 import { TaskForm } from '../components/tasks/TaskForm';
 import { TaskFormData } from '../utils/validationSchemas';
 import toast from 'react-hot-toast';
+import { useAuthStore } from '../stores/authStore';
+import { UpgradeModal } from '../components/modals/UpgradeModal';
 
 export const Dashboard: React.FC = () => {
     const { tasks, fetchTasks, toggleTaskStatus, updateTask, deleteTask } = useTaskStore();
@@ -23,6 +25,7 @@ export const Dashboard: React.FC = () => {
     // Edit State
     const [editingTask, setEditingTask] = useState<Task | null>(null);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
     // Fetch data on mount
     useEffect(() => {
@@ -264,6 +267,11 @@ export const Dashboard: React.FC = () => {
                     submitLabel="Save Changes"
                 />
             </Modal>
+
+            <UpgradeModal
+                isOpen={showUpgradeModal}
+                onClose={() => setShowUpgradeModal(false)}
+            />
         </div>
     );
 };

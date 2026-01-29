@@ -36,7 +36,7 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
 
     const handleLogout = () => {
         logout();
-        navigate('/login');
+        navigate('/');
     };
 
     return (

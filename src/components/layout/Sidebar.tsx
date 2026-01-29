@@ -4,7 +4,7 @@ import { LayoutDashboard, CheckSquare, Wallet, X, Calendar, LineChart, Settings,
 import { clsx } from 'clsx';
 
 const navItems = [
-    { to: '/', icon: LayoutDashboard, label: 'Dashboard' },
+    { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
     { to: '/tasks', icon: CheckSquare, label: 'Tasks' },
     { to: '/budget', icon: Wallet, label: 'Budget' },
     { to: '/calendar', icon: Calendar, label: 'Calendar' },

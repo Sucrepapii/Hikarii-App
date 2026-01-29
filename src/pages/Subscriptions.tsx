@@ -11,6 +11,8 @@ import {
 } from "lucide-react";
 import { format } from 'date-fns';
 import { toast } from 'react-hot-toast';
+import { useAuthStore } from '../stores/authStore';
+import { UpgradeModal } from '../components/modals/UpgradeModal';
 
 interface RecurringExpense {
     id: string;
@@ -28,6 +30,17 @@ export const Subscriptions: React.FC = () => {
     const [patterns, setPatterns] = useState<RecurringExpense[]>([]);
     const [loading, setLoading] = useState(false);
     const [scanning, setScanning] = useState(false);
+
+    const { user } = useAuthStore();
+    const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+
+    const handleScanClick = () => {
+        if (user?.subscriptionStatus === 'PRO') {
+            handleScan();
+        } else {
+            setShowUpgradeModal(true);
+        }
+    };
 
     const fetchPatterns = async () => {
         setLoading(true);
@@ -53,6 +66,8 @@ export const Subscriptions: React.FC = () => {
             setScanning(false);
         }
     };
+
+    // ... (rest of methods)
 
     const confirmPattern = async (id: string) => {
         try {
@@ -91,7 +106,7 @@ export const Subscriptions: React.FC = () => {
                     </p>
                 </div>
                 <button
-                    onClick={handleScan}
+                    onClick={handleScanClick}
                     disabled={scanning}
                     className="btn btn-primary flex items-center gap-2"
                 >
@@ -109,7 +124,7 @@ export const Subscriptions: React.FC = () => {
                             <RefreshCw className="w-12 h-12 text-slate-400 mx-auto mb-4" />
                             <h3 className="text-lg font-medium text-slate-600 dark:text-slate-300">No subscriptions detected yet</h3>
                             <p className="text-slate-500 mb-6">Run a scan to analyze your expense history</p>
-                            <button onClick={handleScan} className="btn btn-secondary">Run Analysis</button>
+                            <button onClick={handleScanClick} className="btn btn-secondary">Run Analysis</button>
                         </div>
                     ) : (
                         patterns.map(pattern => (
@@ -164,6 +179,11 @@ export const Subscriptions: React.FC = () => {
                     )}
                 </div>
             )}
+
+            <UpgradeModal
+                isOpen={showUpgradeModal}
+                onClose={() => setShowUpgradeModal(false)}
+            />
         </div>
     );
 };

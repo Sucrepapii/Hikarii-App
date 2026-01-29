@@ -11,6 +11,8 @@ import { TaskStatus } from '../types/task.types';
 import { formatCurrency } from '../utils/currencyFormatter';
 import { TaskItem } from '../components/tasks/TaskItem';
 import { Modal } from '../components/common/Modal';
+import { useAuthStore } from '../stores/authStore';
+import { UpgradeModal } from '../components/modals/UpgradeModal';
 
 export const Calendar: React.FC = () => {
     const [currentDate, setCurrentDate] = useState(new Date());
@@ -19,17 +21,32 @@ export const Calendar: React.FC = () => {
     const { tasks, toggleTaskStatus, deleteTask } = useTaskStore();
     const { expenses, currency } = useBudgetStore();
 
+    const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+    const { user } = useAuthStore();
+    const isPro = user?.subscriptionStatus === 'PRO';
+
     // Navigation
-    const nextMonth = () => setCurrentDate(addMonths(currentDate, 1));
-    const prevMonth = () => setCurrentDate(subMonths(currentDate, 1));
+    const nextMonth = () => {
+        if (isPro) {
+            setCurrentDate(addMonths(currentDate, 1));
+        } else {
+            setShowUpgradeModal(true);
+        }
+    };
+
+    const prevMonth = () => {
+        if (isPro) {
+            setCurrentDate(subMonths(currentDate, 1));
+        } else {
+            setShowUpgradeModal(true);
+        }
+    };
 
     // Calendar Grid Generation
     const monthStart = startOfMonth(currentDate);
     const monthEnd = endOfMonth(monthStart);
     const startDate = startOfWeek(monthStart);
     const endDate = endOfWeek(monthEnd);
-
-
 
     const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
@@ -38,6 +55,13 @@ export const Calendar: React.FC = () => {
 
     // Function to get items for a day
     const getDayItems = (date: Date) => {
+        // Free Plan Restriction: Only show items from the last 7 days
+        const isWithin7Days = date >= new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) && date <= new Date();
+
+        if (!isPro && !isWithin7Days) {
+            return { dayTasks: [], dayExpenses: [] };
+        }
+
         const dayTasks = tasks.filter(t => t.dueDate && isSameDay(new Date(t.dueDate), date));
         const dayExpenses = expenses.filter(e => isSameDay(new Date(e.date), date));
         return { dayTasks, dayExpenses };
@@ -50,18 +74,25 @@ export const Calendar: React.FC = () => {
                     <h1 className="text-3xl font-display font-bold gradient-text mb-2">
                         Calendar
                     </h1>
-                    <p className="text-slate-600 dark:text-slate-400">
-                        View your schedule and spending
-                    </p>
+                    <div className="flex items-center gap-2">
+                        <p className="text-slate-600 dark:text-slate-400">
+                            View your schedule and spending
+                        </p>
+                        {!isPro && (
+                            <span className="px-2 py-0.5 rounded-full bg-slate-200 dark:bg-slate-700 text-xs font-medium text-slate-600 dark:text-slate-300">
+                                7-Day History Limit
+                            </span>
+                        )}
+                    </div>
                 </div>
                 <div className="flex items-center gap-4 bg-white dark:bg-slate-800 p-1 rounded-xl border border-slate-200 dark:border-slate-700 self-start md:self-auto">
-                    <button onClick={prevMonth} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg">
+                    <button onClick={prevMonth} className={`p-2 rounded-lg ${!isPro ? 'opacity-50 cursor-not-allowed' : 'hover:bg-slate-100 dark:hover:bg-slate-700'}`}>
                         <ChevronLeft className="w-5 h-5" />
                     </button>
                     <span className="font-bold text-lg min-w-[140px] text-center">
                         {format(currentDate, 'MMMM yyyy')}
                     </span>
-                    <button onClick={nextMonth} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg">
+                    <button onClick={nextMonth} className={`p-2 rounded-lg ${!isPro ? 'opacity-50 cursor-not-allowed' : 'hover:bg-slate-100 dark:hover:bg-slate-700'}`}>
                         <ChevronRight className="w-5 h-5" />
                     </button>
                 </div>
@@ -212,6 +243,11 @@ export const Calendar: React.FC = () => {
                     </div>
                 </div>
             </Modal>
+
+            <UpgradeModal
+                isOpen={showUpgradeModal}
+                onClose={() => setShowUpgradeModal(false)}
+            />
         </div>
     );
 };

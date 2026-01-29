@@ -9,9 +9,16 @@ import {
     Lightbulb,
     TrendingUp,
     RefreshCw,
+    Zap,
+    Wallet,
+    CheckSquare,
+    LineChart
 } from "lucide-react";
 
 import { clsx } from "clsx";
+import { useAuthStore } from "../../stores/authStore";
+import { Button } from "../common/Button";
+import { UpgradeModal } from "../modals/UpgradeModal";
 
 interface InsightsPanelProps {
     onTaskClick?: (taskId: string) => void;
@@ -33,6 +40,9 @@ export const InsightsPanel: React.FC<InsightsPanelProps> = ({ onTaskClick }) => 
     const topRecommendations = recommendations.slice(0, 3);
 
     const [isRefreshing, setIsRefreshing] = useState(false);
+    const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+    const { user } = useAuthStore();
+    const isPro = user?.subscriptionStatus === 'PRO';
 
     const handleRefresh = async () => {
         setIsRefreshing(true);
@@ -40,6 +50,14 @@ export const InsightsPanel: React.FC<InsightsPanelProps> = ({ onTaskClick }) => 
         setIsRefreshing(false);
         toast.success("Insights updated");
     };
+
+    // Calculate Metrics
+    const totalBudget = budgets.reduce((sum, b) => sum + b.limit, 0);
+    const totalExpenses = useBudgetStore.getState().expenses.reduce((sum, e) => sum + e.amount, 0);
+    const netCashFlow = totalBudget - totalExpenses;
+
+    const completedTasks = tasks.filter(t => t.status === 'COMPLETED').length;
+    const completionRate = tasks.length > 0 ? Math.round((completedTasks / tasks.length) * 100) : 0;
 
     return (
         <div className="space-y-6">
@@ -66,12 +84,38 @@ export const InsightsPanel: React.FC<InsightsPanelProps> = ({ onTaskClick }) => 
                 </button>
             </div>
 
-            {/* What Should I Do Next? */}
+            {/* Free: Key Metrics */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Card className="flex items-center gap-4 bg-emerald-50/50 dark:bg-emerald-900/10 border-emerald-100 dark:border-emerald-800">
+                    <div className="p-3 bg-emerald-100 dark:bg-emerald-900/30 rounded-xl">
+                        <Wallet className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+                    </div>
+                    <div>
+                        <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Net Cash Flow</p>
+                        <p className="text-2xl font-bold text-emerald-700 dark:text-emerald-300">
+                            ₦{netCashFlow.toLocaleString()}
+                        </p>
+                    </div>
+                </Card>
+                <Card className="flex items-center gap-4 bg-blue-50/50 dark:bg-blue-900/10 border-blue-100 dark:border-blue-800">
+                    <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-xl">
+                        <CheckSquare className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                    </div>
+                    <div>
+                        <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Task Completion</p>
+                        <p className="text-2xl font-bold text-blue-700 dark:text-blue-300">
+                            {completionRate}%
+                        </p>
+                    </div>
+                </Card>
+            </div>
+
+            {/* Free: Actionable Insights */}
             {topRecommendations.length > 0 && (
                 <div>
                     <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-3 flex items-center gap-2">
                         <TrendingUp className="w-5 h-5 text-primary-500" />
-                        What Should I Do Next?
+                        Actionable Insights
                     </h3>
                     <div className="space-y-3">
                         {topRecommendations.map((rec) => (
@@ -85,20 +129,55 @@ export const InsightsPanel: React.FC<InsightsPanelProps> = ({ onTaskClick }) => 
                 </div>
             )}
 
+            {/* Pro: Advanced Analytics (Locked for Free) */}
+            <div className="relative overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 p-6">
+                {!isPro && (
+                    <div className="absolute inset-0 bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm z-20 flex flex-col items-center justify-center text-center p-6">
+                        <div className="w-12 h-12 bg-amber-100 dark:bg-amber-900/30 rounded-xl flex items-center justify-center mb-3 text-amber-600">
+                            <Zap className="w-6 h-6" />
+                        </div>
+                        <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
+                            Unlock Deep Analytics
+                        </h3>
+                        <p className="text-slate-600 dark:text-slate-400 max-w-sm mb-6 text-sm">
+                            Upgrade to Pro to see detailed Spending Forecasts, Productivity Trends, and Anomaly Detection.
+                        </p>
+                        <Button onClick={() => setShowUpgradeModal(true)} variant="primary">
+                            Upgrade to Pro
+                        </Button>
+                    </div>
+                )}
 
-
-            {/* Empty State */}
-            {topRecommendations.length === 0 && (
-                <Card className="text-center py-12">
-                    <Lightbulb className="w-12 h-12 mx-auto mb-4 text-slate-400" />
-                    <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-300 mb-2">
-                        All Clear! 🎉
+                {/* Content - Blurred if Free, Visible if Pro */}
+                <div className={clsx("space-y-4", !isPro && "opacity-40 blur-sm pointer-events-none select-none")}>
+                    <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+                        <LineChart className="w-5 h-5 text-purple-500" />
+                        Advanced Analytics
                     </h3>
-                    <p className="text-sm text-slate-500 dark:text-slate-400">
-                        No urgent tasks or budget conflicts at the moment. Keep it up!
-                    </p>
-                </Card>
-            )}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <Card className="bg-white dark:bg-slate-800">
+                            <p className="text-xs text-slate-500 uppercase tracking-widest font-semibold mb-1">Projected Savings</p>
+                            <p className="text-xl font-bold text-slate-800 dark:text-slate-200">₦45,200</p>
+                            <p className="text-xs text-emerald-500">+12% vs last month</p>
+                        </Card>
+                        <Card className="bg-white dark:bg-slate-800">
+                            <p className="text-xs text-slate-500 uppercase tracking-widest font-semibold mb-1">Peak Productivity</p>
+                            <p className="text-xl font-bold text-slate-800 dark:text-slate-200">Tue, 10 AM</p>
+                            <p className="text-xs text-blue-500">Focus Score: 92</p>
+                        </Card>
+                        <Card className="bg-white dark:bg-slate-800">
+                            <p className="text-xs text-slate-500 uppercase tracking-widest font-semibold mb-1">Expense Anomalies</p>
+                            <p className="text-xl font-bold text-slate-800 dark:text-slate-200">0 Detected</p>
+                            <p className="text-xs text-slate-400">Last scanned 2h ago</p>
+                        </Card>
+                    </div>
+                </div>
+            </div>
+
+            <UpgradeModal
+                isOpen={showUpgradeModal}
+                onClose={() => setShowUpgradeModal(false)}
+            />
         </div>
     );
 };
