@@ -8,6 +8,7 @@ export interface User {
   createdAt: string;
   subscriptionStatus?: "FREE" | "PRO" | "TRIAL";
   stripeCustomerId?: string;
+  currentPeriodEnd?: string | Date; // Or just string if serialised
 }
 
 interface AuthState {

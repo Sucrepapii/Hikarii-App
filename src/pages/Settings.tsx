@@ -1,16 +1,35 @@
 import React from 'react';
 import { Card } from '../components/common/Card';
 import { Button } from '../components/common/Button';
-import { Download, Database, Shield, DollarSign } from 'lucide-react';
+import { Download, Database, Shield, DollarSign, CreditCard } from 'lucide-react';
 import { useTaskStore } from '../stores/taskStore';
 import { useBudgetStore } from '../stores/budgetStore';
 import { exportTasks, exportExpenses } from '../utils/exportUtils';
 import { useAuthStore } from '../stores/authStore';
+import apiClient from '../api/client';
+import toast from 'react-hot-toast';
 
 export const Settings: React.FC = () => {
     const { tasks } = useTaskStore();
     const { expenses } = useBudgetStore();
     const { user } = useAuthStore();
+    const [isCanceling, setIsCanceling] = React.useState(false);
+
+    const handleCancelSubscription = async () => {
+        if (!confirm("Are you sure you want to cancel your Pro subscription? You will lose access to premium features at the end of your billing period.")) return;
+
+        setIsCanceling(true);
+        try {
+            await apiClient.post('/stripe/cancel-subscription');
+            toast.success("Subscription cancelled. Access remains until period end.");
+            // Optionally refresh user profile here if we had a method
+        } catch (error) {
+            toast.error("Failed to cancel subscription. Please try again.");
+            console.error(error);
+        } finally {
+            setIsCanceling(false);
+        }
+    };
 
     return (
         <div className="animate-fade-in max-w-4xl mx-auto">
@@ -69,9 +88,77 @@ export const Settings: React.FC = () => {
                             </div>
                         </div>
                     </div>
-                </Card>
+            </div>
+        </Card>
 
-                {/* Currency Preferences */}
+                {/* Subscription Management */ }
+                <Card>
+                    <div className="flex items-center gap-4 mb-6">
+                        <div className="p-3 rounded-xl bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400">
+                            <CreditCard className="w-6 h-6" />
+                        </div>
+                        <div>
+                            <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
+                                Subscription
+                            </h2>
+                            <p className="text-sm text-slate-500">
+                                Manage your plan and billing
+                            </p>
+                        </div>
+                        <div className="ml-auto">
+                            {user?.subscriptionStatus === 'PRO' ? (
+                                <span className="px-3 py-1 rounded-full text-xs font-bold bg-gradient-brand text-white shadow-sm">
+                                    PRO MEMBER
+                                </span>
+                            ) : (
+                                <span className="px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300">
+                                    FREE PLAN
+                                </span>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="space-y-4">
+                        {user?.subscriptionStatus === 'PRO' ? (
+                            <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
+                                <div className="flex flex-col sm:flex-row justify-between gap-4">
+                                    <div>
+                                        <h3 className="font-semibold text-slate-900 dark:text-white">Pro Plan</h3>
+                                        <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                                                // I will rely on `user.currentPeriodEnd` if available.
+                                                user.currentPeriodEnd 
+                                                ? `Renews on ${new Date(user.currentPeriodEnd).toLocaleDateString()}` 
+                                                : "Active"
+                                            }
+                                        </p>
+                                    </div>
+                                    <Button 
+                                        variant="danger" 
+                                        onClick={handleCancelSubscription}
+                                        isLoading={isCanceling}
+                                    >
+                                        Cancel Subscription
+                                    </Button>
+                                </div>
+                                <p className="text-xs text-slate-500 mt-3">
+                                    Your subscription will remain active until the end of the billing period.
+                                </p>
+                            </div>
+                        ) : (
+                            <div className="flex items-center justify-between p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
+                                <div>
+                                    <h3 className="font-semibold text-slate-900 dark:text-white">Free Plan</h3>
+                                    <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                                        Upgrade to unlock advanced insights and features.
+                                    </p>
+                                </div>
+                                <Button variant="primary" onClick={() => window.location.href = '/dashboard/pricing'}>
+                                    Upgrade to Pro
+                                </Button>
+                            </div>
+                        )}
+                    </div>
+                </Card>
                 <Card>
                     <div className="flex items-center gap-4 mb-6">
                         <div className="p-3 rounded-xl bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400">
@@ -112,64 +199,63 @@ export const Settings: React.FC = () => {
                                 Note: Exchange rates are estimated (Base: NGN).
                             </p>
                         </div>
-                    </div>
                 </Card>
 
-                {/* Data Management Section */}
-                <Card>
-                    <div className="flex items-center gap-4 mb-6">
-                        <div className="p-3 rounded-xl bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400">
-                            <Database className="w-6 h-6" />
-                        </div>
-                        <div>
-                            <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
-                                Data Management
-                            </h2>
-                            <p className="text-sm text-slate-500">
-                                Export your data for external analysis or backup
-                            </p>
-                        </div>
-                    </div>
-
-                    <div className="space-y-4">
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
-                            <div>
-                                <h3 className="font-medium text-slate-800 dark:text-slate-200">Export Tasks</h3>
-                                <p className="text-sm text-slate-500">
-                                    Download all your tasks as a CSV file
-                                </p>
-                            </div>
-                            <Button
-                                variant="secondary"
-                                onClick={() => exportTasks(tasks)}
-                                className="gap-2 w-full sm:w-auto"
-                                disabled={tasks.length === 0}
-                            >
-                                <Download className="w-4 h-4" />
-                                Export CSV
-                            </Button>
-                        </div>
-
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
-                            <div>
-                                <h3 className="font-medium text-slate-800 dark:text-slate-200">Export Expenses</h3>
-                                <p className="text-sm text-slate-500">
-                                    Download all your expenses and budget data as a CSV file
-                                </p>
-                            </div>
-                            <Button
-                                variant="secondary"
-                                onClick={() => exportExpenses(expenses)}
-                                className="gap-2 w-full sm:w-auto"
-                                disabled={expenses.length === 0}
-                            >
-                                <Download className="w-4 h-4" />
-                                Export CSV
-                            </Button>
-                        </div>
-                    </div>
-                </Card>
+    {/* Data Management Section */ }
+    <Card>
+        <div className="flex items-center gap-4 mb-6">
+            <div className="p-3 rounded-xl bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400">
+                <Database className="w-6 h-6" />
+            </div>
+            <div>
+                <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
+                    Data Management
+                </h2>
+                <p className="text-sm text-slate-500">
+                    Export your data for external analysis or backup
+                </p>
             </div>
         </div>
+
+        <div className="space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
+                <div>
+                    <h3 className="font-medium text-slate-800 dark:text-slate-200">Export Tasks</h3>
+                    <p className="text-sm text-slate-500">
+                        Download all your tasks as a CSV file
+                    </p>
+                </div>
+                <Button
+                    variant="secondary"
+                    onClick={() => exportTasks(tasks)}
+                    className="gap-2 w-full sm:w-auto"
+                    disabled={tasks.length === 0}
+                >
+                    <Download className="w-4 h-4" />
+                    Export CSV
+                </Button>
+            </div>
+
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
+                <div>
+                    <h3 className="font-medium text-slate-800 dark:text-slate-200">Export Expenses</h3>
+                    <p className="text-sm text-slate-500">
+                        Download all your expenses and budget data as a CSV file
+                    </p>
+                </div>
+                <Button
+                    variant="secondary"
+                    onClick={() => exportExpenses(expenses)}
+                    className="gap-2 w-full sm:w-auto"
+                    disabled={expenses.length === 0}
+                >
+                    <Download className="w-4 h-4" />
+                    Export CSV
+                </Button>
+            </div>
+        </div>
+    </Card>
+            </div >
+        </div >
     );
 };

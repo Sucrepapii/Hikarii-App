@@ -113,6 +113,56 @@ export const createPortalSession = async (req: Request, res: Response) => {
   }
 };
 
+export const cancelSubscription = async (req: Request, res: Response) => {
+  try {
+    const userId = req.user?.id;
+    if (!userId) return res.status(401).json({ message: "Unauthorized" });
+
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user || !user.stripeCustomerId) {
+      return res.status(400).json({ message: "No active subscription found" });
+    }
+
+    // List subscriptions to find the active one
+    const subscriptions = await stripe.subscriptions.list({
+      customer: user.stripeCustomerId,
+      status: "active",
+      limit: 1,
+    });
+
+    if (subscriptions.data.length === 0) {
+      return res
+        .status(400)
+        .json({ message: "No active subscription to cancel" });
+    }
+
+    const subscriptionId = subscriptions.data[0].id;
+
+    // Update subscription to cancel at period end
+    const updatedSubscription = await stripe.subscriptions.update(
+      subscriptionId,
+      { cancel_at_period_end: true },
+    );
+
+    // Update user record to reflect cancellation status immediately for UI
+    // Assuming we might want to track this. If schema doesn't have it, this might fail unless I check schema.
+    // For now, I'll return the status and let Frontend handle it.
+    // Ideally, we should have a `cancelAtPeriodEnd` field on User.
+    // I will check schema later if needed. For now, rely on Stripe return.
+
+    res.json({
+      message:
+        "Subscription will be cancelled at the end of the billing period",
+      currentPeriodEnd: new Date(updatedSubscription.current_period_end * 1000),
+    });
+  } catch (error: any) {
+    console.error("Cancel Subscription Error:", error);
+    res
+      .status(500)
+      .json({ message: "Failed to cancel subscription", error: error.message });
+  }
+};
+
 export const handleWebhook = async (req: Request, res: Response) => {
   const sig = req.headers["stripe-signature"];
   const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;

@@ -3,6 +3,7 @@ import {
   createCheckoutSession,
   createPortalSession,
   handleWebhook,
+  cancelSubscription,
 } from "../controllers/stripe.controller";
 import { authenticate as authenticateToken } from "../middleware/auth.middleware";
 
@@ -19,5 +20,6 @@ router.post(
   createCheckoutSession,
 );
 router.post("/create-portal-session", authenticateToken, createPortalSession);
+router.post("/cancel-subscription", authenticateToken, cancelSubscription);
 
 export default router;
