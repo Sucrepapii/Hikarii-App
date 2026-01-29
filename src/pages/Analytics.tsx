@@ -209,23 +209,36 @@ export const Analytics: React.FC = () => {
             <div className="pt-4 border-t border-slate-200 dark:border-slate-800">
                 <h2 className="text-2xl font-bold gradient-text mb-6">Hikari Intelligence Insights</h2>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div className="space-y-4">
-                        <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-300">Smart Recommendations</h3>
-                        {recommendations.length > 0 ? (
-                            recommendations.map((rec) => (
-                                <TaskRecommendationCard
-                                    key={rec.taskId}
-                                    recommendation={rec}
-                                    onTaskClick={() => { }}
-                                />
-                            ))
-                        ) : (
-                            <Card>
-                                <p className="text-slate-500 text-center py-4">
-                                    No urgent recommendations right now. You are doing great!
-                                </p>
-                            </Card>
+                    <div className="relative">
+                        {!isPro && (
+                            <div className="absolute inset-0 z-10 bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm flex flex-col items-center justify-center text-center rounded-xl border border-slate-200 dark:border-slate-800">
+                                <div className="p-3 bg-amber-100 dark:bg-amber-900/30 rounded-xl mb-3 text-amber-600">
+                                    <Lock className="w-5 h-5" />
+                                </div>
+                                <h4 className="font-bold text-slate-800 dark:text-slate-200 mb-1">Recommendations Locked</h4>
+                                <Button onClick={() => setShowUpgradeModal(true)} variant="ghost" className="text-primary-600">
+                                    Unlock
+                                </Button>
+                            </div>
                         )}
+                        <div className={`space-y-4 ${!isPro ? 'opacity-40 pointer-events-none select-none filter blur-sm' : ''}`}>
+                            <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-300">Smart Recommendations</h3>
+                            {recommendations.length > 0 ? (
+                                recommendations.map((rec) => (
+                                    <TaskRecommendationCard
+                                        key={rec.taskId}
+                                        recommendation={rec}
+                                        onTaskClick={() => { }}
+                                    />
+                                ))
+                            ) : (
+                                <Card>
+                                    <p className="text-slate-500 text-center py-4">
+                                        No urgent recommendations right now. You are doing great!
+                                    </p>
+                                </Card>
+                            )}
+                        </div>
                     </div>
 
                     <div className="relative">

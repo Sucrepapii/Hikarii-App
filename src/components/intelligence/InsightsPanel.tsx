@@ -6,13 +6,13 @@ import { useBudgetStore } from "../../stores/budgetStore";
 import { Card } from "../common/Card";
 import { TaskRecommendationCard } from "./TaskRecommendationCard";
 import {
-    Lightbulb,
     TrendingUp,
     RefreshCw,
-    Zap,
     Wallet,
     CheckSquare,
-    LineChart
+    LineChart,
+    Lock,
+    Zap
 } from "lucide-react";
 
 import { clsx } from "clsx";
@@ -110,24 +110,43 @@ export const InsightsPanel: React.FC<InsightsPanelProps> = ({ onTaskClick }) => 
                 </Card>
             </div>
 
-            {/* Free: Actionable Insights */}
-            {topRecommendations.length > 0 && (
-                <div>
-                    <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-3 flex items-center gap-2">
-                        <TrendingUp className="w-5 h-5 text-primary-500" />
-                        Actionable Insights
-                    </h3>
+            {/* Actionable Insights (Smart Recommendations) - PRO ONLY */}
+            <div className="relative">
+                {topRecommendations.length > 0 && (
                     <div className="space-y-3">
-                        {topRecommendations.map((rec) => (
-                            <TaskRecommendationCard
-                                key={rec.taskId}
-                                recommendation={rec}
-                                onTaskClick={onTaskClick}
-                            />
-                        ))}
+                        <div className="flex items-center justify-between mb-2">
+                            <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+                                <TrendingUp className="w-5 h-5 text-primary-500" />
+                                Smart Recommendations
+                            </h3>
+                            {!isPro && (
+                                <span className="text-xs font-bold bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full flex items-center gap-1">
+                                    <Lock className="w-3 h-3" /> PRO
+                                </span>
+                            )}
+                        </div>
+
+                        {!isPro && (
+                            <div className="absolute inset-x-0 top-10 bottom-0 z-10 bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm flex flex-col items-center justify-center text-center rounded-xl border border-slate-200 dark:border-slate-800">
+                                <p className="text-slate-900 dark:text-white font-bold mb-2">Unlock Smart Recommendations</p>
+                                <Button onClick={() => setShowUpgradeModal(true)} variant="primary" size="sm">
+                                    Upgrade
+                                </Button>
+                            </div>
+                        )}
+
+                        <div className={clsx("space-y-3", !isPro && "opacity-40 blur-sm pointer-events-none select-none")}>
+                            {topRecommendations.map((rec) => (
+                                <TaskRecommendationCard
+                                    key={rec.taskId}
+                                    recommendation={rec}
+                                    onTaskClick={onTaskClick}
+                                />
+                            ))}
+                        </div>
                     </div>
-                </div>
-            )}
+                )}
+            </div>
 
             {/* Pro: Advanced Analytics (Locked for Free) */}
             <div className="relative overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 p-6">

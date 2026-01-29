@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { expenseSchema, ExpenseFormData } from '../../utils/validationSchemas';
@@ -7,6 +7,9 @@ import { Input } from '../common/Input';
 import { Button } from '../common/Button';
 import { DollarSign, Calendar } from 'lucide-react';
 import { useTaskStore } from '../../stores/taskStore';
+import { useAuthStore } from '../../stores/authStore';
+import { UpgradeModal } from '../modals/UpgradeModal';
+import { clsx } from "clsx";
 
 interface ExpenseFormProps {
     onSubmit: (data: ExpenseFormData) => void;
@@ -20,6 +23,9 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
     defaultValues,
 }) => {
     const { tasks } = useTaskStore();
+    const { user } = useAuthStore();
+    const isPro = user?.subscriptionStatus === 'PRO';
+    const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
     const {
         register,
@@ -79,23 +85,47 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
                 })}
             />
 
+            {/* Link Task */}
             <div>
-                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                    Link to Task (Optional)
-                </label>
-                <select
-                    className="w-full px-4 py-2.5 rounded-xl glass border-2 border-white/20 dark:border-white/10 transition-smooth text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                    {...register('linkedTaskId')}
-                >
-                    <option value="">None</option>
-                    {tasks.map(task => (
-                        <option key={task.id} value={task.id}>
-                            {task.title}
-                        </option>
-                    ))}
-                </select>
-                <p className="text-xs text-slate-500 mt-1">
-                    Link this expense to a task to track project spending.
+                <div className="flex justify-between items-center mb-1">
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+                        Link to Task (Optional)
+                    </label>
+                    {!isPro && (
+                        <span
+                            onClick={() => setShowUpgradeModal(true)}
+                            className="text-[10px] font-bold bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded cursor-pointer hover:bg-amber-200"
+                        >
+                            PRO ONLY
+                        </span>
+                    )}
+                </div>
+                <div className="relative">
+                    <select
+                        {...register('linkedTaskId')}
+                        disabled={!isPro}
+                        className={clsx(
+                            "w-full px-4 py-2.5 rounded-xl glass border-2 border-white/20 dark:border-white/10 transition-smooth text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent",
+                            !isPro && "opacity-60 cursor-not-allowed bg-slate-100 dark:bg-slate-800"
+                        )}
+                    >
+                        <option value="">None</option>
+                        {tasks.map(task => (
+                            <option key={task.id} value={task.id}>
+                                {task.title}
+                            </option>
+                        ))}
+                    </select>
+                    {!isPro && (
+                        <div
+                            className="absolute inset-0 z-10 cursor-pointer"
+                            onClick={() => setShowUpgradeModal(true)}
+                            title="Upgrade to link expenses to tasks"
+                        />
+                    )}
+                </div>
+                <p className="mt-1 text-xs text-slate-500">
+                    Associate this expense with a specific task
                 </p>
             </div>
 
@@ -109,10 +139,12 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
                     rows={3}
                     {...register('description')}
                 />
-                {errors.description && (
-                    <p className="mt-1.5 text-sm text-danger-500">{errors.description.message}</p>
-                )}
-            </div>
+                {
+                    errors.description && (
+                        <p className="mt-1.5 text-sm text-danger-500">{errors.description.message}</p>
+                    )
+                }
+            </div >
 
             <div className="flex gap-3 pt-4">
                 <Button type="submit" variant="primary" className="flex-1" isLoading={isSubmitting}>
@@ -122,6 +154,10 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
                     Cancel
                 </Button>
             </div>
-        </form>
+            <UpgradeModal
+                isOpen={showUpgradeModal}
+                onClose={() => setShowUpgradeModal(false)}
+            />
+        </form >
     );
 };
