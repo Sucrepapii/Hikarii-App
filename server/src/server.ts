@@ -1,3 +1,4 @@
+import "dotenv/config";
 import express, { Express, Request, Response } from "express";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -14,7 +15,7 @@ import predictiveRoutes from "./routes/predictive.routes";
 import projectRoutes from "./routes/project.routes";
 
 // Load environment variables
-dotenv.config();
+// dotenv.config();
 
 // Initialize Express app
 const app: Express = express();
