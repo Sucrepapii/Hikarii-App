@@ -27,6 +27,18 @@ model User {
   updatedAt DateTime @updatedAt
   
   projects Project[]
+
+  // Stripe Subscription Fields
+  stripeCustomerId       String?
+  subscriptionStatus     SubscriptionStatus @default(FREE)
+  subscriptionId         String?
+  currentPeriodEnd       DateTime?
+}
+
+enum SubscriptionStatus {
+  FREE
+  PRO
+  TRIAL
 }
 
 model Project {

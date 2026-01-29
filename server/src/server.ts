@@ -73,6 +73,17 @@ app.get("/health", (_req: Request, res: Response) => {
   });
 });
 
+// Import Stripe controller for webhook raw handling
+import { handleWebhook } from "./controllers/stripe.controller";
+import stripeRoutes from "./routes/stripe.routes";
+
+// Stripe Webhook - MUST come before express.json()
+app.post(
+  "/api/stripe/webhook",
+  express.raw({ type: "application/json" }),
+  handleWebhook,
+);
+
 // API Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/tasks", taskRoutes);
@@ -81,6 +92,7 @@ app.use("/api/insights", insightsRoutes);
 app.use("/api/patterns", patternRoutes);
 app.use("/api", predictiveRoutes); // /api/forecast
 app.use("/api/projects", projectRoutes);
+app.use("/api/stripe", stripeRoutes);
 
 // 404 handler
 // 404 handler removed - logic moved to app.ts

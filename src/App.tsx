@@ -13,6 +13,7 @@ import { ForgotPassword } from './pages/ForgotPassword';
 import { Settings } from './pages/Settings';
 import { Analytics } from './pages/Analytics';
 import { Subscriptions } from './pages/Subscriptions';
+import { Pricing } from './pages/Pricing';
 import { Projects } from './pages/Projects';
 import { ProjectForm } from './pages/ProjectForm';
 import { useAuthStore } from './stores/authStore';
@@ -148,6 +149,16 @@ function App() {
                         <ProtectedRoute>
                             <DashboardLayout>
                                 <Settings />
+                            </DashboardLayout>
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/pricing"
+                    element={
+                        <ProtectedRoute>
+                            <DashboardLayout>
+                                <Pricing />
                             </DashboardLayout>
                         </ProtectedRoute>
                     }
