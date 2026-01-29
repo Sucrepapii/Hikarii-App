@@ -1,5 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card } from '../components/common/Card';
+import { useAuthStore } from '../stores/authStore';
+import { UpgradeModal } from '../components/modals/UpgradeModal';
+import { Button } from '../components/common/Button';
+import { Lock } from 'lucide-react';
 import { useTaskStore } from '../stores/taskStore';
 import { useBudgetStore } from '../stores/budgetStore';
 import {
@@ -23,6 +27,9 @@ import { IntelligenceService } from '../utils/intelligenceService';
 export const Analytics: React.FC = () => {
     const { tasks } = useTaskStore();
     const { expenses, budgets } = useBudgetStore();
+    const { user } = useAuthStore();
+    const isPro = user?.subscriptionStatus === 'PRO';
+    const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
 
     // 1. Prepare Cash Flow Trend Data (Last 30 Days)
@@ -115,67 +122,86 @@ export const Analytics: React.FC = () => {
                 </Card>
             </div>
 
-            {/* Main Financial Charts */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Cash Flow Chart - From Analytics */}
-                <Card className="lg:col-span-1">
-                    <h2 className="text-lg font-semibold mb-6 text-slate-800 dark:text-slate-200">
-                        Income vs Expenses (Last 30 Days)
-                    </h2>
-                    <div className="h-[300px] w-full">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <LineChart data={cashFlowData}>
-                                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
-                                <XAxis
-                                    dataKey="date"
-                                    stroke="#94a3b8"
-                                    fontSize={12}
-                                    tickLine={false}
-                                    axisLine={false}
-                                />
-                                <YAxis
-                                    stroke="#94a3b8"
-                                    fontSize={12}
-                                    tickLine={false}
-                                    axisLine={false}
-                                    tickFormatter={(value) => `${useBudgetStore.getState().currency === 'NGN' ? '₦' : useBudgetStore.getState().currency === 'USD' ? '$' : useBudgetStore.getState().currency === 'GBP' ? '£' : '€'}${useBudgetStore.getState().getConvertedAmount(value, useBudgetStore.getState().currency) / 1000}k`}
-                                />
-                                <Tooltip
-                                    contentStyle={{
-                                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                                        borderRadius: '12px',
-                                        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-                                        border: 'none'
-                                    }}
-                                    formatter={(value: number) => [
-                                        formatCurrency(useBudgetStore.getState().getConvertedAmount(value, useBudgetStore.getState().currency), useBudgetStore.getState().currency),
-                                        // Name is automatically handled by dataKey
-                                    ]}
-                                />
-                                <Legend />
-                                <Line
-                                    type="monotone"
-                                    dataKey="Income"
-                                    stroke="#10b981"
-                                    strokeWidth={3}
-                                    dot={false}
-                                    activeDot={{ r: 6 }}
-                                />
-                                <Line
-                                    type="monotone"
-                                    dataKey="Expenses"
-                                    stroke="#ef4444"
-                                    strokeWidth={3}
-                                    dot={false}
-                                    activeDot={{ r: 6 }}
-                                />
-                            </LineChart>
-                        </ResponsiveContainer>
+            {/* Main Financial Charts - PRO ONLY */}
+            <div className="relative">
+                {!isPro && (
+                    <div className="absolute inset-0 z-10 bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm flex flex-col items-center justify-center text-center rounded-2xl border border-slate-200 dark:border-slate-800">
+                        <div className="w-16 h-16 bg-primary-100 dark:bg-primary-900/30 rounded-2xl flex items-center justify-center mb-4 text-primary-600 shadow-lg shadow-primary-500/20">
+                            <Lock className="w-8 h-8" />
+                        </div>
+                        <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
+                            Unlock Detailed Reports
+                        </h3>
+                        <p className="text-slate-600 dark:text-slate-400 max-w-md mb-8 text-lg">
+                            Get full access to spending trends, income analysis, and detailed financial reports with Pro.
+                        </p>
+                        <Button onClick={() => setShowUpgradeModal(true)} variant="primary" size="lg">
+                            Upgrade to Pro
+                        </Button>
                     </div>
-                </Card>
+                )}
 
-                {/* Spending Breakdown Chart - From Reports */}
-                <SpendingChart />
+                <div className={`grid grid-cols-1 lg:grid-cols-2 gap-6 ${!isPro ? 'opacity-20 pointer-events-none select-none filter blur-sm' : ''}`}>
+                    {/* Cash Flow Chart - From Analytics */}
+                    <Card className="lg:col-span-1">
+                        <h2 className="text-lg font-semibold mb-6 text-slate-800 dark:text-slate-200">
+                            Income vs Expenses (Last 30 Days)
+                        </h2>
+                        <div className="h-[300px] w-full">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <LineChart data={cashFlowData}>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
+                                    <XAxis
+                                        dataKey="date"
+                                        stroke="#94a3b8"
+                                        fontSize={12}
+                                        tickLine={false}
+                                        axisLine={false}
+                                    />
+                                    <YAxis
+                                        stroke="#94a3b8"
+                                        fontSize={12}
+                                        tickLine={false}
+                                        axisLine={false}
+                                        tickFormatter={(value) => `${useBudgetStore.getState().currency === 'NGN' ? '₦' : useBudgetStore.getState().currency === 'USD' ? '$' : useBudgetStore.getState().currency === 'GBP' ? '£' : '€'}${useBudgetStore.getState().getConvertedAmount(value, useBudgetStore.getState().currency) / 1000}k`}
+                                    />
+                                    <Tooltip
+                                        contentStyle={{
+                                            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                                            borderRadius: '12px',
+                                            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                                            border: 'none'
+                                        }}
+                                        formatter={(value: number) => [
+                                            formatCurrency(useBudgetStore.getState().getConvertedAmount(value, useBudgetStore.getState().currency), useBudgetStore.getState().currency),
+                                            // Name is automatically handled by dataKey
+                                        ]}
+                                    />
+                                    <Legend />
+                                    <Line
+                                        type="monotone"
+                                        dataKey="Income"
+                                        stroke="#10b981"
+                                        strokeWidth={3}
+                                        dot={false}
+                                        activeDot={{ r: 6 }}
+                                    />
+                                    <Line
+                                        type="monotone"
+                                        dataKey="Expenses"
+                                        stroke="#ef4444"
+                                        strokeWidth={3}
+                                        dot={false}
+                                        activeDot={{ r: 6 }}
+                                    />
+                                </LineChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </Card>
+
+                    {/* Spending Breakdown Chart - From Reports */}
+                    <SpendingChart />
+                </div>
             </div>
 
 
@@ -202,24 +228,42 @@ export const Analytics: React.FC = () => {
                         )}
                     </div>
 
-                    <div className="space-y-4">
-                        <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-300">Financial & Productivity Insights</h3>
-                        {insights.filter(i => i.type !== 'TASK_RECOMMENDATION').map(insight => (
-                            <div key={insight.id} className="p-4 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800">
-                                <div className="flex items-start gap-3">
-                                    <div className="p-2 bg-indigo-100 dark:bg-indigo-800 text-indigo-600 dark:text-indigo-300 rounded-lg">
-                                        <TrendingUp className="w-5 h-5" />
-                                    </div>
-                                    <div>
-                                        <h4 className="font-semibold text-slate-800 dark:text-slate-200">{insight.title}</h4>
-                                        <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">{insight.message}</p>
+                    <div className="relative">
+                        {!isPro && (
+                            <div className="absolute inset-0 z-10 bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm flex flex-col items-center justify-center text-center rounded-xl border border-slate-200 dark:border-slate-800">
+                                <div className="p-3 bg-amber-100 dark:bg-amber-900/30 rounded-xl mb-3 text-amber-600">
+                                    <Lock className="w-5 h-5" />
+                                </div>
+                                <h4 className="font-bold text-slate-800 dark:text-slate-200 mb-1">Deep Insights Locked</h4>
+                                <Button onClick={() => setShowUpgradeModal(true)} variant="ghost" className="text-primary-600">
+                                    Unlock
+                                </Button>
+                            </div>
+                        )}
+                        <div className={`space-y-4 ${!isPro ? 'opacity-40 pointer-events-none select-none filter blur-sm' : ''}`}>
+                            <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-300">Financial & Productivity Insights</h3>
+                            {insights.filter(i => i.type !== 'TASK_RECOMMENDATION').map(insight => (
+                                <div key={insight.id} className="p-4 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800">
+                                    <div className="flex items-start gap-3">
+                                        <div className="p-2 bg-indigo-100 dark:bg-indigo-800 text-indigo-600 dark:text-indigo-300 rounded-lg">
+                                            <TrendingUp className="w-5 h-5" />
+                                        </div>
+                                        <div>
+                                            <h4 className="font-semibold text-slate-800 dark:text-slate-200">{insight.title}</h4>
+                                            <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">{insight.message}</p>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        ))}
+                            ))}
+                        </div>
                     </div>
                 </div>
             </div>
+
+            <UpgradeModal
+                isOpen={showUpgradeModal}
+                onClose={() => setShowUpgradeModal(false)}
+            />
         </div>
     );
 };
