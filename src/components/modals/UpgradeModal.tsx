@@ -14,6 +14,7 @@ interface UpgradeModalProps {
 
 export const UpgradeModal: React.FC<UpgradeModalProps> = ({ isOpen, onClose }) => {
     const [isLoading, setIsLoading] = useState(false);
+    const [billingPeriod, setBillingPeriod] = useState<'monthly' | 'yearly'>('monthly');
 
     if (!isOpen) return null;
 
@@ -28,9 +29,9 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({ isOpen, onClose }) =
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('auth-token')}` // Ensure correct token key
+                    'Authorization': `Bearer ${localStorage.getItem('auth-token')}`
                 },
-                body: JSON.stringify({ billingPeriod: 'monthly' }) // Default to monthly for instant upgrade
+                body: JSON.stringify({ billingPeriod })
             });
 
             if (!response.ok) {
@@ -70,6 +71,7 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({ isOpen, onClose }) =
                 <button
                     onClick={onClose}
                     className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 transition"
+                    style={{ zIndex: 60 }}
                 >
                     <X className="w-5 h-5" />
                 </button>
@@ -87,10 +89,38 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({ isOpen, onClose }) =
                 </div>
 
                 {/* Body */}
-                <div className="p-8">
+                <div className="p-8 pt-6">
+                    {/* Billing Toggle */}
+                    <div className="flex justify-center mb-6">
+                        <div className="inline-flex items-center p-1 bg-slate-100 dark:bg-slate-900 rounded-xl">
+                            <button
+                                onClick={() => setBillingPeriod('monthly')}
+                                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${billingPeriod === 'monthly'
+                                    ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm'
+                                    : 'text-slate-500 hover:text-slate-700 dark:text-slate-400'
+                                    }`}
+                            >
+                                Monthly
+                            </button>
+                            <button
+                                onClick={() => setBillingPeriod('yearly')}
+                                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${billingPeriod === 'yearly'
+                                    ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm'
+                                    : 'text-slate-500 hover:text-slate-700 dark:text-slate-400'
+                                    }`}
+                            >
+                                Yearly <span className="text-[10px] bg-green-100 text-green-700 px-1.5 rounded-full font-bold">-17%</span>
+                            </button>
+                        </div>
+                    </div>
+
                     <div className="flex items-end justify-center gap-2 mb-8">
-                        <span className="text-4xl font-bold text-slate-900 dark:text-white">$8.99</span>
-                        <span className="text-slate-500 mb-1">/month</span>
+                        <span className="text-4xl font-bold text-slate-900 dark:text-white">
+                            {billingPeriod === 'monthly' ? '$8.99' : '$89'}
+                        </span>
+                        <span className="text-slate-500 mb-1">
+                            /{billingPeriod === 'monthly' ? 'month' : 'year'}
+                        </span>
                     </div>
 
                     <div className="space-y-4 mb-8">
