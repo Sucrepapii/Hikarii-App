@@ -3,6 +3,8 @@ import { X, Check, Zap, Shield, Crown } from 'lucide-react';
 import { Button } from '../common/Button';
 import { loadStripe } from '@stripe/stripe-js';
 import { STRIPE_CONFIG } from '../../config/stripe';
+import toast from 'react-hot-toast';
+import apiClient from '../../api/client';
 
 // Initialize Stripe
 const stripePromise = loadStripe(STRIPE_CONFIG.publishableKey);
@@ -24,22 +26,13 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({ isOpen, onClose }) =
             const stripe = await stripePromise;
             if (!stripe) throw new Error('Stripe failed to load');
 
-            // Create checkout session
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/stripe/create-checkout-session`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('auth-token')}`
-                },
-                body: JSON.stringify({ billingPeriod })
+            // Create checkout session using apiClient (handles base URL automatically)
+            const response = await apiClient.post('/stripe/create-checkout-session', {
+                billingPeriod
             });
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Failed to create session');
-            }
-
-            const { sessionId } = await response.json();
+            // apiClient automatically throws on non-2xx, but we access .data directly
+            const { sessionId } = response.data;
 
             if (sessionId) {
                 // @ts-ignore
@@ -51,7 +44,8 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({ isOpen, onClose }) =
 
         } catch (error: any) {
             console.error("Upgrade Modal Error:", error);
-            toast.error(error.message || 'Something went wrong. Please try again.');
+            const message = error.response?.data?.message || error.message || 'Something went wrong';
+            toast.error(message);
         } finally {
             setIsLoading(false);
         }
