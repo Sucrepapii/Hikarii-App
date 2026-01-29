@@ -6,6 +6,7 @@ import { Plus, Briefcase, Calendar, Edit2, Trash2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '../components/common/Button';
 import toast from 'react-hot-toast';
+import { useAuthStore } from '../stores/authStore';
 
 export const Projects: React.FC = () => {
     const [projects, setProjects] = useState<Project[]>([]);
@@ -51,12 +52,30 @@ export const Projects: React.FC = () => {
                         Track your goals and big-picture initiatives
                     </p>
                 </div>
-                <Link to="/projects/new">
-                    <Button variant="primary" className="gap-2">
+                <div>
+                    <Button
+                        variant="primary"
+                        className="gap-2"
+                        onClick={() => {
+                            // @ts-ignore - access auth store directly or use hook in component
+                            const user = useAuthStore.getState().user;
+                            const isFree = !user?.subscriptionStatus || user?.subscriptionStatus === 'FREE';
+                            if (isFree && projects.length >= 1) {
+                                toast.error("Free plan is limited to 1 active project. Upgrade to create more!", {
+                                    duration: 5000,
+                                    icon: '🔒'
+                                });
+                                // Optional: Redirect to pricing
+                                // window.location.href = '/pricing';
+                            } else {
+                                window.location.href = '/projects/new';
+                            }
+                        }}
+                    >
                         <Plus className="w-5 h-5" />
                         New Project
                     </Button>
-                </Link>
+                </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
