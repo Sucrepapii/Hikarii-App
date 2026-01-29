@@ -13,6 +13,9 @@ const signupSchema = z.object({
     email: z.string().email('Please enter a valid email address'),
     password: z.string().min(8, 'Password must be at least 8 characters'),
     confirmPassword: z.string(),
+    agreementAccepted: z.boolean().refine((val) => val === true, {
+        message: 'You must agree to the Terms of Use and Privacy Policy',
+    }),
 }).refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",
     path: ['confirmPassword'],
@@ -243,6 +246,29 @@ export const Signup: React.FC = () => {
                                     <p className="mt-2 text-sm text-danger-500">{errors.confirmPassword.message}</p>
                                 )}
                             </div>
+
+                            {/* Terms and Privacy Agreement */}
+                            <div className="flex items-start gap-3">
+                                <input
+                                    {...register('agreementAccepted')}
+                                    type="checkbox"
+                                    id="terms-agreement"
+                                    className="mt-1 w-4 h-4 rounded border-slate-300 dark:border-slate-600 text-primary-600 focus:ring-primary-500 focus:ring-offset-0"
+                                />
+                                <label htmlFor="terms-agreement" className="text-sm text-slate-600 dark:text-slate-400 cursor-pointer">
+                                    I agree to the{' '}
+                                    <Link to="/terms" target="_blank" className="text-primary-600 hover:text-primary-700 dark:text-primary-400 font-medium underline">
+                                        Terms of Use
+                                    </Link>
+                                    {' '}and{' '}
+                                    <Link to="/privacy" target="_blank" className="text-primary-600 hover:text-primary-700 dark:text-primary-400 font-medium underline">
+                                        Privacy Policy
+                                    </Link>
+                                </label>
+                            </div>
+                            {errors.agreementAccepted && (
+                                <p className="text-sm text-danger-500">{errors.agreementAccepted.message}</p>
+                            )}
 
                             {/* Error Message */}
                             {error && (

@@ -17,6 +17,8 @@ import { Subscriptions } from './pages/Subscriptions';
 import { Pricing } from './pages/Pricing';
 import { Projects } from './pages/Projects';
 import { ProjectForm } from './pages/ProjectForm';
+import { TermsOfService } from './pages/TermsOfService';
+import { PrivacyPolicy } from './pages/PrivacyPolicy';
 import { useAuthStore } from './stores/authStore';
 import './index.css';
 
@@ -160,6 +162,14 @@ function App() {
                 <Route
                     path="/pricing"
                     element={<Pricing />}
+                />
+                <Route
+                    path="/terms"
+                    element={<TermsOfService />}
+                />
+                <Route
+                    path="/privacy"
+                    element={<PrivacyPolicy />}
                 />
             </Routes >
         </BrowserRouter >

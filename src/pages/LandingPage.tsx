@@ -231,8 +231,22 @@ export const LandingPage: React.FC = () => {
             </div>
 
             {/* Footer */}
-            <footer className="py-12 border-t border-slate-200 dark:border-slate-800 text-center text-slate-500">
-                <p>&copy; {new Date().getFullYear()} Hikari App. All rights reserved.</p>
+            <footer className="py-12 border-t border-slate-200 dark:border-slate-800">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+                        <p className="text-slate-500 text-center md:text-left">
+                            &copy; {new Date().getFullYear()} Hikari App. All rights reserved.
+                        </p>
+                        <div className="flex gap-6">
+                            <Link to="/terms" className="text-slate-500 hover:text-primary-600 transition-colors text-sm">
+                                Terms of Use
+                            </Link>
+                            <Link to="/privacy" className="text-slate-500 hover:text-primary-600 transition-colors text-sm">
+                                Privacy Policy
+                            </Link>
+                        </div>
+                    </div>
+                </div>
             </footer>
         </div>
     );
