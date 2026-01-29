@@ -1,6 +1,7 @@
 // import React from 'react';
 import { Toaster } from 'react-hot-toast';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { LandingPage } from './pages/LandingPage';
 import { DashboardLayout } from './components/layout/DashboardLayout';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
 import { Dashboard } from './pages/Dashboard';
@@ -38,23 +39,26 @@ function App() {
         <BrowserRouter>
             <Toaster position="top-right" />
             <Routes>
-                {/* Public Routes */}
+                <Route
+                    path="/"
+                    element={<LandingPage />}
+                />
                 <Route
                     path="/login"
-                    element={isAuthenticated ? <Navigate to="/" replace /> : <Login />}
+                    element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />}
                 />
                 <Route
                     path="/signup"
-                    element={isAuthenticated ? <Navigate to="/" replace /> : <Signup />}
+                    element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Signup />}
                 />
                 <Route
                     path="/forgot-password"
-                    element={isAuthenticated ? <Navigate to="/" replace /> : <ForgotPassword />}
+                    element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <ForgotPassword />}
                 />
 
                 {/* Protected Routes */}
                 <Route
-                    path="/"
+                    path="/dashboard"
                     element={
                         <ProtectedRoute>
                             <DashboardLayout>
@@ -163,8 +167,8 @@ function App() {
                         </ProtectedRoute>
                     }
                 />
-            </Routes>
-        </BrowserRouter>
+            </Routes >
+        </BrowserRouter >
     );
 }
 

@@ -37,7 +37,7 @@ export const Login: React.FC = () => {
 
         try {
             await login(data.email, data.password);
-            navigate('/');
+            navigate('/dashboard');
         } catch (err: any) {
             if (err.requiresVerification) {
                 setEmailToVerify(err.email || data.email);
@@ -54,7 +54,7 @@ export const Login: React.FC = () => {
         setError('');
         try {
             await verifyEmail(emailToVerify, otp);
-            navigate('/');
+            navigate('/dashboard');
         } catch (err: any) {
             setError(err.message || 'Verification failed');
         }

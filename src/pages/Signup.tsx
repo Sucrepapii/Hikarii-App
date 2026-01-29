@@ -50,7 +50,7 @@ export const Signup: React.FC = () => {
                 setEmailToVerify(signupData.email);
                 setVerificationMode(true);
             } else {
-                navigate('/');
+                navigate('/dashboard');
             }
         } catch (err: any) {
             setError(err.message || 'Signup failed');
@@ -62,7 +62,7 @@ export const Signup: React.FC = () => {
         setError('');
         try {
             await verifyEmail(emailToVerify, otp);
-            navigate('/');
+            navigate('/dashboard');
         } catch (err: any) {
             setError(err.message || 'Verification failed');
         }
