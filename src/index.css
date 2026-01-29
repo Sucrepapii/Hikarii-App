@@ -181,6 +181,11 @@
     @apply bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent;
   }
 
+  /* Brand Background Gradient */
+  .bg-gradient-brand {
+    @apply bg-gradient-to-r from-primary-600 to-primary-800;
+  }
+
   /* Smooth transitions */
   .transition-smooth {
     @apply transition-all duration-300 ease-in-out;
