@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Check, ArrowRight, LayoutDashboard, Wallet, Calendar } from 'lucide-react';
+import { Check, ArrowRight, LayoutDashboard, Wallet, Calendar, Briefcase, Users, GraduationCap, Building2, Target, Link2, Zap, FileText, TrendingUp } from 'lucide-react';
 import { Button } from '../components/common/Button';
 import { useAuthStore } from '../stores/authStore';
 
@@ -83,6 +83,100 @@ export const LandingPage: React.FC = () => {
                                 <p className="text-slate-600 dark:text-slate-400">{feature.desc}</p>
                             </div>
                         ))}
+                    </div>
+                </div>
+            </div>
+
+            {/* Target Users Section */}
+            <div className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+                <div className="text-center mb-16">
+                    <h2 className="text-3xl font-display font-bold mb-4">Who is Hikari for?</h2>
+                    <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+                        Designed for anyone seeking clarity in their tasks and finances
+                    </p>
+                </div>
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {[
+                        { icon: Briefcase, title: "Busy Professionals", desc: "Juggling multiple projects, deadlines, and expenses. Combine task and budget tracking in one tool." },
+                        { icon: Users, title: "Freelancers & Solopreneurs", desc: "Track client projects, deadlines, and irregular income. Forecast cash flow alongside timelines." },
+                        { icon: GraduationCap, title: "Students", desc: "Manage assignments, study schedules, and tight budgets. Visual clarity balances academic and financial goals." },
+                        { icon: Building2, title: "Small Business Owners", desc: "Oversee operations and finances in a single platform. See correlations between productivity and financial health." },
+                        { icon: Target, title: "Financial Discipline Seekers", desc: "Pay off debt, save, or control spending while staying productive. Reduce overwhelm with light and clarity." }
+                    ].map((user, i) => (
+                        <div key={i} className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:shadow-xl transition-all hover:-translate-y-1">
+                            <div className="w-12 h-12 bg-primary-100 dark:bg-primary-900/30 rounded-xl flex items-center justify-center mb-4 text-primary-600">
+                                <user.icon className="w-6 h-6" />
+                            </div>
+                            <h3 className="text-lg font-bold mb-2">{user.title}</h3>
+                            <p className="text-sm text-slate-600 dark:text-slate-400">{user.desc}</p>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* Premium Features Section */}
+            <div className="py-20 bg-white dark:bg-slate-800/50">
+                <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="text-center mb-16">
+                        <h2 className="text-3xl font-display font-bold mb-4">Premium Features</h2>
+                        <p className="text-slate-600 dark:text-slate-400">
+                            All included in your Pro subscription at $8.99/month
+                        </p>
+                    </div>
+                    <div className="space-y-6 mb-8">
+                        {[
+                            {
+                                icon: Link2,
+                                title: "Task-Expense Linking",
+                                value: "See exactly what each project costs you",
+                                marketValue: "$5-7/month standalone",
+                                comparison: "Unique feature - no direct competition"
+                            },
+                            {
+                                icon: Zap,
+                                title: "Predictive Analytics & AI Insights",
+                                value: "AI that helps you save before you overspend",
+                                marketValue: "$3-5/month standalone",
+                                comparison: "Similar to Mint's insights (free) but proactive"
+                            },
+                            {
+                                icon: FileText,
+                                title: "Advanced Reporting & Exports",
+                                value: "Professional reports for tax, clients, or investors",
+                                marketValue: "$4-6/month standalone",
+                                comparison: "QuickBooks charges $10-30/month"
+                            }
+                        ].map((feature, i) => (
+                            <div key={i} className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                                <div className="flex items-start gap-4">
+                                    <div className="w-12 h-12 bg-primary-500/10 rounded-xl flex items-center justify-center shrink-0">
+                                        <feature.icon className="w-6 h-6 text-primary-600" />
+                                    </div>
+                                    <div className="flex-1">
+                                        <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
+                                        <p className="text-primary-600 dark:text-primary-400 font-medium mb-3">{feature.value}</p>
+                                        <div className="flex flex-col sm:flex-row sm:items-center gap-2 text-sm">
+                                            <span className="text-slate-600 dark:text-slate-400">
+                                                Standalone Value: <span className="font-semibold">{feature.marketValue}</span>
+                                            </span>
+                                            <span className="hidden sm:inline text-slate-300">•</span>
+                                            <span className="text-slate-500 italic">{feature.comparison}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+
+                        <div className="bg-gradient-to-r from-primary-50 to-accent-50 dark:from-primary-900/20 dark:to-accent-900/20 p-6 rounded-xl border border-primary-200 dark:border-primary-800">
+                            <div className="flex items-center gap-3 mb-2">
+                                <TrendingUp className="w-6 h-6 text-primary-600" />
+                                <h4 className="text-lg font-bold">Combined Value: $12-18/month</h4>
+                            </div>
+                            <p className="text-slate-700 dark:text-slate-300">
+                                Get all premium features for just <span className="font-bold text-primary-600">$8.99/month</span>,
+                                saving you up to 50% compared to using separate tools for task management, budgeting, and analytics.
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
