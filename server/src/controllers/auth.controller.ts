@@ -137,6 +137,9 @@ export const login = async (req: AuthRequest, res: Response): Promise<void> => {
         name: user.name,
         email: user.email,
         createdAt: user.createdAt,
+        subscriptionStatus: user.subscriptionStatus,
+        stripeCustomerId: user.stripeCustomerId,
+        currentPeriodEnd: user.currentPeriodEnd,
       },
       token,
     });
@@ -203,6 +206,9 @@ export const verifyEmail = async (
         name: user.name,
         email: user.email,
         createdAt: user.createdAt,
+        subscriptionStatus: user.subscriptionStatus,
+        stripeCustomerId: user.stripeCustomerId,
+        currentPeriodEnd: user.currentPeriodEnd,
       },
       token,
     });
@@ -269,6 +275,9 @@ export const getMe = async (req: AuthRequest, res: Response): Promise<void> => {
         name: user.name,
         email: user.email,
         createdAt: user.createdAt,
+        subscriptionStatus: user.subscriptionStatus,
+        stripeCustomerId: user.stripeCustomerId,
+        currentPeriodEnd: user.currentPeriodEnd,
       },
     });
   } catch (error: any) {

@@ -330,7 +330,10 @@ var init_auth_controller = __esm({
             // Prisma uses 'id' not '_id'
             name: user.name,
             email: user.email,
-            createdAt: user.createdAt
+            createdAt: user.createdAt,
+            subscriptionStatus: user.subscriptionStatus,
+            stripeCustomerId: user.stripeCustomerId,
+            currentPeriodEnd: user.currentPeriodEnd
           },
           token
         });
@@ -378,7 +381,10 @@ var init_auth_controller = __esm({
             id: user.id,
             name: user.name,
             email: user.email,
-            createdAt: user.createdAt
+            createdAt: user.createdAt,
+            subscriptionStatus: user.subscriptionStatus,
+            stripeCustomerId: user.stripeCustomerId,
+            currentPeriodEnd: user.currentPeriodEnd
           },
           token
         });
@@ -429,7 +435,10 @@ var init_auth_controller = __esm({
             id: user.id,
             name: user.name,
             email: user.email,
-            createdAt: user.createdAt
+            createdAt: user.createdAt,
+            subscriptionStatus: user.subscriptionStatus,
+            stripeCustomerId: user.stripeCustomerId,
+            currentPeriodEnd: user.currentPeriodEnd
           }
         });
       } catch (error) {
