@@ -159,13 +159,7 @@ function App() {
                 />
                 <Route
                     path="/pricing"
-                    element={
-                        <ProtectedRoute>
-                            <DashboardLayout>
-                                <Pricing />
-                            </DashboardLayout>
-                        </ProtectedRoute>
-                    }
+                    element={<Pricing />}
                 />
             </Routes >
         </BrowserRouter >
