@@ -5,7 +5,10 @@ import { loadStripe } from '@stripe/stripe-js';
 import toast from 'react-hot-toast';
 
 // Initialize Stripe (same as in Pricing.tsx)
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || '');
+const stripeKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
+console.log("UpgradeModal: Stripe Key Present?", !!stripeKey, stripeKey ? `Length: ${stripeKey.length}` : 'Empty');
+
+const stripePromise = loadStripe(stripeKey || '');
 
 interface UpgradeModalProps {
     isOpen: boolean;
