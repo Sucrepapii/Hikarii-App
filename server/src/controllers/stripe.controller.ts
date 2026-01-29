@@ -3,7 +3,7 @@ import Stripe from "stripe";
 import prisma from "../config/db";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
-  apiVersion: "2024-12-18.acacia", // Use latest API version available
+  apiVersion: "2026-01-28.clover", // Use latest API version available
 });
 
 const PRO_PRICE_ID = process.env.STRIPE_PRO_PRICE_ID;
@@ -57,6 +57,9 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
 
     console.log("Stripe: Creating checkout session with Price ID:", priceId);
 
+    const clientUrl = process.env.CLIENT_URL || "http://localhost:5173";
+    console.log("Stripe: Using Client URL:", clientUrl);
+
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       payment_method_types: ["card"],
@@ -70,8 +73,8 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
       subscription_data: {
         trial_period_days: 14,
       },
-      success_url: `${process.env.CLIENT_URL}/settings?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.CLIENT_URL}/pricing`,
+      success_url: `${clientUrl}/settings?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${clientUrl}/pricing`,
       metadata: {
         userId: userId,
       },
@@ -97,9 +100,10 @@ export const createPortalSession = async (req: Request, res: Response) => {
     if (!user || !user.stripeCustomerId)
       return res.status(400).json({ message: "No subscription found" });
 
+    const clientUrl = process.env.CLIENT_URL || "http://localhost:5173";
     const session = await stripe.billingPortal.sessions.create({
       customer: user.stripeCustomerId,
-      return_url: `${process.env.CLIENT_URL}/settings`,
+      return_url: `${clientUrl}/settings`,
     });
 
     res.json({ url: session.url });
@@ -166,11 +170,12 @@ async function handleSubscriptionCreated(session: Stripe.Checkout.Session) {
 }
 
 async function handlePaymentSucceeded(invoice: Stripe.Invoice) {
-  if (!invoice.subscription) return;
+  if (!(invoice as any).subscription) return;
 
   // Retrieve subscription to get period end
+  // Cast to any to avoid type errors with mismatched Stripe types
   const subscription = await stripe.subscriptions.retrieve(
-    invoice.subscription as string,
+    (invoice as any).subscription as string,
   );
 
   // Find user by stripe customer id
@@ -183,7 +188,9 @@ async function handlePaymentSucceeded(invoice: Stripe.Invoice) {
       where: { id: user.id },
       data: {
         subscriptionStatus: "PRO",
-        currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+        currentPeriodEnd: new Date(
+          (subscription as any).current_period_end * 1000,
+        ),
       },
     });
   }
