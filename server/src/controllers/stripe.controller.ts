@@ -9,8 +9,16 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
 const PRO_PRICE_ID = process.env.STRIPE_PRO_PRICE_ID;
 
 export const createCheckoutSession = async (req: Request, res: Response) => {
+  console.log("Stripe: createCheckoutSession started");
+  console.log(
+    "Stripe: Env Check -> PRO_PRICE_ID:",
+    process.env.STRIPE_PRO_PRICE_ID ? "Set" : "Missing",
+  );
+
   try {
     const userId = req.user?.id;
+    console.log("Stripe: User ID from req:", userId);
+
     if (!userId) return res.status(401).json({ message: "Unauthorized" });
 
     const user = await prisma.user.findUnique({ where: { id: userId } });
@@ -18,14 +26,18 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
 
     // If user already has stripe customer ID, use it
     let customerId = user.stripeCustomerId;
+    console.log("Stripe: Existing Customer ID:", customerId);
 
     // If not, create a new customer in Stripe
     if (!customerId) {
+      console.log("Stripe: Creating new Stripe customer...");
       const customer = await stripe.customers.create({
         email: user.email,
         metadata: { userId: user.id },
       });
       customerId = customer.id;
+      console.log("Stripe: New Customer ID created:", customerId);
+
       // Update user with customer ID
       await prisma.user.update({
         where: { id: userId },
@@ -33,12 +45,24 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
       });
     }
 
+    const priceId = PRO_PRICE_ID;
+    if (!priceId) {
+      console.error(
+        "Stripe Error: PRO_PRICE_ID is missing in environment variables",
+      );
+      return res
+        .status(500)
+        .json({ message: "Server configuration error: Missing Price ID" });
+    }
+
+    console.log("Stripe: Creating checkout session with Price ID:", priceId);
+
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       payment_method_types: ["card"],
       line_items: [
         {
-          price: PRO_PRICE_ID,
+          price: priceId,
           quantity: 1,
         },
       ],
@@ -53,6 +77,7 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
       },
     });
 
+    console.log("Stripe: Session created successfully:", session.id);
     res.json({ sessionId: session.id, url: session.url });
   } catch (error: any) {
     console.error("Stripe Checkout Error:", error);

@@ -20,11 +20,16 @@ export const Pricing: React.FC = () => {
             return;
         }
 
+        console.log("Pricing: Starting subscription flow...");
         setIsLoading(true);
         try {
             const stripe = await stripePromise;
-            if (!stripe) throw new Error('Stripe failed to load');
+            if (!stripe) {
+                console.error("Pricing Error: Stripe failed to load. Check VITE_STRIPE_PUBLISHABLE_KEY.");
+                throw new Error('Stripe failed to load');
+            }
 
+            console.log("Pricing: Calling backend to create session...");
             // Call backend to create session
             const response = await fetch(`${import.meta.env.VITE_API_URL}/api/stripe/create-checkout-session`, {
                 method: 'POST',
@@ -35,19 +40,32 @@ export const Pricing: React.FC = () => {
                 body: JSON.stringify({ billingPeriod })
             });
 
+            console.log("Pricing: Backend response status:", response.status);
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error("Pricing Error: Backend returned error:", errorData);
+                throw new Error(errorData.message || 'Failed to create session');
+            }
+
             const { sessionId } = await response.json();
+            console.log("Pricing: Session ID received:", sessionId);
 
             if (sessionId) {
                 // @ts-ignore
                 const { error } = await stripe.redirectToCheckout({ sessionId });
-                if (error) throw error;
+                if (error) {
+                    console.error("Pricing Error: Stripe redirect failed:", error);
+                    throw error;
+                }
             } else {
+                console.error("Pricing Error: No Session ID returned");
                 toast.error('Failed to start checkout');
             }
 
-        } catch (error) {
-            console.error(error);
-            toast.error('Something went wrong. Please try again.');
+        } catch (error: any) {
+            console.error("Pricing Catch Error:", error);
+            toast.error(`Something went wrong: ${error.message}`);
         } finally {
             setIsLoading(false);
         }

@@ -58,3 +58,24 @@ To test that subscriptions actually update the user status locally:
 - [ ] Restarted both servers (`npm run dev`) to load new variables.
 
 Once done, clicking "Upgrade to Pro" should take you to a real Stripe Checkout page!
+
+## 6. Deployment (Railway / Vercel) 🚀
+
+**Critical:** Local `.env` files are **NOT** uploaded to production. You must verify these variables in your deployment dashboard.
+
+### 1. Railway (Backend)
+
+Go to your project settings in Railway and add these variables:
+
+- `STRIPE_SECRET_KEY`
+- `STRIPE_PRO_PRICE_ID`
+- `STRIPE_PRO_YEARLY_PRICE_ID`
+- `RESEND_API_KEY`
+- `CLIENT_URL` (Set to your production frontend URL, e.g., `https://hikari-app.vercel.app`)
+
+### 2. Vercel (Frontend)
+
+Go to your project settings in Vercel and add:
+
+- `VITE_STRIPE_PUBLISHABLE_KEY`
+- `VITE_API_URL` (Set to your production backend URL, e.g., `https://hikari-server.up.railway.app`)

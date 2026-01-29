@@ -38,6 +38,17 @@ export const Settings: React.FC = () => {
                                 Your personal account details
                             </p>
                         </div>
+                        <div className="ml-auto">
+                            {user?.subscriptionStatus === 'PRO' ? (
+                                <span className="px-3 py-1 rounded-full text-xs font-bold bg-gradient-brand text-white shadow-sm">
+                                    PRO MEMBER
+                                </span>
+                            ) : (
+                                <span className="px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300">
+                                    FREE PLAN
+                                </span>
+                            )}
+                        </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
