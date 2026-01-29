@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Check, Zap, Shield, Crown } from 'lucide-react';
+import { X, Check, Crown } from 'lucide-react';
 import { Button } from '../common/Button';
 import { loadStripe } from '@stripe/stripe-js';
 import { STRIPE_CONFIG } from '../../config/stripe';
@@ -32,12 +32,10 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({ isOpen, onClose }) =
             });
 
             // apiClient automatically throws on non-2xx, but we access .data directly
-            const { sessionId } = response.data;
+            const { url } = response.data;
 
-            if (sessionId) {
-                // @ts-ignore
-                const { error } = await stripe.redirectToCheckout({ sessionId });
-                if (error) throw error;
+            if (url) {
+                window.location.href = url;
             } else {
                 toast.error('Failed to start checkout');
             }

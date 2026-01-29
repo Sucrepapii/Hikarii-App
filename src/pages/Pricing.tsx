@@ -49,18 +49,13 @@ export const Pricing: React.FC = () => {
                 throw new Error(errorData.message || 'Failed to create session');
             }
 
-            const { sessionId } = await response.json();
-            console.log("Pricing: Session ID received:", sessionId);
+            const { url } = await response.json();
+            console.log("Pricing: Redirecting to Stripe:", url);
 
-            if (sessionId) {
-                // @ts-ignore
-                const { error } = await stripe.redirectToCheckout({ sessionId });
-                if (error) {
-                    console.error("Pricing Error: Stripe redirect failed:", error);
-                    throw error;
-                }
+            if (url) {
+                window.location.href = url;
             } else {
-                console.error("Pricing Error: No Session ID returned");
+                console.error("Pricing Error: No URL returned");
                 toast.error('Failed to start checkout');
             }
 
