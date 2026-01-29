@@ -5,16 +5,12 @@ import { useTaskStore } from "../../stores/taskStore";
 import { useBudgetStore } from "../../stores/budgetStore";
 import { Card } from "../common/Card";
 import { TaskRecommendationCard } from "./TaskRecommendationCard";
-import { InsightCard } from "./InsightCard";
 import {
     TrendingUp,
     RefreshCw,
-    Wallet,
-    CheckSquare,
     LineChart,
     Lock,
     Zap,
-    Lightbulb
 } from "lucide-react";
 
 import { clsx } from "clsx";
@@ -29,7 +25,7 @@ interface InsightsPanelProps {
 
 
 export const InsightsPanel: React.FC<InsightsPanelProps> = ({ onTaskClick }) => {
-    const { insights, recommendations, refreshInsights, dismissInsight } =
+    const { recommendations, refreshInsights } =
         useIntelligenceStore();
     const tasks = useTaskStore((state) => state.tasks);
     const budgets = useBudgetStore((state) => state.budgets);
@@ -54,12 +50,7 @@ export const InsightsPanel: React.FC<InsightsPanelProps> = ({ onTaskClick }) => 
     };
 
     // Calculate Metrics
-    const totalBudget = budgets.reduce((sum, b) => sum + b.limit, 0);
-    const totalExpenses = useBudgetStore.getState().expenses.reduce((sum, e) => sum + e.amount, 0);
-    const netCashFlow = totalBudget - totalExpenses;
 
-    const completedTasks = tasks.filter(t => t.status === 'COMPLETED').length;
-    const completionRate = tasks.length > 0 ? Math.round((completedTasks / tasks.length) * 100) : 0;
 
     return (
         <div className="space-y-6">
@@ -87,55 +78,10 @@ export const InsightsPanel: React.FC<InsightsPanelProps> = ({ onTaskClick }) => 
             </div>
 
             {/* Free: Key Metrics */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Card className="flex items-center gap-4 bg-emerald-50/50 dark:bg-emerald-900/10 border-emerald-100 dark:border-emerald-800">
-                    <div className="p-3 bg-emerald-100 dark:bg-emerald-900/30 rounded-xl">
-                        <Wallet className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
-                    </div>
-                    <div>
-                        <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Net Cash Flow</p>
-                        <p className="text-2xl font-bold text-emerald-700 dark:text-emerald-300">
-                            ₦{netCashFlow.toLocaleString()}
-                        </p>
-                    </div>
-                </Card>
-                <Card className="flex items-center gap-4 bg-blue-50/50 dark:bg-blue-900/10 border-blue-100 dark:border-blue-800">
-                    <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-xl">
-                        <CheckSquare className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-                    </div>
-                    <div>
-                        <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Task Completion</p>
-                        <p className="text-2xl font-bold text-blue-700 dark:text-blue-300">
-                            {completionRate}%
-                        </p>
-                    </div>
 
-
-                </Card>
-            </div>
 
             {/* AI Insights List - PRO ONLY */}
-            {isPro && insights.length > 0 && (
-                <div className="space-y-3">
-                    <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                        <Lightbulb className="w-5 h-5 text-amber-500" />
-                        Key Insights
-                    </h3>
-                    <div className="space-y-3">
-                        {insights.map((insight) => (
-                            <InsightCard
-                                key={insight.id}
-                                insight={insight}
-                                onDismiss={dismissInsight}
-                                onAction={(i) => {
-                                    if (i.taskId && onTaskClick) onTaskClick(i.taskId);
-                                    // Handle other actions or dismiss
-                                }}
-                            />
-                        ))}
-                    </div>
-                </div>
-            )}
+
 
 
             {/* Actionable Insights (Smart Recommendations) - PRO ONLY */}
