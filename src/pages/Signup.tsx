@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { UserPlus, Mail, Lock, User, Sun, Eye, EyeOff } from 'lucide-react';
+import { UserPlus, Mail, Lock, User, Sun, Eye, EyeOff, ArrowLeft } from 'lucide-react';
 import { useAuthStore } from '../stores/authStore';
 import { Input } from '../components/common/Input';
 import { Button } from '../components/common/Button';
@@ -82,6 +82,15 @@ export const Signup: React.FC = () => {
 
     return (
         <div className="min-h-screen flex items-center justify-center p-6">
+            {/* Back Button */}
+            <Link
+                to="/"
+                className="absolute top-6 left-6 flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+            >
+                <ArrowLeft className="w-5 h-5" />
+                <span className="font-medium">Back to Home</span>
+            </Link>
+
             <div className="w-full max-w-md">
                 {/* Logo and Title */}
                 <div className="text-center mb-10 animate-fade-in group">
