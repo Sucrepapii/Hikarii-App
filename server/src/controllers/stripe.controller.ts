@@ -57,7 +57,7 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
 
     console.log("Stripe: Creating checkout session with Price ID:", priceId);
 
-    const clientUrl = process.env.CLIENT_URL || "http://localhost:5173";
+    const clientUrl = process.env.CLIENT_URL || "https://www.hikarii.org";
     console.log("Stripe: Using Client URL:", clientUrl);
 
     const session = await stripe.checkout.sessions.create({
@@ -100,7 +100,7 @@ export const createPortalSession = async (req: Request, res: Response) => {
     if (!user || !user.stripeCustomerId)
       return res.status(400).json({ message: "No subscription found" });
 
-    const clientUrl = process.env.CLIENT_URL || "http://localhost:5173";
+    const clientUrl = process.env.CLIENT_URL || "https://www.hikarii.org";
     const session = await stripe.billingPortal.sessions.create({
       customer: user.stripeCustomerId,
       return_url: `${clientUrl}/settings`,

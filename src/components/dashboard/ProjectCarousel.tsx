@@ -3,13 +3,21 @@ import { Project } from '../../types/project.types';
 import { projectService } from '../../services/project.service';
 import { Card } from '../common/Card';
 import { Plus, Briefcase, ChevronRight, Edit2, Trash2 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '../common/Button';
 import toast from 'react-hot-toast';
+import { useAuthStore } from '../../stores/authStore';
+import { UpgradeModal } from '../modals/UpgradeModal';
+import { Modal } from '../common/Modal';
 
 export const ProjectCarousel: React.FC = () => {
     const [projects, setProjects] = useState<Project[]>([]);
     const [loading, setLoading] = useState(true);
+    const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+    const [projectToDelete, setProjectToDelete] = useState<string | null>(null);
+
+    const { user } = useAuthStore();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const loadProjects = async () => {
@@ -25,12 +33,29 @@ export const ProjectCarousel: React.FC = () => {
         loadProjects();
     }, []);
 
-    const handleDelete = async (id: string) => {
-        if (!confirm("Are you sure you want to delete this project?")) return;
+    const handleNewProjectClick = (e: React.MouseEvent) => {
+        e.preventDefault();
+        const isPro = user?.subscriptionStatus === 'PRO';
+
+        if (!isPro && projects.length >= 1) {
+            setShowUpgradeModal(true);
+        } else {
+            navigate('/projects/new');
+        }
+    };
+
+    const handleDeleteClick = (id: string) => {
+        setProjectToDelete(id);
+    };
+
+    const confirmDelete = async () => {
+        if (!projectToDelete) return;
+
         try {
-            await projectService.deleteProject(id);
+            await projectService.deleteProject(projectToDelete);
             toast.success("Project deleted");
-            setProjects(projects.filter(p => p.id !== id));
+            setProjects(projects.filter(p => p.id !== projectToDelete));
+            setProjectToDelete(null);
         } catch (err) {
             toast.error("Failed to delete project");
         }
@@ -52,13 +77,18 @@ export const ProjectCarousel: React.FC = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {/* Create New Project Card */}
-                <Link to="/projects/new" className="group relative overflow-hidden rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-700 hover:border-primary-500 dark:hover:border-primary-500 transition-all p-6 flex flex-col items-center justify-center text-center h-48 bg-slate-50/50 dark:bg-slate-800/20">
+                <div
+                    onClick={handleNewProjectClick}
+                    className="cursor-pointer group relative overflow-hidden rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-700 hover:border-primary-500 dark:hover:border-primary-500 transition-all p-6 flex flex-col items-center justify-center text-center h-48 bg-slate-50/50 dark:bg-slate-800/20"
+                >
                     <div className="w-12 h-12 rounded-full bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                         <Plus className="w-6 h-6 text-primary-600 dark:text-primary-400" />
                     </div>
                     <h3 className="font-semibold text-slate-700 dark:text-slate-200">New Project</h3>
-                    <p className="text-xs text-slate-500 mt-1">Start a new goal</p>
-                </Link>
+                    <p className="text-xs text-slate-500 mt-1">
+                        {user?.subscriptionStatus === 'PRO' ? 'Start a new goal' : `${projects.length}/1 Free Project Used`}
+                    </p>
+                </div>
 
                 {projects.slice(0, 2).map(project => (
                     <Card key={project.id} className="h-48 relative overflow-hidden group hover:shadow-lg transition-all border border-transparent hover:border-primary-200 dark:hover:border-primary-800">
@@ -85,7 +115,7 @@ export const ProjectCarousel: React.FC = () => {
                                             size="sm"
                                             onClick={(e) => {
                                                 e.preventDefault();
-                                                handleDelete(project.id);
+                                                handleDeleteClick(project.id);
                                             }}
                                             className="p-1.5 h-auto bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 rounded-lg"
                                         >
@@ -117,6 +147,40 @@ export const ProjectCarousel: React.FC = () => {
                     </Card>
                 ))}
             </div>
+
+            {/* Upgrade Modal */}
+            <UpgradeModal
+                isOpen={showUpgradeModal}
+                onClose={() => setShowUpgradeModal(false)}
+            />
+
+            {/* Delete Confirmation Modal */}
+            <Modal
+                isOpen={!!projectToDelete}
+                onClose={() => setProjectToDelete(null)}
+                title="Delete Project"
+                size="sm"
+            >
+                <div className="space-y-4">
+                    <p className="text-slate-600 dark:text-slate-300">
+                        Are you sure you want to delete this project? This action cannot be undone and will remove all associated tasks.
+                    </p>
+                    <div className="flex justify-end gap-3 pt-4">
+                        <Button
+                            variant="ghost"
+                            onClick={() => setProjectToDelete(null)}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            variant="danger"
+                            onClick={confirmDelete}
+                        >
+                            Delete Project
+                        </Button>
+                    </div>
+                </div>
+            </Modal>
         </div>
     );
 };
