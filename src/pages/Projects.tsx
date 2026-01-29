@@ -11,9 +11,11 @@ import { useAuthStore } from '../stores/authStore';
 export const Projects: React.FC = () => {
     const [projects, setProjects] = useState<Project[]>([]);
     const [loading, setLoading] = useState(true);
+    const { checkAuth } = useAuthStore();
 
     const loadProjects = async () => {
         try {
+            await checkAuth(); // Ensure user state is fresh (e.g. subscription status)
             const data = await projectService.getProjects();
             setProjects(data);
         } catch (error) {
