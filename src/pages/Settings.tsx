@@ -1,19 +1,56 @@
 import React from 'react';
 import { Card } from '../components/common/Card';
 import { Button } from '../components/common/Button';
-import { Download, Database, Shield, DollarSign, CreditCard } from 'lucide-react';
+import { Download, Database, Shield, DollarSign, CreditCard, Calendar as CalendarIcon } from 'lucide-react';
 import { useTaskStore } from '../stores/taskStore';
 import { useBudgetStore } from '../stores/budgetStore';
 import { exportTasks, exportExpenses } from '../utils/exportUtils';
 import { useAuthStore } from '../stores/authStore';
 import apiClient from '../api/client';
 import toast from 'react-hot-toast';
+import { useGoogleLogin } from '@react-oauth/google';
 
 export const Settings: React.FC = () => {
     const { tasks } = useTaskStore();
     const { expenses } = useBudgetStore();
     const { user } = useAuthStore();
     const [isCanceling, setIsCanceling] = React.useState(false);
+    const [isGoogleConnected, setIsGoogleConnected] = React.useState(false);
+
+    // Check Google Status
+    React.useEffect(() => {
+        apiClient.get('/google/status')
+            .then(res => setIsGoogleConnected(res.data.isConnected))
+            .catch(err => console.error(err));
+    }, []);
+
+    const googleLogin = useGoogleLogin({
+        onSuccess: async (tokenResponse) => {
+            try {
+                const res = await apiClient.post('/google/connect', { code: tokenResponse.code });
+                if (res.data.success) {
+                    setIsGoogleConnected(true);
+                    toast.success("Connected to Google Calendar!");
+                }
+            } catch (error: any) {
+                console.error("Google connect error", error);
+                toast.error("Failed to connect Google Calendar.");
+            }
+        },
+        onError: () => toast.error("Google Login Failed"),
+        flow: 'auth-code',
+        scope: "https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/calendar.events"
+    });
+
+    const handleDisconnectGoogle = async () => {
+        try {
+            await apiClient.post('/google/disconnect');
+            setIsGoogleConnected(false);
+            toast.success("Disconnected from Google Calendar");
+        } catch (error) {
+            toast.error("Failed to disconnect");
+        }
+    }
 
     const handleCancelSubscription = async () => {
         if (!confirm("Are you sure you want to cancel your Pro subscription? You will lose access to premium features at the end of your billing period.")) return;
@@ -43,6 +80,55 @@ export const Settings: React.FC = () => {
             </div>
 
             <div className="space-y-6">
+                {/* Integrations Section */}
+                <Card>
+                    <div className="flex items-center gap-4 mb-6">
+                        <div className="p-3 rounded-xl bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">
+                            <CalendarIcon className="w-6 h-6" />
+                        </div>
+                        <div>
+                            <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
+                                Integrations
+                            </h2>
+                            <p className="text-sm text-slate-500">
+                                Connect with third-party tools
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
+                        <div>
+                            <h3 className="font-medium text-slate-800 dark:text-slate-200 flex items-center gap-2">
+                                Google Calendar
+                                {isGoogleConnected && <span className="text-xs text-green-500 bg-green-100 dark:bg-green-900/30 px-2 py-0.5 rounded-full">Connected</span>}
+                            </h3>
+                            <p className="text-sm text-slate-500">
+                                Sync your tasks to your Google Calendar automatically.
+                            </p>
+                        </div>
+                        {isGoogleConnected ? (
+                            <Button
+                                variant="danger"
+                                onClick={handleDisconnectGoogle}
+                                className="w-full sm:w-auto"
+                            >
+                                Disconnect
+                            </Button>
+                        ) : (
+                            <Button
+                                variant="secondary"
+                                onClick={() => googleLogin()}
+                                className="w-full sm:w-auto gap-2"
+                            >
+                                <svg className="w-4 h-4" viewBox="0 0 24 24">
+                                    <path fill="currentColor" d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z" />
+                                </svg>
+                                Connect Google Calendar
+                            </Button>
+                        )}
+                    </div>
+                </Card>
+
                 {/* Profile Section */}
                 <Card>
                     <div className="flex items-center gap-4 mb-6">

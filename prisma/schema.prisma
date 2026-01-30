@@ -33,6 +33,11 @@ model User {
   subscriptionStatus     SubscriptionStatus @default(FREE)
   subscriptionId         String?
   currentPeriodEnd       DateTime?
+
+  // Google Calendar Integration
+  googleId               String?  @unique
+  googleAccessToken      String?
+  googleRefreshToken     String?
 }
 
 enum SubscriptionStatus {

@@ -8,7 +8,8 @@ import { Project } from '../../types/project.types';
 import { projectService } from '../../services/project.service';
 import { Input } from '../common/Input';
 import { Button } from '../common/Button';
-import { Calendar, DollarSign, TrendingUp, TrendingDown, AlertTriangle, Briefcase } from 'lucide-react';
+import { Calendar, DollarSign, TrendingUp, TrendingDown, AlertTriangle, Briefcase, CheckCircle2 } from 'lucide-react';
+import apiClient from '../../api/client';
 
 interface TaskFormProps {
     onSubmit: (data: TaskFormData) => void;
@@ -138,6 +139,9 @@ export const TaskForm: React.FC<TaskFormProps> = ({
                 })}
             />
 
+            {/* Google Calendar Sync - Only show if connected */}
+            <GoogleSyncCheckbox register={register} />
+
             {/* Financial Intelligence Section */}
             <div className="pt-4 border-t border-slate-200 dark:border-slate-700">
                 <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-3 flex items-center gap-2">
@@ -241,5 +245,34 @@ export const TaskForm: React.FC<TaskFormProps> = ({
                 </Button>
             </div>
         </form>
+    );
+};
+
+const GoogleSyncCheckbox = ({ register }: { register: any }) => {
+    const [isConnected, setIsConnected] = useState(false);
+
+    useEffect(() => {
+        apiClient.get('/google/status')
+            .then(res => setIsConnected(res.data.isConnected))
+            .catch(() => setIsConnected(false));
+    }, []);
+
+    if (!isConnected) return null;
+
+    return (
+        <div className="flex items-center gap-3 p-3 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-900/50">
+            <div className="relative flex items-center">
+                <input
+                    type="checkbox"
+                    id="addToCalendar"
+                    className="peer h-5 w-5 cursor-pointer appearance-none rounded-md border border-slate-300 bg-white transition-all checked:border-blue-500 checked:bg-blue-500 hover:border-blue-400 dark:border-slate-600 dark:bg-slate-700 dark:checked:border-blue-500 dark:checked:bg-blue-500"
+                    {...register('addToCalendar')}
+                />
+                <CheckCircle2 className="pointer-events-none absolute left-1/2 top-1/2 h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 text-white opacity-0 transition-opacity peer-checked:opacity-100" />
+            </div>
+            <label htmlFor="addToCalendar" className="text-sm text-slate-700 dark:text-slate-300 cursor-pointer font-medium select-none">
+                Add to Google Calendar
+            </label>
+        </div>
     );
 };

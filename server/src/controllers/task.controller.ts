@@ -2,6 +2,7 @@ import { Response } from "express";
 import prisma from "../config/db";
 import { TaskStatus } from "../models/types";
 import { AuthRequest } from "../middleware/auth.middleware";
+import { createCalendarEvent } from "../services/google.calendar.service";
 
 export const getTasks = async (
   req: AuthRequest,
@@ -23,16 +24,29 @@ export const createTask = async (
   res: Response,
 ): Promise<void> => {
   try {
-    // Sanitize projectId to handle empty strings (common from frontend select inputs)
+    const { addToCalendar, ...rest } = req.body; // Extract flag
+
+    // Sanitize projectId
     const taskData = {
-      ...req.body,
+      ...rest,
       userId: req.userId,
-      projectId: req.body.projectId || undefined, // Convert "" to undefined
+      projectId: rest.projectId || undefined,
     };
 
     const task = await prisma.task.create({
       data: taskData,
     });
+
+    // Handle Calendar Sync
+    if (addToCalendar && task.dueDate) {
+      try {
+        await createCalendarEvent(req.userId, task);
+      } catch (err) {
+        console.error("Failed to sync to calendar during creation", err);
+        // Don't fail the task creation, just log error
+      }
+    }
+
     res.status(201).json(task);
   } catch (error: any) {
     res.status(500).json({ error: error.message });

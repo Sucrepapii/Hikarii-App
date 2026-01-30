@@ -17,6 +17,7 @@ export const taskSchema = z
     estimatedIncome: z.number().positive().optional(),
     lateFeePerDay: z.number().positive().optional(),
     expenseCategory: z.nativeEnum(ExpenseCategory).optional(),
+    addToCalendar: z.boolean().optional(),
   })
   .superRefine((data, ctx) => {
     if (data.taskType === TaskType.EXPENSE) {
