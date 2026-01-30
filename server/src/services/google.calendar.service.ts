@@ -20,6 +20,15 @@ const SCOPES = [
  */
 export const exchangeCodeForToken = async (userId: string, code: string) => {
   try {
+    // Debugging logs
+    console.log("Exchanging code for token...");
+    console.log(
+      "Client ID:",
+      process.env.GOOGLE_CLIENT_ID?.substring(0, 10) + "...",
+    );
+    console.log("Client Secret Set:", !!process.env.GOOGLE_CLIENT_SECRET);
+    console.log("Redirect URI:", (oauth2Client as any).redirectUri);
+
     const { tokens } = await oauth2Client.getToken(code);
 
     // Save tokens to user
@@ -33,8 +42,13 @@ export const exchangeCodeForToken = async (userId: string, code: string) => {
 
     return updatedUser;
   } catch (error: any) {
-    console.error("Error exchanging code for token:", error);
-    throw new Error(`Google Auth Failed: ${error.message}`);
+    console.error(
+      "Error exchanging code for token details:",
+      error.response?.data || error.message,
+    );
+    throw new Error(
+      `Google Auth Failed: ${error.response?.data?.error || error.message}`,
+    );
   }
 };
 
