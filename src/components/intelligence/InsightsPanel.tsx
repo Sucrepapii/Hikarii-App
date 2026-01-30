@@ -30,6 +30,7 @@ export const InsightsPanel: React.FC<InsightsPanelProps> = ({ onTaskClick }) => 
         useIntelligenceStore();
     const tasks = useTaskStore((state) => state.tasks);
     const budgets = useBudgetStore((state) => state.budgets);
+    const { expenses, currency } = useBudgetStore();
 
     // Refresh insights when tasks or budgets change
     useEffect(() => {
@@ -50,7 +51,81 @@ export const InsightsPanel: React.FC<InsightsPanelProps> = ({ onTaskClick }) => 
         toast.success("Insights updated");
     };
 
-    // Calculate Metrics
+    // Calculate Real Analytics
+    const calculateAnalytics = () => {
+        // 1. Projected Savings - Calculate from budget vs actual spending
+        const currentMonth = new Date().getMonth();
+        const currentYear = new Date().getFullYear();
+        const thisMonthExpenses = expenses.filter(e => {
+            const expenseDate = new Date(e.date);
+            return expenseDate.getMonth() === currentMonth && expenseDate.getFullYear() === currentYear;
+        });
+        const totalSpent = thisMonthExpenses.reduce((sum, e) => sum + e.amount, 0);
+        const totalBudget = budgets.reduce((sum, b) => sum + b.limit, 0);
+        const projectedSavings = Math.max(0, totalBudget - totalSpent);
+
+        // Compare with last month
+        const lastMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+        const lastMonthYear = currentMonth === 0 ? currentYear - 1 : currentYear;
+        const lastMonthExpenses = expenses.filter(e => {
+            const expenseDate = new Date(e.date);
+            return expenseDate.getMonth() === lastMonth && expenseDate.getFullYear() === lastMonthYear;
+        });
+        const lastMonthSpent = lastMonthExpenses.reduce((sum, e) => sum + e.amount, 0);
+        const lastMonthBudget = totalBudget; // Assuming same budget
+        const lastMonthSavings = Math.max(0, lastMonthBudget - lastMonthSpent);
+        const savingsChange = lastMonthSavings > 0
+            ? ((projectedSavings - lastMonthSavings) / lastMonthSavings * 100)
+            : 0;
+
+        // 2. Peak Productivity - Find most productive day/time from completed tasks
+        const completedTasks = tasks.filter(t => t.status === 'COMPLETED' && t.completedAt);
+        const tasksByDayHour: Record<string, number> = {};
+
+        completedTasks.forEach(task => {
+            if (task.completedAt) {
+                const date = new Date(task.completedAt);
+                const day = date.toLocaleDateString('en-US', { weekday: 'short' });
+                const hour = date.getHours();
+                const key = `${day}-${hour}`;
+                tasksByDayHour[key] = (tasksByDayHour[key] || 0) + 1;
+            }
+        });
+
+        let peakDay = 'N/A';
+        let peakHour = 0;
+        let maxTasks = 0;
+        Object.entries(tasksByDayHour).forEach(([key, count]) => {
+            if (count > maxTasks) {
+                maxTasks = count;
+                const [day, hour] = key.split('-');
+                peakDay = day;
+                peakHour = parseInt(hour);
+            }
+        });
+
+        const focusScore = completedTasks.length > 0
+            ? Math.min(100, Math.round((completedTasks.length / Math.max(tasks.length, 1)) * 100))
+            : 0;
+
+        // 3. Expense Anomalies - Detect unusual spending patterns
+        const avgExpense = expenses.length > 0
+            ? expenses.reduce((sum, e) => sum + e.amount, 0) / expenses.length
+            : 0;
+        const anomalies = expenses.filter(e => e.amount > avgExpense * 2.5).length;
+
+        return {
+            projectedSavings,
+            savingsChange,
+            peakDay,
+            peakHour,
+            focusScore,
+            anomalies,
+            lastScanned: new Date()
+        };
+    };
+
+    const analytics = calculateAnalytics();
 
 
     return (
@@ -165,18 +240,26 @@ export const InsightsPanel: React.FC<InsightsPanelProps> = ({ onTaskClick }) => 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <Card className="bg-white dark:bg-slate-800">
                             <p className="text-xs text-slate-500 uppercase tracking-widest font-semibold mb-1">Projected Savings</p>
-                            <p className="text-xl font-bold text-slate-800 dark:text-slate-200">₦45,200</p>
-                            <p className="text-xs text-emerald-500">+12% vs last month</p>
+                            <p className="text-xl font-bold text-slate-800 dark:text-slate-200">
+                                {useBudgetStore.getState().formatCurrency(analytics.projectedSavings, currency)}
+                            </p>
+                            <p className={`text-xs ${analytics.savingsChange >= 0 ? 'text-emerald-500' : 'text-red-500'}`}>
+                                {analytics.savingsChange >= 0 ? '+' : ''}{analytics.savingsChange.toFixed(1)}% vs last month
+                            </p>
                         </Card>
                         <Card className="bg-white dark:bg-slate-800">
                             <p className="text-xs text-slate-500 uppercase tracking-widest font-semibold mb-1">Peak Productivity</p>
-                            <p className="text-xl font-bold text-slate-800 dark:text-slate-200">Tue, 10 AM</p>
-                            <p className="text-xs text-blue-500">Focus Score: 92</p>
+                            <p className="text-xl font-bold text-slate-800 dark:text-slate-200">
+                                {analytics.peakDay === 'N/A' ? 'No data yet' : `${analytics.peakDay}, ${analytics.peakHour > 12 ? analytics.peakHour - 12 : analytics.peakHour} ${analytics.peakHour >= 12 ? 'PM' : 'AM'}`}
+                            </p>
+                            <p className="text-xs text-blue-500">Focus Score: {analytics.focusScore}</p>
                         </Card>
                         <Card className="bg-white dark:bg-slate-800">
                             <p className="text-xs text-slate-500 uppercase tracking-widest font-semibold mb-1">Expense Anomalies</p>
-                            <p className="text-xl font-bold text-slate-800 dark:text-slate-200">0 Detected</p>
-                            <p className="text-xs text-slate-400">Last scanned 2h ago</p>
+                            <p className="text-xl font-bold text-slate-800 dark:text-slate-200">{analytics.anomalies} Detected</p>
+                            <p className="text-xs text-slate-400">
+                                Last scanned {Math.floor((new Date().getTime() - analytics.lastScanned.getTime()) / 1000 / 60)}m ago
+                            </p>
                         </Card>
                     </div>
                 </div>

@@ -13,8 +13,12 @@ export const sendEmail = async (to: string, subject: string, html: string) => {
 
     const resend = new Resend(apiKey);
 
+    // Use custom domain from environment variable, fallback to hikarii.org
+    const emailDomain = process.env.EMAIL_DOMAIN || "hikarii.org";
+    const fromEmail = `Hikari <noreply@${emailDomain}>`;
+
     const { data, error } = await resend.emails.send({
-      from: "Hikari<onboarding@resend.dev>",
+      from: fromEmail,
       to: [to],
       subject: subject,
       html: html,
