@@ -18,6 +18,7 @@ import { useAuthStore } from "../../stores/authStore";
 import { Button } from "../common/Button";
 import { UpgradeModal } from "../modals/UpgradeModal";
 import { isFeatureAvailable } from "../../config/features";
+import { formatCurrency } from "../../utils/currencyFormatter";
 
 interface InsightsPanelProps {
     onTaskClick?: (taskId: string) => void;
@@ -241,7 +242,7 @@ export const InsightsPanel: React.FC<InsightsPanelProps> = ({ onTaskClick }) => 
                         <Card className="bg-white dark:bg-slate-800">
                             <p className="text-xs text-slate-500 uppercase tracking-widest font-semibold mb-1">Projected Savings</p>
                             <p className="text-xl font-bold text-slate-800 dark:text-slate-200">
-                                {useBudgetStore.getState().formatCurrency(analytics.projectedSavings, currency)}
+                                {formatCurrency(analytics.projectedSavings, currency)}
                             </p>
                             <p className={`text-xs ${analytics.savingsChange >= 0 ? 'text-emerald-500' : 'text-red-500'}`}>
                                 {analytics.savingsChange >= 0 ? '+' : ''}{analytics.savingsChange.toFixed(1)}% vs last month
