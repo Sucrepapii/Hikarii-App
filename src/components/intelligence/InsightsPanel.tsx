@@ -17,6 +17,7 @@ import { clsx } from "clsx";
 import { useAuthStore } from "../../stores/authStore";
 import { Button } from "../common/Button";
 import { UpgradeModal } from "../modals/UpgradeModal";
+import { isFeatureAvailable } from "../../config/features";
 
 interface InsightsPanelProps {
     onTaskClick?: (taskId: string) => void;
@@ -155,6 +156,11 @@ export const InsightsPanel: React.FC<InsightsPanelProps> = ({ onTaskClick }) => 
                     <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 flex items-center gap-2">
                         <LineChart className="w-5 h-5 text-purple-500" />
                         Advanced Analytics
+                        {!isPro && (
+                            <span className="text-xs font-bold bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full flex items-center gap-1">
+                                <Lock className="w-3 h-3" /> PRO
+                            </span>
+                        )}
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <Card className="bg-white dark:bg-slate-800">

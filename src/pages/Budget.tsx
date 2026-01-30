@@ -112,25 +112,24 @@ export const Budget: React.FC = () => {
                         Track your expenses and manage your budget
                     </p>
                 </div>
-                <div className="flex flex-wrap gap-3">
+                <div className="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-3">
                     {/* Month Picker */}
-                    {/* Month Picker */}
-                    <div className="relative">
+                    <div className="relative order-1 flex-1 min-w-[280px]">
                         <div className="flex items-center bg-white dark:bg-slate-800 rounded-xl p-1 border-2 border-slate-200 dark:border-slate-700">
                             <button
                                 onClick={() => changeMonth(-1)}
                                 disabled={isMinMonth}
-                                className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                                className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed touch-manipulation"
                             >
                                 <ChevronLeft className="w-5 h-5 text-slate-600 dark:text-slate-400" />
                             </button>
 
                             <button
                                 onClick={() => setIsDatePickerOpen(!isDatePickerOpen)}
-                                className="px-4 py-1.5 flex items-center gap-2 hover:bg-slate-50 dark:hover:bg-slate-700/50 rounded-lg transition-colors"
+                                className="flex-1 px-2 sm:px-4 py-1.5 flex items-center justify-center gap-2 hover:bg-slate-50 dark:hover:bg-slate-700/50 rounded-lg transition-colors touch-manipulation"
                             >
                                 <Calendar className="w-4 h-4 text-slate-400" />
-                                <span className="font-semibold text-slate-700 dark:text-slate-200 min-w-[120px] text-center">
+                                <span className="font-semibold text-sm sm:text-base text-slate-700 dark:text-slate-200">
                                     {selectedDate.toLocaleString('default', { month: 'long', year: 'numeric' })}
                                 </span>
                                 <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform ${isDatePickerOpen ? 'rotate-180' : ''}`} />
@@ -138,7 +137,7 @@ export const Budget: React.FC = () => {
 
                             <button
                                 onClick={() => changeMonth(1)}
-                                className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors"
+                                className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors touch-manipulation"
                             >
                                 <ChevronRight className="w-5 h-5 text-slate-600 dark:text-slate-400" />
                             </button>
@@ -215,18 +214,22 @@ export const Budget: React.FC = () => {
                     <Button
                         variant="secondary"
                         onClick={() => setIsBudgetModalOpen(true)}
-                        className="gap-2"
+                        className="gap-2 flex-1 sm:flex-none min-w-[140px] touch-manipulation"
+                        size="sm"
                     >
-                        <Settings className="w-5 h-5" />
-                        Set Budget
+                        <Settings className="w-4 h-4 sm:w-5 sm:h-5" />
+                        <span className="hidden xs:inline">Set Budget</span>
+                        <span className="xs:hidden">Budget</span>
                     </Button>
                     <Button
                         variant="primary"
                         onClick={() => setIsExpenseModalOpen(true)}
-                        className="gap-2"
+                        className="gap-2 flex-1 sm:flex-none min-w-[140px] touch-manipulation"
+                        size="sm"
                     >
-                        <Plus className="w-5 h-5" />
-                        Add Expense
+                        <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
+                        <span className="hidden xs:inline">Add Expense</span>
+                        <span className="xs:hidden">Add</span>
                     </Button>
                 </div>
             </div>

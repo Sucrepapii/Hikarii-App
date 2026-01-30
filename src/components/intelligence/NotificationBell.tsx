@@ -3,6 +3,7 @@ import { useIntelligenceStore } from "../../stores/intelligenceStore";
 import { Bell, X, AlertTriangle, Lightbulb, TrendingUp, CreditCard, Calendar, DollarSign } from "lucide-react";
 import { InsightType, InsightPriority } from "../../types/intelligence.types";
 import { clsx } from "clsx";
+import { useAuthStore } from "../../stores/authStore";
 
 const insightIcons = {
     [InsightType.TASK_RECOMMENDATION]: Lightbulb,
@@ -41,6 +42,19 @@ export const NotificationBell: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const { insights, dismissInsight, refreshInsights } = useIntelligenceStore();
+    const { user } = useAuthStore();
+    const isPro = user?.subscriptionStatus === 'PRO';
+
+    // Filter insights based on subscription:
+    // Smart Insights (TASK_RECOMMENDATION) are Pro-only
+    const visibleInsights = insights.filter(insight => {
+        // If it's a Smart Insight (task recommendation), only show for Pro users
+        if (insight.type === InsightType.TASK_RECOMMENDATION) {
+            return isPro;
+        }
+        // All other insights (warnings, alerts) are available to everyone
+        return true;
+    });
 
     // Close dropdown when clicking outside
     useEffect(() => {
@@ -66,8 +80,11 @@ export const NotificationBell: React.FC = () => {
         return () => clearInterval(interval);
     }, [refreshInsights]);
 
-    const unreadCount = insights.length;
-    const criticalCount = insights.filter((i) => i.priority === InsightPriority.CRITICAL).length;
+
+
+    // Use filtered insights for counts
+    const unreadCount = visibleInsights.length;
+    const criticalCount = visibleInsights.filter((i) => i.priority === InsightPriority.CRITICAL).length;
 
     return (
         <div className="relative" ref={dropdownRef}>
@@ -116,9 +133,9 @@ export const NotificationBell: React.FC = () => {
 
                     {/* Notifications List */}
                     <div className="p-2">
-                        {insights.length > 0 ? (
+                        {visibleInsights.length > 0 ? (
                             <div className="space-y-2">
-                                {insights.map((insight) => {
+                                {visibleInsights.map((insight) => {
                                     const InsightIcon = insightIcons[insight.type];
                                     const styles = priorityStyles[insight.priority];
 

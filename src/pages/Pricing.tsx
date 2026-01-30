@@ -7,6 +7,7 @@ import { useAuthStore } from '../stores/authStore';
 import { loadStripe } from '@stripe/stripe-js';
 import { STRIPE_CONFIG } from '../config/stripe';
 import { useNavigate } from 'react-router-dom';
+import { PLAN_FEATURES } from '../config/features';
 
 // Initialize Stripe
 const stripePromise = loadStripe(STRIPE_CONFIG.publishableKey);

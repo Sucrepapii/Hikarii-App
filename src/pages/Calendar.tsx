@@ -85,14 +85,20 @@ export const Calendar: React.FC = () => {
                         )}
                     </div>
                 </div>
-                <div className="flex items-center gap-4 bg-white dark:bg-slate-800 p-1 rounded-xl border border-slate-200 dark:border-slate-700 self-start md:self-auto">
-                    <button onClick={prevMonth} className={`p-2 rounded-lg ${!isPro ? 'opacity-50 cursor-not-allowed' : 'hover:bg-slate-100 dark:hover:bg-slate-700'}`}>
+                <div className="flex items-center gap-2 sm:gap-4 bg-white dark:bg-slate-800 p-1 rounded-xl border border-slate-200 dark:border-slate-700 self-start md:self-auto">
+                    <button
+                        onClick={prevMonth}
+                        className={`p-2 rounded-lg touch-manipulation ${!isPro ? 'opacity-50 cursor-not-allowed' : 'hover:bg-slate-100 dark:hover:bg-slate-700'}`}
+                    >
                         <ChevronLeft className="w-5 h-5" />
                     </button>
-                    <span className="font-bold text-lg min-w-[140px] text-center">
+                    <span className="font-bold text-base sm:text-lg min-w-[120px] sm:min-w-[140px] text-center">
                         {format(currentDate, 'MMMM yyyy')}
                     </span>
-                    <button onClick={nextMonth} className={`p-2 rounded-lg ${!isPro ? 'opacity-50 cursor-not-allowed' : 'hover:bg-slate-100 dark:hover:bg-slate-700'}`}>
+                    <button
+                        onClick={nextMonth}
+                        className={`p-2 rounded-lg touch-manipulation ${!isPro ? 'opacity-50 cursor-not-allowed' : 'hover:bg-slate-100 dark:hover:bg-slate-700'}`}
+                    >
                         <ChevronRight className="w-5 h-5" />
                     </button>
                 </div>

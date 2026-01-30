@@ -25,12 +25,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
                     <input
                         ref={ref}
                         className={clsx(
-                            'w-full px-4 py-3 rounded-2xl glass input-3d transition-smooth',
+                            'w-full px-4 py-3 sm:py-3 rounded-2xl glass input-3d transition-smooth',
+                            'text-base sm:text-sm md:text-base', // Prevent zoom on iOS
                             'text-slate-900 dark:text-slate-100 placeholder:text-slate-400',
-                            'focus:outline-none',
-                            error
-                                ? 'border-danger-500 focus:ring-danger-500'
-                                : 'border-transparent',
+                            'focus:outline-none touch-manipulation', error
+                            ? 'border-danger-500 focus:ring-danger-500'
+                            : 'border-transparent',
                             icon && 'pl-10',
                             className
                         )}

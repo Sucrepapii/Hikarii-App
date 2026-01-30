@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Check, ArrowRight, LayoutDashboard, Wallet, Calendar, Briefcase, Users, GraduationCap, Building2, Target, Link2, Zap, FileText, TrendingUp, Sparkles } from 'lucide-react';
 import { Button } from '../components/common/Button';
 import { useAuthStore } from '../stores/authStore';
+import { PRICING_PLANS, PREMIUM_FEATURES } from '../config/features';
 
 export const LandingPage: React.FC = () => {
     const navigate = useNavigate();
@@ -259,7 +260,7 @@ export const LandingPage: React.FC = () => {
                             <span className="text-slate-500">/month</span>
                         </div>
                         <ul className="space-y-4 mb-8">
-                            {['Unlimited Tasks', '1 Active Project', 'Basic Analytics'].map((item, i) => (
+                            {PRICING_PLANS[0].features.map((item, i) => (
                                 <li key={i} className="flex items-center gap-3">
                                     <Check className="w-5 h-5 text-green-500 shrink-0" />
                                     <span>{item}</span>
@@ -282,7 +283,7 @@ export const LandingPage: React.FC = () => {
                             <span className="text-white/80">/month</span>
                         </div>
                         <ul className="space-y-4 mb-8">
-                            {['Everything in Free', 'Unlimited Projects', 'AI Insights', 'Advanced Analytics', 'Priority Support'].map((item, i) => (
+                            {PRICING_PLANS[1].features.map((item, i) => (
                                 <li key={i} className="flex items-center gap-3">
                                     <Check className="w-5 h-5 shrink-0" />
                                     <span>{item}</span>
