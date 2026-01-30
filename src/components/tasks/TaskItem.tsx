@@ -61,161 +61,121 @@ export const TaskItem: React.FC<TaskItemProps> = ({
     const hasLateFee = hasFinancials && task.financials?.lateFeePerDay && task.financials.lateFeePerDay > 0;
 
     return (
-        <Card className="group">
-            <div className="flex items-start gap-4">
-                {/* Checkbox */}
-                <button
-                    onClick={() => onToggle(task.id)}
-                    className={clsx(
-                        'mt-1 w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-smooth',
-                        task.status === TaskStatus.COMPLETED
-                            ? 'bg-gradient-to-r from-success-500 to-success-600 border-success-500'
-                            : 'border-slate-300 dark:border-slate-600 hover:border-primary-500'
-                    )}
-                >
-                    {task.status === TaskStatus.COMPLETED && (
-                        <Check className="w-4 h-4 text-white" />
-                    )}
-                </button>
+        <Card className="group h-full flex flex-col relative overflow-hidden transition-all hover:shadow-md hover:-translate-y-1">
+            {/* Status Strip */}
+            <div className={clsx(
+                "absolute top-0 left-0 w-1 h-full",
+                priorityColors[task.priority]
+            )} />
 
-                {/* Content */}
-                <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between gap-4">
-                        <div className="flex-1">
+            <div className="flex flex-col h-full pl-3">
+                {/* Header */}
+                <div className="flex items-start justify-between gap-3 mb-3">
+                    <div className="flex items-start gap-3">
+                        <button
+                            onClick={() => onToggle(task.id)}
+                            className={clsx(
+                                'mt-0.5 w-5 h-5 rounded-md border-2 flex items-center justify-center transition-smooth shrink-0',
+                                task.status === TaskStatus.COMPLETED
+                                    ? 'bg-gradient-to-r from-success-500 to-success-600 border-success-500'
+                                    : 'border-slate-300 dark:border-slate-600 hover:border-primary-500'
+                            )}
+                        >
+                            {task.status === TaskStatus.COMPLETED && (
+                                <Check className="w-3 h-3 text-white" />
+                            )}
+                        </button>
+                        <div>
                             <h3
                                 className={clsx(
-                                    'text-lg font-semibold mb-1',
+                                    'text-base font-semibold text-slate-900 dark:text-slate-100 leading-tight mb-1',
                                     task.status === TaskStatus.COMPLETED &&
                                     'line-through text-slate-400 dark:text-slate-500'
                                 )}
                             >
                                 {task.title}
                             </h3>
-                            {task.description && (
-                                <p className="text-sm text-slate-600 dark:text-slate-400 mb-2">
-                                    {task.description}
-                                </p>
-                            )}
-
-                            <div className="flex items-center gap-3 flex-wrap">
-                                {/* Priority Badge */}
-                                <span
-                                    className={clsx(
-                                        'px-2 py-1 rounded-lg text-xs font-medium text-white',
-                                        priorityColors[task.priority]
-                                    )}
-                                >
+                            <div className="flex items-center gap-2">
+                                <span className={clsx(
+                                    'text-[10px] px-1.5 py-0.5 rounded font-medium uppercase tracking-wider',
+                                    task.priority === TaskPriority.URGENT ? 'bg-red-100 text-red-600 dark:bg-red-900/30' :
+                                        task.priority === TaskPriority.HIGH ? 'bg-orange-100 text-orange-600 dark:bg-orange-900/30' :
+                                            task.priority === TaskPriority.MEDIUM ? 'bg-yellow-100 text-yellow-600 dark:bg-yellow-900/30' :
+                                                'bg-blue-100 text-blue-600 dark:bg-blue-900/30'
+                                )}>
                                     {task.priority}
                                 </span>
-
-                                {/* Status Badge */}
-                                <span className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium glass">
-                                    <StatusIcon className="w-3 h-3" />
-                                    {task.status.replace('_', ' ')}
-                                </span>
-
-                                {/* Due Date */}
                                 {task.dueDate && (
-                                    <span
-                                        className={clsx(
-                                            'text-xs font-medium',
-                                            isTaskOverdue
-                                                ? 'text-danger-500'
-                                                : 'text-slate-500 dark:text-slate-400'
-                                        )}
-                                    >
+                                    <span className={clsx(
+                                        'text-xs flex items-center gap-1',
+                                        isTaskOverdue ? 'text-red-500 font-medium' : 'text-slate-400'
+                                    )}>
+                                        <Clock className="w-3 h-3" />
                                         {formatRelativeDate(task.dueDate)}
                                     </span>
                                 )}
-
-                                {/* Financial Impact Badge */}
-                                {hasFinancials && Math.abs(financialAmount) > 0 && (
-                                    <FinancialImpactBadge
-                                        amount={Math.abs(financialAmount)}
-                                        type={financialType}
-                                        size="sm"
-                                    />
-                                )}
-
-                                {/* Late Fee Warning */}
-                                {hasLateFee && task.status !== TaskStatus.COMPLETED && (
-                                    <span className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/30">
-                                        ⚠️ {formatCurrency(useBudgetStore.getState().getConvertedAmount(task.financials?.lateFeePerDay || 0, useBudgetStore.getState().currency), useBudgetStore.getState().currency)}/day late fee
-                                    </span>
-                                )}
                             </div>
+                        </div>
+                    </div>
+                </div>
 
-                            {/* Income vs Actual (for completed income tasks) */}
-                            {task.financials &&
-                                task.financials.type === TaskType.INCOME &&
-                                task.status === TaskStatus.COMPLETED &&
-                                task.financials.actualIncome &&
-                                task.financials.estimatedIncome && (
-                                    <div className="mt-2 px-3 py-2 rounded-lg bg-blue-500/10 border border-blue-500/20">
-                                        <div className="flex items-center justify-between text-xs">
-                                            <span className="text-slate-600 dark:text-slate-400">Expected:</span>
-                                            <span className="font-semibold text-slate-700 dark:text-slate-300">
-                                                {formatCurrency(useBudgetStore.getState().getConvertedAmount(task.financials.estimatedIncome, useBudgetStore.getState().currency), useBudgetStore.getState().currency)}
-                                            </span>
-                                        </div>
-                                        <div className="flex items-center justify-between text-xs mt-1">
-                                            <span className="text-slate-600 dark:text-slate-400">Actual:</span>
-                                            <span className={clsx(
-                                                "font-semibold",
-                                                task.financials.actualIncome >= task.financials.estimatedIncome
-                                                    ? "text-green-600 dark:text-green-400"
-                                                    : "text-orange-600 dark:text-orange-400"
-                                            )}>
-                                                {formatCurrency(useBudgetStore.getState().getConvertedAmount(task.financials.actualIncome, useBudgetStore.getState().currency), useBudgetStore.getState().currency)}
-                                                {task.financials.actualIncome >= task.financials.estimatedIncome ? ' ✓' : ' ⚠️'}
-                                            </span>
-                                        </div>
-                                    </div>
-                                )}
+                {/* Description */}
+                {task.description && (
+                    <p className="text-sm text-slate-500 dark:text-slate-400 mb-4 line-clamp-2 min-h-[20px]">
+                        {task.description}
+                    </p>
+                )}
 
-                            {/* Linked Expenses Progress */}
-                            {task.financials && task.financials.type === TaskType.EXPENSE && task.financials.estimatedCost && (
-                                <div className="mt-3">
-                                    <div className="flex justify-between text-xs mb-1">
-                                        <span className="text-slate-600 dark:text-slate-400">Budget Progress</span>
-                                        <span className="font-medium text-slate-700 dark:text-slate-300">
-                                            {formatCurrency(useBudgetStore.getState().getConvertedAmount(totalLinkedSpent, useBudgetStore.getState().currency), useBudgetStore.getState().currency)} / {formatCurrency(useBudgetStore.getState().getConvertedAmount(task.financials.estimatedCost, useBudgetStore.getState().currency), useBudgetStore.getState().currency)}
-                                        </span>
-                                    </div>
-                                    <div className="h-1.5 w-full bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
-                                        <div
-                                            className={clsx(
-                                                "h-full rounded-full transition-all duration-500",
-                                                totalLinkedSpent > task.financials.estimatedCost ? "bg-red-500" : "bg-primary-500"
-                                            )}
-                                            style={{ width: `${Math.min((totalLinkedSpent / task.financials.estimatedCost) * 100, 100)}%` }}
-                                        />
-                                    </div>
+                {/* Footer Content (Financials & Actions) */}
+                <div className="mt-auto pt-3 border-t border-slate-100 dark:border-slate-700/50 flex items-end justify-between gap-2">
+                    <div className="flex-1 min-w-0">
+                        {/* Financial Impact Badge */}
+                        {hasFinancials && Math.abs(financialAmount) > 0 && (
+                            <div className="mb-2">
+                                <FinancialImpactBadge
+                                    amount={Math.abs(financialAmount)}
+                                    type={financialType}
+                                    size="sm"
+                                />
+                            </div>
+                        )}
+
+                        {/* Progress Bar for Budget */}
+                        {task.financials && task.financials.type === TaskType.EXPENSE && task.financials.estimatedCost && (
+                            <div>
+                                <div className="flex justify-between text-[10px] mb-1">
+                                    <span className="text-slate-500">Budget</span>
+                                    <span className="font-medium text-slate-700 dark:text-slate-300">
+                                        {Math.round((totalLinkedSpent / task.financials.estimatedCost) * 100)}%
+                                    </span>
                                 </div>
-                            )}
-                        </div>
+                                <div className="h-1 w-full bg-slate-100 dark:bg-slate-700/50 rounded-full overflow-hidden">
+                                    <div
+                                        className={clsx(
+                                            "h-full rounded-full transition-all duration-500",
+                                            totalLinkedSpent > task.financials.estimatedCost ? "bg-red-500" : "bg-primary-500"
+                                        )}
+                                        style={{ width: `${Math.min((totalLinkedSpent / task.financials.estimatedCost) * 100, 100)}%` }}
+                                    />
+                                </div>
+                            </div>
+                        )}
+                    </div>
 
-                        {/* Actions */}
-                        <div className="flex gap-2">
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => onEdit(task)}
-                                className="p-2.5 bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 dark:text-blue-400 rounded-xl transition-smooth flex items-center gap-2"
-                            >
-                                <Edit className="w-5 h-5" />
-                                <span className="hidden md:inline font-medium">Edit</span>
-                            </Button>
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => onDelete(task.id)}
-                                className="p-2.5 bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 rounded-xl transition-smooth flex items-center gap-2"
-                            >
-                                <Trash2 className="w-5 h-5" />
-                                <span className="hidden md:inline font-medium">Delete</span>
-                            </Button>
-                        </div>
+                    {/* Compact Actions */}
+                    <div className="flex gap-1 shrink-0">
+                        <button
+                            onClick={() => onEdit(task)}
+                            className="p-2 text-slate-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-500/10 rounded-lg transition-colors"
+                        >
+                            <Edit className="w-4 h-4" />
+                        </button>
+                        <button
+                            onClick={() => onDelete(task.id)}
+                            className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors"
+                        >
+                            <Trash2 className="w-4 h-4" />
+                        </button>
                     </div>
                 </div>
             </div>
