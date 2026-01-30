@@ -23,11 +23,15 @@ export const createTask = async (
   res: Response,
 ): Promise<void> => {
   try {
+    // Sanitize projectId to handle empty strings (common from frontend select inputs)
+    const taskData = {
+      ...req.body,
+      userId: req.userId,
+      projectId: req.body.projectId || undefined, // Convert "" to undefined
+    };
+
     const task = await prisma.task.create({
-      data: {
-        ...req.body,
-        userId: req.userId,
-      },
+      data: taskData,
     });
     res.status(201).json(task);
   } catch (error: any) {
