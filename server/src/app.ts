@@ -67,18 +67,18 @@ const PORT = process.env.PORT || 5000;
 // Let's assume this is the main app setup.
 
 // If run directly
-if (import.meta.url === `file://${process.argv[1]}`) {
-  app.listen(PORT, () => {
-    // Check if we need to start cron jobs
-    if (process.env.NODE_ENV === "production" && !process.env.VERCEL) {
-      import("./jobs/reminder.job.js")
-        .then(({ startReminderJob }) => {
-          startReminderJob();
-        })
-        .catch((err) => console.error("Failed to load cron job:", err));
-    }
-    console.log(`\n🚀 Server is running on port ${PORT}`);
-  });
-}
+// Force start for railway/production
+const PORT_NUM = Number(PORT) || 5000;
+app.listen(PORT_NUM, "0.0.0.0", () => {
+  // Check if we need to start cron jobs
+  if (process.env.NODE_ENV === "production" && !process.env.VERCEL) {
+    import("./jobs/reminder.job.js")
+      .then(({ startReminderJob }) => {
+        startReminderJob();
+      })
+      .catch((err) => console.error("Failed to load cron job:", err));
+  }
+  console.log(`\n🚀 Server is running on port ${PORT_NUM}`);
+});
 
 export default app;
