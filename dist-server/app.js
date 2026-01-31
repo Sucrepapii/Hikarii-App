@@ -623,11 +623,16 @@ import { google } from "googleapis";
 import fs from "fs";
 import path from "path";
 var logToFile = (message, data) => {
-  const logPath = path.join(process.cwd(), "debug.log");
-  const timestamp = (/* @__PURE__ */ new Date()).toISOString();
-  const logEntry = `[${timestamp}] ${message} ${data ? JSON.stringify(data, null, 2) : ""}
+  console.log(`[DEBUG] ${message}`, data ? JSON.stringify(data, null, 2) : "");
+  try {
+    const logPath = path.join(process.cwd(), "debug.log");
+    const timestamp = (/* @__PURE__ */ new Date()).toISOString();
+    const logEntry = `[${timestamp}] ${message} ${data ? JSON.stringify(data, null, 2) : ""}
 `;
-  fs.appendFileSync(logPath, logEntry);
+    fs.appendFileSync(logPath, logEntry);
+  } catch (e) {
+    console.error("Failed to write to debug.log", e);
+  }
 };
 var oauth2Client = new google.auth.OAuth2(
   process.env.GOOGLE_CLIENT_ID,
@@ -637,12 +642,14 @@ var oauth2Client = new google.auth.OAuth2(
 );
 var exchangeCodeForToken = async (userId, code) => {
   try {
+    logToFile("CWD:", process.cwd());
     logToFile("Exchanging code for token");
     logToFile(
       "Client ID prefix:",
       process.env.GOOGLE_CLIENT_ID?.substring(0, 10)
     );
-    logToFile("Redirect URI:", oauth2Client.redirectUri);
+    logToFile("Redirect URI (Configured):", oauth2Client.redirectUri);
+    logToFile("Redirect URI (Internal):", oauth2Client._redirectUri);
     const { tokens } = await oauth2Client.getToken(code);
     const updatedUser = await db_default.user.update({
       where: { id: userId },
