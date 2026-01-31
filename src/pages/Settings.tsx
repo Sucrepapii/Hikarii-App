@@ -35,12 +35,10 @@ export const Settings: React.FC = () => {
                 }
             } catch (error: any) {
                 console.error("Google connect error", error);
-                const serverError = error.response?.data?.error || error.message;
-                alert(`DEBUG ERROR: ${JSON.stringify(error.response?.data || error.message)}`);
-                toast.error(`Failed: ${serverError}`);
+                toast.error("Failed to connect Google Calendar.");
             }
         },
-        onError: () => alert("Google Popup Failed (Before Server)"),
+        onError: () => toast.error("Google Login Failed"),
         flow: 'auth-code',
         scope: "https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/calendar.events"
     });

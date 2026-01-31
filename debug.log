@@ -1,0 +1,9 @@
+[2026-01-31T22:44:43.806Z] CWD: "C:\\Users\\icmas\\OneDrive\\Documents\\task-budget-app"
+[2026-01-31T22:44:43.807Z] Exchanging code for token 
+[2026-01-31T22:44:43.808Z] Client ID prefix: 
+[2026-01-31T22:44:43.808Z] Redirect URI (Configured): 
+[2026-01-31T22:44:43.809Z] Redirect URI (Internal): 
+[2026-01-31T22:44:44.337Z] Error exchanging code: {
+  "error": "invalid_request",
+  "error_description": "Could not determine client ID from request."
+}
