@@ -25,7 +25,7 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/projects", projectRoutes);
-app.use("/api/budgets", budgetRoutes);
+app.use("/api", budgetRoutes); // Mounts /budgets and /expenses
 app.use("/api/insights", insightsRoutes);
 app.use("/api/predictive", predictiveRoutes);
 app.use("/api/patterns", patternRoutes);

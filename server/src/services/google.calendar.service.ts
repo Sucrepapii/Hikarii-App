@@ -1,5 +1,14 @@
 import { google } from "googleapis";
 import prisma from "../config/db";
+import fs from "fs";
+import path from "path";
+
+const logToFile = (message: string, data?: any) => {
+  const logPath = path.join(process.cwd(), "debug.log");
+  const timestamp = new Date().toISOString();
+  const logEntry = `[${timestamp}] ${message} ${data ? JSON.stringify(data, null, 2) : ""}\n`;
+  fs.appendFileSync(logPath, logEntry);
+};
 
 const oauth2Client = new google.auth.OAuth2(
   process.env.GOOGLE_CLIENT_ID,
@@ -20,14 +29,13 @@ const SCOPES = [
  */
 export const exchangeCodeForToken = async (userId: string, code: string) => {
   try {
-    // Debugging logs
-    console.log("Exchanging code for token...");
-    console.log(
-      "Client ID:",
-      process.env.GOOGLE_CLIENT_ID?.substring(0, 10) + "...",
+    // Debugging logs to file
+    logToFile("Exchanging code for token");
+    logToFile(
+      "Client ID prefix:",
+      process.env.GOOGLE_CLIENT_ID?.substring(0, 10),
     );
-    console.log("Client Secret Set:", !!process.env.GOOGLE_CLIENT_SECRET);
-    console.log("Redirect URI:", (oauth2Client as any).redirectUri);
+    logToFile("Redirect URI:", (oauth2Client as any).redirectUri);
 
     const { tokens } = await oauth2Client.getToken(code);
 
@@ -42,10 +50,10 @@ export const exchangeCodeForToken = async (userId: string, code: string) => {
 
     return updatedUser;
   } catch (error: any) {
-    console.error(
-      "Error exchanging code for token details:",
-      error.response?.data || error.message,
-    );
+    const errorDetails = error.response?.data || error.message;
+    logToFile("Error exchanging code:", errorDetails);
+
+    console.error("Error exchanging code for token details:", errorDetails);
     throw new Error(
       `Google Auth Failed: ${error.response?.data?.error || error.message}`,
     );

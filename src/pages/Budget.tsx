@@ -229,7 +229,7 @@ export const Budget: React.FC = () => {
                     >
                         <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
                         <span className="hidden xs:inline">Add Expense</span>
-                        <span className="xs:hidden">Add</span>
+                        <span className="xs:hidden">Expense</span>
                     </Button>
                 </div>
             </div>
