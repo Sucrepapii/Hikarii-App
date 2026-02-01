@@ -115,11 +115,12 @@ export const LandingPage: React.FC = () => {
                         </h2>
                         <p className="text-slate-600 dark:text-slate-400 text-lg">Powering your productivity and financial health.</p>
                     </div>
-                    <div className="grid md:grid-cols-3 gap-8">
+                    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
                         {[
                             { icon: Check, title: 'Task Management', desc: 'Organize tasks with Kanban boards, lists, and smart filters.', gradient: 'from-blue-500 via-indigo-500 to-purple-500', bg: 'from-blue-50/50 to-indigo-50/50' },
                             { icon: Wallet, title: 'Budget Tracking', desc: 'Monitor income and expenses with detailed analytics.', gradient: 'from-emerald-500 via-teal-500 to-cyan-500', bg: 'from-emerald-50/50 to-teal-50/50' },
-                            { icon: Calendar, title: 'Calendar View', desc: 'Visualize your schedule and financial deadlines.', gradient: 'from-orange-500 via-pink-500 to-rose-500', bg: 'from-orange-50/50 to-pink-50/50' }
+                            { icon: Calendar, title: 'Calendar View', desc: 'Visualize your schedule and financial deadlines.', gradient: 'from-orange-500 via-pink-500 to-rose-500', bg: 'from-orange-50/50 to-pink-50/50' },
+                            { icon: Split, title: 'Smart Splitting', desc: 'Break down complex tasks into manageable subtasks instantly.', gradient: 'from-purple-500 via-violet-500 to-indigo-500', bg: 'from-purple-50/50 to-indigo-50/50' }
                         ].map((feature, i) => (
                             <div
                                 key={i}

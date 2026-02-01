@@ -204,7 +204,6 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
       throw error;
     }
   },
-  },
 
   openSplitModal: (taskId: string) => {
     set({ activeSplitTaskId: taskId });
