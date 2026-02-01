@@ -1084,7 +1084,7 @@ var analyzeTaskSplit = async (req, res) => {
       return;
     }
     const { taskSplitterService: taskSplitterService2 } = await Promise.resolve().then(() => (init_task_splitter_service(), task_splitter_service_exports));
-    const suggestions = taskSplitterService2.suggestBlocks(task.title);
+    const suggestions = await taskSplitterService2.suggestBlocks(task.title);
     const createdBlocks = await db_default.$transaction(
       suggestions.map(
         (block) => db_default.taskBlock.create({

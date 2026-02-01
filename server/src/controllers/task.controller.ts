@@ -192,7 +192,7 @@ export const analyzeTaskSplit = async (
       await import("../services/task.splitter.service.js");
 
     // Generate suggestions
-    const suggestions = taskSplitterService.suggestBlocks(task.title);
+    const suggestions = await taskSplitterService.suggestBlocks(task.title);
 
     // Persist to DB using transaction
     const createdBlocks = await prisma.$transaction(
