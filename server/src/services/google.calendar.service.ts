@@ -136,6 +136,76 @@ export const createCalendarEvent = async (userId: string, task: any) => {
 };
 
 /**
+ * Sync multiple task blocks to calendar
+ * Simple strategy: Schedule starting tomorrow 9am, sequentially with 5m breaks
+ */
+export const syncTaskBlocks = async (
+  userId: string,
+  taskId: string,
+  blocks: any[],
+) => {
+  try {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user?.googleAccessToken) return null;
+
+    oauth2Client.setCredentials({
+      access_token: user.googleAccessToken,
+      refresh_token: user.googleRefreshToken,
+    });
+
+    const calendar = google.calendar({ version: "v3", auth: oauth2Client });
+
+    // Start scheduling from tomorrow 9:00 AM
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(9, 0, 0, 0);
+
+    let currentStartTime = tomorrow;
+
+    const results = [];
+
+    for (const block of blocks) {
+      if (!block.duration) continue;
+
+      const endTime = new Date(
+        currentStartTime.getTime() + block.duration * 60000,
+      );
+
+      const event = {
+        summary: block.title, // e.g. "Research & Notes (Write Essay)"
+        description: `Block ${block.order + 1} of task`,
+        start: {
+          dateTime: currentStartTime.toISOString(),
+          timeZone: "UTC", // or user timezone
+        },
+        end: {
+          dateTime: endTime.toISOString(),
+          timeZone: "UTC",
+        },
+      };
+
+      try {
+        const response = await calendar.events.insert({
+          calendarId: "primary",
+          requestBody: event,
+        });
+        results.push({ blockId: block.id, googleEventId: response.data.id });
+
+        // Advance time + 5 mins break
+        currentStartTime = new Date(endTime.getTime() + 5 * 60000);
+      } catch (err) {
+        console.error("Failed to sync block", block.title, err);
+      }
+    }
+
+    return results;
+  } catch (error) {
+    console.error("Batch sync failed", error);
+    throw error;
+  }
+};
+
+/**
  * Get Auth URL (if doing server-side redirect flow, though we are using frontend popup)
  */
 export const getAuthUrl = () => {

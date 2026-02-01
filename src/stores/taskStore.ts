@@ -23,6 +23,8 @@ interface TaskStore {
   getTasksWithFinancialImpact: () => Task[];
   getIncomeTasks: () => Task[];
   getExpenseTasks: () => Task[];
+  analyzeTask: (id: string) => Promise<void>;
+  scheduleTaskBlocks: (id: string) => Promise<any>;
 }
 
 export const useTaskStore = create<TaskStore>((set, get) => ({
@@ -150,5 +152,52 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
     return get().tasks.filter(
       (task) => task.financials?.type === TaskType.EXPENSE,
     );
+  },
+
+  analyzeTask: async (id) => {
+    try {
+      // Don't set global loading, maybe just local UI loading handled by component
+      const response = await apiClient.post(`/tasks/${id}/analyze-split`);
+
+      if (response.data.blocks) {
+        set((state) => ({
+          tasks: state.tasks.map((task) =>
+            task.id === id ? { ...task, blocks: response.data.blocks } : task,
+          ),
+        }));
+      }
+    } catch (error: any) {
+      console.error("Analysis failed", error);
+      throw error;
+    }
+  },
+
+  scheduleTaskBlocks: async (id: string) => {
+    try {
+      const response = await apiClient.post(`/tasks/${id}/schedule-blocks`);
+      if (response.data.results) {
+        // Update task blocks with googleEventIds if returned
+        set((state) => ({
+          tasks: state.tasks.map((task) => {
+            if (task.id !== id || !task.blocks) return task;
+
+            const updatedBlocks = task.blocks.map((block) => {
+              const result = response.data.results.find(
+                (r: any) => r.blockId === block.id,
+              );
+              return result
+                ? { ...block, googleEventId: result.googleEventId }
+                : block;
+            });
+
+            return { ...task, blocks: updatedBlocks };
+          }),
+        }));
+      }
+      return response.data;
+    } catch (error: any) {
+      console.error("Scheduling failed", error);
+      throw error;
+    }
   },
 }));

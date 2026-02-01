@@ -17,6 +17,17 @@ export enum TaskType {
   NEUTRAL = "NEUTRAL", // No direct financial impact
 }
 
+export interface TaskBlock {
+  id: string;
+  title: string;
+  duration: number; // minutes
+  order: number;
+  taskId: string;
+  googleEventId?: string;
+  scheduledStart?: Date;
+  scheduledEnd?: Date;
+}
+
 export interface TaskFinancials {
   type: TaskType;
   estimatedCost?: number; // Expected expense amount
@@ -38,6 +49,7 @@ export interface Task {
   createdAt: Date;
   tags: string[];
   financials?: TaskFinancials; // Financial data for task-money intelligence
+  blocks?: TaskBlock[];
   projectId?: string;
 }
 

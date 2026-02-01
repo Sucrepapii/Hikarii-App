@@ -6,6 +6,7 @@ import {
   updateTask,
   deleteTask,
   toggleTaskStatus,
+  analyzeTaskSplit,
 } from "../controllers/task.controller";
 import { authenticate } from "../middleware/auth.middleware";
 
@@ -20,5 +21,7 @@ router.get("/:id", getTaskById);
 router.put("/:id", updateTask);
 router.delete("/:id", deleteTask);
 router.patch("/:id/toggle", toggleTaskStatus);
+router.post("/:id/analyze-split", analyzeTaskSplit);
+router.post("/:id/schedule-blocks", scheduleBlocks);
 
 export default router;

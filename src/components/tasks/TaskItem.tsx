@@ -1,13 +1,12 @@
 import React from 'react';
 import { Task, TaskPriority, TaskStatus, TaskType } from '../../types/task.types';
 import { Card } from '../common/Card';
-import { Button } from '../common/Button';
-import { Check, Clock, Trash2, Edit, AlertCircle } from 'lucide-react';
+import { Check, Clock, Trash2, Edit, Sparkles } from 'lucide-react';
 import { formatRelativeDate, isOverdue } from '../../utils/dateUtils';
 import { clsx } from 'clsx';
 import { FinancialImpactBadge } from '../intelligence/FinancialImpactBadge';
 import { useBudgetStore } from '../../stores/budgetStore';
-import { formatCurrency } from '../../utils/currencyFormatter';
+import { TaskSplitModal } from './TaskSplitModal';
 
 interface TaskItemProps {
     task: Task;
@@ -23,12 +22,6 @@ const priorityColors = {
     [TaskPriority.URGENT]: 'bg-red-500',
 };
 
-const statusIcons = {
-    [TaskStatus.TODO]: Clock,
-    [TaskStatus.IN_PROGRESS]: AlertCircle,
-    [TaskStatus.COMPLETED]: Check,
-};
-
 export const TaskItem: React.FC<TaskItemProps> = ({
     task,
     onToggle,
@@ -39,7 +32,6 @@ export const TaskItem: React.FC<TaskItemProps> = ({
     const linkedExpenses = expenses.filter(e => e.linkedTaskId === task.id);
     const totalLinkedSpent = linkedExpenses.reduce((sum, e) => sum + e.amount, 0);
 
-    const StatusIcon = statusIcons[task.status];
     const isTaskOverdue = task.dueDate && isOverdue(task.dueDate);
 
     // Calculate financial impact
@@ -57,8 +49,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({
                 : 'neutral'
         : 'neutral';
 
-    // Late fee warning
-    const hasLateFee = hasFinancials && task.financials?.lateFeePerDay && task.financials.lateFeePerDay > 0;
+    const [isSplitModalOpen, setIsSplitModalOpen] = React.useState(false);
 
     return (
         <Card className="group h-full flex flex-col relative overflow-hidden transition-all hover:shadow-md hover:-translate-y-1">
@@ -165,6 +156,13 @@ export const TaskItem: React.FC<TaskItemProps> = ({
                     {/* Compact Actions */}
                     <div className="flex gap-1 shrink-0">
                         <button
+                            onClick={() => setIsSplitModalOpen(true)}
+                            className="p-2 text-slate-400 hover:text-purple-500 hover:bg-purple-50 dark:hover:bg-purple-500/10 rounded-lg transition-colors"
+                            title="Smart Split"
+                        >
+                            <Sparkles className="w-4 h-4" />
+                        </button>
+                        <button
                             onClick={() => onEdit(task)}
                             className="p-2 text-slate-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-500/10 rounded-lg transition-colors"
                         >
@@ -179,6 +177,12 @@ export const TaskItem: React.FC<TaskItemProps> = ({
                     </div>
                 </div>
             </div>
+
+            <TaskSplitModal
+                isOpen={isSplitModalOpen}
+                onClose={() => setIsSplitModalOpen(false)}
+                task={task}
+            />
         </Card>
     );
 };

@@ -79,32 +79,12 @@ export const InsightsPanel: React.FC<InsightsPanelProps> = ({ onTaskClick }) => 
             ? ((projectedSavings - lastMonthSavings) / lastMonthSavings * 100)
             : 0;
 
-        // 2. Peak Productivity - Find most productive day/time from completed tasks
-        const completedTasks = tasks.filter(t => t.status === 'COMPLETED' && t.completedAt);
-        const tasksByDayHour: Record<string, number> = {};
+        // 2. Peak Productivity - Placeholder or remove if not tracked
+        // skipping for now as completedAt is not in Task mode
+        const peakDay = 'N/A';
+        const peakHour = 0;
 
-        completedTasks.forEach(task => {
-            if (task.completedAt) {
-                const date = new Date(task.completedAt);
-                const day = date.toLocaleDateString('en-US', { weekday: 'short' });
-                const hour = date.getHours();
-                const key = `${day}-${hour}`;
-                tasksByDayHour[key] = (tasksByDayHour[key] || 0) + 1;
-            }
-        });
-
-        let peakDay = 'N/A';
-        let peakHour = 0;
-        let maxTasks = 0;
-        Object.entries(tasksByDayHour).forEach(([key, count]) => {
-            if (count > maxTasks) {
-                maxTasks = count;
-                const [day, hour] = key.split('-');
-                peakDay = day;
-                peakHour = parseInt(hour);
-            }
-        });
-
+        const completedTasks = tasks.filter(t => t.status === 'COMPLETED');
         const focusScore = completedTasks.length > 0
             ? Math.min(100, Math.round((completedTasks.length / Math.max(tasks.length, 1)) * 100))
             : 0;

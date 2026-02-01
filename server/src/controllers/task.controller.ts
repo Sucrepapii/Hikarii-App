@@ -159,8 +159,57 @@ export const toggleTaskStatus = async (
       data: { status: newStatus },
     });
 
-    res.json(updatedTask);
   } catch (error: any) {
     res.status(500).json({ error: error.message });
+  }
+};
+};
+
+export const analyzeTaskSplit = async (
+  req: AuthRequest,
+  res: Response,
+): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const task = await prisma.task.findFirst({
+      where: { id, userId: req.userId },
+      include: { blocks: true },
+    });
+
+    if (!task) {
+      res.status(404).json({ error: "Task not found" });
+      return;
+    }
+
+    // Check if blocks already exist
+    if (task.blocks && task.blocks.length > 0) {
+      res.json({ blocks: task.blocks, message: "Blocks already exist" });
+      return;
+    }
+
+    // Import service dynamically
+    const { taskSplitterService } = await import("../services/task.splitter.service.js");
+    
+    // Generate suggestions
+    const suggestions = taskSplitterService.suggestBlocks(task.title);
+
+    // Persist to DB using transaction
+    const createdBlocks = await prisma.$transaction(
+      suggestions.map((block) => 
+        prisma.taskBlock.create({
+          data: {
+            title: block.title,
+            duration: block.duration,
+            order: block.order,
+            taskId: task.id,
+          },
+        })
+      )
+    );
+
+    res.json({ blocks: createdBlocks, message: "Blocks generated successfully" });
+  } catch (error: any) {
+    console.error("Split analysis failed:", error);
+    res.status(500).json({ error: error.message || "Failed to analyze task" });
   }
 };

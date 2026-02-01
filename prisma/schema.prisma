@@ -92,6 +92,28 @@ model Task {
 
   @@index([userId, status])
   @@index([userId, dueDate])
+
+  blocks         TaskBlock[]
+}
+
+model TaskBlock {
+  id             String    @id @default(uuid())
+  title          String    // e.g. "Research", "Drafting"
+  duration       Int       // Estimated duration in minutes
+  order          Int       // Sequence order
+  
+  taskId         String
+  task           Task      @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  // Calendar Sync
+  googleEventId  String?
+  scheduledStart DateTime?
+  scheduledEnd   DateTime?
+
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@index([taskId])
 }
 
 model Budget {
