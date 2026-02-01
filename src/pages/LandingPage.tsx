@@ -1,321 +1,294 @@
-import React, { useEffect, useRef } from 'react';
+
 import { Link, useNavigate } from 'react-router-dom';
-import { Check, ArrowRight, LayoutDashboard, Wallet, Calendar, Briefcase, Users, GraduationCap, Building2, Target, Link2, Zap, FileText, TrendingUp, Sparkles, Split } from 'lucide-react';
+import { LayoutDashboard, Check, Zap, Shield, Globe, ChevronRight } from 'lucide-react';
 import { Button } from '../components/common/Button';
 import { useAuthStore } from '../stores/authStore';
-import { PRICING_PLANS, PREMIUM_FEATURES } from '../config/features';
+
+// Assets (Using URLs for the generated images - in a real app these would be imported or in public)
+// Note: In this environment, we will assume the files are placed in public or handled via typical asset workflow.
+// For the sake of this edit, I'll allow the user to visualize where they go.
+
+const HeroDashboard = "/hero_dashboard_1769981528943.png"; // Placeholder for the actual moved file
+const MethodClarity = "/method_clarity_1769981543788.png";
+const MethodFocus = "/method_focus_1769981556726.png";
+const MethodFreedom = "/method_freedom_1769981571479.png";
 
 export const LandingPage: React.FC = () => {
     const navigate = useNavigate();
     const { token } = useAuthStore();
     const isAuthenticated = !!token;
-    const observerRef = useRef<IntersectionObserver | null>(null);
 
-    // Scroll reveal animation using Intersection Observer
-    useEffect(() => {
-        observerRef.current = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('revealed');
-                    }
-                });
-            },
-            { threshold: 0.1 }
-        );
+    // 3D Tilt Effect
+    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+        const { currentTarget: target, clientX: x, clientY: y } = e;
+        const { left, top, width, height } = target.getBoundingClientRect();
 
-        const elements = document.querySelectorAll('.reveal-on-scroll');
-        elements.forEach((el) => observerRef.current?.observe(el));
+        const cx = width / 2;
+        const cy = height / 2;
+        const dx = x - left - cx;
+        const dy = y - top - cy;
 
-        return () => observerRef.current?.disconnect();
-    }, []);
+        const rotateX = -(dy / cy) * 5; // Max 5 deg
+        const rotateY = (dx / cx) * 5;
+
+        target.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    };
+
+    const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
+        e.currentTarget.style.transform = `perspective(1000px) rotateX(0) rotateY(0)`;
+    };
 
     return (
-        <div className="min-h-screen bg-slate-50 dark:bg-slate-900 font-sans text-slate-900 dark:text-slate-100 relative overflow-hidden">
+        <div className="min-h-screen bg-slate-50 dark:bg-[#0B0C15] font-sans text-slate-900 dark:text-slate-100 overflow-x-hidden selection:bg-purple-500/30">
             {/* Navbar */}
-            <nav className="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between items-center h-16">
-                        <div className="flex items-center gap-2">
-                            <div className="bg-gradient-to-tr from-primary-600 to-accent-600 p-2 rounded-xl">
-                                <LayoutDashboard className="w-6 h-6 text-white" />
-                            </div>
-                            <span className="text-xl font-display font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-accent-600">
-                                Hikari
-                            </span>
+            <nav className="fixed top-0 w-full z-50 bg-white/80 dark:bg-[#0B0C15]/80 backdrop-blur-md border-b border-slate-200 dark:border-white/5">
+                <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                        <div className="bg-gradient-to-tr from-indigo-500 to-purple-500 p-2 rounded-lg">
+                            <LayoutDashboard className="w-6 h-6 text-white" />
                         </div>
-                        <div className="flex items-center gap-4">
-                            {isAuthenticated ? (
-                                <Button onClick={() => navigate('/dashboard')} variant="primary" size="sm">
-                                    Go to Dashboard
-                                </Button>
-                            ) : (
-                                <>
-                                    <Link to="/login" className="text-sm font-medium hover:text-primary-600 transition-colors">
-                                        Login
-                                    </Link>
-                                    <Button onClick={() => navigate('/signup')} variant="primary" size="sm">
-                                        Get Started
-                                    </Button>
-                                </>
-                            )}
-                        </div>
+                        <span className="text-xl font-display font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-400">
+                            Hikari
+                        </span>
+                    </div>
+                    <div className="flex items-center gap-6">
+                        {!isAuthenticated && (
+                            <Link to="/login" className="text-sm font-medium hover:text-indigo-400 transition-colors">Login</Link>
+                        )}
+                        <Button
+                            onClick={() => navigate(isAuthenticated ? '/dashboard' : '/signup')}
+                            className="bg-white text-black hover:bg-slate-200 dark:bg-white dark:text-black rounded-full px-6"
+                        >
+                            {isAuthenticated ? 'Dashboard' : 'Get Started'}
+                        </Button>
                     </div>
                 </div>
             </nav>
 
-            {/* Hero Section with Animated Background */}
-            <div className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center overflow-hidden">
-                {/* Animated Gradient Background Orbs */}
-                <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                    <div className="absolute top-0 -left-4 w-72 h-72 bg-gradient-to-br from-blue-400 to-indigo-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 dark:opacity-10 float-slow"></div>
-                    <div className="absolute top-20 -right-4 w-72 h-72 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 dark:opacity-10 float-medium"></div>
-                    <div className="absolute -bottom-8 left-20 w-72 h-72 bg-gradient-to-br from-cyan-400 to-teal-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 dark:opacity-10 float-fast"></div>
+            {/* HERO SECTION */}
+            <section className="relative pt-40 pb-20 px-6 max-w-7xl mx-auto flex flex-col items-center text-center">
+                {/* Background Gradients */}
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[800px] pointer-events-none">
+                    <div className="absolute top-20 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-purple-500/20 rounded-full blur-[120px] mix-blend-screen animate-pulse-slow"></div>
+                    <div className="absolute top-40 left-1/3 w-[500px] h-[500px] bg-indigo-500/20 rounded-full blur-[100px] mix-blend-screen"></div>
                 </div>
 
-                {/* Hero Content */}
-                <div className="relative z-10">
-                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-primary-50 to-purple-50 dark:from-primary-900/30 dark:to-purple-900/30 text-primary-600 dark:text-primary-400 mb-8 animate-fade-in border border-primary-200/50 dark:border-primary-700/50">
-                        <Sparkles className="w-4 h-4" />
-                        <span className="text-sm font-medium">Bring clarity to your life</span>
-                    </div>
-
-                    <h1 className="text-5xl md:text-7xl font-display font-bold tracking-tight mb-8 animate-fade-in">
-                        Master Your <span className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">Life & Money</span>
-                    </h1>
-                    <p className="text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto mb-10 animate-fade-in delay-100">
-                        The all-in-one workspace for task management and financial tracking.
-                        Organize your projects, track expenses, and reach your goals.
-                    </p>
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in delay-200">
-                        <Button
-                            onClick={() => navigate('/signup')}
-                            size="lg"
-                            className="rounded-full px-8 pulse-glow relative bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700"
-                        >
-                            Start for Free <ArrowRight className="w-5 h-5 ml-2" />
-                        </Button>
-                        <Button onClick={() => navigate('/pricing')} variant="ghost" size="lg" className="rounded-full px-8">
-                            View Pricing
-                        </Button>
-                    </div>
-                </div>
-            </div>
-
-            {/* Features Grid */}
-            <div className="relative py-20 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-slate-800/50 dark:via-purple-900/20 dark:to-pink-900/20 overflow-hidden">
-                {/* Decorative gradient orbs */}
-                <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-blue-200/30 to-transparent rounded-full blur-3xl"></div>
-                <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-purple-200/30 to-transparent rounded-full blur-3xl"></div>
-
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                    <div className="text-center mb-16 reveal-on-scroll">
-                        <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">
-                            Everything you <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">need</span>
-                        </h2>
-                        <p className="text-slate-600 dark:text-slate-400 text-lg">Powering your productivity and financial health.</p>
-                    </div>
-                    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-                        {[
-                            { icon: Check, title: 'Task Management', desc: 'Organize tasks with Kanban boards, lists, and smart filters.', gradient: 'from-blue-500 via-indigo-500 to-purple-500', bg: 'from-blue-50/50 to-indigo-50/50' },
-                            { icon: Wallet, title: 'Budget Tracking', desc: 'Monitor income and expenses with detailed analytics.', gradient: 'from-emerald-500 via-teal-500 to-cyan-500', bg: 'from-emerald-50/50 to-teal-50/50' },
-                            { icon: Calendar, title: 'Calendar View', desc: 'Visualize your schedule and financial deadlines.', gradient: 'from-orange-500 via-pink-500 to-rose-500', bg: 'from-orange-50/50 to-pink-50/50' },
-                            { icon: Split, title: 'Smart Splitting', desc: 'Break down complex tasks into manageable subtasks instantly.', gradient: 'from-purple-500 via-violet-500 to-indigo-500', bg: 'from-purple-50/50 to-indigo-50/50' }
-                        ].map((feature, i) => (
-                            <div
-                                key={i}
-                                className={`p-8 rounded-2xl bg-gradient-to-br ${feature.bg} dark:bg-slate-800 border border-white/50 dark:border-slate-700 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 gradient-border-hover reveal-on-scroll stagger-${i + 1} relative overflow-hidden backdrop-blur-sm`}
-                            >
-                                {/* Decorative corner accent */}
-                                <div className={`absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl ${feature.gradient} opacity-10 rounded-bl-full`}></div>
-
-                                <div className={`w-14 h-14 bg-gradient-to-br ${feature.gradient} rounded-2xl flex items-center justify-center mb-6 icon-bounce shadow-lg`}>
-                                    <feature.icon className="w-7 h-7 text-white" />
-                                </div>
-                                <h3 className="text-xl font-bold mb-3">{feature.title}</h3>
-                                <p className="text-slate-600 dark:text-slate-400">{feature.desc}</p>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </div>
-
-            {/* Target Users Section */}
-            <div className="relative py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto overflow-hidden">
-                {/* Decorative background pattern */}
-                <div className="absolute inset-0 opacity-5 dark:opacity-10">
-                    <div className="absolute top-20 left-10 w-32 h-32 bg-purple-400 rounded-full blur-2xl"></div>
-                    <div className="absolute bottom-20 right-10 w-32 h-32 bg-pink-400 rounded-full blur-2xl"></div>
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-sm mb-8 animate-fade-in-up">
+                    <span className="flex h-2 w-2 rounded-full bg-green-400 animate-pulse"></span>
+                    <span className="text-sm font-medium text-slate-300">New: AI Auto-Splitting v2.0</span>
                 </div>
 
-                <div className="relative z-10">
-                    <div className="text-center mb-16 reveal-on-scroll">
-                        <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">
-                            Who is <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">Hikari</span> for?
-                        </h2>
-                        <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto text-lg">
-                            Designed for anyone seeking clarity in their tasks and finances
-                        </p>
-                    </div>
-                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {[
-                            { icon: Briefcase, title: "Busy Professionals", desc: "Juggling multiple projects, deadlines, and expenses. Combine task and budget tracking in one tool.", scheme: { bg: 'bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20', icon: 'from-blue-500 to-indigo-600' } },
-                            { icon: Users, title: "Freelancers & Solopreneurs", desc: "Track client projects, deadlines, and irregular income. Forecast cash flow alongside timelines.", scheme: { bg: 'bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20', icon: 'from-purple-500 to-pink-600' } },
-                            { icon: GraduationCap, title: "Students", desc: "Manage assignments, study schedules, and tight budgets. Visual clarity balances academic and financial goals.", scheme: { bg: 'bg-gradient-to-br from-green-50 to-teal-50 dark:from-green-900/20 dark:to-teal-900/20', icon: 'from-green-500 to-teal-600' } },
-                            { icon: Building2, title: "Small Business Owners", desc: "Oversee operations and finances in a single platform. See correlations between productivity and financial health.", scheme: { bg: 'bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20', icon: 'from-orange-500 to-amber-600' } },
-                            { icon: Target, title: "Financial Discipline Seekers", desc: "Pay off debt, save, or control spending while staying productive. Reduce overwhelm with light and clarity.", scheme: { bg: 'bg-gradient-to-br from-cyan-50 to-sky-50 dark:from-cyan-900/20 dark:to-sky-900/20', icon: 'from-cyan-500 to-sky-600' } }
-                        ].map((user, idx) => (
-                            <div
-                                key={idx}
-                                className={`p-6 rounded-2xl ${user.scheme.bg} border border-white/50 dark:border-slate-700 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 gradient-border-hover reveal-on-scroll stagger-${(idx % 3) + 1} backdrop-blur-sm`}
-                            >
-                                <div className={`w-14 h-14 bg-gradient-to-br ${user.scheme.icon} rounded-xl flex items-center justify-center mb-4 icon-bounce shadow-md`}>
-                                    <user.icon className="w-7 h-7 text-white" />
-                                </div>
-                                <h3 className="text-lg font-bold mb-2">{user.title}</h3>
-                                <p className="text-sm text-slate-600 dark:text-slate-400">{user.desc}</p>
-                            </div>
-                        ))}
+                <h1 className="text-6xl md:text-8xl font-display font-bold tracking-tight mb-8 leading-[1.1] animate-fade-in-up delay-100">
+                    Clarity for your <br />
+                    <span className="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                        Chaotic Life
+                    </span>
+                </h1>
+
+                <p className="text-xl text-slate-400 max-w-2xl mb-12 animate-fade-in-up delay-200">
+                    Stop drowning in tasks and debt. Hikari combines elite task management with ruthless financial tracking.
+                </p>
+
+                {/* 3D Dashboard Mockup */}
+                <div
+                    className="relative w-full max-w-5xl aspect-[16/9] transition-transform duration-200 ease-out animate-fade-in-up delay-300"
+                    onMouseMove={handleMouseMove}
+                    onMouseLeave={handleMouseLeave}
+                    style={{ transformStyle: 'preserve-3d' }}
+                >
+                    <div className="absolute inset-0 bg-gradient-to-b from-indigo-500/10 to-purple-500/5 rounded-2xl blur-2xl transform translate-y-10 scale-95 opacity-50"></div>
+                    {/* Using the generated hero image here. In a real app we'd import it. */}
+                    {/* For this edit, since file path isn't valid src in browser, we'd assume a valid public path */}
+                    {/* Users will need to move the files. */}
+                    <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-[#0F111A]">
+                        {/* If image is missing, show a placeholder gradient block */}
+                        <img
+                            src={HeroDashboard}
+                            alt="Hikari Dashboard"
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                                e.currentTarget.style.display = 'none';
+                                e.currentTarget.parentElement!.classList.add('bg-gradient-to-br', 'from-gray-900', 'to-gray-800');
+                                e.currentTarget.parentElement!.innerHTML += '<div class="flex items-center justify-center h-full text-white/20 font-display text-4xl">Dashboard Preview</div>';
+                            }}
+                        />
+
+                        {/* Glass Overlay sheen */}
+                        <div className="absolute inset-0 bg-gradient-to-tr from-white/5 to-transparent pointer-events-none"></div>
                     </div>
                 </div>
-            </div>
+            </section>
 
-            {/* Premium Features Section */}
-            <div className="relative py-20 bg-gradient-to-br from-slate-50 via-indigo-50 to-purple-50 dark:from-slate-800/50 dark:via-indigo-900/20 dark:to-purple-900/20 overflow-hidden">
-                {/* Decorative elements */}
-                <div className="absolute top-10 left-0 w-72 h-72 bg-gradient-to-r from-indigo-300/20 to-purple-300/20 rounded-full blur-3xl"></div>
-                <div className="absolute bottom-10 right-0 w-72 h-72 bg-gradient-to-l from-purple-300/20 to-pink-300/20 rounded-full blur-3xl"></div>
+            {/* METHODOLOGY SECTION */}
+            <section className="py-32 px-6 max-w-7xl mx-auto">
+                <div className="text-center mb-20">
+                    <h2 className="text-4xl font-display font-bold mb-4">The Hikari Method</h2>
+                    <p className="text-slate-400">Total control in three steps.</p>
+                </div>
 
-                <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                    <div className="text-center mb-16 reveal-on-scroll">
-                        <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">
-                            <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Premium</span> Features
-                        </h2>
-                        <p className="text-slate-600 dark:text-slate-400 text-lg">
-                            All included in your Pro subscription at $8.99/month
-                        </p>
-                    </div>
-                    <div className="space-y-6">
-                        {[
-                            { icon: Link2, title: "Task-Expense Linking", value: "See exactly what each project costs you", marketValue: "$5-7/month standalone", gradient: 'from-indigo-500 via-purple-500 to-pink-500' },
-                            { icon: Zap, title: "Predictive Analytics & AI Insights", value: "AI that helps you save before you overspend", marketValue: "$3-5/month standalone", gradient: 'from-yellow-500 via-orange-500 to-red-500' },
-                            { icon: FileText, title: "Advanced Reporting & Exports", value: "Professional reports for tax, clients, or investors", marketValue: "$4-6/month standalone", gradient: 'from-teal-500 via-cyan-500 to-blue-500' },
-                            { icon: Split, title: "Context-Aware Task Splitting", value: "Breaking large tasks into calendar blocks", marketValue: "$5/month standalone", gradient: 'from-green-500 via-emerald-500 to-teal-500' }
-                        ].map((feature, idx) => (
-                            <div
-                                key={idx}
-                                className={`p-8 rounded-2xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-white/50 dark:border-slate-700 hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 gradient-border-hover reveal-on-scroll stagger-${idx + 1} relative overflow-hidden`}
-                            >
-                                {/* Decorative gradient line */}
-                                <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${feature.gradient}`}></div>
-
-                                <div className="flex items-start gap-6">
-                                    <div className={`w-14 h-14 bg-gradient-to-br ${feature.gradient} rounded-2xl flex items-center justify-center shrink-0 icon-bounce shadow-lg`}>
-                                        <feature.icon className="w-7 h-7 text-white" />
-                                    </div>
-                                    <div className="flex-1">
-                                        <h3 className="text-xl md:text-2xl font-bold mb-2">{feature.title}</h3>
-                                        <p className={`bg-gradient-to-r ${feature.gradient} bg-clip-text text-transparent font-medium mb-4 text-lg`}>
-                                            {feature.value}
-                                        </p>
-                                        <div className="text-sm text-slate-600 dark:text-slate-400">
-                                            Standalone Value: <span className="font-semibold">{feature.marketValue}</span>
+                <div className="space-y-32">
+                    {/* Step 1 */}
+                    <div className="flex flex-col md:flex-row items-center gap-16">
+                        <div className="flex-1 order-2 md:order-1">
+                            <div className="text-indigo-400 font-mono text-sm mb-4">01. CLARITY</div>
+                            <h3 className="text-3xl font-bold mb-4">Visualize the Chaos</h3>
+                            <p className="text-lg text-slate-400 leading-relaxed mb-6">
+                                Dump every task, thought, and expense into one secure vault.
+                                Stop holding it all in your head. See your entire life mapped out
+                                before you start executing.
+                            </p>
+                            <ul className="space-y-3">
+                                {['Unified Inbox', 'Brain Dump Mode', 'Endless Scroll Prevention'].map(item => (
+                                    <li key={item} className="flex items-center gap-3 text-slate-300">
+                                        <div className="w-5 h-5 rounded-full bg-indigo-500/20 flex items-center justify-center">
+                                            <Check className="w-3 h-3 text-indigo-400" />
                                         </div>
+                                        {item}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                        <div className="flex-1 order-1 md:order-2 relative group">
+                            <div className="absolute inset-0 bg-indigo-500/20 blur-[80px] rounded-full group-hover:bg-indigo-500/30 transition-all duration-700"></div>
+                            <img src={MethodClarity} alt="Clarity" className="relative z-10 w-full h-auto rounded-2xl border border-white/10 shadow-2xl transition-transform hover:scale-[1.02] duration-500" />
+                        </div>
+                    </div>
+
+                    {/* Step 2 */}
+                    <div className="flex flex-col md:flex-row items-center gap-16">
+                        <div className="flex-1 relative group">
+                            <div className="absolute inset-0 bg-purple-500/20 blur-[80px] rounded-full group-hover:bg-purple-500/30 transition-all duration-700"></div>
+                            <img src={MethodFocus} alt="Focus" className="relative z-10 w-full h-auto rounded-2xl border border-white/10 shadow-2xl transition-transform hover:scale-[1.02] duration-500" />
+                        </div>
+                        <div className="flex-1">
+                            <div className="text-purple-400 font-mono text-sm mb-4">02. FOCUS</div>
+                            <h3 className="text-3xl font-bold mb-4">Split to Conquer</h3>
+                            <p className="text-lg text-slate-400 leading-relaxed mb-6">
+                                Overwhelmed by "Write Thesis"? Hikari's AI splits massive projects
+                                into 15-minute bite-sized blocks. Focus on one block, forget the rest.
+                            </p>
+                            <ul className="space-y-3">
+                                {['AI Smart Splitter', 'Focus Mode', 'Pomodoro Timer'].map(item => (
+                                    <li key={item} className="flex items-center gap-3 text-slate-300">
+                                        <div className="w-5 h-5 rounded-full bg-purple-500/20 flex items-center justify-center">
+                                            <Check className="w-3 h-3 text-purple-400" />
+                                        </div>
+                                        {item}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    </div>
+
+                    {/* Step 3 */}
+                    <div className="flex flex-col md:flex-row items-center gap-16">
+                        <div className="flex-1 order-2 md:order-1">
+                            <div className="text-pink-400 font-mono text-sm mb-4">03. FREEDOM</div>
+                            <h3 className="text-3xl font-bold mb-4">Watch it Grow</h3>
+                            <p className="text-lg text-slate-400 leading-relaxed mb-6">
+                                Productivity is profit. Track every dollar saved and earned alongside
+                                your tasks. See the direct correlation between your focus and your finances.
+                            </p>
+                            <ul className="space-y-3">
+                                {['Expense Tracking', 'Net Worth Graph', 'Subscription Manager'].map(item => (
+                                    <li key={item} className="flex items-center gap-3 text-slate-300">
+                                        <div className="w-5 h-5 rounded-full bg-pink-500/20 flex items-center justify-center">
+                                            <Check className="w-3 h-3 text-pink-400" />
+                                        </div>
+                                        {item}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                        <div className="flex-1 order-1 md:order-2 relative group">
+                            <div className="absolute inset-0 bg-pink-500/20 blur-[80px] rounded-full group-hover:bg-pink-500/30 transition-all duration-700"></div>
+                            <img src={MethodFreedom} alt="Freedom" className="relative z-10 w-full h-auto rounded-2xl border border-white/10 shadow-2xl transition-transform hover:scale-[1.02] duration-500" />
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* BENTO FEATURES */}
+            <section className="py-32 px-6 max-w-7xl mx-auto bg-[#0F111A] rounded-[3rem] my-20 border border-white/5 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-[120px]"></div>
+                <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-purple-500/10 rounded-full blur-[120px]"></div>
+
+                <div className="relative z-10">
+                    <div className="text-center mb-16">
+                        <h2 className="text-4xl font-display font-bold mb-4">Everything in one place</h2>
+                        <p className="text-slate-400">Replace 5 different apps with Hikari.</p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-4 grid-rows-2 gap-4 h-[800px] md:h-[600px]">
+                        {/* Large Card */}
+                        <div className="col-span-1 md:col-span-2 row-span-2 bg-white/5 border border-white/10 rounded-3xl p-8 flex flex-col justify-between hover:bg-white/10 transition-colors group cursor-default">
+                            <div>
+                                <div className="w-12 h-12 bg-blue-500/20 rounded-2xl flex items-center justify-center mb-6 text-blue-400">
+                                    <Zap className="w-6 h-6" />
+                                </div>
+                                <h3 className="text-2xl font-bold mb-2">AI-Powered Breakdown</h3>
+                                <p className="text-slate-400">Just type "Plan Vacation" and our Gemini-powered engine creates a full itinerary with estimated costs and time blocks.</p>
+                            </div>
+                            <div className="mt-8 bg-black/40 rounded-xl p-4 border border-white/5">
+                                <div className="flex gap-3 mb-3">
+                                    <div className="w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center text-xs">AI</div>
+                                    <div className="bg-white/10 rounded-lg p-3 text-sm text-slate-300">
+                                        Sure, I've split "Launch Website" into 5 actionable subtasks.
                                     </div>
                                 </div>
-                            </div>
-                        ))}
-
-                        <div className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 p-[2px] rounded-2xl reveal-on-scroll stagger-4">
-                            <div className="bg-white dark:bg-slate-900 p-8 rounded-2xl">
-                                <div className="flex items-center gap-3 mb-3">
-                                    <TrendingUp className="w-7 h-7 text-purple-600" />
-                                    <h4 className="text-xl md:text-2xl font-bold">
-                                        Combined Value: $12-18/month
-                                    </h4>
+                                <div className="space-y-2">
+                                    {[1, 2, 3].map(i => (
+                                        <div key={i} className="h-8 bg-white/5 rounded w-full animate-pulse" style={{ animationDelay: `${i * 100}ms` }}></div>
+                                    ))}
                                 </div>
-                                <p className="text-slate-700 dark:text-slate-300 text-lg">
-                                    Get all premium features for just <span className="font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent text-xl">$8.99/month</span>,
-                                    saving you up to 50% compared to using separate tools for task management, budgeting, and analytics.
-                                </p>
                             </div>
                         </div>
+
+                        {/* Tall Card */}
+                        <div className="col-span-1 md:col-span-1 row-span-2 bg-gradient-to-br from-indigo-900/40 to-purple-900/40 border border-white/10 rounded-3xl p-8 flex flex-col hover:border-indigo-500/50 transition-colors">
+                            <div className="mb-auto">
+                                <h3 className="text-xl font-bold mb-2">Calendar Sync</h3>
+                                <p className="text-sm text-slate-400">Two-way sync with Google Calendar.</p>
+                            </div>
+                            <div className="mt-4 grid grid-cols-7 gap-2 text-center text-xs text-slate-500">
+                                {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(d => <div key={d}>{d}</div>)}
+                                {Array.from({ length: 28 }).map((_, i) => (
+                                    <div key={i} className={`aspect-square rounded-sm ${i === 14 ? 'bg-indigo-500 text-white' : 'bg-white/5'}`}>
+                                        {i === 14 ? 15 : ''}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Wide Card */}
+                        <div className="col-span-1 md:col-span-1 bg-white/5 border border-white/10 rounded-3xl p-6 flex flex-col justify-center items-center text-center hover:bg-white/10 transition-colors">
+                            <Shield className="w-10 h-10 text-green-400 mb-4" />
+                            <h3 className="font-bold">Bank-Grade Security</h3>
+                        </div>
+
+                        {/* Last Card */}
+                        <div className="col-span-1 md:col-span-1 bg-white/5 border border-white/10 rounded-3xl p-6 flex flex-col justify-center items-center text-center hover:bg-white/10 transition-colors">
+                            <Globe className="w-10 h-10 text-pink-400 mb-4" />
+                            <h3 className="font-bold">Access Anywhere</h3>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </section>
 
-            {/* Pricing Section */}
-            <div id="pricing" className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-                <div className="text-center mb-16 reveal-on-scroll">
-                    <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">
-                        Simple <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Pricing</span>
-                    </h2>
-                    <p className="text-slate-600 dark:text-slate-400 text-lg">Start for free, upgrade for more power</p>
-                </div>
-
-                <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-                    <div className="p-8 rounded-2xl bg-white dark:bg-slate-800/50 border-2 border-slate-200 dark:border-slate-700 hover:shadow-xl transition-all duration-300 reveal-on-scroll stagger-1">
-                        <h3 className="text-2xl font-bold mb-2">Free</h3>
-                        <p className="text-slate-500 dark:text-slate-400 mb-6">Essential tools for personal tasks.</p>
-                        <div className="mb-8">
-                            <span className="text-5xl font-bold">$0</span>
-                            <span className="text-slate-500">/month</span>
-                        </div>
-                        <ul className="space-y-4 mb-8">
-                            {PRICING_PLANS[0].features.map((item, i) => (
-                                <li key={i} className="flex items-center gap-3">
-                                    <Check className="w-5 h-5 text-green-500 shrink-0" />
-                                    <span>{item}</span>
-                                </li>
-                            ))}
-                        </ul>
-                        <Button onClick={() => navigate('/signup')} variant="secondary" size="lg" className="w-full">
-                            Get Started
-                        </Button>
-                    </div>
-
-                    <div className="p-8 rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white relative overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 reveal-on-scroll stagger-2">
-                        <div className="absolute top-4 right-4 px-3 py-1 bg-white/20 backdrop-blur rounded-full text-xs font-bold">
-                            POPULAR
-                        </div>
-                        <h3 className="text-2xl font-bold mb-2">Hikari Pro</h3>
-                        <p className="text-white/90 mb-6">Advanced insights & limitless potential.</p>
-                        <div className="mb-8">
-                            <span className="text-5xl font-bold">$8.99</span>
-                            <span className="text-white/80">/month</span>
-                        </div>
-                        <ul className="space-y-4 mb-8">
-                            {PRICING_PLANS[1].features.map((item, i) => (
-                                <li key={i} className="flex items-center gap-3">
-                                    <Check className="w-5 h-5 shrink-0" />
-                                    <span>{item}</span>
-                                </li>
-                            ))}
-                        </ul>
-                        <Button onClick={() => navigate('/pricing')} variant="secondary" size="lg" className="w-full pulse-glow">
-                            Upgrade to Pro
-                        </Button>
-                    </div>
-                </div>
-            </div>
+            {/* CTA */}
+            <section className="py-20 text-center">
+                <h2 className="text-5xl md:text-7xl font-display font-bold mb-8">
+                    Start <span className="text-indigo-500">Living</span>.<br />
+                    Stop <span className="text-slate-600">Managing</span>.
+                </h2>
+                <Button onClick={() => navigate('/signup')} size="lg" className="rounded-full px-10 h-14 text-lg bg-white text-black hover:bg-slate-200">
+                    Get Started Free <ChevronRight className="ml-2 w-5 h-5" />
+                </Button>
+            </section>
 
             {/* Footer */}
-            <footer className="py-12 border-t border-slate-200 dark:border-slate-800">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-                        <p className="text-slate-500 text-center md:text-left">
-                            &copy; {new Date().getFullYear()} Hikari App. All rights reserved.
-                        </p>
-                        <div className="flex gap-6">
-                            <Link to="/terms" className="text-slate-500 hover:text-primary-600 transition-colors text-sm">
-                                Terms of Use
-                            </Link>
-                            <Link to="/privacy" className="text-slate-500 hover:text-primary-600 transition-colors text-sm">
-                                Privacy Policy
-                            </Link>
-                        </div>
-                    </div>
-                </div>
+            <footer className="py-12 border-t border-slate-800 text-center text-slate-500">
+                <p>&copy; {new Date().getFullYear()} Hikari App. Crafted for the focused.</p>
             </footer>
         </div>
     );
