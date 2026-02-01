@@ -3,13 +3,11 @@ import { Card } from '../components/common/Card';
 import { Link } from 'react-router-dom';
 import { useTaskStore } from '../stores/taskStore';
 import { useBudgetStore } from '../stores/budgetStore';
-import { CheckSquare, Wallet, TrendingUp, Clock, AlertCircle } from 'lucide-react';
-import { formatCurrency } from '../utils/currencyFormatter';
+import { CheckSquare, Wallet, TrendingUp, Clock, AlertCircle, RefreshCw } from 'lucide-react'; import { formatCurrency } from '../utils/currencyFormatter';
 import { TaskStatus, Task } from '../types/task.types';
 import { TaskItem } from '../components/tasks/TaskItem';
 import { BudgetProgress } from '../components/budget/Charts/BudgetProgress';
 import { SpendingChart } from '../components/budget/Charts/SpendingChart';
-import { InsightsPanel } from '../components/intelligence/InsightsPanel';
 import { startOfDay } from 'date-fns';
 import { Modal } from '../components/common/Modal';
 import { TaskForm } from '../components/tasks/TaskForm';
@@ -17,6 +15,8 @@ import { TaskFormData } from '../utils/validationSchemas';
 import toast from 'react-hot-toast';
 import { useAuthStore } from '../stores/authStore';
 import { UpgradeModal } from '../components/modals/UpgradeModal';
+import { useIntelligenceStore } from '../stores/intelligenceStore';
+import { clsx } from 'clsx';
 
 export const Dashboard: React.FC = () => {
     const { tasks, fetchTasks, toggleTaskStatus, updateTask, deleteTask } = useTaskStore();
@@ -25,7 +25,10 @@ export const Dashboard: React.FC = () => {
     // Edit State
     const [editingTask, setEditingTask] = useState<Task | null>(null);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
     const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+    const [isRefreshingInsights, setIsRefreshingInsights] = useState(false);
+    const { refreshInsights } = useIntelligenceStore();
 
     // Fetch data on mount
     useEffect(() => {
@@ -73,13 +76,32 @@ export const Dashboard: React.FC = () => {
 
     return (
         <div className="animate-fade-in">
-            <div className="mb-6">
-                <h1 className="text-3xl font-display font-bold gradient-text mb-2">
-                    Dashboard
-                </h1>
-                <p className="text-slate-600 dark:text-slate-400">
-                    Welcome back! Here's your overview
-                </p>
+            <div className="mb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+                <div>
+                    <h1 className="text-3xl font-display font-bold gradient-text mb-2">
+                        Dashboard
+                    </h1>
+                    <p className="text-slate-600 dark:text-slate-400">
+                        Welcome back! Here's your overview
+                    </p>
+                </div>
+                <button
+                    onClick={async () => {
+                        setIsRefreshingInsights(true);
+                        await refreshInsights();
+                        setIsRefreshingInsights(false);
+                        toast.success("Smart Insights updated");
+                    }}
+                    disabled={isRefreshingInsights}
+                    className={clsx(
+                        "flex items-center gap-2 px-3 py-2 rounded-xl bg-white/50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 hover:bg-white dark:hover:bg-slate-800 transition-all shadow-sm",
+                        isRefreshingInsights && "opacity-70 cursor-not-allowed"
+                    )}
+                    title="Refresh Smart Insights"
+                >
+                    <RefreshCw className={clsx("w-4 h-4 text-primary-500", isRefreshingInsights && "animate-spin")} />
+                    <span className="text-sm font-medium text-slate-600 dark:text-slate-300">Refresh Insights</span>
+                </button>
             </div>
 
             {/* Overdue Alert Banner */}
@@ -110,13 +132,6 @@ export const Dashboard: React.FC = () => {
                     </div>
                 </div>
             )}
-
-
-
-            {/* Smart Insights Panel */}
-            <div className="mb-6">
-                <InsightsPanel />
-            </div>
 
             {/* Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">

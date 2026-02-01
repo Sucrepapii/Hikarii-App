@@ -41,7 +41,7 @@ const priorityStyles = {
 export const NotificationBell: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
-    const { insights, dismissInsight, refreshInsights } = useIntelligenceStore();
+    const { insights, recommendations, dismissInsight, clearAllInsights, refreshInsights } = useIntelligenceStore();
     const { user } = useAuthStore();
     const isPro = user?.subscriptionStatus === 'PRO';
 
@@ -55,6 +55,8 @@ export const NotificationBell: React.FC = () => {
         // All other insights (warnings, alerts) are available to everyone
         return true;
     });
+
+    const activeRecommendations = isPro ? recommendations : [];
 
     // Close dropdown when clicking outside
     useEffect(() => {
@@ -83,8 +85,9 @@ export const NotificationBell: React.FC = () => {
 
 
     // Use filtered insights for counts
-    const unreadCount = visibleInsights.length;
-    const criticalCount = visibleInsights.filter((i) => i.priority === InsightPriority.CRITICAL).length;
+    const unreadCount = visibleInsights.length + activeRecommendations.length;
+    const criticalCount = visibleInsights.filter((i) => i.priority === InsightPriority.CRITICAL).length +
+        activeRecommendations.filter((r) => r.urgencyScore >= 80).length;
 
     return (
         <div className="relative" ref={dropdownRef}>
@@ -120,21 +123,70 @@ export const NotificationBell: React.FC = () => {
             {isOpen && (
                 <div className="absolute right-0 top-full mt-2 w-96 max-h-[500px] overflow-y-auto rounded-2xl glass border-2 border-white/20 dark:border-white/10 shadow-2xl z-50 animate-fade-in">
                     {/* Header */}
-                    <div className="sticky top-0 glass backdrop-blur-xl border-b border-white/20 dark:border-white/10 px-4 py-3">
+                    <div className="sticky top-0 glass backdrop-blur-xl border-b border-white/20 dark:border-white/10 px-4 py-3 z-10">
                         <div className="flex items-center justify-between">
-                            <h3 className="font-semibold text-slate-900 dark:text-slate-100">
-                                Notifications
-                            </h3>
-                            <span className="text-xs text-slate-500 dark:text-slate-400">
-                                {unreadCount} alert{unreadCount !== 1 ? "s" : ""}
-                            </span>
+                            <div className="flex items-center gap-2">
+                                <h3 className="font-semibold text-slate-900 dark:text-slate-100">
+                                    Notifications
+                                </h3>
+                                <span className="text-xs px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
+                                    {unreadCount}
+                                </span>
+                            </div>
+                            {unreadCount > 0 && (
+                                <button
+                                    onClick={() => clearAllInsights()}
+                                    className="text-xs font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors"
+                                >
+                                    Clear All
+                                </button>
+                            )}
                         </div>
                     </div>
 
                     {/* Notifications List */}
-                    <div className="p-2">
-                        {visibleInsights.length > 0 ? (
-                            <div className="space-y-2">
+                    <div className="p-2 space-y-2">
+                        {unreadCount > 0 ? (
+                            <>
+                                {/* Recommendations */}
+                                {activeRecommendations.map((rec) => (
+                                    <div
+                                        key={rec.taskId}
+                                        className={clsx(
+                                            "p-3 rounded-xl border-2 transition-all hover:scale-[1.02]",
+                                            rec.urgencyScore >= 80 ? priorityStyles[InsightPriority.CRITICAL].bg :
+                                                rec.urgencyScore >= 60 ? priorityStyles[InsightPriority.HIGH].bg :
+                                                    priorityStyles[InsightPriority.MEDIUM].bg
+                                        )}
+                                    >
+                                        <div className="flex items-start gap-3">
+                                            <Lightbulb className={clsx("w-5 h-5 mt-0.5 flex-shrink-0",
+                                                rec.urgencyScore >= 80 ? priorityStyles[InsightPriority.CRITICAL].icon :
+                                                    rec.urgencyScore >= 60 ? priorityStyles[InsightPriority.HIGH].icon :
+                                                        priorityStyles[InsightPriority.MEDIUM].icon
+                                            )} />
+                                            <div className="flex-1 min-w-0">
+                                                <h4 className={clsx("font-semibold text-sm mb-1",
+                                                    rec.urgencyScore >= 80 ? priorityStyles[InsightPriority.CRITICAL].text :
+                                                        rec.urgencyScore >= 60 ? priorityStyles[InsightPriority.HIGH].text :
+                                                            priorityStyles[InsightPriority.MEDIUM].text
+                                                )}>
+                                                    Recommendation
+                                                </h4>
+                                                <p className="text-xs leading-relaxed text-slate-700 dark:text-slate-300">
+                                                    {rec.reason}
+                                                </p>
+                                                {rec.financialContext && (
+                                                    <p className="text-xs mt-2 font-medium text-slate-700 dark:text-slate-300 bg-white/50 dark:bg-slate-800/50 rounded-lg px-2 py-1 inline-block">
+                                                        💰 {rec.financialContext}
+                                                    </p>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+
+                                {/* Regular Insights */}
                                 {visibleInsights.map((insight) => {
                                     const InsightIcon = insightIcons[insight.type];
                                     const styles = priorityStyles[insight.priority];
@@ -178,7 +230,7 @@ export const NotificationBell: React.FC = () => {
                                         </div>
                                     );
                                 })}
-                            </div>
+                            </>
                         ) : (
                             <div className="text-center py-12">
                                 <Bell className="w-12 h-12 mx-auto mb-3 text-slate-400" />
