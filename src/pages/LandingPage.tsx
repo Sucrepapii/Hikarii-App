@@ -74,20 +74,29 @@ export const LandingPage: React.FC = () => {
                 </div>
 
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-slate-200 dark:border-white/10 bg-white/50 dark:bg-white/5 backdrop-blur-sm mb-8 animate-fade-in-up shadow-sm">
-                    <span className="flex h-2 w-2 rounded-full bg-indigo-500 animate-pulse"></span>
-                    <span className="text-sm font-medium text-slate-600 dark:text-slate-300">Hikari 2.0 is here</span>
+                    <Zap className="w-4 h-4 text-indigo-500 fill-indigo-500" />
+                    <span className="text-sm font-medium text-slate-600 dark:text-slate-300">Bring clarity to your life</span>
                 </div>
 
                 <h1 className="text-6xl md:text-8xl font-display font-bold tracking-tight mb-8 leading-[1.1] animate-fade-in-up delay-100 text-slate-900 dark:text-white">
-                    Clarity for your <br />
+                    Master Your <br />
                     <span className="bg-gradient-to-r from-indigo-500 to-purple-600 bg-clip-text text-transparent">
-                        Financial Life
+                        Life & Money
                     </span>
                 </h1>
 
                 <p className="text-xl text-slate-500 dark:text-slate-400 max-w-2xl mb-12 animate-fade-in-up delay-200">
-                    Stop drowning in chaos. Hikari combines elite task management with ruthless financial tracking in one beautiful workspace.
+                    The all-in-one workspace for task management and financial tracking. Organize your projects, track expenses, and reach your goals.
                 </p>
+
+                <div className="flex items-center gap-6 mb-16 animate-fade-in-up delay-300">
+                    <Button onClick={() => navigate('/signup')} size="lg" className="rounded-full px-8 h-12 text-base bg-indigo-600 hover:bg-indigo-700 text-white border-0 shadow-lg shadow-indigo-500/20">
+                        Start for Free <ArrowRight className="ml-2 w-4 h-4" />
+                    </Button>
+                    <Link to="/pricing" className="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors">
+                        View Pricing
+                    </Link>
+                </div>
 
                 {/* 3D Dashboard Mockup */}
                 <div
@@ -114,6 +123,44 @@ export const LandingPage: React.FC = () => {
                         {/* Subtle Glass Overlay */}
                         <div className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent pointer-events-none mix-blend-overlay"></div>
                     </div>
+                </div>
+            </section>
+
+            {/* TARGET USERS SECTION (Restored) */}
+            <section className="py-20 px-6 max-w-7xl mx-auto">
+                <div className="text-center mb-16">
+                    <h2 className="text-3xl md:text-4xl font-display font-bold mb-4 text-slate-900 dark:text-white">Who is Hikari For?</h2>
+                    <p className="text-slate-500 dark:text-slate-400">Designed for those who demand more from their tools.</p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    {[
+                        {
+                            role: "Freelancers",
+                            desc: "Track billable hours, manage client projects, and separate business expenses from personal ones.",
+                            icon: "Briefcase"
+                        },
+                        {
+                            role: "Students",
+                            desc: "Balance assignments, part-time jobs, and a tight budget without losing your mind.",
+                            icon: "GraduationCap"
+                        },
+                        {
+                            role: "Entrepreneurs",
+                            desc: "See the big picture. Connect your daily grind to your bottom line and net worth.",
+                            icon: "Rocket"
+                        }
+                    ].map((user, i) => (
+                        <div key={i} className="bg-white/50 dark:bg-white/5 backdrop-blur-md border border-slate-200 dark:border-white/10 p-8 rounded-2xl hover:border-indigo-500/30 transition-colors">
+                            <div className="w-12 h-12 bg-indigo-100 dark:bg-indigo-500/20 rounded-xl flex items-center justify-center mb-6 text-indigo-600 dark:text-indigo-400">
+                                {user.icon === 'Briefcase' && <LayoutDashboard className="w-6 h-6" />}
+                                {user.icon === 'GraduationCap' && <FileText className="w-6 h-6" />}
+                                {user.icon === 'Rocket' && <Zap className="w-6 h-6" />}
+                            </div>
+                            <h3 className="text-xl font-bold mb-3 text-slate-900 dark:text-white">{user.role}</h3>
+                            <p className="text-slate-500 dark:text-slate-400">{user.desc}</p>
+                        </div>
+                    ))}
                 </div>
             </section>
 
@@ -204,7 +251,7 @@ export const LandingPage: React.FC = () => {
                         </div>
                     </div>
                 </div>
-            </section>
+            </section >
 
             {/* BENTO FEATURES */}
             <section className="py-32 px-6 max-w-7xl mx-auto bg-gradient-to-br from-indigo-900 to-purple-900 rounded-[3rem] my-20 relative overflow-hidden shadow-2xl">
@@ -276,19 +323,28 @@ export const LandingPage: React.FC = () => {
                 </div>
             </section>
 
+            {/* PRICING LINK */}
+            <section className="py-20 px-6 max-w-7xl mx-auto text-center">
+                <h2 className="text-4xl font-display font-bold mb-8 text-slate-900 dark:text-white">Fair Pricing</h2>
+                <p className="mb-8 text-slate-500 dark:text-slate-400 text-lg">Simple plans for every stage of your journey.</p>
+                <Link to="/pricing" className="inline-flex items-center gap-2 text-indigo-600 dark:text-indigo-400 font-semibold text-lg hover:underline decoration-2 underline-offset-4">
+                    View Full Pricing <ArrowRight className="w-5 h-5" />
+                </Link>
+            </section>
+
             {/* CTA */}
             <section className="py-20 text-center">
-                <h2 className="text-5xl md:text-7xl font-display font-bold mb-8">
-                    Start <span className="text-indigo-500">Living</span>.<br />
-                    Stop <span className="text-slate-600">Managing</span>.
+                <h2 className="text-5xl md:text-7xl font-display font-bold mb-8 text-slate-900 dark:text-white">
+                    Start <span className="text-indigo-600 dark:text-indigo-400">Living</span>.<br />
+                    Stop <span className="text-slate-500 dark:text-slate-600">Managing</span>.
                 </h2>
-                <Button onClick={() => navigate('/signup')} size="lg" className="rounded-full px-10 h-14 text-lg bg-white text-black hover:bg-slate-200">
+                <Button onClick={() => navigate('/signup')} size="lg" className="rounded-full px-10 h-14 text-lg bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-black dark:hover:bg-slate-200">
                     Get Started Free <ChevronRight className="ml-2 w-5 h-5" />
                 </Button>
             </section>
 
             {/* Footer */}
-            <footer className="py-12 border-t border-slate-800 text-center text-slate-500">
+            <footer className="py-12 border-t border-slate-200 dark:border-slate-800 text-center text-slate-500">
                 <p>&copy; {new Date().getFullYear()} Hikari App. Crafted for the focused.</p>
             </footer>
         </div>
