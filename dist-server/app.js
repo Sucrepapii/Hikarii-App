@@ -323,15 +323,22 @@ var init_google_calendar_service = __esm({
         tomorrow.setHours(9, 0, 0, 0);
         let currentStartTime = tomorrow;
         const results = [];
+        const parentTask = await db_default.task.findUnique({
+          where: { id: taskId },
+          select: { title: true }
+        });
+        const parentTitle = parentTask?.title || "Task";
         for (const block of blocks) {
           if (!block.duration) continue;
           const endTime = new Date(
             currentStartTime.getTime() + block.duration * 6e4
           );
           const event = {
-            summary: block.title,
-            // e.g. "Research & Notes (Write Essay)"
-            description: `Block ${block.order + 1} of task`,
+            summary: `[${parentTitle}] ${block.title}`,
+            // e.g. "[Write Essay] Research"
+            description: `Block ${block.order + 1} of task: ${parentTitle}`,
+            colorId: "5",
+            // "5" is Banana (Yellow) in Google Calendar standard colors
             start: {
               dateTime: currentStartTime.toISOString(),
               timeZone: "UTC"

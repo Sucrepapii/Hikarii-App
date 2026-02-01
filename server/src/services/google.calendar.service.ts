@@ -167,6 +167,13 @@ export const syncTaskBlocks = async (
 
     const results = [];
 
+    // Fetch the parent task to get the main title for context
+    const parentTask = await prisma.task.findUnique({
+      where: { id: taskId },
+      select: { title: true },
+    });
+    const parentTitle = parentTask?.title || "Task";
+
     for (const block of blocks) {
       if (!block.duration) continue;
 
@@ -175,8 +182,9 @@ export const syncTaskBlocks = async (
       );
 
       const event = {
-        summary: block.title, // e.g. "Research & Notes (Write Essay)"
-        description: `Block ${block.order + 1} of task`,
+        summary: `[${parentTitle}] ${block.title}`, // e.g. "[Write Essay] Research"
+        description: `Block ${block.order + 1} of task: ${parentTitle}`,
+        colorId: "5", // "5" is Banana (Yellow) in Google Calendar standard colors
         start: {
           dateTime: currentStartTime.toISOString(),
           timeZone: "UTC", // or user timezone
