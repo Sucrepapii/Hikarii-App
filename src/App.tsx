@@ -19,6 +19,7 @@ import { Projects } from './pages/Projects';
 import { ProjectForm } from './pages/ProjectForm';
 import { TermsOfService } from './pages/TermsOfService';
 import { PrivacyPolicy } from './pages/PrivacyPolicy';
+import { About } from './pages/About';
 import { useAuthStore } from './stores/authStore';
 import { useTaskStore } from './stores/taskStore';
 import { TaskSplitModal } from './components/tasks/TaskSplitModal';
@@ -173,6 +174,10 @@ function App() {
                 <Route
                     path="/privacy"
                     element={<PrivacyPolicy />}
+                />
+                <Route
+                    path="/about"
+                    element={<About />}
                 />
             </Routes >
 
