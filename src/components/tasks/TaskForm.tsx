@@ -8,15 +8,15 @@ import { Project } from '../../types/project.types';
 import { projectService } from '../../services/project.service';
 import { Input } from '../common/Input';
 import { Button } from '../common/Button';
-import { Calendar, DollarSign, TrendingUp, TrendingDown, AlertTriangle, Briefcase, CheckCircle2 } from 'lucide-react';
-import apiClient from '../../api/client';
+import { useBudgetStore } from '../../stores/budgetStore';
 
-interface TaskFormProps {
-    onSubmit: (data: TaskFormData) => void;
-    onCancel: () => void;
-    defaultValues?: Partial<TaskFormData>;
-    submitLabel?: string;
-}
+const CURRENCY_SYMBOLS: Record<string, string> = {
+    NGN: '₦',
+    USD: '$',
+    GBP: '£',
+    EUR: '€',
+    CAD: 'C$',
+};
 
 export const TaskForm: React.FC<TaskFormProps> = ({
     onSubmit,
@@ -24,10 +24,14 @@ export const TaskForm: React.FC<TaskFormProps> = ({
     defaultValues,
     submitLabel = 'Save Task',
 }) => {
+    const { currency, getConvertedAmount, getAmountInBaseCurrency } = useBudgetStore();
+    const currencySymbol = CURRENCY_SYMBOLS[currency] || currency;
+
     const {
         register,
         handleSubmit,
         watch,
+        reset,
         formState: { errors, isSubmitting },
     } = useForm<TaskFormData>({
         resolver: zodResolver(taskSchema),
@@ -37,6 +41,32 @@ export const TaskForm: React.FC<TaskFormProps> = ({
             tags: [],
         },
     });
+
+    // Handle currency conversion for initial values and updates
+    useEffect(() => {
+        if (defaultValues) {
+            const convertedValues = { ...defaultValues };
+
+            // Convert financial values from Base (NGN) to Selected Currency for display
+            if (convertedValues.estimatedCost) {
+                convertedValues.estimatedCost = Number(getConvertedAmount(convertedValues.estimatedCost, currency).toFixed(2));
+            }
+            if (convertedValues.estimatedIncome) {
+                convertedValues.estimatedIncome = Number(getConvertedAmount(convertedValues.estimatedIncome, currency).toFixed(2));
+            }
+            if (convertedValues.lateFeePerDay) {
+                convertedValues.lateFeePerDay = Number(getConvertedAmount(convertedValues.lateFeePerDay, currency).toFixed(2));
+            }
+
+            reset(convertedValues);
+        } else {
+            reset({
+                status: TaskStatus.TODO,
+                priority: TaskPriority.MEDIUM,
+                tags: [],
+            });
+        }
+    }, [defaultValues, currency, reset, getConvertedAmount]);
 
     const [projects, setProjects] = useState<Project[]>([]);
 
@@ -54,8 +84,25 @@ export const TaskForm: React.FC<TaskFormProps> = ({
 
     const selectedTaskType = watch('taskType');
 
+    const handleFormSubmit = (data: TaskFormData) => {
+        // Convert back to Base Currency (NGN) before submitting
+        const submissionData = { ...data };
+
+        if (submissionData.estimatedCost) {
+            submissionData.estimatedCost = getAmountInBaseCurrency(submissionData.estimatedCost, currency);
+        }
+        if (submissionData.estimatedIncome) {
+            submissionData.estimatedIncome = getAmountInBaseCurrency(submissionData.estimatedIncome, currency);
+        }
+        if (submissionData.lateFeePerDay) {
+            submissionData.lateFeePerDay = getAmountInBaseCurrency(submissionData.lateFeePerDay, currency);
+        }
+
+        onSubmit(submissionData);
+    };
+
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
             <Input
                 label="Title"
                 placeholder="Enter task title..."
@@ -170,8 +217,9 @@ export const TaskForm: React.FC<TaskFormProps> = ({
                         <>
                             <div className="grid grid-cols-2 gap-4">
                                 <Input
-                                    label="Estimated Cost (₦)"
+                                    label={`Estimated Cost (${currencySymbol})`}
                                     type="number"
+                                    step="0.01"
                                     placeholder="Enter cost..."
                                     icon={<TrendingDown className="w-4 h-4 text-red-500" />}
                                     {...register('estimatedCost', {
@@ -200,8 +248,9 @@ export const TaskForm: React.FC<TaskFormProps> = ({
                             </div>
 
                             <Input
-                                label="Late Fee Per Day (₦) - Optional"
+                                label={`Late Fee Per Day (${currencySymbol}) - Optional`}
                                 type="number"
+                                step="0.01"
                                 placeholder="Enter late fee..."
                                 icon={<AlertTriangle className="w-4 h-4 text-orange-500" />}
                                 {...register('lateFeePerDay', {
@@ -219,8 +268,9 @@ export const TaskForm: React.FC<TaskFormProps> = ({
                     {selectedTaskType === TaskType.INCOME && (
                         <div>
                             <Input
-                                label="Expected Income (₦)"
+                                label={`Expected Income (${currencySymbol})`}
                                 type="number"
+                                step="0.01"
                                 placeholder="Enter expected income..."
                                 icon={<TrendingUp className="w-4 h-4 text-green-500" />}
                                 {...register('estimatedIncome', {

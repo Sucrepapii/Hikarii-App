@@ -158,6 +158,8 @@ export const toggleTaskStatus = async (
       where: { id: task.id },
       data: { status: newStatus },
     });
+
+    res.json(updatedTask);
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }

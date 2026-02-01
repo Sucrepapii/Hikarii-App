@@ -8,6 +8,9 @@ interface FinancialImpactBadgeProps {
     className?: string;
 }
 
+import { useBudgetStore } from "../../stores/budgetStore";
+import { formatCurrency } from "../../utils/currencyFormatter";
+
 export const FinancialImpactBadge: React.FC<FinancialImpactBadgeProps> = ({
     amount,
     type,
@@ -15,6 +18,10 @@ export const FinancialImpactBadge: React.FC<FinancialImpactBadgeProps> = ({
     showIcon = true,
     className = "",
 }) => {
+    const { currency, getConvertedAmount } = useBudgetStore();
+    const convertedAmount = getConvertedAmount(amount, currency);
+    const formattedAmount = formatCurrency(convertedAmount, currency);
+
     const sizeClasses = {
         sm: "text-xs px-2 py-0.5",
         md: "text-sm px-3 py-1",
@@ -47,10 +54,10 @@ export const FinancialImpactBadge: React.FC<FinancialImpactBadgeProps> = ({
     return (
         <span
             className={`inline-flex items-center gap-1 rounded-full font-semibold ${style.bg} ${style.text} ${style.border} ${sizeClasses[size]} ${className}`}
-            title={`${type === "expense" ? "Cost" : type === "income" ? "Income" : "Financial impact"}: ₦${amount.toLocaleString()}`}
+            title={`${type === "expense" ? "Cost" : type === "income" ? "Income" : "Financial impact"}: ${formattedAmount}`}
         >
             {showIcon && <span className="font-bold">{style.icon}</span>}
-            <span>₦{amount.toLocaleString()}</span>
+            <span>{formattedAmount}</span>
         </span>
     );
 };

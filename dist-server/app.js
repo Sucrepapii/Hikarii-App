@@ -986,6 +986,7 @@ var toggleTaskStatus = async (req, res) => {
       where: { id: task.id },
       data: { status: newStatus }
     });
+    res.json(updatedTask);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
