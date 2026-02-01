@@ -198,9 +198,12 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
           }),
         }));
       }
+      return response.data;
+    } catch (error: any) {
       console.error("Scheduling failed", error);
       throw error;
     }
+  },
   },
 
   openSplitModal: (taskId: string) => {

@@ -20,6 +20,8 @@ import { ProjectForm } from './pages/ProjectForm';
 import { TermsOfService } from './pages/TermsOfService';
 import { PrivacyPolicy } from './pages/PrivacyPolicy';
 import { useAuthStore } from './stores/authStore';
+import { useTaskStore } from './stores/taskStore';
+import { TaskSplitModal } from './components/tasks/TaskSplitModal';
 import './index.css';
 
 import { useInactivity } from './hooks/useInactivity';
@@ -28,6 +30,7 @@ import toast from 'react-hot-toast';
 function App() {
     const isAuthenticated = useAuthStore((state) => !!state.token);
     const logout = useAuthStore((state) => state.logout);
+    const { activeSplitTaskId, closeSplitModal, tasks } = useTaskStore();
 
     // Auto-logout after 20 minutes (20 * 60 * 1000 = 1200000ms)
     useInactivity(20 * 60 * 1000, () => {
@@ -172,6 +175,17 @@ function App() {
                     element={<PrivacyPolicy />}
                 />
             </Routes >
+
+            {activeSplitTaskId && (() => {
+                const activeTask = tasks.find(t => t.id === activeSplitTaskId);
+                return activeTask ? (
+                    <TaskSplitModal
+                        isOpen={true}
+                        onClose={closeSplitModal}
+                        task={activeTask}
+                    />
+                ) : null;
+            })()}
         </BrowserRouter >
     );
 }
