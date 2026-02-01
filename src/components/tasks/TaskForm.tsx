@@ -2,13 +2,22 @@ import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { taskSchema, TaskFormData } from '../../utils/validationSchemas';
-import { TaskStatus, TaskPriority, TaskType } from '../../types/task.types';
+import { TaskStatus, TaskPriority, TaskType, Task } from '../../types/task.types';
 import { ExpenseCategory } from '../../types/budget.types';
 import { Project } from '../../types/project.types';
 import { projectService } from '../../services/project.service';
 import { Input } from '../common/Input';
 import { Button } from '../common/Button';
 import { useBudgetStore } from '../../stores/budgetStore';
+import { Briefcase, Calendar, DollarSign, TrendingDown, TrendingUp, AlertTriangle, CheckCircle2, Clock } from 'lucide-react';
+import apiClient from '../../api/client';
+
+interface TaskFormProps {
+    onSubmit: (data: TaskFormData) => void;
+    onCancel: () => void;
+    defaultValues?: Task;
+    submitLabel?: string;
+}
 
 const CURRENCY_SYMBOLS: Record<string, string> = {
     NGN: '₦',
@@ -17,6 +26,8 @@ const CURRENCY_SYMBOLS: Record<string, string> = {
     EUR: '€',
     CAD: 'C$',
 };
+
+const DURATION_REGEX = /\((\d+(?:\.\d+)?)\s*(h|hr|hrs|hours|m|min|mins|minutes)\)/i;
 
 export const TaskForm: React.FC<TaskFormProps> = ({
     onSubmit,
@@ -31,6 +42,7 @@ export const TaskForm: React.FC<TaskFormProps> = ({
         register,
         handleSubmit,
         watch,
+        setValue,
         reset,
         formState: { errors, isSubmitting },
     } = useForm<TaskFormData>({
@@ -48,14 +60,23 @@ export const TaskForm: React.FC<TaskFormProps> = ({
             const convertedValues = { ...defaultValues };
 
             // Convert financial values from Base (NGN) to Selected Currency for display
-            if (convertedValues.estimatedCost) {
-                convertedValues.estimatedCost = Number(getConvertedAmount(convertedValues.estimatedCost, currency).toFixed(2));
+            if (convertedValues.financials?.estimatedCost) {
+                // @ts-ignore
+                convertedValues.estimatedCost = Number(getConvertedAmount(convertedValues.financials.estimatedCost, currency).toFixed(2));
             }
-            if (convertedValues.estimatedIncome) {
-                convertedValues.estimatedIncome = Number(getConvertedAmount(convertedValues.estimatedIncome, currency).toFixed(2));
+            if (convertedValues.financials?.estimatedIncome) {
+                // @ts-ignore
+                convertedValues.estimatedIncome = Number(getConvertedAmount(convertedValues.financials.estimatedIncome, currency).toFixed(2));
             }
-            if (convertedValues.lateFeePerDay) {
-                convertedValues.lateFeePerDay = Number(getConvertedAmount(convertedValues.lateFeePerDay, currency).toFixed(2));
+            if (convertedValues.financials?.lateFeePerDay) {
+                // @ts-ignore
+                convertedValues.lateFeePerDay = Number(getConvertedAmount(convertedValues.financials.lateFeePerDay, currency).toFixed(2));
+            }
+
+            // Map flattened fields
+            if (convertedValues.financials?.type) {
+                // @ts-ignore
+                convertedValues.taskType = convertedValues.financials.type;
             }
 
             reset(convertedValues);
@@ -101,14 +122,53 @@ export const TaskForm: React.FC<TaskFormProps> = ({
         onSubmit(submissionData);
     };
 
+    // Duration Parsing Logic
+    const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const title = e.target.value;
+        const match = title.match(DURATION_REGEX);
+
+        if (match) {
+            const value = parseFloat(match[1]);
+            const unit = match[2].toLowerCase();
+            let minutes = 0;
+
+            if (unit.startsWith('h')) {
+                minutes = value * 60;
+            } else {
+                minutes = value;
+            }
+
+            setValue('estimatedDuration', Math.round(minutes));
+        }
+    };
+
     return (
         <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
             <Input
                 label="Title"
-                placeholder="Enter task title..."
+                placeholder="Enter task title (e.g., 'Write Report (2 hours)')"
                 error={errors.title?.message}
                 {...register('title')}
+                onChange={(e) => {
+                    register('title').onChange(e);
+                    handleTitleChange(e);
+                }}
             />
+
+            <div>
+                <Input
+                    label="Estimated Duration (Minutes)"
+                    type="number"
+                    placeholder="Auto-calculated from title..."
+                    icon={<Clock className="w-4 h-4 text-slate-400" />}
+                    {...register('estimatedDuration', {
+                        setValueAs: (v) => (v ? parseInt(v) : undefined),
+                    })}
+                />
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                    💡 Tip: Add time to title like "(2 hours)" to auto-fill
+                </p>
+            </div>
 
             <div>
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">

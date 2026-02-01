@@ -78,6 +78,7 @@ model Task {
   priority       TaskPriority @default(MEDIUM)
   dueDate        DateTime?
   tags           String[]    // Prisma supports array types in Postgres
+  estimatedDuration Int?     // Estimated duration in minutes
   
   financials     Json? 
 

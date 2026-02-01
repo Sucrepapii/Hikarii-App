@@ -48,6 +48,7 @@ export interface Task {
   dueDate?: Date;
   createdAt: Date;
   tags: string[];
+  estimatedDuration?: number; // minutes
   financials?: TaskFinancials; // Financial data for task-money intelligence
   blocks?: TaskBlock[];
   projectId?: string;

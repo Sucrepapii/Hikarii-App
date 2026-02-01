@@ -212,6 +212,11 @@ export class IntelligenceService {
       else if (daysUntilDue <= 3) reasons.push("📅 Due within 3 days");
     }
 
+    if (task.estimatedDuration) {
+      if (task.estimatedDuration <= 30) reasons.push("⚡ Quick Win (< 30m)");
+      else if (task.estimatedDuration > 120) reasons.push("🐘 Big Task (> 2h)");
+    }
+
     return reasons.length > 0 ? reasons.join(" • ") : "High priority task";
   }
 

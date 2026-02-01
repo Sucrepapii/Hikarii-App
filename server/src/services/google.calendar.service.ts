@@ -110,9 +110,12 @@ export const createCalendarEvent = async (userId: string, task: any) => {
           timeZone: "UTC",
         },
         end: {
-          // Assume 1 hour duration or all day
+          // Use estimated duration if available, otherwise default to 1 hour
           dateTime: new Date(
-            new Date(task.dueDate).getTime() + 60 * 60 * 1000,
+            new Date(task.dueDate).getTime() +
+              (task.estimatedDuration
+                ? task.estimatedDuration * 60000
+                : 60 * 60 * 1000),
           ).toISOString(),
           timeZone: "UTC",
         },

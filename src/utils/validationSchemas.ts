@@ -11,6 +11,7 @@ export const taskSchema = z
     dueDate: z.date({ required_error: "Due date is required" }),
     tags: z.array(z.string()).default([]),
     projectId: z.string().optional(),
+    estimatedDuration: z.number().optional(),
     // Financial fields
     taskType: z.nativeEnum(TaskType).default(TaskType.NEUTRAL),
     estimatedCost: z.number().positive().optional(),
