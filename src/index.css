@@ -22,7 +22,7 @@
   }
 
   body {
-    @apply bg-gradient-to-br from-primary-50/40 via-white to-accent-50/40 dark:from-[#0B0C15] dark:via-[#111322] dark:to-[#0B0C15] text-slate-900 dark:text-slate-100 font-sans;
+    @apply bg-slate-50 dark:bg-[#0B0C15] text-slate-900 dark:text-slate-100 font-sans;
     margin: 0;
     padding: 0;
     width: 100%;
