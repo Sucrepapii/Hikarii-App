@@ -158,11 +158,9 @@ export const toggleTaskStatus = async (
       where: { id: task.id },
       data: { status: newStatus },
     });
-
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
-};
 };
 
 export const analyzeTaskSplit = async (
@@ -188,14 +186,15 @@ export const analyzeTaskSplit = async (
     }
 
     // Import service dynamically
-    const { taskSplitterService } = await import("../services/task.splitter.service.js");
-    
+    const { taskSplitterService } =
+      await import("../services/task.splitter.service.js");
+
     // Generate suggestions
     const suggestions = taskSplitterService.suggestBlocks(task.title);
 
     // Persist to DB using transaction
     const createdBlocks = await prisma.$transaction(
-      suggestions.map((block) => 
+      suggestions.map((block) =>
         prisma.taskBlock.create({
           data: {
             title: block.title,
@@ -203,11 +202,14 @@ export const analyzeTaskSplit = async (
             order: block.order,
             taskId: task.id,
           },
-        })
-      )
+        }),
+      ),
     );
 
-    res.json({ blocks: createdBlocks, message: "Blocks generated successfully" });
+    res.json({
+      blocks: createdBlocks,
+      message: "Blocks generated successfully",
+    });
   } catch (error: any) {
     console.error("Split analysis failed:", error);
     res.status(500).json({ error: error.message || "Failed to analyze task" });

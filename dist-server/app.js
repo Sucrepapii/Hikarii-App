@@ -187,6 +187,88 @@ var init_emailTemplates = __esm({
   }
 });
 
+// server/src/services/task.splitter.service.ts
+var task_splitter_service_exports = {};
+__export(task_splitter_service_exports, {
+  TaskSplitterService: () => TaskSplitterService,
+  taskSplitterService: () => taskSplitterService
+});
+var TEMPLATES, DEFAULT_TEMPLATE, TaskSplitterService, taskSplitterService;
+var init_task_splitter_service = __esm({
+  "server/src/services/task.splitter.service.ts"() {
+    TEMPLATES = [
+      {
+        keywords: ["write", "draft", "essay", "report", "blog", "article", "paper"],
+        blocks: [
+          { title: "Research & Notes", weight: 0.25 },
+          { title: "Outline Structure", weight: 0.15 },
+          { title: "Drafting", weight: 0.4 },
+          { title: "Review & Polish", weight: 0.2 }
+        ]
+      },
+      {
+        keywords: ["study", "learn", "read", "prepare for exam", "course"],
+        blocks: [
+          { title: "Review Materials", weight: 0.3 },
+          { title: "Practice / Exercises", weight: 0.4 },
+          { title: "Summarize Key Points", weight: 0.3 }
+        ]
+      },
+      {
+        keywords: [
+          "build",
+          "code",
+          "develop",
+          "implement",
+          "program",
+          "fix",
+          "debug"
+        ],
+        blocks: [
+          { title: "Design & Plan", weight: 0.2 },
+          { title: "Implementation", weight: 0.5 },
+          { title: "Testing & Validation", weight: 0.3 }
+        ]
+      },
+      {
+        keywords: ["plan", "organize", "schedule"],
+        blocks: [
+          { title: "Brainstorming", weight: 0.3 },
+          { title: "Categorization", weight: 0.3 },
+          { title: "Finalizing Plan", weight: 0.4 }
+        ]
+      }
+    ];
+    DEFAULT_TEMPLATE = {
+      blocks: [
+        { title: "Preparation", weight: 0.1 },
+        { title: "Core Work", weight: 0.8 },
+        { title: "Wrap-up & Review", weight: 0.1 }
+      ]
+    };
+    TaskSplitterService = class {
+      /**
+       * Analyzes a task title/description and suggests blocks.
+       * Assume 60 minutes default if no duration capable logic yet.
+       * In a real app, we might ask user for "Total Duration" first.
+       */
+      suggestBlocks(title, totalDurationMinutes = 60) {
+        const normalizedTitle = title.toLowerCase();
+        const template = TEMPLATES.find(
+          (t) => t.keywords.some((k) => normalizedTitle.includes(k))
+        );
+        const blocksToUse = template ? template.blocks : DEFAULT_TEMPLATE.blocks;
+        return blocksToUse.map((block, index) => ({
+          title: block.title,
+          duration: Math.round(totalDurationMinutes * block.weight),
+          order: index
+        }));
+      }
+    };
+    taskSplitterService = new TaskSplitterService();
+  }
+});
+
 // server/src/jobs/reminder.job.ts
 var reminder_job_exports = {};
 __export(reminder_job_exports, {
@@ -828,9 +910,46 @@ var toggleTaskStatus = async (req, res) => {
       where: { id: task.id },
       data: { status: newStatus }
     });
-    res.json(updatedTask);
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+};
+var analyzeTaskSplit = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const task = await db_default.task.findFirst({
+      where: { id, userId: req.userId },
+      include: { blocks: true }
+    });
+    if (!task) {
+      res.status(404).json({ error: "Task not found" });
+      return;
+    }
+    if (task.blocks && task.blocks.length > 0) {
+      res.json({ blocks: task.blocks, message: "Blocks already exist" });
+      return;
+    }
+    const { taskSplitterService: taskSplitterService2 } = await Promise.resolve().then(() => (init_task_splitter_service(), task_splitter_service_exports));
+    const suggestions = taskSplitterService2.suggestBlocks(task.title);
+    const createdBlocks = await db_default.$transaction(
+      suggestions.map(
+        (block) => db_default.taskBlock.create({
+          data: {
+            title: block.title,
+            duration: block.duration,
+            order: block.order,
+            taskId: task.id
+          }
+        })
+      )
+    );
+    res.json({
+      blocks: createdBlocks,
+      message: "Blocks generated successfully"
+    });
+  } catch (error) {
+    console.error("Split analysis failed:", error);
+    res.status(500).json({ error: error.message || "Failed to analyze task" });
   }
 };
 
@@ -843,6 +962,8 @@ router2.get("/:id", getTaskById);
 router2.put("/:id", updateTask);
 router2.delete("/:id", deleteTask);
 router2.patch("/:id/toggle", toggleTaskStatus);
+router2.post("/:id/analyze-split", analyzeTaskSplit);
+router2.post("/:id/schedule-blocks", scheduleBlocks);
 var task_routes_default = router2;
 
 // server/src/routes/project.routes.ts
