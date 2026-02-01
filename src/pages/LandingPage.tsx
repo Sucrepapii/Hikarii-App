@@ -207,70 +207,70 @@ export const LandingPage: React.FC = () => {
             </section>
 
             {/* BENTO FEATURES */}
-            <section className="py-32 px-6 max-w-7xl mx-auto bg-white/50 dark:bg-[#0F111A]/50 backdrop-blur-3xl rounded-[3rem] my-20 border border-slate-200 dark:border-white/5 relative overflow-hidden shadow-2xl">
-                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-500/5 rounded-full blur-[120px]"></div>
-                <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-purple-500/5 rounded-full blur-[120px]"></div>
+            <section className="py-32 px-6 max-w-7xl mx-auto bg-gradient-to-br from-indigo-900 to-purple-900 rounded-[3rem] my-20 relative overflow-hidden shadow-2xl">
+                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-purple-500/30 rounded-full blur-[120px] mix-blend-screen"></div>
+                <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-indigo-500/30 rounded-full blur-[120px] mix-blend-screen"></div>
 
                 <div className="relative z-10">
                     <div className="text-center mb-16">
-                        <h2 className="text-4xl font-display font-bold mb-4 text-slate-900 dark:text-white">Premium Power</h2>
-                        <p className="text-slate-500 dark:text-slate-400">Unlock the full potential of your productivity.</p>
+                        <h2 className="text-4xl font-display font-bold mb-4 text-white">Premium Power</h2>
+                        <p className="text-indigo-200">Unlock the full potential of your productivity.</p>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-4 grid-rows-2 gap-6 h-auto md:h-[600px] p-6">
                         {/* Large Card: Task-Expense Linking */}
-                        <div className="col-span-1 md:col-span-2 row-span-2 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-3xl p-8 flex flex-col justify-between hover:shadow-xl transition-all duration-300 group">
+                        <div className="col-span-1 md:col-span-2 row-span-2 bg-white/10 border border-white/20 rounded-3xl p-8 flex flex-col justify-between hover:bg-white/15 transition-all duration-300 group backdrop-blur-md">
                             <div>
-                                <div className="w-12 h-12 bg-indigo-100 dark:bg-indigo-500/20 rounded-2xl flex items-center justify-center mb-6 text-indigo-600 dark:text-indigo-400">
+                                <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center mb-6 text-white">
                                     <Link2 className="w-6 h-6" />
                                 </div>
-                                <h3 className="text-2xl font-bold mb-2 text-slate-900 dark:text-white">Task-Expense Linking</h3>
-                                <p className="text-slate-500 dark:text-slate-400">Directly connect your spending to your projects. See the true cost of every task and the ROI of your time.</p>
+                                <h3 className="text-2xl font-bold mb-2 text-white">Task-Expense Linking</h3>
+                                <p className="text-indigo-200">Directly connect your spending to your projects. See the true cost of every task and the ROI of your time.</p>
                             </div>
-                            <div className="mt-8 bg-slate-50 dark:bg-black/40 rounded-xl p-6 border border-slate-100 dark:border-white/5 flex items-center gap-4">
-                                <div className="bg-white dark:bg-white/10 p-3 rounded-lg shadow-sm">
-                                    <div className="text-xs text-slate-400 mb-1">Project</div>
-                                    <div className="font-semibold text-slate-900 dark:text-white">Website Launch</div>
+                            <div className="mt-8 bg-black/30 rounded-xl p-6 border border-white/10 flex items-center gap-4">
+                                <div className="bg-white/10 p-3 rounded-lg shadow-sm">
+                                    <div className="text-xs text-white/60 mb-1">Project</div>
+                                    <div className="font-semibold text-white">Website Launch</div>
                                 </div>
-                                <ArrowRight className="text-slate-300 w-5 h-5" />
-                                <div className="bg-white dark:bg-white/10 p-3 rounded-lg shadow-sm">
-                                    <div className="text-xs text-slate-400 mb-1">Cost</div>
-                                    <div className="font-semibold text-red-500">-$450.00</div>
+                                <ArrowRight className="text-white/40 w-5 h-5" />
+                                <div className="bg-white/10 p-3 rounded-lg shadow-sm">
+                                    <div className="text-xs text-white/60 mb-1">Cost</div>
+                                    <div className="font-semibold text-red-300">-$450.00</div>
                                 </div>
                             </div>
                         </div>
 
                         {/* Tall Card: Advanced Reporting */}
-                        <div className="col-span-1 md:col-span-1 row-span-2 bg-slate-50 dark:bg-gradient-to-br dark:from-white/5 dark:to-white/10 border border-slate-200 dark:border-white/10 rounded-3xl p-8 flex flex-col hover:border-indigo-300 dark:hover:border-indigo-500/30 transition-colors">
+                        <div className="col-span-1 md:col-span-1 row-span-2 bg-gradient-to-br from-white/10 to-transparent border border-white/20 rounded-3xl p-8 flex flex-col hover:border-white/40 transition-colors backdrop-blur-md">
                             <div className="mb-auto">
-                                <div className="w-10 h-10 bg-blue-100 dark:bg-blue-500/20 rounded-xl flex items-center justify-center mb-4 text-blue-600 dark:text-blue-400">
+                                <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center mb-4 text-white">
                                     <FileText className="w-5 h-5" />
                                 </div>
-                                <h3 className="text-xl font-bold mb-2 text-slate-900 dark:text-white">Advanced Reporting</h3>
-                                <p className="text-sm text-slate-500 dark:text-slate-400">Export professional CSV/PDF reports for tax season or client billing.</p>
+                                <h3 className="text-xl font-bold mb-2 text-white">Advanced Reporting</h3>
+                                <p className="text-sm text-indigo-200">Export professional CSV/PDF reports for tax season or client billing.</p>
                             </div>
                             <div className="mt-6 space-y-2">
                                 {[1, 2, 3, 4].map((i) => (
-                                    <div key={i} className="flex gap-2 items-center opacity-50">
-                                        <div className="w-8 h-8 rounded bg-slate-200 dark:bg-white/10"></div>
-                                        <div className="h-2 bg-slate-200 dark:bg-white/10 rounded w-full"></div>
+                                    <div key={i} className="flex gap-2 items-center opacity-40">
+                                        <div className="w-8 h-8 rounded bg-white/20"></div>
+                                        <div className="h-2 bg-white/20 rounded w-full"></div>
                                     </div>
                                 ))}
                             </div>
                         </div>
 
                         {/* Wide Card: AI Insights */}
-                        <div className="col-span-1 md:col-span-1 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-3xl p-6 flex flex-col justify-center hover:bg-slate-50 dark:hover:bg-white/10 transition-colors">
-                            <Zap className="w-8 h-8 text-amber-500 mb-3" />
-                            <h3 className="font-bold text-slate-900 dark:text-white">AI Insights</h3>
-                            <p className="text-xs text-slate-500 mt-1">Predictive analytics for your wallet.</p>
+                        <div className="col-span-1 md:col-span-1 bg-white/10 border border-white/20 rounded-3xl p-6 flex flex-col justify-center hover:bg-white/15 transition-colors backdrop-blur-md">
+                            <Zap className="w-8 h-8 text-amber-300 mb-3" />
+                            <h3 className="font-bold text-white">AI Insights</h3>
+                            <p className="text-xs text-indigo-200 mt-1">Predictive analytics for your wallet.</p>
                         </div>
 
                         {/* Last Card: Context Splitting */}
-                        <div className="col-span-1 md:col-span-1 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-3xl p-6 flex flex-col justify-center hover:bg-slate-50 dark:hover:bg-white/10 transition-colors">
-                            <Split className="w-8 h-8 text-green-500 mb-3" />
-                            <h3 className="font-bold text-slate-900 dark:text-white">Smart Split</h3>
-                            <p className="text-xs text-slate-500 mt-1">Break down tasks contextually.</p>
+                        <div className="col-span-1 md:col-span-1 bg-white/10 border border-white/20 rounded-3xl p-6 flex flex-col justify-center hover:bg-white/15 transition-colors backdrop-blur-md">
+                            <Split className="w-8 h-8 text-green-300 mb-3" />
+                            <h3 className="font-bold text-white">Smart Split</h3>
+                            <p className="text-xs text-indigo-200 mt-1">Break down tasks contextually.</p>
                         </div>
                     </div>
                 </div>
