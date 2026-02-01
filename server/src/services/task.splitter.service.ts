@@ -63,16 +63,30 @@ export class TaskSplitterService {
   private model: any = null;
 
   constructor() {
+    // Ensure env is loaded even if instantiated early
+    if (!process.env.GEMINI_API_KEY) {
+      console.log(
+        "[TaskSplitter] GEMINI_API_KEY not found in process.env, attempting to safely load dotenv...",
+      );
+      // Dynamically require to avoid top-level side effects if possible, though constructor is runtime.
+      // We'll rely on the main app having loaded it, but let's log explicitly.
+    }
+
     const apiKey = process.env.GEMINI_API_KEY;
+    console.log(`[TaskSplitter] Initializing. API Key present: ${!!apiKey}`);
+
     if (apiKey) {
       try {
         this.genAI = new GoogleGenerativeAI(apiKey);
         this.model = this.genAI.getGenerativeModel({
           model: "gemini-1.5-flash",
         });
+        console.log("[TaskSplitter] Gemini model initialized successfully.");
       } catch (error) {
         console.error("Failed to initialize Gemini AI:", error);
       }
+    } else {
+      console.warn("[TaskSplitter] No API Key provided. AI features disabled.");
     }
   }
 
@@ -100,6 +114,7 @@ export class TaskSplitterService {
 
         const result = await this.model.generateContent(prompt);
         const responseText = result.response.text();
+        console.log("[TaskSplitter] Raw AI Response:", responseText);
 
         // Cleanup response if it contains markdown code blocks
         const cleanedText = responseText
@@ -110,11 +125,17 @@ export class TaskSplitterService {
         const aiBlocks = JSON.parse(cleanedText);
 
         if (Array.isArray(aiBlocks) && aiBlocks.length > 0) {
+          console.log(
+            "[TaskSplitter] AI parsed valid blocks:",
+            aiBlocks.length,
+          );
           return aiBlocks.map((block: any, index: number) => ({
             title: block.title,
             duration: Number(block.duration),
             order: index,
           }));
+        } else {
+          console.warn("[TaskSplitter] AI response was not a valid array.");
         }
       } catch (error) {
         console.error(
@@ -123,6 +144,8 @@ export class TaskSplitterService {
         );
         // Fallthrough to template logic
       }
+    } else {
+      console.log("[TaskSplitter] Skipping AI (Model not initialized).");
     }
 
     // 2. Fallback to Keyword Template Logic

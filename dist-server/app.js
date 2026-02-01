@@ -435,16 +435,25 @@ var init_task_splitter_service = __esm({
       constructor() {
         this.genAI = null;
         this.model = null;
+        if (!process.env.GEMINI_API_KEY) {
+          console.log(
+            "[TaskSplitter] GEMINI_API_KEY not found in process.env, attempting to safely load dotenv..."
+          );
+        }
         const apiKey = process.env.GEMINI_API_KEY;
+        console.log(`[TaskSplitter] Initializing. API Key present: ${!!apiKey}`);
         if (apiKey) {
           try {
             this.genAI = new GoogleGenerativeAI(apiKey);
             this.model = this.genAI.getGenerativeModel({
               model: "gemini-1.5-flash"
             });
+            console.log("[TaskSplitter] Gemini model initialized successfully.");
           } catch (error) {
             console.error("Failed to initialize Gemini AI:", error);
           }
+        } else {
+          console.warn("[TaskSplitter] No API Key provided. AI features disabled.");
         }
       }
       /**
@@ -469,14 +478,21 @@ var init_task_splitter_service = __esm({
         `;
             const result = await this.model.generateContent(prompt);
             const responseText = result.response.text();
+            console.log("[TaskSplitter] Raw AI Response:", responseText);
             const cleanedText = responseText.replace(/```json/g, "").replace(/```/g, "").trim();
             const aiBlocks = JSON.parse(cleanedText);
             if (Array.isArray(aiBlocks) && aiBlocks.length > 0) {
+              console.log(
+                "[TaskSplitter] AI parsed valid blocks:",
+                aiBlocks.length
+              );
               return aiBlocks.map((block, index) => ({
                 title: block.title,
                 duration: Number(block.duration),
                 order: index
               }));
+            } else {
+              console.warn("[TaskSplitter] AI response was not a valid array.");
             }
           } catch (error) {
             console.error(
@@ -484,6 +500,8 @@ var init_task_splitter_service = __esm({
               error
             );
           }
+        } else {
+          console.log("[TaskSplitter] Skipping AI (Model not initialized).");
         }
         const normalizedTitle = title.toLowerCase();
         const template = TEMPLATES.find(
