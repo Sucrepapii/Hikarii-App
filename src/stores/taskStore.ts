@@ -6,6 +6,7 @@ interface TaskStore {
   tasks: Task[];
   isLoading: boolean;
   error: string | null;
+  activeSplitTaskId: string | null; // Global state for split modal
 
   // CRUD operations
   fetchTasks: () => Promise<void>;
@@ -25,12 +26,15 @@ interface TaskStore {
   getExpenseTasks: () => Task[];
   analyzeTask: (id: string) => Promise<void>;
   scheduleTaskBlocks: (id: string) => Promise<any>;
+  openSplitModal: (taskId: string) => void;
+  closeSplitModal: () => void;
 }
 
 export const useTaskStore = create<TaskStore>((set, get) => ({
   tasks: [],
   isLoading: false,
   error: null,
+  activeSplitTaskId: null,
 
   fetchTasks: async () => {
     try {
@@ -194,10 +198,16 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
           }),
         }));
       }
-      return response.data;
-    } catch (error: any) {
       console.error("Scheduling failed", error);
       throw error;
     }
+  },
+
+  openSplitModal: (taskId: string) => {
+    set({ activeSplitTaskId: taskId });
+  },
+
+  closeSplitModal: () => {
+    set({ activeSplitTaskId: null });
   },
 }));

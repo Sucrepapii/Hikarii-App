@@ -6,7 +6,7 @@ import { formatRelativeDate, isOverdue } from '../../utils/dateUtils';
 import { clsx } from 'clsx';
 import { FinancialImpactBadge } from '../intelligence/FinancialImpactBadge';
 import { useBudgetStore } from '../../stores/budgetStore';
-import { TaskSplitModal } from './TaskSplitModal';
+import { useTaskStore } from '../../stores/taskStore';
 
 interface TaskItemProps {
     task: Task;
@@ -49,7 +49,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({
                 : 'neutral'
         : 'neutral';
 
-    const [isSplitModalOpen, setIsSplitModalOpen] = React.useState(false);
+    const { openSplitModal } = useTaskStore();
 
     return (
         <Card className="group h-full flex flex-col relative overflow-hidden transition-all hover:shadow-md hover:-translate-y-1">
@@ -156,7 +156,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({
                     {/* Compact Actions */}
                     <div className="flex gap-1 shrink-0">
                         <button
-                            onClick={() => setIsSplitModalOpen(true)}
+                            onClick={() => openSplitModal(task.id)}
                             className="p-2 text-slate-400 hover:text-purple-500 hover:bg-purple-50 dark:hover:bg-purple-500/10 rounded-lg transition-colors"
                             title="Smart Split"
                         >
@@ -178,11 +178,6 @@ export const TaskItem: React.FC<TaskItemProps> = ({
                 </div>
             </div>
 
-            <TaskSplitModal
-                isOpen={isSplitModalOpen}
-                onClose={() => setIsSplitModalOpen(false)}
-                task={task}
-            />
         </Card>
     );
 };

@@ -65,6 +65,12 @@ export const PLAN_FEATURES: PlanFeature[] = [
     description: "Get help faster with priority email support",
     available: { free: false, pro: true },
   },
+  {
+    name: "Context-Aware Task Splitting",
+    description:
+      "Break large tasks into manageable calendar blocks contextually",
+    available: { free: false, pro: true },
+  },
 ];
 
 // Pricing plans configuration

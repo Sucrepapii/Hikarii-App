@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Check, ArrowRight, LayoutDashboard, Wallet, Calendar, Briefcase, Users, GraduationCap, Building2, Target, Link2, Zap, FileText, TrendingUp, Sparkles } from 'lucide-react';
+import { Check, ArrowRight, LayoutDashboard, Wallet, Calendar, Briefcase, Users, GraduationCap, Building2, Target, Link2, Zap, FileText, TrendingUp, Sparkles, Split } from 'lucide-react';
 import { Button } from '../components/common/Button';
 import { useAuthStore } from '../stores/authStore';
 import { PRICING_PLANS, PREMIUM_FEATURES } from '../config/features';
@@ -198,7 +198,8 @@ export const LandingPage: React.FC = () => {
                         {[
                             { icon: Link2, title: "Task-Expense Linking", value: "See exactly what each project costs you", marketValue: "$5-7/month standalone", gradient: 'from-indigo-500 via-purple-500 to-pink-500' },
                             { icon: Zap, title: "Predictive Analytics & AI Insights", value: "AI that helps you save before you overspend", marketValue: "$3-5/month standalone", gradient: 'from-yellow-500 via-orange-500 to-red-500' },
-                            { icon: FileText, title: "Advanced Reporting & Exports", value: "Professional reports for tax, clients, or investors", marketValue: "$4-6/month standalone", gradient: 'from-teal-500 via-cyan-500 to-blue-500' }
+                            { icon: FileText, title: "Advanced Reporting & Exports", value: "Professional reports for tax, clients, or investors", marketValue: "$4-6/month standalone", gradient: 'from-teal-500 via-cyan-500 to-blue-500' },
+                            { icon: Split, title: "Context-Aware Task Splitting", value: "Breaking large tasks into calendar blocks", marketValue: "$5/month standalone", gradient: 'from-green-500 via-emerald-500 to-teal-500' }
                         ].map((feature, idx) => (
                             <div
                                 key={idx}

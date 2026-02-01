@@ -11,6 +11,7 @@ import { SpendingChart } from '../components/budget/Charts/SpendingChart';
 import { startOfDay } from 'date-fns';
 import { Modal } from '../components/common/Modal';
 import { TaskForm } from '../components/tasks/TaskForm';
+import { TaskSplitModal } from '../components/tasks/TaskSplitModal';
 import { TaskFormData } from '../utils/validationSchemas';
 import toast from 'react-hot-toast';
 import { useAuthStore } from '../stores/authStore';
@@ -19,7 +20,7 @@ import { useIntelligenceStore } from '../stores/intelligenceStore';
 import { clsx } from 'clsx';
 
 export const Dashboard: React.FC = () => {
-    const { tasks, fetchTasks, toggleTaskStatus, updateTask, deleteTask } = useTaskStore();
+    const { tasks, fetchTasks, toggleTaskStatus, updateTask, deleteTask, activeSplitTaskId, closeSplitModal } = useTaskStore();
     const { expenses, fetchExpenses, currency, getConvertedAmount } = useBudgetStore();
 
     // Edit State
@@ -287,6 +288,17 @@ export const Dashboard: React.FC = () => {
                 isOpen={showUpgradeModal}
                 onClose={() => setShowUpgradeModal(false)}
             />
+
+            {activeSplitTaskId && (() => {
+                const activeTask = tasks.find(t => t.id === activeSplitTaskId);
+                return activeTask ? (
+                    <TaskSplitModal
+                        isOpen={true}
+                        onClose={closeSplitModal}
+                        task={activeTask}
+                    />
+                ) : null;
+            })()}
         </div>
     );
 };
