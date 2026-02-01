@@ -72,12 +72,60 @@ export class TaskSplitterService {
     );
 
     const blocksToUse = template ? template.blocks : DEFAULT_TEMPLATE.blocks;
+    let topic = "";
 
-    return blocksToUse.map((block, index) => ({
-      title: block.title,
-      duration: Math.round(totalDurationMinutes * block.weight),
-      order: index,
-    }));
+    if (template) {
+      // Find the specific keyword that matched
+      const matchedKeyword = template.keywords.find((k) =>
+        normalizedTitle.includes(k),
+      );
+      if (matchedKeyword) {
+        // Extract the topic (everything after the keyword, cleaned up)
+        // e.g. "Write History Essay" -> keyword "write" -> topic "History Essay"
+        const parts = normalizedTitle.split(matchedKeyword);
+        if (parts.length > 1) {
+          topic = parts.slice(1).join(matchedKeyword).trim(); // Join back in case keyword appears twice, though simple split is usually enough
+
+          // Cleanup common prepositions if they start the topic
+          // e.g. "Write about History" -> "about History" -> "History"
+          const prepositions = ["about", "a", "an", "the", "for", "on"];
+          for (const prep of prepositions) {
+            if (topic.startsWith(prep + " ")) {
+              topic = topic.substring(prep.length + 1).trim();
+            }
+          }
+        }
+      }
+    }
+
+    // Capitalize topic for display
+    const formattedTopic =
+      topic.length > 0 ? topic.charAt(0).toUpperCase() + topic.slice(1) : "";
+
+    return blocksToUse.map((block, index) => {
+      let blockTitle = block.title;
+      // Inject topic if available and not already redundant
+      if (formattedTopic) {
+        if (
+          blockTitle.includes("Review") ||
+          blockTitle.includes("Drafting") ||
+          blockTitle.includes("Research")
+        ) {
+          blockTitle = `${blockTitle} ${formattedTopic}`;
+        } else if (
+          blockTitle === "Implementation" ||
+          blockTitle === "Design & Plan"
+        ) {
+          blockTitle = `${blockTitle} for ${formattedTopic}`;
+        }
+      }
+
+      return {
+        title: blockTitle,
+        duration: Math.round(totalDurationMinutes * block.weight),
+        order: index,
+      };
+    });
   }
 }
 
