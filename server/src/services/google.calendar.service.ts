@@ -158,21 +158,32 @@ export const syncTaskBlocks = async (
 
     const calendar = google.calendar({ version: "v3", auth: oauth2Client });
 
-    // Start scheduling from tomorrow 9:00 AM
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    tomorrow.setHours(9, 0, 0, 0);
-
-    let currentStartTime = tomorrow;
-
-    const results = [];
-
-    // Fetch the parent task to get the main title for context
+    // Fetch the parent task to get the main title and due date
     const parentTask = await prisma.task.findUnique({
       where: { id: taskId },
-      select: { title: true },
+      select: { title: true, dueDate: true },
     });
     const parentTitle = parentTask?.title || "Task";
+
+    // Determine scheduling start date
+    let startDate = new Date();
+    if (parentTask?.dueDate) {
+      startDate = new Date(parentTask.dueDate);
+      // Ensure we don't accidentally schedule in the past if due date is today/past
+      // (Optional: for now, let's respect the user's date even if close)
+
+      // If the due date logic in frontend sets it to midnight,
+      // setting hours to 9 ensures it starts at 9am on that day
+    } else {
+      // Default to tomorrow if no due date
+      startDate.setDate(startDate.getDate() + 1);
+    }
+
+    startDate.setHours(9, 0, 0, 0);
+
+    let currentStartTime = startDate;
+
+    const results = [];
 
     for (const block of blocks) {
       if (!block.duration) continue;

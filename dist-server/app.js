@@ -318,16 +318,20 @@ var init_google_calendar_service = __esm({
           refresh_token: user.googleRefreshToken
         });
         const calendar = google.calendar({ version: "v3", auth: oauth2Client });
-        const tomorrow = /* @__PURE__ */ new Date();
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        tomorrow.setHours(9, 0, 0, 0);
-        let currentStartTime = tomorrow;
-        const results = [];
         const parentTask = await db_default.task.findUnique({
           where: { id: taskId },
-          select: { title: true }
+          select: { title: true, dueDate: true }
         });
         const parentTitle = parentTask?.title || "Task";
+        let startDate = /* @__PURE__ */ new Date();
+        if (parentTask?.dueDate) {
+          startDate = new Date(parentTask.dueDate);
+        } else {
+          startDate.setDate(startDate.getDate() + 1);
+        }
+        startDate.setHours(9, 0, 0, 0);
+        let currentStartTime = startDate;
+        const results = [];
         for (const block of blocks) {
           if (!block.duration) continue;
           const endTime = new Date(
