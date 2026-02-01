@@ -24,7 +24,7 @@ interface TaskStore {
   getTasksWithFinancialImpact: () => Task[];
   getIncomeTasks: () => Task[];
   getExpenseTasks: () => Task[];
-  analyzeTask: (id: string) => Promise<void>;
+  analyzeTask: (id: string, options?: { force?: boolean }) => Promise<void>;
   scheduleTaskBlocks: (id: string) => Promise<any>;
   openSplitModal: (taskId: string) => void;
   closeSplitModal: () => void;
@@ -158,10 +158,12 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
     );
   },
 
-  analyzeTask: async (id) => {
+  analyzeTask: async (id, options = {}) => {
     try {
       // Don't set global loading, maybe just local UI loading handled by component
-      const response = await apiClient.post(`/tasks/${id}/analyze-split`);
+      const response = await apiClient.post(`/tasks/${id}/analyze-split`, {
+        force: options.force,
+      });
 
       if (response.data.blocks) {
         set((state) => ({

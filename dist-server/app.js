@@ -1097,9 +1097,15 @@ var analyzeTaskSplit = async (req, res) => {
       res.status(404).json({ error: "Task not found" });
       return;
     }
-    if (task.blocks && task.blocks.length > 0) {
+    const { force } = req.body;
+    if (task.blocks && task.blocks.length > 0 && !force) {
       res.json({ blocks: task.blocks, message: "Blocks already exist" });
       return;
+    }
+    if (force && task.blocks && task.blocks.length > 0) {
+      await db_default.taskBlock.deleteMany({
+        where: { taskId: id }
+      });
     }
     const { taskSplitterService: taskSplitterService2 } = await Promise.resolve().then(() => (init_task_splitter_service(), task_splitter_service_exports));
     const suggestions = await taskSplitterService2.suggestBlocks(task.title);

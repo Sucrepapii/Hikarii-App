@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { X, Sparkles, Calendar, Clock } from 'lucide-react';
+import { X, Sparkles, Calendar, Clock, RefreshCw } from 'lucide-react';
 import { Task, TaskBlock } from '../../types/task.types';
 import { Button } from '../common/Button';
 import { useTaskStore } from '../../stores/taskStore';
@@ -23,22 +23,13 @@ export const TaskSplitModal: React.FC<TaskSplitModalProps> = ({ isOpen, onClose,
         }
     }, [isOpen, task.id]);
 
-    const handleAnalyze = async () => {
+    const handleAnalyze = async (force: boolean = false) => {
         setLoading(true);
         try {
-            await analyzeTask(task.id);
-            // Re-fetch or rely on store update? 
-            // The store update might not reflect immediately in 'task' prop unless parent re-renders and passes new task.
-            // But we can subscribe to store or just trust the response structure if we changed analyzeTask to return data.
-            // For now, let's assume valid reactivity or simple refresh.
-            // Actually, analyzeTask updates the store, so if the parent component (TaskItem) observes the store, it passes updated task.
-            // If not, we might need to fetch locally. 
-            // Let's rely on useTaskStore() getting the updated task? 
-            // Better: analyzeTask could return the blocks.
-            // But let's verify if store updates propagate.
+            await analyzeTask(task.id, { force });
 
-            // Temporary fix: reloading page or trusting UI update.
-            // Ideally analyzeTask returns the blocks.
+            // Refetch to ensure local state is up to date if needed, 
+            // but store update should trigger re-render if we select from store correctly.
         } catch (error) {
             console.error(error);
         } finally {
@@ -104,7 +95,7 @@ export const TaskSplitModal: React.FC<TaskSplitModalProps> = ({ isOpen, onClose,
                             {loading ? (
                                 <div className="py-12 text-center text-slate-500">
                                     <Sparkles className="w-8 h-8 animate-spin mx-auto mb-2 text-purple-500" />
-                                    <p>{blocks.length > 0 ? "Syncing to calendar..." : "Analyzing task structure..."}</p>
+                                    <p>{blocks.length > 0 ? "Regenerating..." : "Analyzing task structure..."}</p>
                                 </div>
                             ) : blocks.length > 0 ? (
                                 <div className="space-y-3">
@@ -122,6 +113,18 @@ export const TaskSplitModal: React.FC<TaskSplitModalProps> = ({ isOpen, onClose,
                                             </div>
                                         </div>
                                     ))}
+
+                                    <div className="flex justify-end pt-2">
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() => handleAnalyze(true)}
+                                            className="text-xs text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300"
+                                        >
+                                            <RefreshCw className="w-3 h-3 mr-1" />
+                                            Regenerate with AI
+                                        </Button>
+                                    </div>
                                 </div>
                             ) : (
                                 <div className="text-center py-8 text-slate-500">

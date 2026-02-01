@@ -181,10 +181,19 @@ export const analyzeTaskSplit = async (
       return;
     }
 
+    const { force } = req.body;
+
     // Check if blocks already exist
-    if (task.blocks && task.blocks.length > 0) {
+    if (task.blocks && task.blocks.length > 0 && !force) {
       res.json({ blocks: task.blocks, message: "Blocks already exist" });
       return;
+    }
+
+    // If force is true, delete existing blocks first
+    if (force && task.blocks && task.blocks.length > 0) {
+      await prisma.taskBlock.deleteMany({
+        where: { taskId: id },
+      });
     }
 
     // Import service dynamically
