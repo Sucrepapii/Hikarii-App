@@ -187,6 +187,190 @@ var init_emailTemplates = __esm({
   }
 });
 
+// server/src/services/google.calendar.service.ts
+var google_calendar_service_exports = {};
+__export(google_calendar_service_exports, {
+  createCalendarEvent: () => createCalendarEvent,
+  exchangeCodeForToken: () => exchangeCodeForToken,
+  getAuthUrl: () => getAuthUrl,
+  syncTaskBlocks: () => syncTaskBlocks
+});
+import { google } from "googleapis";
+import fs from "fs";
+import path from "path";
+var logToFile, oauth2Client, SCOPES, exchangeCodeForToken, createCalendarEvent, syncTaskBlocks, getAuthUrl;
+var init_google_calendar_service = __esm({
+  "server/src/services/google.calendar.service.ts"() {
+    init_db();
+    logToFile = (message, data) => {
+      console.log(`[DEBUG] ${message}`, data ? JSON.stringify(data, null, 2) : "");
+      try {
+        const logPath = path.join(process.cwd(), "debug.log");
+        const timestamp = (/* @__PURE__ */ new Date()).toISOString();
+        const logEntry = `[${timestamp}] ${message} ${data ? JSON.stringify(data, null, 2) : ""}
+`;
+        fs.appendFileSync(logPath, logEntry);
+      } catch (e) {
+        console.error("Failed to write to debug.log", e);
+      }
+    };
+    oauth2Client = new google.auth.OAuth2(
+      process.env.GOOGLE_CLIENT_ID,
+      process.env.GOOGLE_CLIENT_SECRET,
+      "postmessage"
+      // For React One-Tap/Popup flow which handles redirect differently
+    );
+    SCOPES = [
+      "https://www.googleapis.com/auth/calendar",
+      "https://www.googleapis.com/auth/calendar.events",
+      "https://www.googleapis.com/auth/userinfo.email",
+      "https://www.googleapis.com/auth/userinfo.profile"
+    ];
+    exchangeCodeForToken = async (userId, code) => {
+      try {
+        logToFile("CWD:", process.cwd());
+        logToFile("Exchanging code for token");
+        logToFile(
+          "Client ID prefix:",
+          process.env.GOOGLE_CLIENT_ID?.substring(0, 10)
+        );
+        logToFile("Redirect URI (Configured):", oauth2Client.redirectUri);
+        logToFile("Redirect URI (Internal):", oauth2Client._redirectUri);
+        const { tokens } = await oauth2Client.getToken(code);
+        const updatedUser = await db_default.user.update({
+          where: { id: userId },
+          data: {
+            googleAccessToken: tokens.access_token,
+            googleRefreshToken: tokens.refresh_token
+            // Only returned on first consent
+          }
+        });
+        return updatedUser;
+      } catch (error) {
+        const errorDetails = error.response?.data || error.message;
+        logToFile("Error exchanging code:", errorDetails);
+        console.error("Error exchanging code for token details:", errorDetails);
+        throw new Error(
+          `Google Auth Failed: ${error.response?.data?.error || error.message}`
+        );
+      }
+    };
+    createCalendarEvent = async (userId, task) => {
+      try {
+        const user = await db_default.user.findUnique({ where: { id: userId } });
+        if (!user?.googleAccessToken) {
+          console.log("No Google Access Token for user", userId);
+          return null;
+        }
+        oauth2Client.setCredentials({
+          access_token: user.googleAccessToken,
+          refresh_token: user.googleRefreshToken
+        });
+        const calendar = google.calendar({ version: "v3", auth: oauth2Client });
+        const event = {
+          summary: task.title,
+          description: task.description || "",
+          start: {
+            dateTime: (/* @__PURE__ */ new Date()).toISOString(),
+            // Default to now if no due date, logic can be improved
+            timeZone: "UTC"
+            // Use user's timezone if available
+          },
+          end: {
+            dateTime: new Date((/* @__PURE__ */ new Date()).getTime() + 60 * 60 * 1e3).toISOString(),
+            // +1 hour default
+            timeZone: "UTC"
+          },
+          // If task has specific due date:
+          ...task.dueDate && {
+            start: {
+              dateTime: new Date(task.dueDate).toISOString(),
+              timeZone: "UTC"
+            },
+            end: {
+              // Assume 1 hour duration or all day
+              dateTime: new Date(
+                new Date(task.dueDate).getTime() + 60 * 60 * 1e3
+              ).toISOString(),
+              timeZone: "UTC"
+            }
+          },
+          reminders: {
+            useDefault: true
+          }
+        };
+        const response = await calendar.events.insert({
+          calendarId: "primary",
+          requestBody: event
+        });
+        return response.data;
+      } catch (error) {
+        console.error("Error creating calendar event:", error);
+        return null;
+      }
+    };
+    syncTaskBlocks = async (userId, taskId, blocks) => {
+      try {
+        const user = await db_default.user.findUnique({ where: { id: userId } });
+        if (!user?.googleAccessToken) return null;
+        oauth2Client.setCredentials({
+          access_token: user.googleAccessToken,
+          refresh_token: user.googleRefreshToken
+        });
+        const calendar = google.calendar({ version: "v3", auth: oauth2Client });
+        const tomorrow = /* @__PURE__ */ new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        tomorrow.setHours(9, 0, 0, 0);
+        let currentStartTime = tomorrow;
+        const results = [];
+        for (const block of blocks) {
+          if (!block.duration) continue;
+          const endTime = new Date(
+            currentStartTime.getTime() + block.duration * 6e4
+          );
+          const event = {
+            summary: block.title,
+            // e.g. "Research & Notes (Write Essay)"
+            description: `Block ${block.order + 1} of task`,
+            start: {
+              dateTime: currentStartTime.toISOString(),
+              timeZone: "UTC"
+              // or user timezone
+            },
+            end: {
+              dateTime: endTime.toISOString(),
+              timeZone: "UTC"
+            }
+          };
+          try {
+            const response = await calendar.events.insert({
+              calendarId: "primary",
+              requestBody: event
+            });
+            results.push({ blockId: block.id, googleEventId: response.data.id });
+            currentStartTime = new Date(endTime.getTime() + 5 * 6e4);
+          } catch (err) {
+            console.error("Failed to sync block", block.title, err);
+          }
+        }
+        return results;
+      } catch (error) {
+        console.error("Batch sync failed", error);
+        throw error;
+      }
+    };
+    getAuthUrl = () => {
+      return oauth2Client.generateAuthUrl({
+        access_type: "offline",
+        // Essential for refresh token
+        scope: SCOPES,
+        prompt: "consent"
+        // Force consent to get refresh token
+      });
+    };
+  }
+});
+
 // server/src/services/task.splitter.service.ts
 var task_splitter_service_exports = {};
 __export(task_splitter_service_exports, {
@@ -698,115 +882,7 @@ import { Router as Router2 } from "express";
 
 // server/src/controllers/task.controller.ts
 init_db();
-
-// server/src/services/google.calendar.service.ts
-init_db();
-import { google } from "googleapis";
-import fs from "fs";
-import path from "path";
-var logToFile = (message, data) => {
-  console.log(`[DEBUG] ${message}`, data ? JSON.stringify(data, null, 2) : "");
-  try {
-    const logPath = path.join(process.cwd(), "debug.log");
-    const timestamp = (/* @__PURE__ */ new Date()).toISOString();
-    const logEntry = `[${timestamp}] ${message} ${data ? JSON.stringify(data, null, 2) : ""}
-`;
-    fs.appendFileSync(logPath, logEntry);
-  } catch (e) {
-    console.error("Failed to write to debug.log", e);
-  }
-};
-var oauth2Client = new google.auth.OAuth2(
-  process.env.GOOGLE_CLIENT_ID,
-  process.env.GOOGLE_CLIENT_SECRET,
-  "postmessage"
-  // For React One-Tap/Popup flow which handles redirect differently
-);
-var exchangeCodeForToken = async (userId, code) => {
-  try {
-    logToFile("CWD:", process.cwd());
-    logToFile("Exchanging code for token");
-    logToFile(
-      "Client ID prefix:",
-      process.env.GOOGLE_CLIENT_ID?.substring(0, 10)
-    );
-    logToFile("Redirect URI (Configured):", oauth2Client.redirectUri);
-    logToFile("Redirect URI (Internal):", oauth2Client._redirectUri);
-    const { tokens } = await oauth2Client.getToken(code);
-    const updatedUser = await db_default.user.update({
-      where: { id: userId },
-      data: {
-        googleAccessToken: tokens.access_token,
-        googleRefreshToken: tokens.refresh_token
-        // Only returned on first consent
-      }
-    });
-    return updatedUser;
-  } catch (error) {
-    const errorDetails = error.response?.data || error.message;
-    logToFile("Error exchanging code:", errorDetails);
-    console.error("Error exchanging code for token details:", errorDetails);
-    throw new Error(
-      `Google Auth Failed: ${error.response?.data?.error || error.message}`
-    );
-  }
-};
-var createCalendarEvent = async (userId, task) => {
-  try {
-    const user = await db_default.user.findUnique({ where: { id: userId } });
-    if (!user?.googleAccessToken) {
-      console.log("No Google Access Token for user", userId);
-      return null;
-    }
-    oauth2Client.setCredentials({
-      access_token: user.googleAccessToken,
-      refresh_token: user.googleRefreshToken
-    });
-    const calendar = google.calendar({ version: "v3", auth: oauth2Client });
-    const event = {
-      summary: task.title,
-      description: task.description || "",
-      start: {
-        dateTime: (/* @__PURE__ */ new Date()).toISOString(),
-        // Default to now if no due date, logic can be improved
-        timeZone: "UTC"
-        // Use user's timezone if available
-      },
-      end: {
-        dateTime: new Date((/* @__PURE__ */ new Date()).getTime() + 60 * 60 * 1e3).toISOString(),
-        // +1 hour default
-        timeZone: "UTC"
-      },
-      // If task has specific due date:
-      ...task.dueDate && {
-        start: {
-          dateTime: new Date(task.dueDate).toISOString(),
-          timeZone: "UTC"
-        },
-        end: {
-          // Assume 1 hour duration or all day
-          dateTime: new Date(
-            new Date(task.dueDate).getTime() + 60 * 60 * 1e3
-          ).toISOString(),
-          timeZone: "UTC"
-        }
-      },
-      reminders: {
-        useDefault: true
-      }
-    };
-    const response = await calendar.events.insert({
-      calendarId: "primary",
-      requestBody: event
-    });
-    return response.data;
-  } catch (error) {
-    console.error("Error creating calendar event:", error);
-    return null;
-  }
-};
-
-// server/src/controllers/task.controller.ts
+init_google_calendar_service();
 var getTasks = async (req, res) => {
   try {
     const tasks = await db_default.task.findMany({
@@ -950,6 +1026,39 @@ var analyzeTaskSplit = async (req, res) => {
   } catch (error) {
     console.error("Split analysis failed:", error);
     res.status(500).json({ error: error.message || "Failed to analyze task" });
+  }
+};
+var scheduleBlocks = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const task = await db_default.task.findUnique({
+      where: { id, userId: req.userId },
+      include: { blocks: true }
+    });
+    if (!task || !task.blocks || task.blocks.length === 0) {
+      res.status(404).json({ error: "Task or blocks not found" });
+      return;
+    }
+    const { syncTaskBlocks: syncTaskBlocks2 } = await Promise.resolve().then(() => (init_google_calendar_service(), google_calendar_service_exports));
+    const results = await syncTaskBlocks2(req.userId, id, task.blocks);
+    if (!results) {
+      res.status(400).json({ error: "Calendar sync failed. Is Google Calendar connected?" });
+      return;
+    }
+    if (results && results.length > 0) {
+      await db_default.$transaction(
+        results.map(
+          (r) => db_default.taskBlock.update({
+            where: { id: r.blockId },
+            data: { googleEventId: r.googleEventId }
+          })
+        )
+      );
+    }
+    res.json({ message: "Blocks scheduled", results });
+  } catch (error) {
+    console.error("Scheduling failed:", error);
+    res.status(500).json({ error: error.message || "Failed to schedule blocks" });
   }
 };
 
@@ -1898,6 +2007,7 @@ var stripe_routes_default = router8;
 import { Router as Router7 } from "express";
 
 // server/src/controllers/google.controller.ts
+init_google_calendar_service();
 init_db();
 var connectGoogle = async (req, res) => {
   try {
