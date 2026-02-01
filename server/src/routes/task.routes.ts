@@ -7,6 +7,7 @@ import {
   deleteTask,
   toggleTaskStatus,
   analyzeTaskSplit,
+  scheduleBlocks,
 } from "../controllers/task.controller";
 import { authenticate } from "../middleware/auth.middleware";
 

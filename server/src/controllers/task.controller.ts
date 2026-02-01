@@ -214,4 +214,49 @@ export const analyzeTaskSplit = async (
     console.error("Split analysis failed:", error);
     res.status(500).json({ error: error.message || "Failed to analyze task" });
   }
+  }
+};
+
+export const scheduleBlocks = async (
+  req: AuthRequest,
+  res: Response,
+): Promise<void> => {
+    try {
+        const { id } = req.params;
+        const task = await prisma.task.findUnique({
+            where: { id, userId: req.userId },
+            include: { blocks: true },
+        });
+
+        if (!task || !task.blocks || task.blocks.length === 0) {
+            res.status(404).json({ error: "Task or blocks not found" });
+            return;
+        }
+
+        const { syncTaskBlocks } = await import("../services/google.calendar.service.js");
+        const results = await syncTaskBlocks(req.userId!, id, task.blocks);
+
+        if (!results) {
+             res.status(400).json({ error: "Calendar sync failed. Is Google Calendar connected?" });
+             return;
+        }
+        
+        // Update local blocks with googleEventIds if returned
+        if (results && results.length > 0) {
+            await prisma.$transaction(
+                results.map((r: any) => 
+                    prisma.taskBlock.update({
+                        where: { id: r.blockId },
+                        data: { googleEventId: r.googleEventId }
+                    })
+                )
+            );
+        }
+
+        res.json({ message: "Blocks scheduled", results });
+
+    } catch (error: any) {
+        console.error("Scheduling failed:", error);
+        res.status(500).json({ error: error.message || "Failed to schedule blocks" });
+    }
 };
