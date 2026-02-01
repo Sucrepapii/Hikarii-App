@@ -116,7 +116,7 @@ export const useBudgetStore = create<BudgetStore>((set, get) => ({
   fetchForecasts: async () => {
     try {
       // No loading state toggle to avoid flicker, seamless update
-      const response = await apiClient.get("/forecast");
+      const response = await apiClient.get("/predictive/forecast");
       set({ forecasts: response.data });
     } catch (error: any) {
       console.error("Failed to fetch forecasts", error);

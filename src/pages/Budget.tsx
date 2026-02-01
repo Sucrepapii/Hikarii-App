@@ -211,26 +211,28 @@ export const Budget: React.FC = () => {
                         )}
                     </div>
 
-                    <Button
-                        variant="secondary"
-                        onClick={() => setIsBudgetModalOpen(true)}
-                        className="gap-2 flex-1 sm:flex-none min-w-[140px] touch-manipulation"
-                        size="sm"
-                    >
-                        <Settings className="w-4 h-4 sm:w-5 sm:h-5" />
-                        <span className="hidden xs:inline">Set Budget</span>
-                        <span className="xs:hidden">Budget</span>
-                    </Button>
-                    <Button
-                        variant="primary"
-                        onClick={() => setIsExpenseModalOpen(true)}
-                        className="gap-2 flex-1 sm:flex-none min-w-[140px] touch-manipulation"
-                        size="sm"
-                    >
-                        <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
-                        <span className="hidden xs:inline">Add Expense</span>
-                        <span className="xs:hidden">Expense</span>
-                    </Button>
+                    <div className="flex flex-1 sm:flex-none gap-2 sm:gap-3 min-w-[280px]">
+                        <Button
+                            variant="secondary"
+                            onClick={() => setIsBudgetModalOpen(true)}
+                            className="flex-1 sm:flex-none justify-center gap-2 min-w-[120px] touch-manipulation"
+                            size="sm"
+                        >
+                            <Settings className="w-4 h-4 sm:w-5 sm:h-5" />
+                            <span className="hidden xs:inline">Set Budget</span>
+                            <span className="xs:hidden">Budget</span>
+                        </Button>
+                        <Button
+                            variant="primary"
+                            onClick={() => setIsExpenseModalOpen(true)}
+                            className="flex-1 sm:flex-none justify-center gap-2 min-w-[120px] touch-manipulation"
+                            size="sm"
+                        >
+                            <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
+                            <span className="hidden xs:inline">Add Expense</span>
+                            <span className="xs:hidden">Expense</span>
+                        </Button>
+                    </div>
                 </div>
             </div>
 

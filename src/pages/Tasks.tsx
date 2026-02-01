@@ -115,7 +115,7 @@ export const Tasks: React.FC = () => {
                     <Button
                         variant="primary"
                         onClick={() => setIsModalOpen(true)}
-                        className="gap-2 justify-center h-[42px]" // Matching input height roughly
+                        className="gap-2 justify-center h-[42px] whitespace-nowrap min-w-fit touch-manipulation" // Matching input height roughly
                     >
                         <Plus className="w-5 h-5" />
                         Add Task

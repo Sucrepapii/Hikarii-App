@@ -60,7 +60,7 @@ export const Projects: React.FC = () => {
                     <div>
                         <Button
                             variant="primary"
-                            className="gap-2"
+                            className="gap-2 whitespace-nowrap touch-manipulation min-w-fit"
                             onClick={() => {
                                 // @ts-ignore
                                 const user = useAuthStore.getState().user;
