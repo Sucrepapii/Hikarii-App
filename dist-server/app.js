@@ -446,7 +446,8 @@ var init_task_splitter_service = __esm({
           try {
             this.genAI = new GoogleGenerativeAI(apiKey);
             this.model = this.genAI.getGenerativeModel({
-              model: "gemini-1.5-flash"
+              model: "gemini-1.5-flash",
+              generationConfig: { responseMimeType: "application/json" }
             });
             console.log("[TaskSplitter] Gemini model initialized successfully.");
           } catch (error) {
@@ -468,19 +469,22 @@ var init_task_splitter_service = __esm({
             const prompt = `
           You are a productivity expert. Break down the task "${title}" into 3-5 subtasks (blocks) that fit within a total of ${totalDurationMinutes} minutes.
           
-          Return ONLY a raw JSON array (no markdown code blocks, no explanation) with this structure:
+          Return a JSON ARRAY. Schema:
+          Array<{ title: string, duration: number }>
+          
+          Example:
           [
-            { "title": "Subtask Name", "duration": number }
+            { "title": "Research destination", "duration": 15 },
+            { "title": "Book flights", "duration": 30 },
+            { "title": "Pack bags", "duration": 15 }
           ]
           
           The sum of durations should equal exactly ${totalDurationMinutes}.
-          Adjust the subtask titles to be specific to the context (e.g., if "Plan vacation", use "Book Flights", not just "Preparation").
         `;
             const result = await this.model.generateContent(prompt);
             const responseText = result.response.text();
             console.log("[TaskSplitter] Raw AI Response:", responseText);
-            const cleanedText = responseText.replace(/```json/g, "").replace(/```/g, "").trim();
-            const aiBlocks = JSON.parse(cleanedText);
+            const aiBlocks = JSON.parse(responseText.trim());
             if (Array.isArray(aiBlocks) && aiBlocks.length > 0) {
               console.log(
                 "[TaskSplitter] AI parsed valid blocks:",
@@ -1097,15 +1101,9 @@ var analyzeTaskSplit = async (req, res) => {
       res.status(404).json({ error: "Task not found" });
       return;
     }
-    const { force } = req.body;
-    if (task.blocks && task.blocks.length > 0 && !force) {
+    if (task.blocks && task.blocks.length > 0) {
       res.json({ blocks: task.blocks, message: "Blocks already exist" });
       return;
-    }
-    if (force && task.blocks && task.blocks.length > 0) {
-      await db_default.taskBlock.deleteMany({
-        where: { taskId: id }
-      });
     }
     const { taskSplitterService: taskSplitterService2 } = await Promise.resolve().then(() => (init_task_splitter_service(), task_splitter_service_exports));
     const suggestions = await taskSplitterService2.suggestBlocks(task.title);

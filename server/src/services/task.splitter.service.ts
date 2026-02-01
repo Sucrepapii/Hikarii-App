@@ -80,6 +80,7 @@ export class TaskSplitterService {
         this.genAI = new GoogleGenerativeAI(apiKey);
         this.model = this.genAI.getGenerativeModel({
           model: "gemini-1.5-flash",
+          generationConfig: { responseMimeType: "application/json" },
         });
         console.log("[TaskSplitter] Gemini model initialized successfully.");
       } catch (error) {
@@ -103,26 +104,25 @@ export class TaskSplitterService {
         const prompt = `
           You are a productivity expert. Break down the task "${title}" into 3-5 subtasks (blocks) that fit within a total of ${totalDurationMinutes} minutes.
           
-          Return ONLY a raw JSON array (no markdown code blocks, no explanation) with this structure:
+          Return a JSON ARRAY. Schema:
+          Array<{ title: string, duration: number }>
+          
+          Example:
           [
-            { "title": "Subtask Name", "duration": number }
+            { "title": "Research destination", "duration": 15 },
+            { "title": "Book flights", "duration": 30 },
+            { "title": "Pack bags", "duration": 15 }
           ]
           
           The sum of durations should equal exactly ${totalDurationMinutes}.
-          Adjust the subtask titles to be specific to the context (e.g., if "Plan vacation", use "Book Flights", not just "Preparation").
         `;
 
         const result = await this.model.generateContent(prompt);
+        // With JSON mode, clean response directly
         const responseText = result.response.text();
         console.log("[TaskSplitter] Raw AI Response:", responseText);
 
-        // Cleanup response if it contains markdown code blocks
-        const cleanedText = responseText
-          .replace(/```json/g, "")
-          .replace(/```/g, "")
-          .trim();
-
-        const aiBlocks = JSON.parse(cleanedText);
+        const aiBlocks = JSON.parse(responseText.trim());
 
         if (Array.isArray(aiBlocks) && aiBlocks.length > 0) {
           console.log(
