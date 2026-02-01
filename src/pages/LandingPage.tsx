@@ -8,7 +8,7 @@ import { useAuthStore } from '../stores/authStore';
 // Note: In this environment, we will assume the files are placed in public or handled via typical asset workflow.
 // For the sake of this edit, I'll allow the user to visualize where they go.
 
-const HeroDashboard = "/hero_dashboard_1769981528943.png"; // Placeholder for the actual moved file
+const HeroDashboard = "/hero_dashboard_v2.png"; // Updated with user provided screenshot
 const MethodClarity = "/method_clarity_1769981543788.png";
 const MethodFocus = "/method_focus_1769981556726.png";
 const MethodFreedom = "/method_freedom_1769981571479.png";
