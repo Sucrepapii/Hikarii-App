@@ -1,6 +1,7 @@
 
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Check, Zap, ChevronRight, Link2, FileText, Split, ArrowRight } from 'lucide-react';
+import { LayoutDashboard, Check, Zap, Link2, FileText, Split, ArrowRight, Menu, X, Instagram, Twitter, Linkedin } from 'lucide-react';
 import { Button } from '../components/common/Button';
 import { useAuthStore } from '../stores/authStore';
 
@@ -17,6 +18,7 @@ export const LandingPage: React.FC = () => {
     const navigate = useNavigate();
     const { token } = useAuthStore();
     const isAuthenticated = !!token;
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     // 3D Tilt Effect
     const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -51,11 +53,13 @@ export const LandingPage: React.FC = () => {
                             Hikari
                         </span>
                     </div>
-                    <div className="flex items-center gap-8">
-                        <Link to="/pricing" className="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors hidden md:block">
+
+                    {/* Desktop Utility Nav */}
+                    <div className="hidden md:flex items-center gap-8">
+                        <Link to="/pricing" className="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
                             Pricing
                         </Link>
-                        <Link to="/about" className="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors hidden md:block">
+                        <Link to="/about" className="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
                             Who is Hikari For?
                         </Link>
                         {!isAuthenticated && (
@@ -68,7 +72,38 @@ export const LandingPage: React.FC = () => {
                             {isAuthenticated ? 'Dashboard' : 'Get Started'}
                         </Button>
                     </div>
+
+                    {/* Mobile Menu Toggle */}
+                    <div className="md:hidden flex items-center gap-4">
+                        <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="text-slate-600 dark:text-slate-300 focus:outline-none">
+                            {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                        </button>
+                    </div>
                 </div>
+
+                {/* Mobile Menu Overlay */}
+                {isMenuOpen && (
+                    <div className="md:hidden absolute top-20 left-0 w-full bg-white dark:bg-[#0B0C15] border-b border-slate-200 dark:border-white/5 py-4 px-6 flex flex-col gap-4 shadow-xl animate-fade-in-up">
+                        <Link to="/pricing" className="text-lg font-medium text-slate-600 dark:text-slate-300 py-2 border-b border-slate-100 dark:border-white/5" onClick={() => setIsMenuOpen(false)}>
+                            Pricing
+                        </Link>
+                        <Link to="/about" className="text-lg font-medium text-slate-600 dark:text-slate-300 py-2 border-b border-slate-100 dark:border-white/5" onClick={() => setIsMenuOpen(false)}>
+                            Who is Hikari For?
+                        </Link>
+                        <Link to="/login" className="text-lg font-medium text-slate-600 dark:text-slate-300 py-2 border-b border-slate-100 dark:border-white/5" onClick={() => setIsMenuOpen(false)}>
+                            Login
+                        </Link>
+                        <Button
+                            onClick={() => {
+                                navigate(isAuthenticated ? '/dashboard' : '/signup');
+                                setIsMenuOpen(false);
+                            }}
+                            className="w-full bg-indigo-600 text-white hover:bg-indigo-700 rounded-full h-12 mt-2"
+                        >
+                            {isAuthenticated ? 'Dashboard' : 'Get Started'}
+                        </Button>
+                    </div>
+                )}
             </nav>
 
             {/* HERO SECTION */}
@@ -297,28 +332,40 @@ export const LandingPage: React.FC = () => {
                 </div>
             </section>
 
-            {/* CTA */}
-            <section className="py-24 text-center relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent to-slate-50/50 dark:to-indigo-900/10 pointer-events-none"></div>
-                <h2 className="text-5xl md:text-7xl font-display font-bold mb-8 text-slate-900 dark:text-white relative z-10">
-                    Start <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-600">Living</span>.<br />
-                    Stop <span className="text-slate-400 dark:text-slate-600">Managing</span>.
-                </h2>
-                <div className="relative z-10">
-                    <Button onClick={() => navigate('/signup')} size="lg" className="rounded-full px-12 h-16 text-xl bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-black dark:hover:bg-slate-200 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all">
-                        Get Started Free <ChevronRight className="ml-2 w-6 h-6" />
-                    </Button>
-                    <p className="mt-6 text-slate-500 dark:text-slate-400 text-sm">No credit card required. Cancel anytime.</p>
-                </div>
-            </section>
-
             {/* Footer */}
-            <footer className="py-12 border-t border-slate-200 dark:border-white/5 text-center text-slate-500 bg-slate-50 dark:bg-black/20">
-                <div className="flex items-center justify-center gap-2 mb-4 opacity-50">
-                    <div className="w-6 h-6 bg-slate-400 rounded-md"></div>
-                    <span className="font-bold text-slate-700 dark:text-slate-300">Hikari</span>
+            <footer className="py-20 border-t border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-black/20">
+                <div className="max-w-7xl mx-auto px-6 flex flex-col items-center">
+
+                    {/* Copyright & Links Container */}
+                    <div className="flex flex-col items-center gap-8 w-full">
+                        {/* Social Icons */}
+                        <div className="flex items-center gap-6 mb-4">
+                            <a href="#" className="p-2 rounded-full bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-500 dark:text-slate-400 hover:text-indigo-500 dark:hover:text-indigo-400 hover:scale-110 transition-all">
+                                <Instagram className="w-5 h-5" />
+                            </a>
+                            <a href="#" className="p-2 rounded-full bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-500 dark:text-slate-400 hover:text-indigo-500 dark:hover:text-indigo-400 hover:scale-110 transition-all">
+                                <Twitter className="w-5 h-5" />
+                            </a>
+                            <a href="#" className="p-2 rounded-full bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-500 dark:text-slate-400 hover:text-indigo-500 dark:hover:text-indigo-400 hover:scale-110 transition-all">
+                                <Linkedin className="w-5 h-5" />
+                            </a>
+                        </div>
+
+                        <div className="text-center">
+                            <p className="text-slate-500 dark:text-slate-400 mb-6">
+                                &copy; {new Date().getFullYear()} Hikari App. All rights reserved.
+                            </p>
+                            <div className="flex items-center justify-center gap-8">
+                                <Link to="/terms" className="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                                    Terms of Use
+                                </Link>
+                                <Link to="/privacy" className="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                                    Privacy Policy
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <p>&copy; {new Date().getFullYear()} Hikari App. Crafted for the focused.</p>
             </footer>
 
 
