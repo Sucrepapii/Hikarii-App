@@ -288,9 +288,9 @@ var init_google_calendar_service = __esm({
               timeZone: "UTC"
             },
             end: {
-              // Assume 1 hour duration or all day
+              // Use estimated duration if available, otherwise default to 1 hour
               dateTime: new Date(
-                new Date(task.dueDate).getTime() + 60 * 60 * 1e3
+                new Date(task.dueDate).getTime() + (task.estimatedDuration ? task.estimatedDuration * 6e4 : 60 * 60 * 1e3)
               ).toISOString(),
               timeZone: "UTC"
             }
@@ -377,6 +377,7 @@ __export(task_splitter_service_exports, {
   TaskSplitterService: () => TaskSplitterService,
   taskSplitterService: () => taskSplitterService
 });
+import { GoogleGenerativeAI } from "@google/generative-ai";
 var TEMPLATES, DEFAULT_TEMPLATE, TaskSplitterService, taskSplitterService;
 var init_task_splitter_service = __esm({
   "server/src/services/task.splitter.service.ts"() {
@@ -431,22 +432,98 @@ var init_task_splitter_service = __esm({
       ]
     };
     TaskSplitterService = class {
+      constructor() {
+        this.genAI = null;
+        this.model = null;
+        const apiKey = process.env.GEMINI_API_KEY;
+        if (apiKey) {
+          try {
+            this.genAI = new GoogleGenerativeAI(apiKey);
+            this.model = this.genAI.getGenerativeModel({
+              model: "gemini-1.5-flash"
+            });
+          } catch (error) {
+            console.error("Failed to initialize Gemini AI:", error);
+          }
+        }
+      }
       /**
        * Analyzes a task title/description and suggests blocks.
        * Assume 60 minutes default if no duration capable logic yet.
        * In a real app, we might ask user for "Total Duration" first.
        */
-      suggestBlocks(title, totalDurationMinutes = 60) {
+      async suggestBlocks(title, totalDurationMinutes = 60) {
+        if (this.model) {
+          try {
+            console.log(`[TaskSplitter] Attempting AI split for: "${title}"`);
+            const prompt = `
+          You are a productivity expert. Break down the task "${title}" into 3-5 subtasks (blocks) that fit within a total of ${totalDurationMinutes} minutes.
+          
+          Return ONLY a raw JSON array (no markdown code blocks, no explanation) with this structure:
+          [
+            { "title": "Subtask Name", "duration": number }
+          ]
+          
+          The sum of durations should equal exactly ${totalDurationMinutes}.
+          Adjust the subtask titles to be specific to the context (e.g., if "Plan vacation", use "Book Flights", not just "Preparation").
+        `;
+            const result = await this.model.generateContent(prompt);
+            const responseText = result.response.text();
+            const cleanedText = responseText.replace(/```json/g, "").replace(/```/g, "").trim();
+            const aiBlocks = JSON.parse(cleanedText);
+            if (Array.isArray(aiBlocks) && aiBlocks.length > 0) {
+              return aiBlocks.map((block, index) => ({
+                title: block.title,
+                duration: Number(block.duration),
+                order: index
+              }));
+            }
+          } catch (error) {
+            console.error(
+              "[TaskSplitter] AI generation failed, falling back to templates:",
+              error
+            );
+          }
+        }
         const normalizedTitle = title.toLowerCase();
         const template = TEMPLATES.find(
           (t) => t.keywords.some((k) => normalizedTitle.includes(k))
         );
         const blocksToUse = template ? template.blocks : DEFAULT_TEMPLATE.blocks;
-        return blocksToUse.map((block, index) => ({
-          title: block.title,
-          duration: Math.round(totalDurationMinutes * block.weight),
-          order: index
-        }));
+        let topic = "";
+        if (template) {
+          const matchedKeyword = template.keywords.find(
+            (k) => normalizedTitle.includes(k)
+          );
+          if (matchedKeyword) {
+            const parts = normalizedTitle.split(matchedKeyword);
+            if (parts.length > 1) {
+              topic = parts.slice(1).join(matchedKeyword).trim();
+              const prepositions = ["about", "a", "an", "the", "for", "on"];
+              for (const prep of prepositions) {
+                if (topic.startsWith(prep + " ")) {
+                  topic = topic.substring(prep.length + 1).trim();
+                }
+              }
+            }
+          }
+        }
+        const formattedTopic = topic.length > 0 ? topic.charAt(0).toUpperCase() + topic.slice(1) : "";
+        return blocksToUse.map((block, index) => {
+          let blockTitle = block.title;
+          if (formattedTopic) {
+            if (blockTitle.includes("Review") || blockTitle.includes("Drafting") || blockTitle.includes("Research")) {
+              blockTitle = `${blockTitle} ${formattedTopic}`;
+            } else if (blockTitle === "Implementation" || blockTitle === "Design & Plan") {
+              blockTitle = `${blockTitle} for ${formattedTopic}`;
+            }
+          }
+          return {
+            title: blockTitle,
+            duration: Math.round(totalDurationMinutes * block.weight),
+            order: index
+          };
+        });
       }
     };
     taskSplitterService = new TaskSplitterService();

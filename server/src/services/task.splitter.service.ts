@@ -1,4 +1,5 @@
 import { Task } from "@prisma/client";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 interface SplitTemplate {
   keywords: string[];
@@ -58,19 +59,77 @@ const DEFAULT_TEMPLATE = {
 };
 
 export class TaskSplitterService {
+  private genAI: GoogleGenerativeAI | null = null;
+  private model: any = null;
+
+  constructor() {
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (apiKey) {
+      try {
+        this.genAI = new GoogleGenerativeAI(apiKey);
+        this.model = this.genAI.getGenerativeModel({
+          model: "gemini-1.5-flash",
+        });
+      } catch (error) {
+        console.error("Failed to initialize Gemini AI:", error);
+      }
+    }
+  }
+
   /**
    * Analyzes a task title/description and suggests blocks.
    * Assume 60 minutes default if no duration capable logic yet.
    * In a real app, we might ask user for "Total Duration" first.
    */
-  suggestBlocks(title: string, totalDurationMinutes: number = 60) {
-    const normalizedTitle = title.toLowerCase();
+  async suggestBlocks(title: string, totalDurationMinutes: number = 60) {
+    // 1. Try AI-based splitting if configured
+    if (this.model) {
+      try {
+        console.log(`[TaskSplitter] Attempting AI split for: "${title}"`);
+        const prompt = `
+          You are a productivity expert. Break down the task "${title}" into 3-5 subtasks (blocks) that fit within a total of ${totalDurationMinutes} minutes.
+          
+          Return ONLY a raw JSON array (no markdown code blocks, no explanation) with this structure:
+          [
+            { "title": "Subtask Name", "duration": number }
+          ]
+          
+          The sum of durations should equal exactly ${totalDurationMinutes}.
+          Adjust the subtask titles to be specific to the context (e.g., if "Plan vacation", use "Book Flights", not just "Preparation").
+        `;
 
-    // Find matching template
+        const result = await this.model.generateContent(prompt);
+        const responseText = result.response.text();
+
+        // Cleanup response if it contains markdown code blocks
+        const cleanedText = responseText
+          .replace(/```json/g, "")
+          .replace(/```/g, "")
+          .trim();
+
+        const aiBlocks = JSON.parse(cleanedText);
+
+        if (Array.isArray(aiBlocks) && aiBlocks.length > 0) {
+          return aiBlocks.map((block: any, index: number) => ({
+            title: block.title,
+            duration: Number(block.duration),
+            order: index,
+          }));
+        }
+      } catch (error) {
+        console.error(
+          "[TaskSplitter] AI generation failed, falling back to templates:",
+          error,
+        );
+        // Fallthrough to template logic
+      }
+    }
+
+    // 2. Fallback to Keyword Template Logic
+    const normalizedTitle = title.toLowerCase();
     const template = TEMPLATES.find((t) =>
       t.keywords.some((k) => normalizedTitle.includes(k)),
     );
-
     const blocksToUse = template ? template.blocks : DEFAULT_TEMPLATE.blocks;
     let topic = "";
 
