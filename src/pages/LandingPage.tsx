@@ -283,15 +283,36 @@ export const LandingPage: React.FC = () => {
                                 <h3 className="text-2xl font-bold mb-3 text-white">Task-Expense Linking</h3>
                                 <p className="text-indigo-100 leading-relaxed">Directly connect your spending to your projects. See the true cost of every task and the ROI of your time.</p>
                             </div>
-                            <div className="mt-8 bg-black/40 rounded-2xl p-6 border border-white/10 flex items-center gap-4 backdrop-blur-sm">
-                                <div className="bg-white/10 p-4 rounded-xl shadow-inner border border-white/5 flex-1">
-                                    <div className="text-xs text-white/60 mb-1 font-medium uppercase tracking-wider">Project</div>
-                                    <div className="font-semibold text-white">Website Launch</div>
+                            <div className="mt-8 bg-black/40 rounded-2xl p-6 border border-white/10 flex flex-col gap-4 backdrop-blur-sm">
+                                {/* Entry 1: Static */}
+                                <div className="flex items-center gap-4">
+                                    <div className="bg-white/10 p-4 rounded-xl shadow-inner border border-white/5 flex-1">
+                                        <div className="text-xs text-white/60 mb-1 font-medium uppercase tracking-wider">Project</div>
+                                        <div className="font-semibold text-white">Website Launch</div>
+                                    </div>
+                                    <ArrowRight className="text-white/40 w-5 h-5" />
+                                    <div className="bg-white/10 p-4 rounded-xl shadow-inner border border-white/5 flex-1">
+                                        <div className="text-xs text-white/60 mb-1 font-medium uppercase tracking-wider">Cost</div>
+                                        <div className="font-semibold text-red-300">-$450.00</div>
+                                    </div>
                                 </div>
-                                <ArrowRight className="text-white/40 w-5 h-5" />
-                                <div className="bg-white/10 p-4 rounded-xl shadow-inner border border-white/5 flex-1">
-                                    <div className="text-xs text-white/60 mb-1 font-medium uppercase tracking-wider">Cost</div>
-                                    <div className="font-semibold text-red-300">-$450.00</div>
+
+                                {/* Entry 2: Hover Reveal / Typing Effect */}
+                                <div className="flex items-center gap-4 pt-4 border-t border-white/5 opacity-50 group-hover:opacity-100 transition-all duration-500 delay-100">
+                                    <div className="bg-white/10 p-4 rounded-xl shadow-inner border border-white/5 flex-1">
+                                        <div className="text-xs text-white/60 mb-1 font-medium uppercase tracking-wider">Project</div>
+                                        <div className="font-semibold text-white">Office Revamp</div>
+                                    </div>
+                                    <ArrowRight className="text-white/40 w-5 h-5" />
+                                    <div className="bg-white/10 p-4 rounded-xl shadow-inner border border-white/5 flex-1">
+                                        <div className="text-xs text-white/60 mb-1 font-medium uppercase tracking-wider">Cost</div>
+                                        <div className="font-semibold text-red-300 relative w-fit">
+                                            <span className="invisible">-$7,500</span>
+                                            <span className="absolute top-0 left-0 overflow-hidden whitespace-nowrap w-0 group-hover:w-full transition-[width] duration-[1500ms] ease-linear border-r-2 border-transparent group-hover:border-red-300/50">
+                                                -$7,500
+                                            </span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
