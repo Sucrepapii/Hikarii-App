@@ -126,4 +126,40 @@ export const helpArticles: Article[] = [
             <p>Note: The link expires in 15 minutes for security reasons.</p>
         `,
   },
+  {
+    id: "9",
+    title: "Mobile App Basics",
+    slug: "mobile-app-basics",
+    category: "Getting Started",
+    excerpt: "Take your tasks on the go with our iOS and Android apps.",
+    content: `
+            <h2>Hikari on Mobile</h2>
+            <p>Stay productive wherever you are. Our mobile app supports offline mode, quick capture, and push notifications.</p>
+            <p>Download it from the App Store or Google Play Store today.</p>
+        `,
+  },
+  {
+    id: "10",
+    title: "Viewing Past Invoices",
+    slug: "viewing-invoices",
+    category: "Account & Billing",
+    excerpt: "Access and download your billing history.",
+    content: `
+            <h2>Where are my invoices?</h2>
+            <p>You can find all your past invoices in <strong>Settings > Billing > Invoice History</strong>.</p>
+            <p>Click the download icon next to any invoice to save it as a PDF for your records.</p>
+        `,
+  },
+  {
+    id: "11",
+    title: "Exporting Data",
+    slug: "exporting-data",
+    category: "Troubleshooting",
+    excerpt: "How to download a backup of your workspace data.",
+    content: `
+            <h2>Data Export</h2>
+            <p>You own your data. To export everything, go to <strong>Settings > Import/Export</strong> and click "Export All Data".</p>
+            <p>You will receive a JSON file containing all your projects, tasks, and budget items.</p>
+        `,
+  },
 ];
