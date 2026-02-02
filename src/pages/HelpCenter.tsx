@@ -1,12 +1,21 @@
 import React from 'react';
 import { Footer } from '../components/layout/Footer';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Logo } from '../components/common/Logo';
 import { Button } from '../components/common/Button';
-import { Search, Book, HelpCircle, FileQuestion, ArrowRight, Video, Zap } from 'lucide-react';
+import { Search, Book, HelpCircle, FileQuestion, ArrowRight, Zap } from 'lucide-react';
+import { helpArticles } from '../data/helpArticles';
 
 export const HelpCenter: React.FC = () => {
     const navigate = useNavigate();
+
+    // Get article counts by category
+    const getCount = (category: string) => helpArticles.filter(a => a.category === category).length;
+
+    // Get 3 random popular articles (excluding the one requested to be removed)
+    const popularArticles = helpArticles
+        .filter(a => a.title !== 'Setting up your workspace') // Example filter, or just take the first 3
+        .slice(0, 3);
 
     return (
         <div className="min-h-screen bg-white dark:bg-[#0B0C15] font-sans text-slate-900 dark:text-slate-100 flex flex-col">
@@ -33,7 +42,7 @@ export const HelpCenter: React.FC = () => {
                         <div className="relative">
                             <input
                                 type="text"
-                                placeholder="Search for articles (e.g., 'how to connect bank', 'cancel subscription')"
+                                placeholder="Search for articles (e.g., 'workspace', 'cancel subscription')"
                                 className="w-full px-6 py-5 pl-14 rounded-full bg-white dark:bg-[#0F111A] border-2 border-slate-100 dark:border-white/10 focus:border-indigo-500 focus:outline-none transition-all text-lg shadow-xl"
                             />
                             <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-6 h-6 text-slate-400" />
@@ -45,25 +54,27 @@ export const HelpCenter: React.FC = () => {
                 <div className="mb-20">
                     <h2 className="text-xl font-bold mb-6 text-slate-900 dark:text-white">Popular Articles</h2>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        {['Connecting your first bank account', 'How specifically does Smart Split work?', 'Understanding your Net Worth graph'].map((article, i) => (
-                            <div key={i} className="p-4 rounded-xl bg-white dark:bg-white/5 border border-slate-100 dark:border-white/5 hover:border-indigo-500/30 hover:bg-slate-50 dark:hover:bg-white/10 transition-colors cursor-pointer flex items-center justify-between group">
-                                <span className="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-indigo-600 dark:group-hover:text-indigo-400">{article}</span>
+                        {popularArticles.map((article) => (
+                            <Link key={article.id} to={`/help/article/${article.slug}`} className="p-4 rounded-xl bg-white dark:bg-white/5 border border-slate-100 dark:border-white/5 hover:border-indigo-500/30 hover:bg-slate-50 dark:hover:bg-white/10 transition-colors cursor-pointer flex items-center justify-between group">
+                                <span className="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-indigo-600 dark:group-hover:text-indigo-400">{article.title}</span>
                                 <ArrowRight className="w-4 h-4 text-slate-400 group-hover:translate-x-1 transition-transform" />
-                            </div>
+                            </Link>
                         ))}
                     </div>
                 </div>
 
                 {/* Categories */}
                 <h2 className="text-2xl font-bold mb-8 text-center">Browse by Category</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
                     <div className="p-8 rounded-3xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 hover:-translate-y-1 hover:shadow-lg transition-all cursor-pointer group">
                         <div className="w-12 h-12 rounded-2xl bg-indigo-100 dark:bg-indigo-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                             <Book className="w-6 h-6 text-indigo-500" />
                         </div>
                         <h3 className="text-lg font-bold mb-2">Getting Started</h3>
                         <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">Account setup, first project, and interface tour.</p>
-                        <span className="text-indigo-600 dark:text-indigo-400 text-sm font-bold">6 Articles</span>
+                        {getCount('Getting Started') > 0 && (
+                            <span className="text-indigo-600 dark:text-indigo-400 text-sm font-bold">{getCount('Getting Started')} Articles</span>
+                        )}
                     </div>
 
                     <div className="p-8 rounded-3xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 hover:-translate-y-1 hover:shadow-lg transition-all cursor-pointer group">
@@ -72,7 +83,9 @@ export const HelpCenter: React.FC = () => {
                         </div>
                         <h3 className="text-lg font-bold mb-2">Account & Billing</h3>
                         <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">Plans, payments, invoices, and settings.</p>
-                        <span className="text-purple-600 dark:text-purple-400 text-sm font-bold">4 Articles</span>
+                        {getCount('Account & Billing') > 0 && (
+                            <span className="text-purple-600 dark:text-purple-400 text-sm font-bold">{getCount('Account & Billing')} Articles</span>
+                        )}
                     </div>
 
                     <div className="p-8 rounded-3xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 hover:-translate-y-1 hover:shadow-lg transition-all cursor-pointer group">
@@ -81,16 +94,9 @@ export const HelpCenter: React.FC = () => {
                         </div>
                         <h3 className="text-lg font-bold mb-2">Troubleshooting</h3>
                         <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">Error messages, sync issues, and bugs.</p>
-                        <span className="text-pink-600 dark:text-pink-400 text-sm font-bold">8 Articles</span>
-                    </div>
-
-                    <div className="p-8 rounded-3xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 hover:-translate-y-1 hover:shadow-lg transition-all cursor-pointer group">
-                        <div className="w-12 h-12 rounded-2xl bg-amber-100 dark:bg-amber-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                            <Video className="w-6 h-6 text-amber-500" />
-                        </div>
-                        <h3 className="text-lg font-bold mb-2">Video Tutorials</h3>
-                        <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">Deep dives into advanced workflows.</p>
-                        <span className="text-amber-600 dark:text-amber-400 text-sm font-bold">3 Videos</span>
+                        {getCount('Troubleshooting') > 0 && (
+                            <span className="text-pink-600 dark:text-pink-400 text-sm font-bold">{getCount('Troubleshooting')} Articles</span>
+                        )}
                     </div>
                 </div>
 

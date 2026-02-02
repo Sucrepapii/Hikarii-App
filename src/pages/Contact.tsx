@@ -85,16 +85,6 @@ export const Contact: React.FC = () => {
                                 </div>
                             </div>
 
-                            <div className="flex items-start gap-4 p-6 rounded-2xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 hover:border-pink-500/30 transition-colors">
-                                <MapPin className="w-6 h-6 text-pink-500 mt-1" />
-                                <div>
-                                    <h3 className="font-bold text-lg mb-1">HQ</h3>
-                                    <p className="text-slate-500 dark:text-slate-400">
-                                        123 Innovation Dr, Suite 400<br />
-                                        San Francisco, CA 94103
-                                    </p>
-                                </div>
-                            </div>
                         </div>
                     </div>
 
