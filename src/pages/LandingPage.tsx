@@ -41,7 +41,7 @@ export const LandingPage: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-[#0B0C15] dark:via-[#111322] dark:to-[#0B0C15] font-sans text-slate-900 dark:text-slate-100 overflow-x-hidden selection:bg-purple-500/30">
+        <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-slate-50 to-purple-100 dark:from-[#0B0C15] dark:via-[#111322] dark:to-[#0B0C15] font-sans text-slate-900 dark:text-slate-100 overflow-x-hidden selection:bg-purple-500/30">
             {/* Navbar */}
             <nav className="fixed top-0 w-full z-50 bg-white/80 dark:bg-[#0B0C15]/80 backdrop-blur-md border-b border-slate-200 dark:border-white/5">
                 <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
@@ -333,7 +333,7 @@ export const LandingPage: React.FC = () => {
             </section>
 
             {/* Footer */}
-            <footer className="py-20 border-t border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-black/20">
+            <footer className="py-20 border-t border-slate-200 dark:border-white/5 border-transparent">
                 <div className="max-w-7xl mx-auto px-6 flex flex-col items-center">
 
                     {/* Copyright & Links Container */}
