@@ -24,6 +24,7 @@ import { Contact } from './pages/Contact';
 import { Security } from './pages/Security';
 import { Accessibility } from './pages/Accessibility';
 import { HelpCenter } from './pages/HelpCenter';
+import { ArticlePage } from './pages/ArticlePage';
 import { useAuthStore } from './stores/authStore';
 import { useTaskStore } from './stores/taskStore';
 import { TaskSplitModal } from './components/tasks/TaskSplitModal';
@@ -187,6 +188,7 @@ function App() {
                 <Route path="/security" element={<Security />} />
                 <Route path="/accessibility" element={<Accessibility />} />
                 <Route path="/help" element={<HelpCenter />} />
+                <Route path="/help/article/:slug" element={<ArticlePage />} />
             </Routes >
 
             {activeSplitTaskId && (() => {
