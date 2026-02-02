@@ -66,7 +66,7 @@ export const HelpCenter: React.FC = () => {
                 {/* Categories */}
                 <h2 className="text-2xl font-bold mb-8 text-center">Browse by Category</h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
-                    <div className="p-8 rounded-3xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 hover:-translate-y-1 hover:shadow-lg transition-all cursor-pointer group">
+                    <Link to="/help/category/Getting%20Started" className="p-8 rounded-3xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 hover:-translate-y-1 hover:shadow-lg transition-all cursor-pointer group block">
                         <div className="w-12 h-12 rounded-2xl bg-indigo-100 dark:bg-indigo-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                             <Book className="w-6 h-6 text-indigo-500" />
                         </div>
@@ -75,9 +75,9 @@ export const HelpCenter: React.FC = () => {
                         {getCount('Getting Started') > 0 && (
                             <span className="text-indigo-600 dark:text-indigo-400 text-sm font-bold">{getCount('Getting Started')} Articles</span>
                         )}
-                    </div>
+                    </Link>
 
-                    <div className="p-8 rounded-3xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 hover:-translate-y-1 hover:shadow-lg transition-all cursor-pointer group">
+                    <Link to="/help/category/Account%20&%20Billing" className="p-8 rounded-3xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 hover:-translate-y-1 hover:shadow-lg transition-all cursor-pointer group block">
                         <div className="w-12 h-12 rounded-2xl bg-purple-100 dark:bg-purple-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                             <FileQuestion className="w-6 h-6 text-purple-500" />
                         </div>
@@ -86,9 +86,9 @@ export const HelpCenter: React.FC = () => {
                         {getCount('Account & Billing') > 0 && (
                             <span className="text-purple-600 dark:text-purple-400 text-sm font-bold">{getCount('Account & Billing')} Articles</span>
                         )}
-                    </div>
+                    </Link>
 
-                    <div className="p-8 rounded-3xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 hover:-translate-y-1 hover:shadow-lg transition-all cursor-pointer group">
+                    <Link to="/help/category/Troubleshooting" className="p-8 rounded-3xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 hover:-translate-y-1 hover:shadow-lg transition-all cursor-pointer group block">
                         <div className="w-12 h-12 rounded-2xl bg-pink-100 dark:bg-pink-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                             <HelpCircle className="w-6 h-6 text-pink-500" />
                         </div>
@@ -97,7 +97,7 @@ export const HelpCenter: React.FC = () => {
                         {getCount('Troubleshooting') > 0 && (
                             <span className="text-pink-600 dark:text-pink-400 text-sm font-bold">{getCount('Troubleshooting')} Articles</span>
                         )}
-                    </div>
+                    </Link>
                 </div>
 
                 {/* Contact CTA */}
