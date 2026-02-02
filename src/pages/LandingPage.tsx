@@ -318,7 +318,7 @@ export const LandingPage: React.FC = () => {
                         </div>
 
                         {/* Tall Card: Smart Split (Moved here) */}
-                        <div className="col-span-1 md:col-span-1 row-span-2 bg-gradient-to-b from-green-900/40 to-emerald-900/10 border border-green-500/20 rounded-3xl p-8 flex flex-col hover:border-green-500/40 transition-all duration-300 backdrop-blur-md hover:-translate-y-1">
+                        <div className="col-span-1 md:col-span-1 row-span-2 bg-gradient-to-b from-green-900/40 to-emerald-900/10 border border-green-500/20 rounded-3xl p-8 flex flex-col hover:border-green-500/40 transition-all duration-300 backdrop-blur-md hover:-translate-y-1 group">
                             <div className="mb-auto">
                                 <div className="w-12 h-12 bg-green-500/20 rounded-2xl flex items-center justify-center mb-6 text-green-400 shadow-lg border border-green-500/20">
                                     <Split className="w-6 h-6" />
@@ -328,22 +328,21 @@ export const LandingPage: React.FC = () => {
                             </div>
 
                             {/* Visual Task Breakdown */}
-                            {/* Visual Task Breakdown */}
                             <div className="mt-6 space-y-3 font-mono text-xs">
                                 <div className="bg-white/5 p-3 rounded-xl border border-white/10 backdrop-blur-sm flex items-center justify-between group-hover:bg-white/10 transition-colors duration-300">
                                     <span className="text-white font-medium">Vacation to the Maldives</span>
                                     <span className="text-green-400 text-[10px] bg-green-400/10 px-1.5 py-0.5 rounded">Project</span>
                                 </div>
                                 <div className="relative pl-6 space-y-2 before:absolute before:left-3 before:top-0 before:bottom-0 before:w-px before:bg-white/10">
-                                    <div className="bg-green-500/10 p-2 rounded-lg border border-green-500/10 flex items-center gap-2 opacity-30 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 delay-100 ease-out">
+                                    <div className="bg-green-500/10 p-2 rounded-lg border border-green-500/10 flex items-center gap-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 delay-100 ease-out">
                                         <div className="w-1.5 h-1.5 rounded-full bg-green-400 shrink-0"></div>
                                         <span className="text-green-100/90 truncate">Visa appointment</span>
                                     </div>
-                                    <div className="bg-green-500/10 p-2 rounded-lg border border-green-500/10 flex items-center gap-2 opacity-30 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 delay-200 ease-out">
+                                    <div className="bg-green-500/10 p-2 rounded-lg border border-green-500/10 flex items-center gap-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 delay-200 ease-out">
                                         <div className="w-1.5 h-1.5 rounded-full bg-green-400 shrink-0"></div>
                                         <span className="text-green-100/90 truncate">Ticket purchase</span>
                                     </div>
-                                    <div className="bg-green-500/10 p-2 rounded-lg border border-green-500/10 flex items-center gap-2 opacity-30 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 delay-300 ease-out">
+                                    <div className="bg-green-500/10 p-2 rounded-lg border border-green-500/10 flex items-center gap-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 delay-300 ease-out">
                                         <div className="w-1.5 h-1.5 rounded-full bg-green-400 shrink-0"></div>
                                         <span className="text-green-100/90 truncate">Hotel Reservation</span>
                                     </div>
