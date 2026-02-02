@@ -77,7 +77,10 @@ export class TaskSplitterService {
     }
 
     const apiKey = process.env.GEMINI_API_KEY;
-    console.log(`[TaskSplitter] Initializing. API Key present: ${!!apiKey}`);
+    console.log(
+      `[TaskSplitter] Initialize called. API Key present in env: ${!!apiKey}`,
+    );
+    console.log(`[TaskSplitter] Current working directory: ${process.cwd()}`);
 
     if (apiKey) {
       try {
@@ -144,15 +147,19 @@ export class TaskSplitterService {
         } else {
           console.warn("[TaskSplitter] AI response was not a valid array.");
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error(
-          "[TaskSplitter] AI generation failed, falling back to templates:",
-          error,
+          "!!! [TaskSplitter] AI generation FAILED !!!",
+          error?.message,
+          error?.stack,
         );
         // Fallthrough to template logic
       }
     } else {
-      console.log("[TaskSplitter] Skipping AI (Model not initialized).");
+      console.log(
+        "[TaskSplitter] Skipping AI (Model not initialized). Keys present:",
+        !!process.env.GEMINI_API_KEY,
+      );
     }
 
     // 2. Fallback to Keyword Template Logic
