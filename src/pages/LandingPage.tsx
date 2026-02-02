@@ -12,7 +12,7 @@ import { useAuthStore } from '../stores/authStore';
 const HeroDashboard = "/hero_dashboard_v2.png"; // Updated with user provided screenshot
 const MethodClarity = "/method_clarity_1769981543788.png";
 const MethodFocus = "/method_focus_1769981556726.png";
-const MethodFreedom = "/method_freedom_1769981571479.png";
+const MethodFreedom = "/method_freedom_v2.jpg";
 
 export const LandingPage: React.FC = () => {
     const navigate = useNavigate();
