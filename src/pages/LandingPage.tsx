@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Check, Zap, Link2, FileText, Split, ArrowRight, Menu, X, Instagram, Twitter, Linkedin } from 'lucide-react';
+import { Check, Zap, Link2, FileText, Split, ArrowRight, Menu, X, Instagram, Twitter, Linkedin } from 'lucide-react';
 import { Button } from '../components/common/Button';
 import { Logo } from '../components/common/Logo';
 import { useAuthStore } from '../stores/authStore';
@@ -47,12 +47,7 @@ export const LandingPage: React.FC = () => {
             <nav className="fixed top-0 w-full z-50 bg-white/80 dark:bg-[#0B0C15]/80 backdrop-blur-md border-b border-slate-200 dark:border-white/5">
                 <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
                     <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/')}>
-                        <div className="bg-gradient-to-tr from-indigo-500 to-purple-500 p-2 rounded-lg">
-                            <LayoutDashboard className="w-6 h-6 text-white" />
-                        </div>
-                        <span className="text-xl font-display font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-400">
-                            Hikari
-                        </span>
+                        <Logo variant="full" size="md" />
                     </div>
 
                     {/* Desktop Utility Nav */}
