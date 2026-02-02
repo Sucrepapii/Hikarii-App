@@ -331,17 +331,42 @@ export const LandingPage: React.FC = () => {
                         </div>
 
                         {/* Wide Card: AI Insights */}
-                        <div className="col-span-1 md:col-span-1 bg-gradient-to-br from-amber-500/10 to-orange-500/10 border border-amber-500/20 rounded-3xl p-8 flex flex-col justify-center hover:bg-amber-500/20 transition-all duration-300 backdrop-blur-md hover:scale-[1.02]">
-                            <Zap className="w-10 h-10 text-amber-400 mb-4 drop-shadow-lg" />
-                            <h3 className="font-bold text-white text-lg mb-1">AI Insights</h3>
-                            <p className="text-sm text-slate-300">Predictive analytics for your wallet.</p>
+                        <div className="col-span-1 md:col-span-1 bg-gradient-to-br from-amber-500/10 to-orange-500/10 border border-amber-500/20 rounded-3xl p-6 flex flex-col justify-between hover:bg-amber-500/20 transition-all duration-300 backdrop-blur-md hover:scale-[1.02] group">
+                            <div>
+                                <Zap className="w-8 h-8 text-amber-400 mb-3 drop-shadow-lg" />
+                                <h3 className="font-bold text-white text-lg mb-1">AI Insights</h3>
+                                <p className="text-xs text-slate-300">Predictive analytics for your wallet.</p>
+                            </div>
+                            {/* Visual: Trend Projection */}
+                            <div className="mt-4 flex items-end gap-2 h-16 w-full px-2">
+                                <div className="w-1/4 bg-white/10 rounded-t-sm h-[40%]"></div>
+                                <div className="w-1/4 bg-white/10 rounded-t-sm h-[60%]"></div>
+                                <div className="w-1/4 bg-white/10 rounded-t-sm h-[50%]"></div>
+                                <div className="w-1/4 bg-gradient-to-t from-amber-500 to-orange-400 rounded-t-sm h-[80%] shadow-[0_0_15px_rgba(245,158,11,0.5)] animate-pulse"></div>
+                            </div>
                         </div>
 
                         {/* Last Card: Advanced Reporting (Moved here) */}
-                        <div className="col-span-1 md:col-span-1 bg-gradient-to-br from-blue-500/10 to-indigo-500/10 border border-blue-500/20 rounded-3xl p-8 flex flex-col justify-center hover:bg-blue-500/20 transition-all duration-300 backdrop-blur-md hover:scale-[1.02]">
-                            <FileText className="w-10 h-10 text-blue-400 mb-4 drop-shadow-lg" />
-                            <h3 className="font-bold text-white text-lg mb-1">Reporting</h3>
-                            <p className="text-sm text-slate-300">Export professional CSV/PDF reports.</p>
+                        <div className="col-span-1 md:col-span-1 bg-gradient-to-br from-blue-500/10 to-indigo-500/10 border border-blue-500/20 rounded-3xl p-6 flex flex-col justify-between hover:bg-blue-500/20 transition-all duration-300 backdrop-blur-md hover:scale-[1.02] group">
+                            <div>
+                                <FileText className="w-8 h-8 text-blue-400 mb-3 drop-shadow-lg" />
+                                <h3 className="font-bold text-white text-lg mb-1">Reporting</h3>
+                                <p className="text-xs text-slate-300">Export professional CSV/PDF reports.</p>
+                            </div>
+                            {/* Visual: Document Preview */}
+                            <div className="mt-4 bg-white/5 border border-white/10 rounded-lg p-2 w-full transform group-hover:rotate-2 transition-transform duration-300">
+                                <div className="flex gap-1.5 mb-2">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-red-400/80"></div>
+                                    <div className="w-1.5 h-1.5 rounded-full bg-yellow-400/80"></div>
+                                    <div className="w-1.5 h-1.5 rounded-full bg-green-400/80"></div>
+                                </div>
+                                <div className="space-y-1.5">
+                                    <div className="h-1 bg-white/20 rounded w-3/4"></div>
+                                    <div className="h-1 bg-white/10 rounded w-full"></div>
+                                    <div className="h-1 bg-white/10 rounded w-5/6"></div>
+                                    <div className="h-1 bg-white/10 rounded w-full"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
