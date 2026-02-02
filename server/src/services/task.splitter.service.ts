@@ -61,15 +61,19 @@ const DEFAULT_TEMPLATE = {
 export class TaskSplitterService {
   private genAI: GoogleGenerativeAI | null = null;
   private model: any = null;
+  private isInitialized = false;
 
-  constructor() {
-    // Ensure env is loaded even if instantiated early
+  private initialize() {
+    if (this.isInitialized) return;
+
     if (!process.env.GEMINI_API_KEY) {
-      console.log(
-        "[TaskSplitter] GEMINI_API_KEY not found in process.env, attempting to safely load dotenv...",
-      );
-      // Dynamically require to avoid top-level side effects if possible, though constructor is runtime.
-      // We'll rely on the main app having loaded it, but let's log explicitly.
+      // Try simple dotenv reload if missing, just in case
+      try {
+        const dotenv = require("dotenv");
+        dotenv.config();
+      } catch (e) {
+        // ignore
+      }
     }
 
     const apiKey = process.env.GEMINI_API_KEY;
@@ -89,6 +93,7 @@ export class TaskSplitterService {
     } else {
       console.warn("[TaskSplitter] No API Key provided. AI features disabled.");
     }
+    this.isInitialized = true;
   }
 
   /**
@@ -97,6 +102,8 @@ export class TaskSplitterService {
    * In a real app, we might ask user for "Total Duration" first.
    */
   async suggestBlocks(title: string, totalDurationMinutes: number = 60) {
+    this.initialize();
+
     // 1. Try AI-based splitting if configured
     if (this.model) {
       try {
