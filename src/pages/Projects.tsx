@@ -34,6 +34,7 @@ export const Projects: React.FC = () => {
     }, []);
 
     const [deleteId, setDeleteId] = useState<string | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     const handleDeleteClick = (id: string) => {
         setDeleteId(id);
@@ -41,14 +42,16 @@ export const Projects: React.FC = () => {
 
     const handleConfirmDelete = async () => {
         if (!deleteId) return;
+        setIsDeleting(true);
         try {
             await projectService.deleteProject(deleteId);
             toast.success("Project deleted");
             setProjects(projects.filter(p => p.id !== deleteId));
+            setDeleteId(null);
         } catch (err) {
             toast.error("Failed to delete project");
         } finally {
-            setDeleteId(null);
+            setIsDeleting(false);
         }
     };
 
@@ -170,12 +173,13 @@ export const Projects: React.FC = () => {
 
             <ConfirmModal
                 isOpen={!!deleteId}
-                onClose={() => setDeleteId(null)}
+                onClose={() => !isDeleting && setDeleteId(null)}
                 onConfirm={handleConfirmDelete}
                 title="Delete Project"
-                message="Are you sure you want to delete this project? This action cannot be undone and will delete all associated tasks."
+                message="Are you sure you want to delete this project? This will also remove all associated tasks."
                 confirmText="Delete Project"
                 variant="danger"
+                isLoading={isDeleting}
             />
         </>
     );

@@ -81,6 +81,7 @@ export const Subscriptions: React.FC = () => {
     };
 
     const [deleteId, setDeleteId] = useState<string | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     const handleDeleteClick = (id: string) => {
         setDeleteId(id);
@@ -88,14 +89,16 @@ export const Subscriptions: React.FC = () => {
 
     const handleConfirmDelete = async () => {
         if (!deleteId) return;
+        setIsDeleting(true);
         try {
             await apiClient.delete(`/patterns/${deleteId}`);
             toast.success("Subscription removed");
             setPatterns(patterns.filter(p => p.id !== deleteId));
+            setDeleteId(null);
         } catch (err) {
             toast.error("Action failed");
         } finally {
-            setDeleteId(null);
+            setIsDeleting(false);
         }
     };
 
@@ -196,12 +199,13 @@ export const Subscriptions: React.FC = () => {
 
             <ConfirmModal
                 isOpen={!!deleteId}
-                onClose={() => setDeleteId(null)}
+                onClose={() => !isDeleting && setDeleteId(null)}
                 onConfirm={handleConfirmDelete}
                 title="Remove Subscription?"
                 message="Are you sure you want to remove this subscription from your recurring list?"
                 confirmText="Remove"
                 variant="danger"
+                isLoading={isDeleting}
             />
         </div>
     );

@@ -75,6 +75,7 @@ export const Dashboard: React.FC = () => {
     };
 
     const [taskToDelete, setTaskToDelete] = useState<string | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     const handleDeleteClick = (id: string) => {
         setTaskToDelete(id);
@@ -82,9 +83,16 @@ export const Dashboard: React.FC = () => {
 
     const handleConfirmDelete = async () => {
         if (taskToDelete) {
-            await deleteTask(taskToDelete);
-            toast.success('Task deleted');
-            setTaskToDelete(null);
+            setIsDeleting(true);
+            try {
+                await deleteTask(taskToDelete);
+                toast.success('Task deleted');
+                setTaskToDelete(null);
+            } catch (error) {
+                toast.error('Failed to delete task');
+            } finally {
+                setIsDeleting(false);
+            }
         }
     };
 
@@ -299,12 +307,13 @@ export const Dashboard: React.FC = () => {
 
             <ConfirmModal
                 isOpen={!!taskToDelete}
-                onClose={() => setTaskToDelete(null)}
+                onClose={() => !isDeleting && setTaskToDelete(null)}
                 onConfirm={handleConfirmDelete}
                 title="Delete Task"
                 message="Are you sure you want to delete this task? This cannot be undone."
                 confirmText="Delete Task"
                 variant="danger"
+                isLoading={isDeleting}
             />
 
             <UpgradeModal

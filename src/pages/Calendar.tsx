@@ -44,6 +44,7 @@ export const Calendar: React.FC = () => {
     };
 
     const [taskToDelete, setTaskToDelete] = useState<string | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     const handleDeleteClick = (id: string) => {
         setTaskToDelete(id);
@@ -51,10 +52,15 @@ export const Calendar: React.FC = () => {
 
     const handleConfirmDelete = async () => {
         if (taskToDelete) {
-            await deleteTask(taskToDelete);
-            setTaskToDelete(null);
-            // If the deleted task was the last one on the selected day, maybe close the modal?
-            // But state updates should reflect automatically.
+            setIsDeleting(true);
+            try {
+                await deleteTask(taskToDelete);
+                setTaskToDelete(null);
+            } catch (error) {
+                // toast handled in store usually, but good to be safe if local
+            } finally {
+                setIsDeleting(false);
+            }
         }
     };
 
@@ -268,12 +274,13 @@ export const Calendar: React.FC = () => {
 
             <ConfirmModal
                 isOpen={!!taskToDelete}
-                onClose={() => setTaskToDelete(null)}
+                onClose={() => !isDeleting && setTaskToDelete(null)}
                 onConfirm={handleConfirmDelete}
                 title="Delete Task"
                 message="Are you sure you want to delete this task? This cannot be undone."
                 confirmText="Delete Task"
                 variant="danger"
+                isLoading={isDeleting}
             />
 
             <UpgradeModal

@@ -44,6 +44,10 @@ export const ProjectCarousel: React.FC = () => {
         }
     };
 
+    const [isDeleting, setIsDeleting] = useState(false);
+
+    // ... existing handleNewProjectClick ...
+
     const handleDeleteClick = (id: string) => {
         setProjectToDelete(id);
     };
@@ -51,6 +55,7 @@ export const ProjectCarousel: React.FC = () => {
     const confirmDelete = async () => {
         if (!projectToDelete) return;
 
+        setIsDeleting(true);
         try {
             await projectService.deleteProject(projectToDelete);
             toast.success("Project deleted");
@@ -58,6 +63,8 @@ export const ProjectCarousel: React.FC = () => {
             setProjectToDelete(null);
         } catch (err) {
             toast.error("Failed to delete project");
+        } finally {
+            setIsDeleting(false);
         }
     };
 
@@ -158,12 +165,13 @@ export const ProjectCarousel: React.FC = () => {
             {/* Delete Confirmation Modal */}
             <ConfirmModal
                 isOpen={!!projectToDelete}
-                onClose={() => setProjectToDelete(null)}
+                onClose={() => !isDeleting && setProjectToDelete(null)}
                 onConfirm={confirmDelete}
                 title="Delete Project"
                 message="Are you sure you want to delete this project? This action cannot be undone and will remove all associated tasks."
                 confirmText="Delete Project"
                 variant="danger"
+                isLoading={isDeleting}
             />
         </div>
     );

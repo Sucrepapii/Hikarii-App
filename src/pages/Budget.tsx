@@ -50,6 +50,7 @@ export const Budget: React.FC = () => {
 
     const [expenseToDelete, setExpenseToDelete] = useState<string | null>(null);
     const [budgetToDelete, setBudgetToDelete] = useState<string | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     const handleSetBudget = (category: ExpenseCategory, limit: number, period: BudgetPeriod) => {
         setBudget(category, limit, period);
@@ -61,9 +62,16 @@ export const Budget: React.FC = () => {
 
     const handleConfirmDeleteBudget = async () => {
         if (budgetToDelete) {
-            await deleteBudget(budgetToDelete);
-            toast.success('Budget removed');
-            setBudgetToDelete(null);
+            setIsDeleting(true);
+            try {
+                await deleteBudget(budgetToDelete);
+                toast.success('Budget removed');
+                setBudgetToDelete(null);
+            } catch (error) {
+                toast.error('Failed to remove budget');
+            } finally {
+                setIsDeleting(false);
+            }
         }
     };
 
@@ -73,9 +81,16 @@ export const Budget: React.FC = () => {
 
     const handleConfirmDeleteExpense = async () => {
         if (expenseToDelete) {
-            await deleteExpense(expenseToDelete);
-            toast.success('Expense deleted');
-            setExpenseToDelete(null);
+            setIsDeleting(true);
+            try {
+                await deleteExpense(expenseToDelete);
+                toast.success('Expense deleted');
+                setExpenseToDelete(null);
+            } catch (error) {
+                toast.error('Failed to delete expense');
+            } finally {
+                setIsDeleting(false);
+            }
         }
     };
 
@@ -380,22 +395,24 @@ export const Budget: React.FC = () => {
 
             <ConfirmModal
                 isOpen={!!expenseToDelete}
-                onClose={() => setExpenseToDelete(null)}
+                onClose={() => !isDeleting && setExpenseToDelete(null)}
                 onConfirm={handleConfirmDeleteExpense}
                 title="Delete Expense"
                 message="Are you sure you want to delete this expense? This action cannot be undone."
                 confirmText="Delete Expense"
                 variant="danger"
+                isLoading={isDeleting}
             />
 
             <ConfirmModal
                 isOpen={!!budgetToDelete}
-                onClose={() => setBudgetToDelete(null)}
+                onClose={() => !isDeleting && setBudgetToDelete(null)}
                 onConfirm={handleConfirmDeleteBudget}
                 title="Remove Budget Limit"
                 message="Are you sure you want to remove this budget limit? You will stop tracking spending against this category."
                 confirmText="Remove Limit"
                 variant="danger"
+                isLoading={isDeleting}
             />
         </div>
     );
