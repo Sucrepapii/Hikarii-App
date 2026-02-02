@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, Check, Zap, Link2, FileText, Split, ArrowRight, Menu, X, Instagram, Twitter, Linkedin } from 'lucide-react';
 import { Button } from '../components/common/Button';
+import { Logo } from '../components/common/Logo';
 import { useAuthStore } from '../stores/authStore';
 
 // Assets (Using URLs for the generated images - in a real app these would be imported or in public)

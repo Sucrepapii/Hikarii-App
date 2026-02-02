@@ -7,6 +7,7 @@ import { Mail, Lock, Sun, ArrowLeft, Key, Eye, EyeOff } from 'lucide-react';
 import { useAuthStore } from '../stores/authStore';
 import { Input } from '../components/common/Input';
 import { Button } from '../components/common/Button';
+import { Logo } from '../components/common/Logo';
 import toast from 'react-hot-toast';
 
 const emailSchema = z.object({

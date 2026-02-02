@@ -7,6 +7,7 @@ import { UserPlus, Mail, Lock, User, Sun, Eye, EyeOff, ArrowLeft } from 'lucide-
 import { useAuthStore } from '../stores/authStore';
 import { Input } from '../components/common/Input';
 import { Button } from '../components/common/Button';
+import { Logo } from '../components/common/Logo';
 
 const signupSchema = z.object({
     name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -93,14 +94,9 @@ export const Signup: React.FC = () => {
 
             <div className="w-full max-w-md">
                 {/* Logo and Title */}
-                <div className="text-center mb-10 animate-fade-in group">
-                    <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary-500 to-accent-500 rounded-3xl mb-6 shadow-2xl group-hover:scale-110 transition-transform duration-300">
-                        <Sun className="w-10 h-10 text-white" />
-                    </div>
-                    <h1 className="text-5xl font-display font-bold gradient-text mb-3">
-                        Hikari
-                    </h1>
-                    <p className="text-lg text-slate-600 dark:text-slate-400">
+                <div className="flex flex-col items-center mb-10 animate-fade-in">
+                    <Logo size="xl" className="!gap-4 !pointer-events-none flex-col" />
+                    <p className="text-lg text-slate-600 dark:text-slate-400 mt-2">
                         Light & Clarity
                     </p>
                 </div>
