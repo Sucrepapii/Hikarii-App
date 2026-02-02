@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Moon, Sun, LogOut, User, Menu } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../common/Button';
+import { Logo } from '../common/Logo';
 import { useAuthStore } from '../../stores/authStore';
 import { NotificationBell } from '../intelligence/NotificationBell';
 
