@@ -307,23 +307,24 @@ export const LandingPage: React.FC = () => {
                             </div>
 
                             {/* Visual Task Breakdown */}
-                            <div className="mt-6 space-y-3">
-                                <div className="bg-white/5 p-3 rounded-xl border border-white/10 backdrop-blur-sm">
-                                    <div className="h-2 w-16 bg-white/20 rounded-full mb-2"></div>
-                                    <div className="h-1.5 w-24 bg-white/10 rounded-full"></div>
+                            {/* Visual Task Breakdown */}
+                            <div className="mt-6 space-y-3 font-mono text-xs">
+                                <div className="bg-white/5 p-3 rounded-xl border border-white/10 backdrop-blur-sm flex items-center justify-between">
+                                    <span className="text-white font-medium">Vacation to the Maldives</span>
+                                    <span className="text-green-400 text-[10px] bg-green-400/10 px-1.5 py-0.5 rounded">Project</span>
                                 </div>
-                                <div className="relative pl-6 space-y-3 before:absolute before:left-3 before:top-0 before:bottom-0 before:w-px before:bg-white/10">
-                                    <div className="bg-green-500/20 p-2.5 rounded-lg border border-green-500/20 flex items-center gap-3">
-                                        <div className="w-1.5 h-1.5 rounded-full bg-green-400"></div>
-                                        <div className="h-1.5 w-16 bg-white/40 rounded-full"></div>
+                                <div className="relative pl-6 space-y-2 before:absolute before:left-3 before:top-0 before:bottom-0 before:w-px before:bg-white/10">
+                                    <div className="bg-green-500/10 p-2 rounded-lg border border-green-500/10 flex items-center gap-2">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-green-400 shrink-0"></div>
+                                        <span className="text-green-100/90 truncate">Visa appointment</span>
                                     </div>
-                                    <div className="bg-green-500/10 p-2.5 rounded-lg border border-green-500/10 flex items-center gap-3">
-                                        <div className="w-1.5 h-1.5 rounded-full bg-green-400/50"></div>
-                                        <div className="h-1.5 w-12 bg-white/30 rounded-full"></div>
+                                    <div className="bg-green-500/10 p-2 rounded-lg border border-green-500/10 flex items-center gap-2">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-green-400 shrink-0"></div>
+                                        <span className="text-green-100/90 truncate">Ticket purchase</span>
                                     </div>
-                                    <div className="bg-green-500/5 p-2.5 rounded-lg border border-green-500/5 flex items-center gap-3">
-                                        <div className="w-1.5 h-1.5 rounded-full bg-green-400/30"></div>
-                                        <div className="h-1.5 w-14 bg-white/20 rounded-full"></div>
+                                    <div className="bg-green-500/10 p-2 rounded-lg border border-green-500/10 flex items-center gap-2">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-green-400 shrink-0"></div>
+                                        <span className="text-green-100/90 truncate">Hotel Reservation</span>
                                     </div>
                                 </div>
                             </div>
