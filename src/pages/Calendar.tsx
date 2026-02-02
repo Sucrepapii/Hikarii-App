@@ -11,6 +11,7 @@ import { TaskStatus } from '../types/task.types';
 import { formatCurrency } from '../utils/currencyFormatter';
 import { TaskItem } from '../components/tasks/TaskItem';
 import { Modal } from '../components/common/Modal';
+import { ConfirmModal } from '../components/common/ConfirmModal';
 import { useAuthStore } from '../stores/authStore';
 import { UpgradeModal } from '../components/modals/UpgradeModal';
 
@@ -39,6 +40,21 @@ export const Calendar: React.FC = () => {
             setCurrentDate(subMonths(currentDate, 1));
         } else {
             setShowUpgradeModal(true);
+        }
+    };
+
+    const [taskToDelete, setTaskToDelete] = useState<string | null>(null);
+
+    const handleDeleteClick = (id: string) => {
+        setTaskToDelete(id);
+    };
+
+    const handleConfirmDelete = async () => {
+        if (taskToDelete) {
+            await deleteTask(taskToDelete);
+            setTaskToDelete(null);
+            // If the deleted task was the last one on the selected day, maybe close the modal?
+            // But state updates should reflect automatically.
         }
     };
 
@@ -208,7 +224,7 @@ export const Calendar: React.FC = () => {
                                         task={task}
                                         onToggle={toggleTaskStatus}
                                         onEdit={() => { }} // Read-only in calendar for now
-                                        onDelete={deleteTask}
+                                        onDelete={handleDeleteClick}
                                     />
                                 ))
                             ) : (
@@ -249,6 +265,16 @@ export const Calendar: React.FC = () => {
                     </div>
                 </div>
             </Modal>
+
+            <ConfirmModal
+                isOpen={!!taskToDelete}
+                onClose={() => setTaskToDelete(null)}
+                onConfirm={handleConfirmDelete}
+                title="Delete Task"
+                message="Are you sure you want to delete this task? This cannot be undone."
+                confirmText="Delete Task"
+                variant="danger"
+            />
 
             <UpgradeModal
                 isOpen={showUpgradeModal}

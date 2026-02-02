@@ -10,10 +10,10 @@ import { BudgetProgress } from '../components/budget/Charts/BudgetProgress';
 import { SpendingChart } from '../components/budget/Charts/SpendingChart';
 import { startOfDay } from 'date-fns';
 import { Modal } from '../components/common/Modal';
+import { ConfirmModal } from '../components/common/ConfirmModal';
 import { TaskForm } from '../components/tasks/TaskForm';
 import { TaskFormData } from '../utils/validationSchemas';
 import toast from 'react-hot-toast';
-import { useAuthStore } from '../stores/authStore';
 import { UpgradeModal } from '../components/modals/UpgradeModal';
 import { useIntelligenceStore } from '../stores/intelligenceStore';
 import { clsx } from 'clsx';
@@ -71,6 +71,20 @@ export const Dashboard: React.FC = () => {
             } catch (error) {
                 toast.error('Failed to update task');
             }
+        }
+    };
+
+    const [taskToDelete, setTaskToDelete] = useState<string | null>(null);
+
+    const handleDeleteClick = (id: string) => {
+        setTaskToDelete(id);
+    };
+
+    const handleConfirmDelete = async () => {
+        if (taskToDelete) {
+            await deleteTask(taskToDelete);
+            toast.success('Task deleted');
+            setTaskToDelete(null);
         }
     };
 
@@ -217,7 +231,7 @@ export const Dashboard: React.FC = () => {
                                     task={task}
                                     onToggle={toggleTaskStatus}
                                     onEdit={handleEditTask}
-                                    onDelete={deleteTask}
+                                    onDelete={handleDeleteClick}
                                 />
                             ))}
 
@@ -282,6 +296,16 @@ export const Dashboard: React.FC = () => {
                     submitLabel="Save Changes"
                 />
             </Modal>
+
+            <ConfirmModal
+                isOpen={!!taskToDelete}
+                onClose={() => setTaskToDelete(null)}
+                onConfirm={handleConfirmDelete}
+                title="Delete Task"
+                message="Are you sure you want to delete this task? This cannot be undone."
+                confirmText="Delete Task"
+                variant="danger"
+            />
 
             <UpgradeModal
                 isOpen={showUpgradeModal}

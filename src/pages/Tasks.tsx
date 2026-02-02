@@ -4,6 +4,7 @@ import { TaskList } from '../components/tasks/TaskList';
 import { TaskFilters } from '../components/tasks/TaskFilters';
 import { TaskForm } from '../components/tasks/TaskForm';
 import { Modal } from '../components/common/Modal';
+import { ConfirmModal } from '../components/common/ConfirmModal';
 import { Button } from '../components/common/Button';
 import { Plus } from 'lucide-react';
 import { useTaskStore } from '../stores/taskStore';
@@ -89,6 +90,20 @@ export const Tasks: React.FC = () => {
         setEditingTask(null);
     };
 
+    const [taskToDelete, setTaskToDelete] = useState<string | null>(null);
+
+    const handleDeleteClick = (id: string) => {
+        setTaskToDelete(id);
+    };
+
+    const handleConfirmDelete = async () => {
+        if (taskToDelete) {
+            await deleteTask(taskToDelete);
+            toast.success('Task deleted');
+            setTaskToDelete(null);
+        }
+    };
+
     return (
         <div className="animate-fade-in">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-0 mb-6">
@@ -133,7 +148,7 @@ export const Tasks: React.FC = () => {
                 tasks={filteredTasks}
                 onToggle={toggleTaskStatus}
                 onEdit={handleEdit}
-                onDelete={deleteTask}
+                onDelete={handleDeleteClick}
             />
 
             <Modal
@@ -147,6 +162,16 @@ export const Tasks: React.FC = () => {
                     defaultValues={editingTask || undefined}
                 />
             </Modal>
+
+            <ConfirmModal
+                isOpen={!!taskToDelete}
+                onClose={() => setTaskToDelete(null)}
+                onConfirm={handleConfirmDelete}
+                title="Delete Task"
+                message="Are you sure you want to delete this task? This cannot be undone."
+                confirmText="Delete Task"
+                variant="danger"
+            />
         </div>
     );
 };

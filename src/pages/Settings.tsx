@@ -104,7 +104,7 @@ export const Settings: React.FC = () => {
                                 {isGoogleConnected && <span className="text-xs text-green-500 bg-green-100 dark:bg-green-900/30 px-2 py-0.5 rounded-full">Connected</span>}
                             </h3>
                             <p className="text-sm text-slate-500">
-                                Sync your tasks to your Google Calendar automatically.
+                                Sync individual tasks to Google Calendar (optional per task).
                             </p>
                         </div>
                         {isGoogleConnected ? (

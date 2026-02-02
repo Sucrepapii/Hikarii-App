@@ -8,6 +8,7 @@ import { Button } from '../components/common/Button';
 import toast from 'react-hot-toast';
 import { useAuthStore } from '../stores/authStore';
 import { UpgradeModal } from '../components/modals/UpgradeModal';
+import { ConfirmModal } from '../components/common/ConfirmModal';
 
 export const Projects: React.FC = () => {
     const [projects, setProjects] = useState<Project[]>([]);
@@ -32,14 +33,22 @@ export const Projects: React.FC = () => {
         loadProjects();
     }, []);
 
-    const handleDelete = async (id: string) => {
-        if (!confirm("Are you sure you want to delete this project? This cannot be undone.")) return;
+    const [deleteId, setDeleteId] = useState<string | null>(null);
+
+    const handleDeleteClick = (id: string) => {
+        setDeleteId(id);
+    };
+
+    const handleConfirmDelete = async () => {
+        if (!deleteId) return;
         try {
-            await projectService.deleteProject(id);
+            await projectService.deleteProject(deleteId);
             toast.success("Project deleted");
-            setProjects(projects.filter(p => p.id !== id));
+            setProjects(projects.filter(p => p.id !== deleteId));
         } catch (err) {
             toast.error("Failed to delete project");
+        } finally {
+            setDeleteId(null);
         }
     };
 
@@ -124,7 +133,7 @@ export const Projects: React.FC = () => {
                                         <Button
                                             variant="ghost"
                                             size="sm"
-                                            onClick={() => handleDelete(project.id)}
+                                            onClick={() => handleDeleteClick(project.id)}
                                             className="p-2 bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 rounded-lg transition-smooth"
                                         >
                                             <Trash2 className="w-4 h-4" />
@@ -157,6 +166,16 @@ export const Projects: React.FC = () => {
             <UpgradeModal
                 isOpen={isUpgradeModalOpen}
                 onClose={() => setIsUpgradeModalOpen(false)}
+            />
+
+            <ConfirmModal
+                isOpen={!!deleteId}
+                onClose={() => setDeleteId(null)}
+                onConfirm={handleConfirmDelete}
+                title="Delete Project"
+                message="Are you sure you want to delete this project? This action cannot be undone and will delete all associated tasks."
+                confirmText="Delete Project"
+                variant="danger"
             />
         </>
     );

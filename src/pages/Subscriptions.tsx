@@ -13,6 +13,7 @@ import { format } from 'date-fns';
 import { toast } from 'react-hot-toast';
 import { useAuthStore } from '../stores/authStore';
 import { UpgradeModal } from '../components/modals/UpgradeModal';
+import { ConfirmModal } from '../components/common/ConfirmModal';
 
 interface RecurringExpense {
     id: string;
@@ -79,14 +80,22 @@ export const Subscriptions: React.FC = () => {
         }
     };
 
-    const deletePattern = async (id: string) => {
-        if (!confirm("Are you sure you want to ignore this subscription?")) return;
+    const [deleteId, setDeleteId] = useState<string | null>(null);
+
+    const handleDeleteClick = (id: string) => {
+        setDeleteId(id);
+    };
+
+    const handleConfirmDelete = async () => {
+        if (!deleteId) return;
         try {
-            await apiClient.delete(`/patterns/${id}`);
+            await apiClient.delete(`/patterns/${deleteId}`);
             toast.success("Subscription removed");
-            setPatterns(patterns.filter(p => p.id !== id));
+            setPatterns(patterns.filter(p => p.id !== deleteId));
         } catch (err) {
             toast.error("Action failed");
+        } finally {
+            setDeleteId(null);
         }
     };
 
@@ -152,7 +161,7 @@ export const Subscriptions: React.FC = () => {
                                 {pattern.isConfirmed ? (
                                     <div className="flex justify-end pt-4 border-t border-slate-100 dark:border-slate-800">
                                         <button
-                                            onClick={() => deletePattern(pattern.id)}
+                                            onClick={() => handleDeleteClick(pattern.id)}
                                             className="text-red-500 hover:text-red-600 text-sm flex items-center gap-1 transition-colors"
                                         >
                                             <Trash2 className="w-3 h-3" /> Remove
@@ -167,7 +176,7 @@ export const Subscriptions: React.FC = () => {
                                             <CheckCircle className="w-3 h-3 mr-1" /> Confirm
                                         </button>
                                         <button
-                                            onClick={() => deletePattern(pattern.id)}
+                                            onClick={() => handleDeleteClick(pattern.id)}
                                             className="flex-1 btn btn-sm bg-slate-100 text-slate-600 hover:bg-slate-200 border-transparent"
                                         >
                                             <XCircle className="w-3 h-3 mr-1" /> Ignore
@@ -183,6 +192,16 @@ export const Subscriptions: React.FC = () => {
             <UpgradeModal
                 isOpen={showUpgradeModal}
                 onClose={() => setShowUpgradeModal(false)}
+            />
+
+            <ConfirmModal
+                isOpen={!!deleteId}
+                onClose={() => setDeleteId(null)}
+                onConfirm={handleConfirmDelete}
+                title="Remove Subscription?"
+                message="Are you sure you want to remove this subscription from your recurring list?"
+                confirmText="Remove"
+                variant="danger"
             />
         </div>
     );

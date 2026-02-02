@@ -8,7 +8,7 @@ import { Button } from '../common/Button';
 import toast from 'react-hot-toast';
 import { useAuthStore } from '../../stores/authStore';
 import { UpgradeModal } from '../modals/UpgradeModal';
-import { Modal } from '../common/Modal';
+import { ConfirmModal } from '../common/ConfirmModal';
 
 export const ProjectCarousel: React.FC = () => {
     const [projects, setProjects] = useState<Project[]>([]);
@@ -155,32 +155,16 @@ export const ProjectCarousel: React.FC = () => {
             />
 
             {/* Delete Confirmation Modal */}
-            <Modal
+            {/* Delete Confirmation Modal */}
+            <ConfirmModal
                 isOpen={!!projectToDelete}
                 onClose={() => setProjectToDelete(null)}
+                onConfirm={confirmDelete}
                 title="Delete Project"
-                size="sm"
-            >
-                <div className="space-y-4">
-                    <p className="text-slate-600 dark:text-slate-300">
-                        Are you sure you want to delete this project? This action cannot be undone and will remove all associated tasks.
-                    </p>
-                    <div className="flex justify-end gap-3 pt-4">
-                        <Button
-                            variant="ghost"
-                            onClick={() => setProjectToDelete(null)}
-                        >
-                            Cancel
-                        </Button>
-                        <Button
-                            variant="danger"
-                            onClick={confirmDelete}
-                        >
-                            Delete Project
-                        </Button>
-                    </div>
-                </div>
-            </Modal>
+                message="Are you sure you want to delete this project? This action cannot be undone and will remove all associated tasks."
+                confirmText="Delete Project"
+                variant="danger"
+            />
         </div>
     );
 };

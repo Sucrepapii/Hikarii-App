@@ -381,7 +381,7 @@ const GoogleSyncCheckbox = ({ register }: { register: any }) => {
                 <CheckCircle2 className="pointer-events-none absolute left-1/2 top-1/2 h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 text-white opacity-0 transition-opacity peer-checked:opacity-100" />
             </div>
             <label htmlFor="addToCalendar" className="text-sm text-slate-700 dark:text-slate-300 cursor-pointer font-medium select-none">
-                Add to Google Calendar
+                Sync to Google Calendar
             </label>
         </div>
     );

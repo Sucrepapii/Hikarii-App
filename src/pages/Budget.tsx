@@ -7,6 +7,7 @@ import { BudgetProgress } from '../components/budget/Charts/BudgetProgress';
 import { SpendingChart } from '../components/budget/Charts/SpendingChart';
 import { BudgetProjection } from '../components/budget/BudgetProjection';
 import { Modal } from '../components/common/Modal';
+import { ConfirmModal } from '../components/common/ConfirmModal';
 import { Button } from '../components/common/Button';
 import { Card } from '../components/common/Card';
 import { Plus, Settings, ChevronLeft, ChevronRight, ChevronDown, Calendar, Trash2 } from 'lucide-react';
@@ -47,15 +48,34 @@ export const Budget: React.FC = () => {
         setEditingExpense(null);
     };
 
+    const [expenseToDelete, setExpenseToDelete] = useState<string | null>(null);
+    const [budgetToDelete, setBudgetToDelete] = useState<string | null>(null);
+
     const handleSetBudget = (category: ExpenseCategory, limit: number, period: BudgetPeriod) => {
         setBudget(category, limit, period);
     };
 
-    const handleDeleteBudget = async (category: ExpenseCategory) => {
-        const budget = budgets.find(b => b.category === category);
-        if (budget) {
-            await deleteBudget(budget.id);
+    const handleDeleteBudgetClick = (budgetIds: string) => {
+        setBudgetToDelete(budgetIds);
+    };
+
+    const handleConfirmDeleteBudget = async () => {
+        if (budgetToDelete) {
+            await deleteBudget(budgetToDelete);
             toast.success('Budget removed');
+            setBudgetToDelete(null);
+        }
+    };
+
+    const handleDeleteExpenseClick = (id: string) => {
+        setExpenseToDelete(id);
+    };
+
+    const handleConfirmDeleteExpense = async () => {
+        if (expenseToDelete) {
+            await deleteExpense(expenseToDelete);
+            toast.success('Expense deleted');
+            setExpenseToDelete(null);
         }
     };
 
@@ -251,7 +271,7 @@ export const Budget: React.FC = () => {
                 <ExpenseList
                     expenses={expenses.slice().reverse().slice(0, 10)}
                     onEdit={handleEdit}
-                    onDelete={deleteExpense}
+                    onDelete={handleDeleteExpenseClick}
                 />
             </Card>
 
@@ -319,7 +339,7 @@ export const Budget: React.FC = () => {
                                 />
                                 {existingBudget && (
                                     <button
-                                        onClick={() => handleDeleteBudget(category)}
+                                        onClick={() => handleDeleteBudgetClick(existingBudget.id)}
                                         className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors"
                                         title="Remove Budget"
                                     >
@@ -357,6 +377,26 @@ export const Budget: React.FC = () => {
                     </Button>
                 </div>
             </Modal>
+
+            <ConfirmModal
+                isOpen={!!expenseToDelete}
+                onClose={() => setExpenseToDelete(null)}
+                onConfirm={handleConfirmDeleteExpense}
+                title="Delete Expense"
+                message="Are you sure you want to delete this expense? This action cannot be undone."
+                confirmText="Delete Expense"
+                variant="danger"
+            />
+
+            <ConfirmModal
+                isOpen={!!budgetToDelete}
+                onClose={() => setBudgetToDelete(null)}
+                onConfirm={handleConfirmDeleteBudget}
+                title="Remove Budget Limit"
+                message="Are you sure you want to remove this budget limit? You will stop tracking spending against this category."
+                confirmText="Remove Limit"
+                variant="danger"
+            />
         </div>
     );
 };
