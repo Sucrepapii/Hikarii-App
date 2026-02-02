@@ -36,8 +36,7 @@ export const helpArticles: Article[] = [
       "Bring your tasks and budgets over from Todoist, Notion, or Excel.",
     content: `
             <h2>Moving in?</h2>
-            <p>We make it easy to bring your data with you. Currently, we support CSV imports for tasks and basic budget items.</p>
-            <p>Go to <strong>Settings > Import/Export</strong> to upload your CSV file. Make sure your columns match our template.</p>
+            <p>Coming soon...</p>
         `,
   },
   {
@@ -79,8 +78,8 @@ export const helpArticles: Article[] = [
     excerpt: "Add new cards or remove old ones securely.",
     content: `
             <h2>Payment Methods</h2>
-            <p>We use Stripe to securely store your payment options. We never see your full card number.</p>
-            <p>Navigate to Settings > Billing and locate the "Payment Methods" section to add a new card or make one default.</p>
+            <p>We use Stripe to securely process your payment options. We never see your full card number.</p>
+            <p>Navigate to Settings > Subscription to manage your plan and billing.</p>
         `,
   },
 
@@ -110,8 +109,8 @@ export const helpArticles: Article[] = [
     excerpt: "Restoring items from the trash bin.",
     content: `
             <h2>Oops, didn't mean to delete that?</h2>
-            <p>Deleted tasks are moved to the Trash, accessible from the bottom of the sidebar. Items in Trash are permanently deleted after 30 days.</p>
-            <p>To restore a task, find it in the Trash view and click the "Restore" icon.</p>
+            <p>Deleted tasks are permanently deleted immediately.</p>
+            <p>But don't worry, you can always recreate them.</p>
         `,
   },
   {
@@ -134,24 +133,11 @@ export const helpArticles: Article[] = [
     excerpt: "Take your tasks on the go with our iOS and Android apps.",
     content: `
             <h2>Hikari on Mobile</h2>
-            <p>Stay productive wherever you are. Our mobile app supports offline mode, quick capture, and push notifications.</p>
-            <p>Download it from the App Store or Google Play Store today.</p>
+            <p>Coming soon...</p>
         `,
   },
   {
     id: "10",
-    title: "Viewing Past Invoices",
-    slug: "viewing-invoices",
-    category: "Account & Billing",
-    excerpt: "Access and download your billing history.",
-    content: `
-            <h2>Where are my invoices?</h2>
-            <p>You can find all your past invoices in <strong>Settings > Billing > Invoice History</strong>.</p>
-            <p>Click the download icon next to any invoice to save it as a PDF for your records.</p>
-        `,
-  },
-  {
-    id: "11",
     title: "Exporting Data",
     slug: "exporting-data",
     category: "Troubleshooting",

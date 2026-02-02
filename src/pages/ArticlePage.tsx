@@ -5,6 +5,7 @@ import { Footer } from '../components/layout/Footer';
 import { Logo } from '../components/common/Logo';
 import { Button } from '../components/common/Button';
 import { ArrowLeft, Clock, Tag } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 export const ArticlePage: React.FC = () => {
     const { slug } = useParams<{ slug: string }>();
@@ -56,8 +57,18 @@ export const ArticlePage: React.FC = () => {
                 <div className="mt-20 pt-10 border-t border-slate-200 dark:border-white/10">
                     <h3 className="font-bold text-lg mb-4">Was this article helpful?</h3>
                     <div className="flex gap-4">
-                        <button className="px-4 py-2 rounded-lg bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-sm font-medium transition-colors">Yes, thanks!</button>
-                        <button className="px-4 py-2 rounded-lg bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-sm font-medium transition-colors">Not really</button>
+                        <button
+                            onClick={() => toast.success("Thanks for your feedback!")}
+                            className="px-4 py-2 rounded-lg bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-sm font-medium transition-colors"
+                        >
+                            Yes, thanks!
+                        </button>
+                        <button
+                            onClick={() => toast.success("Thanks for your feedback! We'll work on improving it.")}
+                            className="px-4 py-2 rounded-lg bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-sm font-medium transition-colors"
+                        >
+                            Not really
+                        </button>
                     </div>
                 </div>
             </main>
