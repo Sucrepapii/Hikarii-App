@@ -14,6 +14,7 @@ import predictiveRoutes from "./routes/predictive.routes";
 import patternRoutes from "./routes/pattern.routes";
 import stripeRoutes from "./routes/stripe.routes";
 import googleRoutes from "./routes/google.routes";
+import contactRoutes from "./routes/contact.routes";
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.use("/api/predictive", predictiveRoutes);
 app.use("/api/patterns", patternRoutes);
 app.use("/api/stripe", stripeRoutes);
 app.use("/api/google", googleRoutes);
+app.use("/api/contact", contactRoutes);
 
 // Health check
 app.get("/health", (req, res) => {

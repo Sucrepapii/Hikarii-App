@@ -154,3 +154,63 @@ export const getOverdueReminderTemplate = (name: string, tasksHtml: string) => {
     "You received this email because you have pending tasks in your Hikari workspace.",
   );
 };
+
+/**
+ * Template for Contact Form submissions (Admin Notification).
+ */
+export const getContactFormTemplate = (
+  firstName: string,
+  lastName: string,
+  email: string,
+  subject: string,
+  message: string,
+) => {
+  const content = `
+    <p>You received a new message from the <strong>Hikari Contact Form</strong>.</p>
+    
+    <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 24px; border-radius: 16px; margin: 24px 0;">
+      <p style="margin: 0 0 12px 0;"><strong>Name:</strong> ${firstName} ${lastName}</p>
+      <p style="margin: 0 0 12px 0;"><strong>Email:</strong> <a href="mailto:${email}" style="color: #6366f1;">${email}</a></p>
+      <p style="margin: 0 0 12px 0;"><strong>Subject:</strong> ${subject}</p>
+      <div style="margin-top: 16px; padding-top: 16px; border-top: 1px dashed #cbd5e1;">
+        <p style="margin: 0 0 8px 0; font-size: 12px; text-transform: uppercase; color: #64748b; font-weight: 700;">Message:</p>
+        <p style="margin: 0; white-space: pre-wrap; color: #334155;">${message}</p>
+      </div>
+    </div>
+    
+    <div style="text-align: center;">
+      <a href="mailto:${email}?subject=Re: ${encodeURIComponent(subject)}" style="background: #1e293b; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 14px; display: inline-block;">
+        Reply to User
+      </a>
+    </div>
+  `;
+
+  return getBaseTemplate(
+    `New Contact: ${subject}`,
+    content,
+    undefined,
+    undefined,
+    "This message was sent via the Hikari website contact form.",
+  );
+};
+
+/**
+ * Template for Contact Form Auto-Reply (User Confirmation).
+ */
+export const getContactAutoReplyTemplate = (firstName: string) => {
+  const content = `
+    <p>Hello <strong>${firstName}</strong>,</p>
+    <p>Thanks for reaching out to Hikari! We've received your message and our team is reviewing it.</p>
+    <p>We typically reply within 24-48 hours. In the meantime, you might find answers in our <a href="https://hikariapp.com/help" style="color: #6366f1;">Help Center</a>.</p>
+    
+    <p>Talk soon,</p>
+  `;
+
+  return getBaseTemplate(
+    "We received your message",
+    content,
+    "Visit Help Center",
+    "https://hikariapp.com/help", // In a real app, use env var
+    "You received this because you contacted Hikari Support.",
+  );
+};

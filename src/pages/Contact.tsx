@@ -10,14 +10,37 @@ export const Contact: React.FC = () => {
     const navigate = useNavigate();
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsSubmitting(true);
-        // Simulate API call
-        setTimeout(() => {
+
+        const formData = new FormData(e.currentTarget);
+        const data = {
+            firstName: formData.get('firstName'),
+            lastName: formData.get('lastName'),
+            email: formData.get('email'),
+            subject: formData.get('subject'),
+            message: formData.get('message'),
+        };
+
+        try {
+            const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+            const response = await fetch(`${API_URL}/contact`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data),
+            });
+
+            if (!response.ok) throw new Error('Failed to send message');
+
+            toast.success("Message sent! Check your inbox for confirmation.");
+            (e.target as HTMLFormElement).reset();
+        } catch (error) {
+            console.error(error);
+            toast.error("Failed to send message. Please try again.");
+        } finally {
             setIsSubmitting(false);
-            toast.success("Message sent! We'll get back to you shortly.");
-        }, 1500);
+        }
     };
 
     return (
@@ -82,22 +105,22 @@ export const Contact: React.FC = () => {
                             <div className="grid grid-cols-2 gap-6">
                                 <div>
                                     <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">First Name</label>
-                                    <input required type="text" className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 focus:border-indigo-500 outline-none transition-colors" placeholder="Jane" />
+                                    <input name="firstName" required type="text" className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 focus:border-indigo-500 outline-none transition-colors" placeholder="Jane" />
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Last Name</label>
-                                    <input required type="text" className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 focus:border-indigo-500 outline-none transition-colors" placeholder="Doe" />
+                                    <input name="lastName" required type="text" className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 focus:border-indigo-500 outline-none transition-colors" placeholder="Doe" />
                                 </div>
                             </div>
 
                             <div>
                                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Email Address</label>
-                                <input required type="email" className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 focus:border-indigo-500 outline-none transition-colors" placeholder="jane@company.com" />
+                                <input name="email" required type="email" className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 focus:border-indigo-500 outline-none transition-colors" placeholder="jane@company.com" />
                             </div>
 
                             <div>
                                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Subject</label>
-                                <select className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 focus:border-indigo-500 outline-none transition-colors">
+                                <select name="subject" className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 focus:border-indigo-500 outline-none transition-colors">
                                     <option>General Support</option>
                                     <option>Billing Question</option>
                                     <option>Feature Request</option>
@@ -107,16 +130,19 @@ export const Contact: React.FC = () => {
 
                             <div>
                                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Message</label>
-                                <textarea required rows={4} className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 focus:border-indigo-500 outline-none transition-colors" placeholder="How can we help you?"></textarea>
+                                <textarea name="message" required rows={4} className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 focus:border-indigo-500 outline-none transition-colors" placeholder="How can we help you?"></textarea>
                             </div>
 
                             <Button
                                 type="submit"
                                 disabled={isSubmitting}
-                                className="w-full py-4 text-base font-medium rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-500/25"
-                                rightIcon={isSubmitting ? undefined : <Send className="w-4 h-4" />}
+                                className="w-full py-4 text-base font-medium rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-500/25 flex items-center justify-center gap-2"
                             >
-                                {isSubmitting ? 'Sending...' : 'Send Message'}
+                                {isSubmitting ? 'Sending...' : (
+                                    <>
+                                        Send Message <Send className="w-4 h-4" />
+                                    </>
+                                )}
                             </Button>
                         </form>
                     </div>
