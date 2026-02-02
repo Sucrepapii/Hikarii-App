@@ -334,15 +334,15 @@ export const LandingPage: React.FC = () => {
                                     <span className="text-green-400 text-[10px] bg-green-400/10 px-1.5 py-0.5 rounded">Project</span>
                                 </div>
                                 <div className="relative pl-6 space-y-2 before:absolute before:left-3 before:top-0 before:bottom-0 before:w-px before:bg-white/10">
-                                    <div className="bg-green-500/10 p-2 rounded-lg border border-green-500/10 flex items-center gap-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 delay-100 ease-out">
+                                    <div className="bg-green-500/10 p-2 rounded-lg border border-green-500/10 flex items-center gap-2 opacity-100 translate-x-0 md:opacity-0 md:-translate-x-2 md:group-hover:opacity-100 md:group-hover:translate-x-0 transition-all duration-500 delay-100 ease-out">
                                         <div className="w-1.5 h-1.5 rounded-full bg-green-400 shrink-0"></div>
                                         <span className="text-green-100/90 truncate">Visa appointment</span>
                                     </div>
-                                    <div className="bg-green-500/10 p-2 rounded-lg border border-green-500/10 flex items-center gap-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 delay-200 ease-out">
+                                    <div className="bg-green-500/10 p-2 rounded-lg border border-green-500/10 flex items-center gap-2 opacity-100 translate-x-0 md:opacity-0 md:-translate-x-2 md:group-hover:opacity-100 md:group-hover:translate-x-0 transition-all duration-500 delay-200 ease-out">
                                         <div className="w-1.5 h-1.5 rounded-full bg-green-400 shrink-0"></div>
                                         <span className="text-green-100/90 truncate">Ticket purchase</span>
                                     </div>
-                                    <div className="bg-green-500/10 p-2 rounded-lg border border-green-500/10 flex items-center gap-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 delay-300 ease-out">
+                                    <div className="bg-green-500/10 p-2 rounded-lg border border-green-500/10 flex items-center gap-2 opacity-100 translate-x-0 md:opacity-0 md:-translate-x-2 md:group-hover:opacity-100 md:group-hover:translate-x-0 transition-all duration-500 delay-300 ease-out">
                                         <div className="w-1.5 h-1.5 rounded-full bg-green-400 shrink-0"></div>
                                         <span className="text-green-100/90 truncate">Hotel Reservation</span>
                                     </div>
