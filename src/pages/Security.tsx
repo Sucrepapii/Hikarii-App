@@ -3,7 +3,7 @@ import { Footer } from '../components/layout/Footer';
 import { useNavigate } from 'react-router-dom';
 import { Logo } from '../components/common/Logo';
 import { Button } from '../components/common/Button';
-import { Shield, Lock, Server } from 'lucide-react';
+import { Shield, Lock, Server, Eye, Key, FileCheck } from 'lucide-react';
 
 export const Security: React.FC = () => {
     const navigate = useNavigate();
@@ -21,40 +21,77 @@ export const Security: React.FC = () => {
                 </div>
             </nav>
 
-            <main className="flex-grow pt-32 px-6 max-w-4xl mx-auto w-full">
-                <div className="text-center mb-16">
-                    <Shield className="w-16 h-16 text-emerald-500 mx-auto mb-6" />
-                    <h1 className="text-4xl md:text-5xl font-display font-bold mb-4">Security at Hikari</h1>
-                    <p className="text-xl text-slate-600 dark:text-slate-300">Your data is your business. Protecting it is ours.</p>
+            <main className="flex-grow pt-32 pb-20 px-6 max-w-5xl mx-auto w-full">
+                <div className="text-center mb-20">
+                    <div className="w-20 h-20 rounded-3xl bg-emerald-500/10 flex items-center justify-center mx-auto mb-8 animate-fade-in-up">
+                        <Shield className="w-10 h-10 text-emerald-500" />
+                    </div>
+                    <h1 className="text-4xl md:text-6xl font-display font-bold mb-6">Security First</h1>
+                    <p className="text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
+                        We treat your financial and task data with bank-grade security protocols.
+                        Your privacy is not an afterthought—it's the foundation of our architecture.
+                    </p>
                 </div>
 
-                <div className="space-y-12">
-                    <section>
-                        <div className="flex items-start gap-4">
-                            <Lock className="w-6 h-6 text-indigo-500 mt-1" />
-                            <div>
-                                <h3 className="text-2xl font-bold mb-2">Encryption</h3>
-                                <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
-                                    All data is encrypted in transit using TLS 1.2+ and at rest using AES-256 encryption.
-                                    We use industry-standard protocols to ensure that your financial and task data remains private.
-                                </p>
-                            </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-20">
+                    {/* Encryption */}
+                    <section className="bg-slate-50 dark:bg-white/5 p-8 rounded-3xl border border-slate-200 dark:border-white/10">
+                        <div className="flex items-center gap-4 mb-6">
+                            <Lock className="w-8 h-8 text-indigo-500" />
+                            <h2 className="text-2xl font-bold">End-to-End Protection</h2>
                         </div>
+                        <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+                            <strong>Data in Transit:</strong> All data sent between your browser and our servers is encrypted using industry-standard TLS 1.2+ (Transport Layer Security).
+                        </p>
+                        <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+                            <strong>Data at Rest:</strong> Your sensitive data stored in our databases is encrypted using AES-256 encryption algorithms. Even if a physical disk were compromised, your data would remain unreadable.
+                        </p>
                     </section>
 
-                    <section>
-                        <div className="flex items-start gap-4">
-                            <Server className="w-6 h-6 text-indigo-500 mt-1" />
-                            <div>
-                                <h3 className="text-2xl font-bold mb-2">Infrastructure</h3>
-                                <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
-                                    Hikari is hosted on secure, compliant cloud infrastructure providers.
-                                    We maintain rigorous access controls and conduct regular security audits.
-                                </p>
-                            </div>
+                    {/* Infrastructure */}
+                    <section className="bg-slate-50 dark:bg-white/5 p-8 rounded-3xl border border-slate-200 dark:border-white/10">
+                        <div className="flex items-center gap-4 mb-6">
+                            <Server className="w-8 h-8 text-blue-500" />
+                            <h2 className="text-2xl font-bold">Secure Infrastructure</h2>
                         </div>
+                        <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+                            Hikari runs on <strong>Amazon Web Services (AWS)</strong>, using logically isolated Virtual Private Clouds (VPCs). We utilize multi-zone redundancy to ensure high availability and protect against data loss.
+                        </p>
+                        <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+                            We perform regular automated backups and strictly limit employee access to production servers via Zero Trust principles.
+                        </p>
                     </section>
                 </div>
+
+                <h2 className="text-3xl font-bold mb-10 text-center">Compliance & Monitoring</h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
+                    <div className="text-center p-6">
+                        <Eye className="w-10 h-10 text-purple-500 mx-auto mb-4" />
+                        <h3 className="font-bold text-lg mb-2">24/7 Monitoring</h3>
+                        <p className="text-sm text-slate-500">Real-time threat detection systems monitor our network for suspicious activity.</p>
+                    </div>
+                    <div className="text-center p-6">
+                        <Key className="w-10 h-10 text-pink-500 mx-auto mb-4" />
+                        <h3 className="font-bold text-lg mb-2">Access Control</h3>
+                        <p className="text-sm text-slate-500">Strict role-based access control (RBAC) ensures only authorized personnel can access system internals.</p>
+                    </div>
+                    <div className="text-center p-6">
+                        <FileCheck className="w-10 h-10 text-orange-500 mx-auto mb-4" />
+                        <h3 className="font-bold text-lg mb-2">Regular Audits</h3>
+                        <p className="text-sm text-slate-500">We conduct third-party vulnerability assessments and penetration testing annually.</p>
+                    </div>
+                </div>
+
+                <div className="bg-indigo-50 dark:bg-indigo-900/20 p-8 rounded-3xl border border-indigo-100 dark:border-indigo-500/20 text-center">
+                    <h3 className="text-2xl font-bold mb-4">Report a Vulnerability</h3>
+                    <p className="text-slate-600 dark:text-slate-300 mb-6 max-w-2xl mx-auto">
+                        Security is a community effort. If you believe you’ve found a security bug in Hikari, please report it to our security team. We engage in specific bug bounties for severe disclosures.
+                    </p>
+                    <a href="mailto:security@hikariapp.com" className="inline-flex items-center justify-center px-6 py-3 rounded-full bg-indigo-600 text-white font-medium hover:bg-indigo-700 transition-colors">
+                        Contact Security Team
+                    </a>
+                </div>
+
             </main>
             <Footer />
         </div>
