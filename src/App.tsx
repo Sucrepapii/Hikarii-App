@@ -20,6 +20,10 @@ import { ProjectForm } from './pages/ProjectForm';
 import { TermsOfService } from './pages/TermsOfService';
 import { PrivacyPolicy } from './pages/PrivacyPolicy';
 import { About } from './pages/About';
+import { Contact } from './pages/Contact';
+import { Security } from './pages/Security';
+import { Accessibility } from './pages/Accessibility';
+import { HelpCenter } from './pages/HelpCenter';
 import { useAuthStore } from './stores/authStore';
 import { useTaskStore } from './stores/taskStore';
 import { TaskSplitModal } from './components/tasks/TaskSplitModal';
@@ -179,6 +183,10 @@ function App() {
                     path="/about"
                     element={<About />}
                 />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/security" element={<Security />} />
+                <Route path="/accessibility" element={<Accessibility />} />
+                <Route path="/help" element={<HelpCenter />} />
             </Routes >
 
             {activeSplitTaskId && (() => {

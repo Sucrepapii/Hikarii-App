@@ -4,12 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import { Logo } from '../components/common/Logo';
 import { Button } from '../components/common/Button';
 
-export const About: React.FC = () => {
+export const Accessibility: React.FC = () => {
     const navigate = useNavigate();
 
     return (
         <div className="min-h-screen bg-white dark:bg-[#0B0C15] font-sans text-slate-900 dark:text-slate-100 flex flex-col">
-            {/* Minimal Header */}
             <nav className="fixed top-0 w-full z-50 bg-white/80 dark:bg-[#0B0C15]/80 backdrop-blur-md border-b border-slate-200 dark:border-white/5">
                 <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
                     <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/')}>
@@ -22,19 +21,18 @@ export const About: React.FC = () => {
             </nav>
 
             <main className="flex-grow pt-32 px-6 max-w-4xl mx-auto w-full">
-                <h1 className="text-4xl md:text-5xl font-display font-bold mb-8">About Hikari</h1>
+                <h1 className="text-4xl md:text-5xl font-display font-bold mb-8">Accessibility Statement</h1>
                 <div className="prose dark:prose-invert prose-lg max-w-none">
-                    <p className="lead text-xl text-slate-600 dark:text-slate-300 mb-8">
-                        Hikari means "Light". We believe that clarity is the precursor to mastery.
+                    <p>
+                        Hikari is committed to making our website and application accessible to everyone, including individuals with disabilities.
                     </p>
                     <p>
-                        In a world of distraction, it's easy to feel lost in the noise of tasks, bills, and notifications.
-                        Hikari was built to be a beacon of focus—a single workspace where your life's work and your life's costs logicall intersect.
+                        We strive to meet the Web Content Accessibility Guidelines (WCAG) 2.1 Level AA standards.
+                        We continuously test and improve our platform to ensure a seamless experience for all users.
                     </p>
-                    <h3 className="text-2xl font-bold mt-12 mb-4">Our Mission</h3>
+                    <h3>Feedback</h3>
                     <p>
-                        To empower creative professionals and entrepreneurs to achieve financial freedom through radical focus.
-                        We don't just track tasks; we track the ROI of your attention.
+                        If you encounter any accessibility barriers on our site, please contact us at <a href="mailto:support@hikariapp.com" className="text-indigo-600 dark:text-indigo-400">support@hikariapp.com</a>.
                     </p>
                 </div>
             </main>
