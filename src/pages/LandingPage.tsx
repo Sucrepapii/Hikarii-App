@@ -261,10 +261,10 @@ export const LandingPage: React.FC = () => {
             </section>
 
             {/* BENTO FEATURES */}
-            <section className="py-32 px-6 max-w-7xl mx-auto bg-gradient-to-br from-indigo-900 via-purple-900 to-indigo-900 rounded-[3rem] my-20 relative overflow-hidden shadow-2xl">
-                {/* Enhanced Background Effects */}
-                <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-pink-500/30 rounded-full blur-[120px] mix-blend-screen animate-pulse-slow"></div>
-                <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-blue-500/30 rounded-full blur-[120px] mix-blend-screen animate-pulse-slow delay-700"></div>
+            <section className="py-32 px-6 max-w-7xl mx-auto bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 rounded-[3rem] my-20 relative overflow-hidden shadow-2xl">
+                {/* Enhanced Background Effects - Reduced Purple */}
+                <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-indigo-500/20 rounded-full blur-[120px] mix-blend-screen animate-pulse-slow"></div>
+                <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-blue-500/10 rounded-full blur-[120px] mix-blend-screen animate-pulse-slow delay-700"></div>
 
                 <div className="relative z-10 p-4">
                     <div className="text-center mb-16">
@@ -275,9 +275,9 @@ export const LandingPage: React.FC = () => {
 
                     <div className="grid grid-cols-1 md:grid-cols-4 grid-rows-2 gap-6 h-auto md:h-[600px]">
                         {/* Large Card: Task-Expense Linking */}
-                        <div className="col-span-1 md:col-span-2 row-span-2 bg-white/10 border border-white/20 rounded-3xl p-8 flex flex-col justify-between hover:bg-white/15 transition-all duration-300 group backdrop-blur-md hover:scale-[1.01] hover:shadow-xl hover:shadow-black/10">
+                        <div className="col-span-1 md:col-span-2 row-span-2 bg-white/5 border border-white/10 rounded-3xl p-8 flex flex-col justify-between hover:bg-white/10 transition-all duration-300 group backdrop-blur-md hover:scale-[1.01] hover:shadow-xl hover:shadow-black/20">
                             <div>
-                                <div className="w-14 h-14 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-2xl flex items-center justify-center mb-6 text-white shadow-lg">
+                                <div className="w-14 h-14 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-2xl flex items-center justify-center mb-6 text-white shadow-lg">
                                     <Link2 className="w-7 h-7" />
                                 </div>
                                 <h3 className="text-2xl font-bold mb-3 text-white">Task-Expense Linking</h3>
@@ -296,37 +296,51 @@ export const LandingPage: React.FC = () => {
                             </div>
                         </div>
 
-                        {/* Tall Card: Advanced Reporting */}
-                        <div className="col-span-1 md:col-span-1 row-span-2 bg-gradient-to-b from-white/10 to-transparent border border-white/20 rounded-3xl p-8 flex flex-col hover:border-white/40 transition-all duration-300 backdrop-blur-md hover:-translate-y-1">
+                        {/* Tall Card: Smart Split (Moved here) */}
+                        <div className="col-span-1 md:col-span-1 row-span-2 bg-gradient-to-b from-green-900/40 to-emerald-900/10 border border-green-500/20 rounded-3xl p-8 flex flex-col hover:border-green-500/40 transition-all duration-300 backdrop-blur-md hover:-translate-y-1">
                             <div className="mb-auto">
-                                <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center mb-6 text-white shadow-lg">
-                                    <FileText className="w-6 h-6" />
+                                <div className="w-12 h-12 bg-green-500/20 rounded-2xl flex items-center justify-center mb-6 text-green-400 shadow-lg border border-green-500/20">
+                                    <Split className="w-6 h-6" />
                                 </div>
-                                <h3 className="text-xl font-bold mb-3 text-white">Advanced Reporting</h3>
-                                <p className="text-sm text-indigo-200 leading-relaxed">Export professional CSV/PDF reports for tax season or client billing.</p>
+                                <h3 className="text-xl font-bold mb-3 text-white">Smart Split</h3>
+                                <p className="text-sm text-green-100/80 leading-relaxed">Automatically break down complex projects into actionable steps.</p>
                             </div>
+
+                            {/* Visual Task Breakdown */}
                             <div className="mt-6 space-y-3">
-                                {[1, 2, 3, 4].map((i) => (
-                                    <div key={i} className="flex gap-3 items-center opacity-40">
-                                        <div className="w-8 h-8 rounded-lg bg-white/20"></div>
-                                        <div className="h-3 bg-white/20 rounded-full w-full"></div>
+                                <div className="bg-white/5 p-3 rounded-xl border border-white/10 backdrop-blur-sm">
+                                    <div className="h-2 w-16 bg-white/20 rounded-full mb-2"></div>
+                                    <div className="h-1.5 w-24 bg-white/10 rounded-full"></div>
+                                </div>
+                                <div className="relative pl-6 space-y-3 before:absolute before:left-3 before:top-0 before:bottom-0 before:w-px before:bg-white/10">
+                                    <div className="bg-green-500/20 p-2.5 rounded-lg border border-green-500/20 flex items-center gap-3">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-green-400"></div>
+                                        <div className="h-1.5 w-16 bg-white/40 rounded-full"></div>
                                     </div>
-                                ))}
+                                    <div className="bg-green-500/10 p-2.5 rounded-lg border border-green-500/10 flex items-center gap-3">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-green-400/50"></div>
+                                        <div className="h-1.5 w-12 bg-white/30 rounded-full"></div>
+                                    </div>
+                                    <div className="bg-green-500/5 p-2.5 rounded-lg border border-green-500/5 flex items-center gap-3">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-green-400/30"></div>
+                                        <div className="h-1.5 w-14 bg-white/20 rounded-full"></div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
                         {/* Wide Card: AI Insights */}
-                        <div className="col-span-1 md:col-span-1 bg-gradient-to-br from-amber-500/20 to-orange-500/20 border border-amber-500/30 rounded-3xl p-8 flex flex-col justify-center hover:bg-amber-500/30 transition-all duration-300 backdrop-blur-md hover:scale-[1.02]">
-                            <Zap className="w-10 h-10 text-amber-300 mb-4 drop-shadow-lg" />
+                        <div className="col-span-1 md:col-span-1 bg-gradient-to-br from-amber-500/10 to-orange-500/10 border border-amber-500/20 rounded-3xl p-8 flex flex-col justify-center hover:bg-amber-500/20 transition-all duration-300 backdrop-blur-md hover:scale-[1.02]">
+                            <Zap className="w-10 h-10 text-amber-400 mb-4 drop-shadow-lg" />
                             <h3 className="font-bold text-white text-lg mb-1">AI Insights</h3>
-                            <p className="text-sm text-indigo-100">Predictive analytics for your wallet.</p>
+                            <p className="text-sm text-slate-300">Predictive analytics for your wallet.</p>
                         </div>
 
-                        {/* Last Card: Context Splitting */}
-                        <div className="col-span-1 md:col-span-1 bg-gradient-to-br from-green-500/20 to-emerald-500/20 border border-green-500/30 rounded-3xl p-8 flex flex-col justify-center hover:bg-green-500/30 transition-all duration-300 backdrop-blur-md hover:scale-[1.02]">
-                            <Split className="w-10 h-10 text-green-300 mb-4 drop-shadow-lg" />
-                            <h3 className="font-bold text-white text-lg mb-1">Smart Split</h3>
-                            <p className="text-sm text-indigo-100">Break down tasks contextually.</p>
+                        {/* Last Card: Advanced Reporting (Moved here) */}
+                        <div className="col-span-1 md:col-span-1 bg-gradient-to-br from-blue-500/10 to-indigo-500/10 border border-blue-500/20 rounded-3xl p-8 flex flex-col justify-center hover:bg-blue-500/20 transition-all duration-300 backdrop-blur-md hover:scale-[1.02]">
+                            <FileText className="w-10 h-10 text-blue-400 mb-4 drop-shadow-lg" />
+                            <h3 className="font-bold text-white text-lg mb-1">Reporting</h3>
+                            <p className="text-sm text-slate-300">Export professional CSV/PDF reports.</p>
                         </div>
                     </div>
                 </div>
