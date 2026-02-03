@@ -136,7 +136,7 @@ export const Pricing: React.FC = () => {
                             <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Free</h3>
                             <p className="text-slate-500 dark:text-slate-400">Essential tools for personal tasks.</p>
                             <div className="mt-6 flex items-baseline">
-                                <span className="text-4xl font-bold text-slate-900 dark:text-white">$0</span>
+                                <span className="text-4xl font-bold text-slate-900 dark:text-white">£0</span>
                                 <span className="text-slate-500 ml-2">/month</span>
                             </div>
                         </div>
@@ -171,7 +171,7 @@ export const Pricing: React.FC = () => {
                             <p className="text-slate-500 dark:text-slate-400">Advanced insights & limitless potential.</p>
                             <div className="mt-6 flex items-baseline">
                                 <span className="text-4xl font-bold text-slate-900 dark:text-white">
-                                    {billingPeriod === 'monthly' ? '$8.99' : '$89'}
+                                    {billingPeriod === 'monthly' ? '£8.99' : '£89'}
                                 </span>
                                 <span className="text-slate-500 ml-2">
                                     /{billingPeriod === 'monthly' ? 'month' : 'year'}
@@ -179,7 +179,7 @@ export const Pricing: React.FC = () => {
                             </div>
                             {billingPeriod === 'yearly' && (
                                 <p className="text-sm text-green-600 font-medium mt-2">
-                                    Equivalent to $7.42/month
+                                    Equivalent to £7.42/month
                                 </p>
                             )}
                             {billingPeriod === 'monthly' && (

@@ -108,7 +108,7 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({ isOpen, onClose }) =
 
                     <div className="flex items-end justify-center gap-2 mb-8">
                         <span className="text-4xl font-bold text-slate-900 dark:text-white">
-                            {billingPeriod === 'monthly' ? '$8.99' : '$89'}
+                            {billingPeriod === 'monthly' ? '£8.99' : '£89'}
                         </span>
                         <span className="text-slate-500 mb-1">
                             /{billingPeriod === 'monthly' ? 'month' : 'year'}

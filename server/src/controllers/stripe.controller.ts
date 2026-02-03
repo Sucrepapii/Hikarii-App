@@ -45,10 +45,21 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
       });
     }
 
-    const priceId = PRO_PRICE_ID;
+    const { billingPeriod } = req.body;
+    console.log("Stripe: Billing Period requested:", billingPeriod);
+
+    let priceId = process.env.STRIPE_PRO_PRICE_ID; // Default to monthly
+
+    if (billingPeriod === "yearly") {
+      priceId = process.env.STRIPE_PRO_YEARLY_PRICE_ID;
+      console.log("Stripe: Selected YEARLY price ID");
+    } else {
+      console.log("Stripe: Selected MONTHLY price ID");
+    }
+
     if (!priceId) {
       console.error(
-        "Stripe Error: PRO_PRICE_ID is missing in environment variables",
+        `Stripe Error: Price ID for ${billingPeriod} is missing in environment variables`,
       );
       return res
         .status(500)
@@ -153,7 +164,9 @@ export const cancelSubscription = async (req: Request, res: Response) => {
     res.json({
       message:
         "Subscription will be cancelled at the end of the billing period",
-      currentPeriodEnd: new Date(updatedSubscription.current_period_end * 1000),
+      currentPeriodEnd: new Date(
+        (updatedSubscription as any).current_period_end * 1000,
+      ),
     });
   } catch (error: any) {
     console.error("Cancel Subscription Error:", error);
