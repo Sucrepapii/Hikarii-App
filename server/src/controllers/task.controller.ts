@@ -4,6 +4,8 @@ import { TaskStatus } from "../models/types";
 import { AuthRequest } from "../middleware/auth.middleware";
 import { createCalendarEvent } from "../services/google.calendar.service";
 
+import { taskSplitterService } from "../services/task.splitter.service";
+
 export const getTasks = async (
   req: AuthRequest,
   res: Response,
@@ -171,6 +173,8 @@ export const analyzeTaskSplit = async (
 ): Promise<void> => {
   try {
     const { id } = req.params;
+    const { force } = req.body;
+
     const task = await prisma.task.findFirst({
       where: { id, userId: req.userId },
       include: { blocks: true },
@@ -183,8 +187,15 @@ export const analyzeTaskSplit = async (
 
     // Check if blocks already exist
     if (task.blocks && task.blocks.length > 0) {
-      res.json({ blocks: task.blocks, message: "Blocks already exist" });
-      return;
+      if (!force) {
+        res.json({ blocks: task.blocks, message: "Blocks already exist" });
+        return;
+      }
+
+      // If force, delete existing blocks first
+      await prisma.taskBlock.deleteMany({
+        where: { taskId: task.id },
+      });
     }
 
     // Import service dynamically

@@ -1,5 +1,11 @@
 var __defProp = Object.defineProperty;
 var __getOwnPropNames = Object.getOwnPropertyNames;
+var __require = /* @__PURE__ */ ((x) => typeof require !== "undefined" ? require : typeof Proxy !== "undefined" ? new Proxy(x, {
+  get: (a, b) => (typeof require !== "undefined" ? require : a)[b]
+}) : x)(function(x) {
+  if (typeof require !== "undefined") return require.apply(this, arguments);
+  throw Error('Dynamic require of "' + x + '" is not supported');
+});
 var __esm = (fn, res) => function __init() {
   return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
 };
@@ -56,7 +62,7 @@ var init_email_service = __esm({
 });
 
 // server/src/utils/emailTemplates.ts
-var getBaseTemplate, getVerificationTemplate, getPasswordResetTemplate, getOverdueReminderTemplate;
+var getBaseTemplate, getVerificationTemplate, getPasswordResetTemplate, getOverdueReminderTemplate, getContactFormTemplate, getContactAutoReplyTemplate;
 var init_emailTemplates = __esm({
   "server/src/utils/emailTemplates.ts"() {
     getBaseTemplate = (title, content, buttonText, buttonUrl, footerText) => {
@@ -182,6 +188,51 @@ var init_emailTemplates = __esm({
         "Go to Workspace",
         clientUrl,
         "You received this email because you have pending tasks in your Hikari workspace."
+      );
+    };
+    getContactFormTemplate = (firstName, lastName, email, subject, message) => {
+      const content = `
+    <p>You received a new message from the <strong>Hikari Contact Form</strong>.</p>
+    
+    <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 24px; border-radius: 16px; margin: 24px 0;">
+      <p style="margin: 0 0 12px 0;"><strong>Name:</strong> ${firstName} ${lastName}</p>
+      <p style="margin: 0 0 12px 0;"><strong>Email:</strong> <a href="mailto:${email}" style="color: #6366f1;">${email}</a></p>
+      <p style="margin: 0 0 12px 0;"><strong>Subject:</strong> ${subject}</p>
+      <div style="margin-top: 16px; padding-top: 16px; border-top: 1px dashed #cbd5e1;">
+        <p style="margin: 0 0 8px 0; font-size: 12px; text-transform: uppercase; color: #64748b; font-weight: 700;">Message:</p>
+        <p style="margin: 0; white-space: pre-wrap; color: #334155;">${message}</p>
+      </div>
+    </div>
+    
+    <div style="text-align: center;">
+      <a href="mailto:${email}?subject=Re: ${encodeURIComponent(subject)}" style="background: #1e293b; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 14px; display: inline-block;">
+        Reply to User
+      </a>
+    </div>
+  `;
+      return getBaseTemplate(
+        `New Contact: ${subject}`,
+        content,
+        void 0,
+        void 0,
+        "This message was sent via the Hikari website contact form."
+      );
+    };
+    getContactAutoReplyTemplate = (firstName) => {
+      const content = `
+    <p>Hello <strong>${firstName}</strong>,</p>
+    <p>Thanks for reaching out to Hikari! We've received your message and our team is reviewing it.</p>
+    <p>We typically reply within 24-48 hours. In the meantime, you might find answers in our <a href="https://hikariapp.com/help" style="color: #6366f1;">Help Center</a>.</p>
+    
+    <p>Talk soon,</p>
+  `;
+      return getBaseTemplate(
+        "We received your message",
+        content,
+        "Visit Help Center",
+        "https://hikariapp.com/help",
+        // In a real app, use env var
+        "You received this because you contacted Hikari Support."
       );
     };
   }
@@ -446,18 +497,27 @@ var init_task_splitter_service = __esm({
       constructor() {
         this.genAI = null;
         this.model = null;
+        this.isInitialized = false;
+      }
+      initialize() {
+        if (this.isInitialized) return;
         if (!process.env.GEMINI_API_KEY) {
-          console.log(
-            "[TaskSplitter] GEMINI_API_KEY not found in process.env, attempting to safely load dotenv..."
-          );
+          try {
+            const dotenv2 = __require("dotenv");
+            dotenv2.config();
+          } catch (e) {
+          }
         }
         const apiKey = process.env.GEMINI_API_KEY;
-        console.log(`[TaskSplitter] Initializing. API Key present: ${!!apiKey}`);
+        console.log(
+          `[TaskSplitter] Initialize called. API Key present in env: ${!!apiKey}`
+        );
+        console.log(`[TaskSplitter] Current working directory: ${process.cwd()}`);
         if (apiKey) {
           try {
             this.genAI = new GoogleGenerativeAI(apiKey);
             this.model = this.genAI.getGenerativeModel({
-              model: "gemini-1.5-flash",
+              model: "gemini-flash-latest",
               generationConfig: { responseMimeType: "application/json" }
             });
             console.log("[TaskSplitter] Gemini model initialized successfully.");
@@ -467,6 +527,7 @@ var init_task_splitter_service = __esm({
         } else {
           console.warn("[TaskSplitter] No API Key provided. AI features disabled.");
         }
+        this.isInitialized = true;
       }
       /**
        * Analyzes a task title/description and suggests blocks.
@@ -474,28 +535,36 @@ var init_task_splitter_service = __esm({
        * In a real app, we might ask user for "Total Duration" first.
        */
       async suggestBlocks(title, totalDurationMinutes = 60) {
+        this.initialize();
         if (this.model) {
           try {
             console.log(`[TaskSplitter] Attempting AI split for: "${title}"`);
             const prompt = `
           You are a productivity expert. Break down the task "${title}" into 3-5 subtasks (blocks) that fit within a total of ${totalDurationMinutes} minutes.
           
+          CRITICAL INSTRUCTION:
+          - The titles MUST be specific to the task content ("${title}").
+          - Do NOT use generic titles like "Preparation", "Core Work", "Execution", or "Review".
+          - Instead, use specific actions like "Research flight prices", "Draft introduction", "Debug authentication logic", etc.
+          - Make it obvious that these suggestions were generated specifically for this task.
+
           Return a JSON ARRAY. Schema:
           Array<{ title: string, duration: number }>
           
           Example:
           [
-            { "title": "Research destination", "duration": 15 },
-            { "title": "Book flights", "duration": 30 },
-            { "title": "Pack bags", "duration": 15 }
+            { "title": "Research destination safety", "duration": 15 },
+            { "title": "Compare flight costs", "duration": 30 },
+            { "title": "Book hotel", "duration": 15 }
           ]
           
           The sum of durations should equal exactly ${totalDurationMinutes}.
         `;
             const result = await this.model.generateContent(prompt);
-            const responseText = result.response.text();
+            let responseText = result.response.text();
             console.log("[TaskSplitter] Raw AI Response:", responseText);
-            const aiBlocks = JSON.parse(responseText.trim());
+            responseText = responseText.replace(/```json/g, "").replace(/```/g, "").trim();
+            const aiBlocks = JSON.parse(responseText);
             if (Array.isArray(aiBlocks) && aiBlocks.length > 0) {
               console.log(
                 "[TaskSplitter] AI parsed valid blocks:",
@@ -511,12 +580,16 @@ var init_task_splitter_service = __esm({
             }
           } catch (error) {
             console.error(
-              "[TaskSplitter] AI generation failed, falling back to templates:",
-              error
+              "!!! [TaskSplitter] AI generation FAILED !!!",
+              error?.message,
+              error?.stack
             );
           }
         } else {
-          console.log("[TaskSplitter] Skipping AI (Model not initialized).");
+          console.log(
+            "[TaskSplitter] Skipping AI (Model not initialized). Keys present:",
+            !!process.env.GEMINI_API_KEY
+          );
         }
         const normalizedTitle = title.toLowerCase();
         const template = TEMPLATES.find(
@@ -618,7 +691,7 @@ var init_reminder_job = __esm({
 
 // server/src/app.ts
 import "dotenv/config";
-import express3 from "express";
+import express4 from "express";
 import cors from "cors";
 import path2 from "path";
 import fs2 from "fs";
@@ -1104,6 +1177,7 @@ var toggleTaskStatus = async (req, res) => {
 var analyzeTaskSplit = async (req, res) => {
   try {
     const { id } = req.params;
+    const { force } = req.body;
     const task = await db_default.task.findFirst({
       where: { id, userId: req.userId },
       include: { blocks: true }
@@ -1113,8 +1187,13 @@ var analyzeTaskSplit = async (req, res) => {
       return;
     }
     if (task.blocks && task.blocks.length > 0) {
-      res.json({ blocks: task.blocks, message: "Blocks already exist" });
-      return;
+      if (!force) {
+        res.json({ blocks: task.blocks, message: "Blocks already exist" });
+        return;
+      }
+      await db_default.taskBlock.deleteMany({
+        where: { taskId: task.id }
+      });
     }
     const { taskSplitterService: taskSplitterService2 } = await Promise.resolve().then(() => (init_task_splitter_service(), task_splitter_service_exports));
     const suggestions = await taskSplitterService2.suggestBlocks(task.title);
@@ -2198,10 +2277,50 @@ router9.get("/status", authenticate, getGoogleStatus);
 router9.post("/sync-task", authenticate, syncTaskToCalendar);
 var google_routes_default = router9;
 
+// server/src/routes/contact.routes.ts
+import express3 from "express";
+
+// server/src/controllers/contact.controller.ts
+init_email_service();
+init_emailTemplates();
+var submitContactForm = async (req, res) => {
+  try {
+    const { firstName, lastName, email, subject, message } = req.body;
+    if (!firstName || !email || !message) {
+      res.status(400).json({ error: "Missing required fields" });
+      return;
+    }
+    const adminEmail = process.env.ADMIN_EMAIL || "support@hikariapp.com";
+    const adminHtml = getContactFormTemplate(
+      firstName,
+      lastName,
+      email,
+      subject,
+      message
+    );
+    await sendEmail(adminEmail, `Contact Form: ${subject}`, adminHtml);
+    const userHtml = getContactAutoReplyTemplate(firstName);
+    await sendEmail(
+      email,
+      "We received your message - Hikari Support",
+      userHtml
+    );
+    res.status(200).json({ message: "Message sent successfully" });
+  } catch (error) {
+    console.error("Contact form error:", error);
+    res.status(500).json({ error: "Failed to send message" });
+  }
+};
+
+// server/src/routes/contact.routes.ts
+var router10 = express3.Router();
+router10.post("/", submitContactForm);
+var contact_routes_default = router10;
+
 // server/src/app.ts
-var app = express3();
+var app = express4();
 app.use(cors());
-app.use(express3.json());
+app.use(express4.json());
 app.use("/api/auth", auth_routes_default);
 app.use("/api/tasks", task_routes_default);
 app.use("/api/projects", project_routes_default);
@@ -2211,12 +2330,13 @@ app.use("/api/predictive", predictive_routes_default);
 app.use("/api/patterns", pattern_routes_default);
 app.use("/api/stripe", stripe_routes_default);
 app.use("/api/google", google_routes_default);
+app.use("/api/contact", contact_routes_default);
 app.get("/health", (req, res) => {
   res.json({ status: "ok" });
 });
 var clientBuildPath = path2.join(process.cwd(), "dist");
 if (fs2.existsSync(clientBuildPath)) {
-  app.use(express3.static(clientBuildPath));
+  app.use(express4.static(clientBuildPath));
   app.get("*", (req, res) => {
     if (req.path.startsWith("/api")) {
       res.status(404).json({ error: "API Route not found" });

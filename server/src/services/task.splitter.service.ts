@@ -86,7 +86,7 @@ export class TaskSplitterService {
       try {
         this.genAI = new GoogleGenerativeAI(apiKey);
         this.model = this.genAI.getGenerativeModel({
-          model: "gemini-1.5-flash",
+          model: "gemini-flash-latest",
           generationConfig: { responseMimeType: "application/json" },
         });
         console.log("[TaskSplitter] Gemini model initialized successfully.");
@@ -114,14 +114,20 @@ export class TaskSplitterService {
         const prompt = `
           You are a productivity expert. Break down the task "${title}" into 3-5 subtasks (blocks) that fit within a total of ${totalDurationMinutes} minutes.
           
+          CRITICAL INSTRUCTION:
+          - The titles MUST be specific to the task content ("${title}").
+          - Do NOT use generic titles like "Preparation", "Core Work", "Execution", or "Review".
+          - Instead, use specific actions like "Research flight prices", "Draft introduction", "Debug authentication logic", etc.
+          - Make it obvious that these suggestions were generated specifically for this task.
+
           Return a JSON ARRAY. Schema:
           Array<{ title: string, duration: number }>
           
           Example:
           [
-            { "title": "Research destination", "duration": 15 },
-            { "title": "Book flights", "duration": 30 },
-            { "title": "Pack bags", "duration": 15 }
+            { "title": "Research destination safety", "duration": 15 },
+            { "title": "Compare flight costs", "duration": 30 },
+            { "title": "Book hotel", "duration": 15 }
           ]
           
           The sum of durations should equal exactly ${totalDurationMinutes}.
@@ -129,10 +135,16 @@ export class TaskSplitterService {
 
         const result = await this.model.generateContent(prompt);
         // With JSON mode, clean response directly
-        const responseText = result.response.text();
+        let responseText = result.response.text();
         console.log("[TaskSplitter] Raw AI Response:", responseText);
 
-        const aiBlocks = JSON.parse(responseText.trim());
+        // Sanitize markdown code blocks if present
+        responseText = responseText
+          .replace(/```json/g, "")
+          .replace(/```/g, "")
+          .trim();
+
+        const aiBlocks = JSON.parse(responseText);
 
         if (Array.isArray(aiBlocks) && aiBlocks.length > 0) {
           console.log(

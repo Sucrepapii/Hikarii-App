@@ -57,6 +57,17 @@ export const TaskSplitModal: React.FC<TaskSplitModalProps> = ({ isOpen, onClose,
 
     if (!isOpen) return null;
 
+    const handleRegenerate = async () => {
+        setLoading(true);
+        try {
+            await analyzeTask(task.id, { force: true });
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const handleSync = async () => {
         setLoading(true);
         try {
@@ -138,7 +149,16 @@ export const TaskSplitModal: React.FC<TaskSplitModalProps> = ({ isOpen, onClose,
                             onClick={handleSync}
                         >
                             <Calendar className="w-4 h-4 mr-2" />
-                            Sync to Calendar
+                            Calendar Sync
+                        </Button>
+                        <Button
+                            variant="secondary"
+                            onClick={handleRegenerate}
+                            disabled={loading}
+                            className="w-full sm:w-auto mt-3 sm:mt-0"
+                        >
+                            <Sparkles className="w-4 h-4 mr-2" />
+                            Regenerate
                         </Button>
                         <Button variant="ghost" onClick={onClose} className="w-full sm:w-auto mt-3 sm:mt-0">
                             Close
