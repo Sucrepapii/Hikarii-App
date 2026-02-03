@@ -1902,7 +1902,7 @@ var PatternDetectionService = class {
       where: {
         userId,
         date: {
-          gte: subDays(/* @__PURE__ */ new Date(), 90)
+          gte: subDays(/* @__PURE__ */ new Date(), 14)
         }
       },
       orderBy: { date: "asc" }

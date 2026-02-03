@@ -18,12 +18,12 @@ export class PatternDetectionService {
   async detectPatterns(userId: string) {
     console.log(`[PatternService] Running detection for user: ${userId}`);
 
-    // 1. Fetch last 90 days expenses
+    // 1. Fetch last 14 days expenses
     const expenses = await prisma.expense.findMany({
       where: {
         userId,
         date: {
-          gte: subDays(new Date(), 90),
+          gte: subDays(new Date(), 14),
         },
       },
       orderBy: { date: "asc" },
