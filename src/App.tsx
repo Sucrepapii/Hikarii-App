@@ -29,6 +29,7 @@ import { CategoryPage } from './pages/CategoryPage';
 import { useAuthStore } from './stores/authStore';
 import { useTaskStore } from './stores/taskStore';
 import { TaskSplitModal } from './components/tasks/TaskSplitModal';
+import { ScrollToTop } from './components/common/ScrollToTop';
 import './index.css';
 
 import { useInactivity } from './hooks/useInactivity';
@@ -49,6 +50,7 @@ function App() {
 
     return (
         <BrowserRouter>
+            <ScrollToTop />
             <Toaster position="top-right" />
             <Routes>
                 <Route

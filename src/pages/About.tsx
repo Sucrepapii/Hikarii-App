@@ -96,7 +96,7 @@ export const About: React.FC = () => {
                 </section>
 
                 {/* Team (Mock) */}
-                <section className="max-w-7xl mx-auto text-center">
+                {/* <section className="max-w-7xl mx-auto text-center">
                     <h2 className="text-3xl font-bold mb-16">Meet the Builders</h2>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
                         {[
@@ -114,7 +114,7 @@ export const About: React.FC = () => {
                             </div>
                         ))}
                     </div>
-                </section>
+                </section> */}
             </main>
             <Footer />
         </div>
