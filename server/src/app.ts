@@ -24,6 +24,7 @@ app.use(express.json());
 
 // Routes
 app.use("/api/auth", authRoutes);
+app.use("/api/contact", contactRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/projects", projectRoutes);
 app.use("/api", budgetRoutes); // Mounts /budgets and /expenses
@@ -32,7 +33,6 @@ app.use("/api/predictive", predictiveRoutes);
 app.use("/api/patterns", patternRoutes);
 app.use("/api/stripe", stripeRoutes);
 app.use("/api/google", googleRoutes);
-app.use("/api/contact", contactRoutes);
 
 // Health check
 app.get("/health", (req, res) => {

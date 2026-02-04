@@ -2453,6 +2453,7 @@ var app = express4();
 app.use(cors());
 app.use(express4.json());
 app.use("/api/auth", auth_routes_default);
+app.use("/api/contact", contact_routes_default);
 app.use("/api/tasks", task_routes_default);
 app.use("/api/projects", project_routes_default);
 app.use("/api", budget_routes_default);
@@ -2461,7 +2462,7 @@ app.use("/api/predictive", predictive_routes_default);
 app.use("/api/patterns", pattern_routes_default);
 app.use("/api/stripe", stripe_routes_default);
 app.use("/api/google", google_routes_default);
-app.use("/api/contact", contact_routes_default);
+
 app.get("/health", (req, res) => {
   res.json({ status: "ok" });
 });

@@ -3,7 +3,7 @@ import { Footer } from '../components/layout/Footer';
 import { useNavigate } from 'react-router-dom';
 import { Logo } from '../components/common/Logo';
 import { Button } from '../components/common/Button';
-import { Mail, MessageSquare, MapPin, Phone, Send } from 'lucide-react';
+import { Mail, MessageSquare, Send } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export const Contact: React.FC = () => {
