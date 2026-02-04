@@ -148,4 +148,41 @@ export const helpArticles: Article[] = [
             <p>You will receive a JSON file containing all your projects, tasks, and budget items.</p>
         `,
   },
+  {
+    id: "11",
+    title: "Using AI Smart Split",
+    slug: "using-ai-smart-split",
+    category: "Getting Started",
+    excerpt:
+      "Let Hikari break down complex tasks into manageable steps for you.",
+    content: `
+        <h2>Work Smarter, Not Harder</h2>
+        <p>Large tasks can be overwhelming. The <strong>AI Smart Split</strong> feature analyzes your task description and automatically generates a checklist of subtasks.</p>
+        <h3>How to use it:</h3>
+        <ol>
+            <li>Create a new task or open an existing one.</li>
+            <li>Click the <strong>✨ Wand Icon</strong> (Smart Split) next to the subtasks section.</li>
+            <li>Wait a moment for the AI to analyze your task.</li>
+            <li>Review the suggested subtasks and click <strong>Apply</strong> to add them to your task.</li>
+        </ol>
+        <p><em>Note: This feature requires a Pro subscription.</em></p>
+    `,
+  },
+  {
+    id: "12",
+    title: "Data Security & Privacy",
+    slug: "data-security-privacy",
+    category: "Account & Billing",
+    excerpt: "How we protect your personal information and financial data.",
+    content: `
+        <h2>Your Trust is Our Priority</h2>
+        <p>We take security seriously. Here is how we ensure your data stays safe:</p>
+        <ul>
+            <li><strong>Encryption:</strong> All data is encrypted in transit (TLS) and at rest (AES-256).</li>
+            <li><strong>Payments:</strong> We use Stripe for payment processing. We never store your credit card details on our servers.</li>
+            <li><strong>Privacy:</strong> We do not sell your personal data to third parties.</li>
+        </ul>
+        <p>For more details, visit our <a href="/security">Security Page</a> and <a href="/privacy">Privacy Policy</a>.</p>
+    `,
+  },
 ];
