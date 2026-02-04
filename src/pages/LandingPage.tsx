@@ -49,7 +49,7 @@ export const LandingPage: React.FC = () => {
                 <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
                     <div className="flex items-center gap-2 cursor-pointer group" onClick={() => navigate('/')}>
                         <Logo variant="full" size="md" />
-                        <span className="text-sm font-medium text-slate-500 dark:text-slate-400 overflow-hidden whitespace-nowrap opacity-0 max-w-0 group-hover:opacity-100 group-hover:max-w-xs transition-all duration-700 ease-out pl-2 border-l border-slate-200 dark:border-white/10 hidden md:block">
+                        <span className="text-sm font-medium bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-500 bg-clip-text text-transparent bg-[length:200%_auto] animate-shimmer overflow-hidden whitespace-nowrap opacity-0 max-w-0 group-hover:opacity-100 group-hover:max-w-xs transition-all duration-700 ease-out pl-2 border-l border-slate-200 dark:border-white/10 hidden md:block">
                             Bring clarity to your life
                         </span>
                     </div>
