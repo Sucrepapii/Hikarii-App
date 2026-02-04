@@ -87,7 +87,7 @@ export const Security: React.FC = () => {
                     <p className="text-slate-600 dark:text-slate-300 mb-6 max-w-2xl mx-auto">
                         Security is a community effort. If you believe you’ve found a security bug in Hikari, please report it to our security team. We engage in specific bug bounties for severe disclosures.
                     </p>
-                    <a href="mailto:security@hikariapp.com" className="inline-flex items-center justify-center px-6 py-3 rounded-full bg-indigo-600 text-white font-medium hover:bg-indigo-700 transition-colors">
+                    <a href="mailto:support@hikarii.org" className="inline-flex items-center justify-center px-6 py-3 rounded-full bg-indigo-600 text-white font-medium hover:bg-indigo-700 transition-colors">
                         Contact Security Team
                     </a>
                 </div>

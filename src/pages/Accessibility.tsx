@@ -71,7 +71,7 @@ export const Accessibility: React.FC = () => {
                         Accessibility is a journey. If you encounter a barrier on Hikari, please let us know so we can fix it.
                     </p>
                     <div className="mt-8">
-                        <a href="mailto:support@hikariapp.com" className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-slate-900 dark:bg-white text-white dark:text-black font-medium hover:opacity-90 transition-opacity no-underline">
+                        <a href="mailto:support@hikarii.org" className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-slate-900 dark:bg-white text-white dark:text-black font-medium hover:opacity-90 transition-opacity no-underline">
                             Contact Accessibility Support
                         </a>
                     </div>

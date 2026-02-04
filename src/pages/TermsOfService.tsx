@@ -121,8 +121,8 @@ export const TermsOfService: React.FC = () => {
                         <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">12. Contact Us</h2>
                         <p className="text-slate-700 dark:text-slate-300">
                             If you have any questions about these Terms, please contact us at{' '}
-                            <a href="mailto:support@hikariapp.com" className="text-primary-600 hover:text-primary-700 dark:text-primary-400">
-                                support@hikariapp.com
+                            <a href="mailto:support@hikarii.org" className="text-primary-600 hover:text-primary-700 dark:text-primary-400">
+                                support@hikarii.org
                             </a>
                         </p>
                     </section>

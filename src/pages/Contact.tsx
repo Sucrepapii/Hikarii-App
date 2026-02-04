@@ -72,7 +72,7 @@ export const Contact: React.FC = () => {
                                 <div>
                                     <h3 className="font-bold text-lg mb-1">Email Support</h3>
                                     <p className="text-slate-500 dark:text-slate-400 mb-2">For general inquiries and technical help.</p>
-                                    <a href="mailto:support@hikariapp.com" className="text-indigo-600 dark:text-indigo-400 font-medium hover:underline">support@hikariapp.com</a>
+                                    <a href="mailto:support@hikarii.org" className="text-indigo-600 dark:text-indigo-400 font-medium hover:underline">support@hikarii.org</a>
                                 </div>
                             </div>
 
@@ -81,7 +81,7 @@ export const Contact: React.FC = () => {
                                 <div>
                                     <h3 className="font-bold text-lg mb-1">Sales & Enterprise</h3>
                                     <p className="text-slate-500 dark:text-slate-400 mb-2">For teams larger than 20 people.</p>
-                                    <a href="mailto:sales@hikariapp.com" className="text-indigo-600 dark:text-indigo-400 font-medium hover:underline">sales@hikariapp.com</a>
+                                    <a href="mailto:support@hikarii.org" className="text-indigo-600 dark:text-indigo-400 font-medium hover:underline">support@hikarii.org</a>
                                 </div>
                             </div>
 

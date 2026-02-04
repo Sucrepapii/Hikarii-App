@@ -73,7 +73,7 @@ export const Pricing: React.FC = () => {
     const features = [
         { name: "Unlimited Tasks", free: true, pro: true },
         { name: "Active Projects", free: "1 Project", pro: "Unlimited" },
-        { name: "Task-Expense Linking", free: "Max 3", pro: "Unlimited" },
+        { name: "Task-Expense Linking", free: "Max 1", pro: "Unlimited" },
         { name: "Recurring Expense Scanning", free: false, pro: true, icon: <Clock className="w-4 h-4" /> },
         { name: "AI Insights & Suggestions", free: false, pro: true, icon: <Zap className="w-4 h-4" /> },
         { name: "Net Cash Flow Analytics", free: false, pro: true, icon: <BarChart className="w-4 h-4" /> },

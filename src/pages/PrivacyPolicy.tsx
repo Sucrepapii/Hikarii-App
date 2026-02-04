@@ -119,8 +119,8 @@ export const PrivacyPolicy: React.FC = () => {
                             </ul>
                             <p className="mt-4">
                                 To exercise these rights, please contact us at{' '}
-                                <a href="mailto:privacy@hikariapp.com" className="text-primary-600 hover:text-primary-700 dark:text-primary-400">
-                                    privacy@hikariapp.com
+                                <a href="mailto:[EMAIL_ADDRESS]" className="text-primary-600 hover:text-primary-700 dark:text-primary-400">
+                                    support@hikarii.org
                                 </a>
                             </p>
                         </div>
@@ -184,14 +184,14 @@ export const PrivacyPolicy: React.FC = () => {
                             <ul className="list-none space-y-2 mt-4">
                                 <li>
                                     <strong>Email:</strong>{' '}
-                                    <a href="mailto:privacy@hikariapp.com" className="text-primary-600 hover:text-primary-700 dark:text-primary-400">
-                                        privacy@hikariapp.com
+                                    <a href="mailto:support@hikarii.org" className="text-primary-600 hover:text-primary-700 dark:text-primary-400">
+                                        support@hikarii.org
                                     </a>
                                 </li>
                                 <li>
                                     <strong>Support:</strong>{' '}
-                                    <a href="mailto:support@hikariapp.com" className="text-primary-600 hover:text-primary-700 dark:text-primary-400">
-                                        support@hikariapp.com
+                                    <a href="mailto:support@hikarii.org" className="text-primary-600 hover:text-primary-700 dark:text-primary-400">
+                                        support@hikarii.org
                                     </a>
                                 </li>
                             </ul>
