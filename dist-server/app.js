@@ -239,7 +239,7 @@ var init_emailTemplates = __esm({
       const content = `
     <p>Hello <strong>${firstName}</strong>,</p>
     <p>Thanks for reaching out to Hikari! We've received your message and our team is reviewing it.</p>
-    <p>We typically reply within 24-48 hours. In the meantime, you might find answers in our <a href="https://hikariapp.com/help" style="color: #6366f1;">Help Center</a>.</p>
+    <p>We typically reply within 24-48 hours. In the meantime, you might find answers in our <a href="https://www.hikarii.org/help" style="color: #6366f1;">Help Center</a>.</p>
     
     <p>Talk soon,</p>
   `;
@@ -247,7 +247,7 @@ var init_emailTemplates = __esm({
         "We received your message",
         content,
         "Visit Help Center",
-        "https://hikariapp.com/help",
+        "https://www.hikarii.org/help",
         // In a real app, use env var
         "You received this because you contacted Hikari Support.",
       );
