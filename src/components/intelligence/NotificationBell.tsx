@@ -53,7 +53,7 @@ export const NotificationBell: React.FC = () => {
         return message.replace(/NGN\s?([\d,.]+)/g, (match, amountStr) => {
             const amount = parseFloat(amountStr.replace(/,/g, ''));
             if (isNaN(amount)) return match;
-            return formatCurrency(getConvertedAmount(amount, 'NGN'), currency);
+            return formatCurrency(getConvertedAmount(amount, currency), currency);
         });
     };
 
