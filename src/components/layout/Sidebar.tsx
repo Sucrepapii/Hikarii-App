@@ -45,6 +45,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     const toggleExpand = (path: string, e: React.MouseEvent) => {
         e.preventDefault();
         setExpandedItem(expandedItem === path ? null : path);
+        // Close sidebar on mobile when toggling to show content
+        if (onClose) onClose();
     };
 
     const NavContent = () => (

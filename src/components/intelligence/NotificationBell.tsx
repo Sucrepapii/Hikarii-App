@@ -98,7 +98,7 @@ export const NotificationBell: React.FC = () => {
                     "relative p-2 rounded-xl transition-all duration-300",
                     unreadCount > 0
                         ? "bg-primary-500/10 hover:bg-primary-500/20 text-primary-600 dark:text-primary-400"
-                        : "glass hover:bg-white/50 dark:hover:bg-slate-800/50 text-slate-600 dark:text-slate-400"
+                        : "bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-400"
                 )}
                 title={`${unreadCount} notification${unreadCount !== 1 ? "s" : ""}`}
             >
