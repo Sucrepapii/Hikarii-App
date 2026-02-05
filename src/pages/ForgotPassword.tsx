@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -7,8 +7,8 @@ import { Mail, Lock, Sun, ArrowLeft, Key, Eye, EyeOff } from 'lucide-react';
 import { useAuthStore } from '../stores/authStore';
 import { Input } from '../components/common/Input';
 import { Button } from '../components/common/Button';
-import { Logo } from '../components/common/Logo';
 import toast from 'react-hot-toast';
+import { clsx } from 'clsx';
 
 const emailSchema = z.object({
     email: z.string().email('Please enter a valid email address'),
@@ -34,6 +34,17 @@ export const ForgotPassword: React.FC = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [resendTimer, setResendTimer] = useState(0);
+
+    useEffect(() => {
+        let interval: any;
+        if (resendTimer > 0) {
+            interval = setInterval(() => {
+                setResendTimer((prev) => prev - 1);
+            }, 1000);
+        }
+        return () => clearInterval(interval);
+    }, [resendTimer]);
 
     const emailForm = useForm<EmailFormData>({
         resolver: zodResolver(emailSchema),
@@ -67,6 +78,17 @@ export const ForgotPassword: React.FC = () => {
             toast.error(error.message || 'Failed to reset password');
         } finally {
             setIsLoading(false);
+        }
+    };
+
+    const handleResend = async () => {
+        if (resendTimer > 0) return;
+        try {
+            await forgotPassword(email);
+            toast.success('Code resent! Check your email.');
+            setResendTimer(60);
+        } catch (error: any) {
+            toast.error(error.message || 'Failed to resend code');
         }
     };
 
@@ -211,6 +233,22 @@ export const ForgotPassword: React.FC = () => {
                             >
                                 {isLoading ? 'Resetting...' : 'Reset Password'}
                             </Button>
+
+                            <div className="text-center mt-4">
+                                <button
+                                    type="button"
+                                    onClick={handleResend}
+                                    disabled={resendTimer > 0}
+                                    className={clsx(
+                                        "text-sm font-medium transition-colors",
+                                        resendTimer > 0
+                                            ? "text-slate-400 cursor-not-allowed"
+                                            : "text-primary-600 hover:text-primary-700 dark:text-primary-400"
+                                    )}
+                                >
+                                    {resendTimer > 0 ? `Resend Code (${resendTimer}s)` : 'Resend Code'}
+                                </button>
+                            </div>
                         </form>
                     )}
                 </div>

@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { LogIn, Mail, Lock, Sun, Eye, EyeOff } from 'lucide-react';
+import { LogIn, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { useAuthStore } from '../stores/authStore';
 import { Input } from '../components/common/Input';
 import { Button } from '../components/common/Button';
 import { Logo } from '../components/common/Logo';
+import toast from 'react-hot-toast';
+import { clsx } from 'clsx';
 
 const loginSchema = z.object({
     email: z.string().email('Please enter a valid email address'),
@@ -24,6 +26,17 @@ export const Login: React.FC = () => {
     const [emailToVerify, setEmailToVerify] = useState('');
     const [otp, setOtp] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const [resendTimer, setResendTimer] = useState(0);
+
+    useEffect(() => {
+        let interval: any;
+        if (resendTimer > 0) {
+            interval = setInterval(() => {
+                setResendTimer((prev) => prev - 1);
+            }, 1000);
+        }
+        return () => clearInterval(interval);
+    }, [resendTimer]);
 
     const {
         register,
@@ -62,9 +75,12 @@ export const Login: React.FC = () => {
     };
 
     const handleResend = async () => {
+        if (resendTimer > 0) return;
+
         try {
             await resendCode(emailToVerify);
-            alert('Code resent! Check your email.');
+            toast.success('Code resent! Check your email.');
+            setResendTimer(60);
         } catch (err: any) {
             setError(err.message || 'Failed to resend code');
         }
@@ -129,9 +145,15 @@ export const Login: React.FC = () => {
                                 <button
                                     type="button"
                                     onClick={handleResend}
-                                    className="text-sm text-primary-600 hover:text-primary-700 dark:text-primary-400 font-medium"
+                                    disabled={resendTimer > 0}
+                                    className={clsx(
+                                        "text-sm font-medium transition-colors",
+                                        resendTimer > 0
+                                            ? "text-slate-400 cursor-not-allowed"
+                                            : "text-primary-600 hover:text-primary-700 dark:text-primary-400"
+                                    )}
                                 >
-                                    Resend Code
+                                    {resendTimer > 0 ? `Resend Code (${resendTimer}s)` : 'Resend Code'}
                                 </button>
                             </div>
                         </form>

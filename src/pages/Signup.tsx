@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -8,6 +8,8 @@ import { useAuthStore } from '../stores/authStore';
 import { Input } from '../components/common/Input';
 import { Button } from '../components/common/Button';
 import { Logo } from '../components/common/Logo';
+import toast from 'react-hot-toast';
+import { clsx } from 'clsx';
 
 const signupSchema = z.object({
     name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -37,6 +39,17 @@ export const Signup: React.FC = () => {
     const [otp, setOtp] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [resendTimer, setResendTimer] = useState(0);
+
+    useEffect(() => {
+        let interval: any;
+        if (resendTimer > 0) {
+            interval = setInterval(() => {
+                setResendTimer((prev) => prev - 1);
+            }, 1000);
+        }
+        return () => clearInterval(interval);
+    }, [resendTimer]);
 
     const {
         register,
@@ -77,9 +90,12 @@ export const Signup: React.FC = () => {
     };
 
     const handleResend = async () => {
+        if (resendTimer > 0) return;
+
         try {
             await resendCode(emailToVerify);
-            alert('Code resent! Check your email.');
+            toast.success('Code resent! Check your email.');
+            setResendTimer(60);
         } catch (err: any) {
             setError(err.message || 'Failed to resend code');
         }
@@ -153,9 +169,15 @@ export const Signup: React.FC = () => {
                                 <button
                                     type="button"
                                     onClick={handleResend}
-                                    className="text-sm text-primary-600 hover:text-primary-700 dark:text-primary-400 font-medium"
+                                    disabled={resendTimer > 0}
+                                    className={clsx(
+                                        "text-sm font-medium transition-colors",
+                                        resendTimer > 0
+                                            ? "text-slate-400 cursor-not-allowed"
+                                            : "text-primary-600 hover:text-primary-700 dark:text-primary-400"
+                                    )}
                                 >
-                                    Resend Code
+                                    {resendTimer > 0 ? `Resend Code (${resendTimer}s)` : 'Resend Code'}
                                 </button>
                             </div>
                         </form>
