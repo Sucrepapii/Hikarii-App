@@ -16,11 +16,13 @@ import { TaskFormData } from '../utils/validationSchemas';
 import toast from 'react-hot-toast';
 import { UpgradeModal } from '../components/modals/UpgradeModal';
 import { useIntelligenceStore } from '../stores/intelligenceStore';
+import { useAuthStore } from '../stores/authStore';
 import { clsx } from 'clsx';
 
 export const Dashboard: React.FC = () => {
     const { tasks, fetchTasks, toggleTaskStatus, updateTask, deleteTask } = useTaskStore();
     const { expenses, fetchExpenses, currency, getConvertedAmount } = useBudgetStore();
+    const { user } = useAuthStore();
 
     // Edit State
     const [editingTask, setEditingTask] = useState<Task | null>(null);
@@ -104,7 +106,7 @@ export const Dashboard: React.FC = () => {
                         Dashboard
                     </h1>
                     <p className="text-slate-600 dark:text-slate-400">
-                        Welcome back! Here's your overview
+                        Welcome back, {user?.name.split(' ')[0]}! Here's your overview
                     </p>
                 </div>
                 <button
