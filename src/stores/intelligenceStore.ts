@@ -39,8 +39,9 @@ export const useIntelligenceStore = create<IntelligenceStore>((set) => ({
             reason: `Priority: ${r.task.priority}`,
             urgencyScore: r.urgencyScore,
             financialContext: r.task.financials?.estimatedCost
-              ? `Cost: ₦${r.task.financials.estimatedCost.toLocaleString()}`
+              ? "Has associated cost"
               : "",
+            estimatedCost: r.task.financials?.estimatedCost || 0,
           })) || [],
         lastRefresh: new Date(),
         isLoading: false,

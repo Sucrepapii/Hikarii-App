@@ -55,7 +55,11 @@ export const SpendingChart: React.FC<SpendingChartProps> = ({ selectedDate = new
                     <YAxis
                         stroke="#94a3b8"
                         tick={{ fill: '#94a3b8', fontSize: 12 }}
-                        tickFormatter={(value) => `${currency === 'NGN' ? '₦' : currency === 'USD' ? '$' : currency === 'GBP' ? '£' : '€'}${value}`}
+                        tickFormatter={(value) => {
+                            // Manual formatting for Y-axis to save space
+                            const symbol = currency === 'NGN' ? '₦' : currency === 'USD' ? '$' : currency === 'GBP' ? '£' : '€';
+                            return `${symbol}${value >= 1000 ? (value / 1000).toFixed(0) + 'k' : value}`;
+                        }}
                     />
                     <Tooltip
                         contentStyle={{

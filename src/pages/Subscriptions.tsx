@@ -14,6 +14,8 @@ import { toast } from 'react-hot-toast';
 import { useAuthStore } from '../stores/authStore';
 import { UpgradeModal } from '../components/modals/UpgradeModal';
 import { ConfirmModal } from '../components/common/ConfirmModal';
+import { useBudgetStore } from '../stores/budgetStore';
+import { formatCurrency } from '../utils/currencyFormatter';
 
 interface RecurringExpense {
     id: string;
@@ -33,6 +35,7 @@ export const Subscriptions: React.FC = () => {
     const [scanning, setScanning] = useState(false);
 
     const { user } = useAuthStore();
+    const { currency, getConvertedAmount } = useBudgetStore();
     const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
     const handleScanClick = () => {
@@ -151,7 +154,7 @@ export const Subscriptions: React.FC = () => {
                                     </div>
                                     <div className="text-right">
                                         <p className="text-xl font-bold text-slate-800 dark:text-slate-200">
-                                            ₦{pattern.amount.toLocaleString()}
+                                            {formatCurrency(getConvertedAmount(pattern.amount, currency), currency)}
                                         </p>
                                         {!pattern.isConfirmed && (
                                             <span className="text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">

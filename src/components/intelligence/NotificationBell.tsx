@@ -4,6 +4,8 @@ import { Bell, X, AlertTriangle, Lightbulb, TrendingUp, CreditCard, Calendar, Do
 import { InsightType, InsightPriority } from "../../types/intelligence.types";
 import { clsx } from "clsx";
 import { useAuthStore } from "../../stores/authStore";
+import { useBudgetStore } from "../../stores/budgetStore";
+import { formatCurrency } from "../../utils/currencyFormatter";
 
 const insightIcons = {
     [InsightType.TASK_RECOMMENDATION]: Lightbulb,
@@ -17,22 +19,22 @@ const insightIcons = {
 
 const priorityStyles = {
     [InsightPriority.CRITICAL]: {
-        bg: "bg-red-500/10 border-red-500/30",
+        bg: "bg-red-500/10 dark:bg-red-500/25 border-red-500/30",
         text: "text-red-700 dark:text-red-300",
         icon: "text-red-600 dark:text-red-400",
     },
     [InsightPriority.HIGH]: {
-        bg: "bg-orange-500/10 border-orange-500/30",
+        bg: "bg-orange-500/10 dark:bg-orange-500/25 border-orange-500/30",
         text: "text-orange-700 dark:text-orange-300",
         icon: "text-orange-600 dark:text-orange-400",
     },
     [InsightPriority.MEDIUM]: {
-        bg: "bg-yellow-500/10 border-yellow-500/30",
+        bg: "bg-yellow-500/10 dark:bg-yellow-500/25 border-yellow-500/30",
         text: "text-yellow-700 dark:text-yellow-300",
         icon: "text-yellow-600 dark:text-yellow-400",
     },
     [InsightPriority.LOW]: {
-        bg: "bg-blue-500/10 border-blue-500/30",
+        bg: "bg-blue-500/10 dark:bg-blue-500/20 border-blue-500/30",
         text: "text-blue-700 dark:text-blue-300",
         icon: "text-blue-600 dark:text-blue-400",
     },
@@ -43,6 +45,7 @@ export const NotificationBell: React.FC = () => {
     const dropdownRef = useRef<HTMLDivElement>(null);
     const { insights, recommendations, dismissInsight, clearAllInsights, refreshInsights } = useIntelligenceStore();
     const { user } = useAuthStore();
+    const { currency, getConvertedAmount } = useBudgetStore();
     const isPro = user?.subscriptionStatus === 'PRO';
 
     // Filter insights based on subscription:
@@ -121,9 +124,9 @@ export const NotificationBell: React.FC = () => {
 
             {/* Dropdown */}
             {isOpen && (
-                <div className="absolute right-0 top-full mt-2 w-[calc(100vw-2rem)] sm:w-96 max-w-md max-h-[500px] overflow-y-auto rounded-2xl glass border-2 border-white/20 dark:border-white/10 shadow-2xl z-50 animate-fade-in">
+                <div className="absolute right-0 top-full mt-2 w-[calc(100vw-2rem)] sm:w-96 max-w-md max-h-[500px] overflow-y-auto rounded-2xl bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-2 border-white/20 dark:border-white/10 shadow-2xl z-50 animate-fade-in">
                     {/* Header */}
-                    <div className="sticky top-0 glass backdrop-blur-xl border-b border-white/20 dark:border-white/10 px-4 py-3 z-10">
+                    <div className="sticky top-0 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-white/20 dark:border-white/10 px-4 py-3 z-10">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
                                 <h3 className="font-semibold text-slate-900 dark:text-slate-100">
@@ -176,11 +179,11 @@ export const NotificationBell: React.FC = () => {
                                                 <p className="text-xs leading-relaxed text-slate-700 dark:text-slate-300">
                                                     {rec.reason}
                                                 </p>
-                                                {rec.financialContext && (
+                                                {rec.estimatedCost ? (
                                                     <p className="text-xs mt-2 font-medium text-slate-700 dark:text-slate-300 bg-white/50 dark:bg-slate-800/50 rounded-lg px-2 py-1 inline-block">
-                                                        💰 {rec.financialContext}
+                                                        💰 Cost: {formatCurrency(getConvertedAmount(rec.estimatedCost, currency), currency)}
                                                     </p>
-                                                )}
+                                                ) : null}
                                             </div>
                                         </div>
                                     </div>
@@ -215,7 +218,7 @@ export const NotificationBell: React.FC = () => {
                                                     )}
                                                     {insight.financialImpact !== undefined && insight.financialImpact !== 0 && (
                                                         <p className="text-xs mt-1 font-semibold">
-                                                            Impact: ₦{Math.abs(insight.financialImpact).toLocaleString()}
+                                                            Impact: {formatCurrency(getConvertedAmount(Math.abs(insight.financialImpact), currency), currency)}
                                                         </p>
                                                     )}
                                                 </div>

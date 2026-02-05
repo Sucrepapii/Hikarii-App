@@ -35,4 +35,5 @@ export interface TaskRecommendation {
   reason: string;
   urgencyScore: number; // 0-100
   financialContext: string;
+  estimatedCost?: number;
 }

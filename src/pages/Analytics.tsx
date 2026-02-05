@@ -26,7 +26,7 @@ import { IntelligenceService } from '../utils/intelligenceService';
 
 export const Analytics: React.FC = () => {
     const { tasks } = useTaskStore();
-    const { expenses, budgets } = useBudgetStore();
+    const { expenses, budgets, currency, getConvertedAmount } = useBudgetStore();
     const { user } = useAuthStore();
     const isPro = user?.subscriptionStatus === 'PRO';
     const [showUpgradeModal, setShowUpgradeModal] = useState(false);
@@ -55,8 +55,8 @@ export const Analytics: React.FC = () => {
 
         return {
             date: format(date, 'MMM dd'),
-            Income: useBudgetStore.getState().getConvertedAmount(dayIncome, useBudgetStore.getState().currency),
-            Expenses: useBudgetStore.getState().getConvertedAmount(dayExpenses, useBudgetStore.getState().currency)
+            Income: getConvertedAmount(dayIncome, currency),
+            Expenses: getConvertedAmount(dayExpenses, currency)
         };
     });
 
@@ -93,7 +93,7 @@ export const Analytics: React.FC = () => {
                         <h3 className="font-medium text-slate-600 dark:text-slate-400">Net Cash Flow (30d)</h3>
                     </div>
                     <p className="text-lg sm:text-xl md:text-2xl font-bold text-slate-800 dark:text-slate-200 break-all">
-                        {useBudgetStore.getState().currency}{(useBudgetStore.getState().getConvertedAmount(cashFlowData.reduce((acc, curr) => acc + curr.Income - curr.Expenses, 0), useBudgetStore.getState().currency)).toLocaleString()}
+                        {formatCurrency(cashFlowData.reduce((acc, curr) => acc + curr.Income - curr.Expenses, 0), currency)}
                     </p>
                 </Card>
 
@@ -163,7 +163,10 @@ export const Analytics: React.FC = () => {
                                         fontSize={12}
                                         tickLine={false}
                                         axisLine={false}
-                                        tickFormatter={(value) => `${useBudgetStore.getState().currency === 'NGN' ? '₦' : useBudgetStore.getState().currency === 'USD' ? '$' : useBudgetStore.getState().currency === 'GBP' ? '£' : '€'}${useBudgetStore.getState().getConvertedAmount(value, useBudgetStore.getState().currency) / 1000}k`}
+                                        tickFormatter={(value) => {
+                                            // Handle compact formatting for Y-axis
+                                            return value >= 1000 ? `${(value / 1000).toFixed(0)}k` : value.toString();
+                                        }}
                                     />
                                     <Tooltip
                                         contentStyle={{
@@ -173,7 +176,7 @@ export const Analytics: React.FC = () => {
                                             border: 'none'
                                         }}
                                         formatter={(value: number) => [
-                                            formatCurrency(useBudgetStore.getState().getConvertedAmount(value, useBudgetStore.getState().currency), useBudgetStore.getState().currency),
+                                            formatCurrency(value, currency),
                                             // Name is automatically handled by dataKey
                                         ]}
                                     />
