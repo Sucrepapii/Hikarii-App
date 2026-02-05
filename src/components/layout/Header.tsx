@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Moon, Sun, LogOut, User, Menu } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Moon, Sun, User, Menu } from 'lucide-react';
 import { Button } from '../common/Button';
 import { Logo } from '../common/Logo';
 import { useAuthStore } from '../../stores/authStore';
@@ -12,8 +11,7 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
     const [darkMode, setDarkMode] = useState(false);
-    const navigate = useNavigate();
-    const { user, logout } = useAuthStore();
+    const { user } = useAuthStore();
 
     useEffect(() => {
         const isDark = localStorage.getItem('darkMode') === 'true';
@@ -35,10 +33,7 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
         }
     };
 
-    const handleLogout = () => {
-        logout();
-        navigate('/');
-    };
+
 
     return (
         <header className="glass-card sticky top-0 z-40 mb-4 md:mb-8 animate-slide-down">
@@ -89,6 +84,33 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
                         </div>
                     )}
 
+                    {/* Subscription Status Badge */}
+                    {user && (
+                        <div className={`
+                            hidden sm:flex items-center justify-center px-3 py-1 rounded-full text-xs font-bold
+                            ${user.subscriptionStatus === 'PRO'
+                                ? 'bg-gradient-brand text-white shadow-sm'
+                                : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'}
+                        `}>
+                            {user.subscriptionStatus === 'PRO' ? 'PRO' : 'FREE'}
+                        </div>
+                    )}
+
+                    {/* Mobile Subscription Status - Icon Only or Abbreviated? User asked for "FREE" or "PRO" on smaller screens. 
+                        The header is already crowded on mobile.
+                        Let's try to fit it in.
+                     */}
+                    {user && (
+                        <div className={`
+                            sm:hidden flex items-center justify-center px-2 py-1 rounded-md text-[10px] font-bold
+                             ${user.subscriptionStatus === 'PRO'
+                                ? 'bg-gradient-brand text-white'
+                                : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'}
+                        `}>
+                            {user.subscriptionStatus === 'PRO' ? 'PRO' : 'FREE'}
+                        </div>
+                    )}
+
                     {/* Theme Toggle */}
                     <Button
                         variant="ghost"
@@ -105,18 +127,6 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
 
                     {/* Notification Bell */}
                     <NotificationBell />
-
-                    {/* Logout Button */}
-                    {user && (
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={handleLogout}
-                            className="rounded-full p-2.5 text-danger-500 hover:bg-danger-500/10"
-                        >
-                            <LogOut className="w-5 h-5" />
-                        </Button>
-                    )}
                 </div>
             </div>
         </header>

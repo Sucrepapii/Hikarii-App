@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Check, Zap, Link2, FileText, Split, ArrowRight, Menu, X } from 'lucide-react';
+import { Check, Zap, Link2, FileText, Split, ArrowRight, Menu, X, ChevronDown } from 'lucide-react';
 import { Button } from '../components/common/Button';
 import { Logo } from '../components/common/Logo';
 import { Footer } from '../components/layout/Footer';
@@ -388,6 +388,57 @@ export const LandingPage: React.FC = () => {
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* FAQ Section */}
+            <section className="py-24 relative overflow-hidden">
+                <div className="absolute inset-0 bg-slate-900 pointer-events-none" />
+                {/* Gradient Orb */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary-500/10 rounded-full blur-[120px] pointer-events-none" />
+
+                <div className="max-w-4xl mx-auto px-6 relative z-10">
+                    <div className="text-center mb-16">
+                        <h2 className="text-3xl md:text-5xl font-display font-bold text-white mb-6">
+                            Frequently Asked Questions
+                        </h2>
+                        <p className="text-lg text-slate-400 max-w-2xl mx-auto">
+                            Everything you need to know about Hikari and how it can organize your life.
+                        </p>
+                    </div>
+
+                    <div className="space-y-4">
+                        {[
+                            {
+                                q: "Is Hikari really free?",
+                                a: "Yes! Our core features including task management, basic budgeting, and calendar view are free forever. We believe in providing value first. Our Pro plan unlocks advanced AI insights and unlimited history."
+                            },
+                            {
+                                q: "How does the AI Smart Split work?",
+                                a: "Hikari uses advanced AI models to analyze your complex tasks (like 'Plan a wedding') and breaks them down into actionable sub-tasks automatically. It saves you the mental load of planning every detail."
+                            },
+                            {
+                                q: "Can I use Hikari for my business?",
+                                a: "Absolutely. Many freelancers and small business owners use Hikari to track client projects and expenses. The data export feature makes it easy to send reports to accountants."
+                            },
+                            {
+                                q: "Is my financial data safe?",
+                                a: "Security is our top priority. We use bank-grade encryption for all data transmission and storage. We never sell your data to third parties."
+                            }
+                        ].map((item, i) => (
+                            <div key={i} className="group bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 transition-all duration-300">
+                                <details className="p-6 cursor-pointer [&_svg]:open:rotate-180">
+                                    <summary className="flex items-center justify-between gap-4 font-semibold text-white text-lg list-none">
+                                        {item.q}
+                                        <ChevronDown className="w-5 h-5 text-slate-400 transition-transform duration-300" />
+                                    </summary>
+                                    <div className="mt-4 text-slate-400 leading-relaxed">
+                                        {item.a}
+                                    </div>
+                                </details>
+                            </div>
+                        ))}
                     </div>
                 </div>
             </section>

@@ -396,6 +396,87 @@ export const resetPassword = async (
   }
 };
 
+// Update Profile (Name only)
+export const updateProfile = async (
+  req: AuthRequest,
+  res: Response,
+): Promise<void> => {
+  try {
+    const { name } = req.body;
+
+    if (!name) {
+      res.status(400).json({ error: "Name is required" });
+      return;
+    }
+
+    const user = await prisma.user.update({
+      where: { id: req.userId },
+      data: { name },
+    });
+
+    res.json({
+      message: "Profile updated successfully",
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        createdAt: user.createdAt,
+        subscriptionStatus: user.subscriptionStatus,
+        stripeCustomerId: user.stripeCustomerId,
+        currentPeriodEnd: user.currentPeriodEnd,
+      },
+    });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Change Password
+export const changePassword = async (
+  req: AuthRequest,
+  res: Response,
+): Promise<void> => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+      res.status(400).json({ error: "Current and new password are required" });
+      return;
+    }
+
+    const user = await prisma.user.findUnique({ where: { id: req.userId } });
+
+    if (!user) {
+      res.status(404).json({ error: "User not found" });
+      return;
+    }
+
+    // Convert import to standard if needed, or stick to dynamic
+    const bcrypt = await import("bcryptjs");
+    const isMatch = await bcrypt.default.compare(
+      currentPassword,
+      user.password,
+    );
+
+    if (!isMatch) {
+      res.status(400).json({ error: "Incorrect current password" });
+      return;
+    }
+
+    const salt = await bcrypt.default.genSalt(10);
+    const hashedPassword = await bcrypt.default.hash(newPassword, salt);
+
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { password: hashedPassword },
+    });
+
+    res.json({ message: "Password updated successfully" });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 export const debugInfo = async (_req: any, res: Response) => {
   res.json({
     env: {

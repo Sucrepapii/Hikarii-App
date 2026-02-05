@@ -13,17 +13,35 @@ import { useGoogleLogin } from '@react-oauth/google';
 import { GoogleIcon } from '../components/icons/GoogleIcon';
 
 
-type TabId = 'data' | 'currency' | 'profile' | 'integrations';
+
+type TabId = 'data' | 'currency' | 'profile' | 'integrations' | 'support';
 
 export const Settings: React.FC = () => {
     const { tasks } = useTaskStore();
     const { expenses } = useBudgetStore();
-    const { user } = useAuthStore();
+    const { user, checkAuth } = useAuthStore(); // We need checkAuth to update user in store after profile update
     const [searchParams] = useSearchParams();
     const activeTab = (searchParams.get('tab') as TabId) || 'profile';
 
     const [isCanceling, setIsCanceling] = React.useState(false);
     const [isGoogleConnected, setIsGoogleConnected] = React.useState(false);
+
+    // Profile Edit State
+    const [isEditingName, setIsEditingName] = React.useState(false);
+    const [newName, setNewName] = React.useState(user?.name || '');
+    const [isUpdatingProfile, setIsUpdatingProfile] = React.useState(false);
+
+    // Password Change State
+    const [passwordData, setPasswordData] = React.useState({
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: ''
+    });
+    const [isChangingPassword, setIsChangingPassword] = React.useState(false);
+
+    React.useEffect(() => {
+        if (user?.name) setNewName(user.name);
+    }, [user]);
 
     // Check Google Status
     React.useEffect(() => {
@@ -75,6 +93,50 @@ export const Settings: React.FC = () => {
         }
     };
 
+    const handleUpdateProfile = async () => {
+        if (!newName.trim()) {
+            toast.error("Name cannot be empty");
+            return;
+        }
+        setIsUpdatingProfile(true);
+        try {
+            await apiClient.put('/auth/profile', { name: newName });
+            // Update local store
+            await checkAuth();
+            toast.success("Profile updated successfully");
+            setIsEditingName(false);
+        } catch (error: any) {
+            toast.error(error.response?.data?.error || "Failed to update profile");
+        } finally {
+            setIsUpdatingProfile(false);
+        }
+    };
+
+    const handleChangePassword = async () => {
+        if (passwordData.newPassword !== passwordData.confirmPassword) {
+            toast.error("New passwords do not match");
+            return;
+        }
+        if (passwordData.newPassword.length < 6) {
+            toast.error("Password must be at least 6 characters");
+            return;
+        }
+
+        setIsChangingPassword(true);
+        try {
+            await apiClient.put('/auth/password', {
+                currentPassword: passwordData.currentPassword,
+                newPassword: passwordData.newPassword
+            });
+            toast.success("Password changed successfully");
+            setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+        } catch (error: any) {
+            toast.error(error.response?.data?.error || "Failed to change password");
+        } finally {
+            setIsChangingPassword(false);
+        }
+    };
+
     return (
         <div className="animate-fade-in max-w-4xl mx-auto">
             <div className="mb-8">
@@ -111,9 +173,23 @@ export const Settings: React.FC = () => {
                                     <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
                                         Full Name
                                     </label>
-                                    <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400">
-                                        {user?.name}
-                                    </div>
+                                    {isEditingName ? (
+                                        <div className="flex gap-2">
+                                            <input
+                                                type="text"
+                                                value={newName}
+                                                onChange={(e) => setNewName(e.target.value)}
+                                                className="flex-1 p-2.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500"
+                                            />
+                                            <Button size="sm" onClick={handleUpdateProfile} isLoading={isUpdatingProfile}>Save</Button>
+                                            <Button size="sm" variant="secondary" onClick={() => setIsEditingName(false)}>Cancel</Button>
+                                        </div>
+                                    ) : (
+                                        <div className="flex justify-between items-center p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400">
+                                            <span>{user?.name}</span>
+                                            <button onClick={() => setIsEditingName(true)} className="text-xs text-primary-600 hover:underline">Edit</button>
+                                        </div>
+                                    )}
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
@@ -124,9 +200,52 @@ export const Settings: React.FC = () => {
                                     </div>
                                 </div>
                             </div>
+
+                            {/* Change Password Section */}
+                            <div className="mt-8 pt-8 border-t border-slate-200 dark:border-slate-700">
+                                <h3 className="text-lg font-medium text-slate-800 dark:text-slate-200 mb-4">Change Password</h3>
+                                <div className="space-y-4 max-w-md">
+                                    <div>
+                                        <label className="block text-sm text-slate-600 dark:text-slate-400 mb-1">Current Password</label>
+                                        <input
+                                            type="password"
+                                            value={passwordData.currentPassword}
+                                            onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
+                                            className="w-full p-2.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm text-slate-600 dark:text-slate-400 mb-1">New Password</label>
+                                        <input
+                                            type="password"
+                                            value={passwordData.newPassword}
+                                            onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
+                                            className="w-full p-2.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm text-slate-600 dark:text-slate-400 mb-1">Confirm New Password</label>
+                                        <input
+                                            type="password"
+                                            value={passwordData.confirmPassword}
+                                            onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
+                                            className="w-full p-2.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600"
+                                        />
+                                    </div>
+                                    <Button onClick={handleChangePassword} isLoading={isChangingPassword}>
+                                        Update Password
+                                    </Button>
+                                </div>
+                            </div>
                         </Card>
 
                         <Card>
+                            {/* ... Subscription ... */}
+                            {/* Re-using existing subscription code but I need to make sure I don't lose it. 
+                                The previous replace block for Settings.tsx showed the subscription logic. 
+                                I need to include it here or replace carefully.
+                                Since I am replacing the 'profile' block, I should output the subscription card content too.
+                            */}
                             <div className="flex items-center gap-4 mb-6">
                                 <div className="p-3 rounded-xl bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400">
                                     <CreditCard className="w-6 h-6" />
@@ -341,6 +460,41 @@ export const Settings: React.FC = () => {
                             )}
                         </div>
                     </Card>
+                )}
+
+                {/* Support Tab with FAQ */}
+                {activeTab === 'support' && (
+                    <div className="space-y-6">
+                        <Card>
+                            <h2 className="text-xl font-semibold mb-4 text-slate-800 dark:text-slate-200">Frequently Asked Questions</h2>
+                            <div className="space-y-4">
+                                <div className="border border-slate-200 dark:border-slate-700 rounded-xl p-4">
+                                    <h3 className="font-medium text-slate-800 dark:text-white">Is Hikari really free?</h3>
+                                    <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">Yes, the core features are free forever. Pro offers advanced AI and unlimited history.</p>
+                                </div>
+                                <div className="border border-slate-200 dark:border-slate-700 rounded-xl p-4">
+                                    <h3 className="font-medium text-slate-800 dark:text-white">How do I export my data?</h3>
+                                    <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">Go to the Data Management tab in settings to download CSV files.</p>
+                                </div>
+                                <div className="border border-slate-200 dark:border-slate-700 rounded-xl p-4">
+                                    <h3 className="font-medium text-slate-800 dark:text-white">Can I share my plan?</h3>
+                                    <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">Currently, plans are for individual users only.</p>
+                                </div>
+                            </div>
+                        </Card>
+
+                        <Card>
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-200">Need more help?</h2>
+                                    <p className="text-slate-500">Our support team is always ready to help you.</p>
+                                </div>
+                                <Button onClick={() => window.location.href = '/contact'} variant="primary">
+                                    Contact Us
+                                </Button>
+                            </div>
+                        </Card>
+                    </div>
                 )}
             </div>
         </div>

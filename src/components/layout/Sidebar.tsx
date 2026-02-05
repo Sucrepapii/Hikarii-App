@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { LayoutDashboard, CheckSquare, Wallet, X, Calendar, LineChart, Settings, RefreshCw, LogOut, ChevronDown, ChevronRight, User, Database, DollarSign, Link2 } from 'lucide-react';
+import { LayoutDashboard, CheckSquare, Wallet, X, Calendar, LineChart, Settings, RefreshCw, LogOut, ChevronDown, ChevronRight, User, Database, DollarSign, Link2, HelpCircle } from 'lucide-react';
 import { clsx } from 'clsx';
 import { useAuthStore } from '../../stores/authStore';
 import toast from 'react-hot-toast';
@@ -21,6 +21,7 @@ const navItems = [
             { to: '/settings?tab=data', icon: Database, label: 'Data Management' },
             { to: '/settings?tab=currency', icon: DollarSign, label: 'Currency' },
             { to: '/settings?tab=integrations', icon: Link2, label: 'Integrations' },
+            { to: '/settings?tab=support', icon: HelpCircle, label: 'Support & FAQ' },
         ]
     },
 ];
