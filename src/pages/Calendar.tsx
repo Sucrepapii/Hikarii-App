@@ -128,7 +128,7 @@ export const Calendar: React.FC = () => {
 
             <Card className="p-0 overflow-hidden">
                 <div className="overflow-x-auto">
-                    <div className="min-w-[800px]">
+                    <div className="min-w-0">
                         {/* Weekday Header */}
                         <div className="grid grid-cols-7 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
                             {weekDays.map(d => (

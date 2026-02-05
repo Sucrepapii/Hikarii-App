@@ -261,11 +261,11 @@ export const Settings: React.FC = () => {
                                 <div className="ml-auto">
                                     {user?.subscriptionStatus === 'PRO' ? (
                                         <span className="px-3 py-1 rounded-full text-xs font-bold bg-gradient-brand text-white shadow-sm">
-                                            PRO MEMBER
+                                            PRO
                                         </span>
                                     ) : (
                                         <span className="px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300">
-                                            FREE PLAN
+                                            FREE
                                         </span>
                                     )}
                                 </div>

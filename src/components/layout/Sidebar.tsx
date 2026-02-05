@@ -62,16 +62,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                                     to={item.to}
                                     end={item.to === '/'}
                                     onClick={() => {
-                                        if (hasSubItems) {
-                                            // Depending on UX preference, clicking the parent could either
-                                            // 1. Navigate to parent AND toggle expand (if we want the parent to be a page)
-                                            // 2. Just toggle expand (if parent is just a folder)
-                                            // Here, Settings IS a page, but better UX might be just expanding subitems if clicked on the arrow, or always navigating.
-                                            // Let's navigate normally, but the arrow toggles.
-                                            if (onClose && !hasSubItems) onClose();
-                                        } else {
-                                            if (onClose) onClose();
-                                        }
+                                        if (onClose) onClose();
                                     }}
                                     className={({ isActive: isLinkActive }) =>
                                         clsx(
