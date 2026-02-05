@@ -45,7 +45,7 @@ export const getInsights = async (
         type: "CASH_FLOW_ALERT",
         priority: "CRITICAL",
         title: "Low Cash Flow Alert",
-        message: `Only ₦${availableFunds.toLocaleString()} remaining in budgets. ${
+        message: `Only NGN ${availableFunds.toLocaleString()} remaining in budgets. ${
           incomeTasks.length > 0
             ? `Prioritize ${incomeTasks.length} income task(s).`
             : "Consider adding income tasks."
@@ -80,7 +80,7 @@ export const getInsights = async (
         type: "BUDGET_WARNING",
         priority: "HIGH",
         title: "Budget Conflict Detected",
-        message: `Pending expense tasks (₦${pendingExpenses.toLocaleString()}) exceed available budget (₦${availableFunds.toLocaleString()}). Shortfall: ₦${deficit.toLocaleString()}`,
+        message: `Pending expense tasks (NGN ${pendingExpenses.toLocaleString()}) exceed available budget (NGN ${availableFunds.toLocaleString()}). Shortfall: NGN ${deficit.toLocaleString()}`,
         actionable: true,
         suggestedAction:
           "Postpone low-priority expense tasks or increase budget",
@@ -111,7 +111,7 @@ export const getInsights = async (
             type: "BUDGET_WARNING",
             priority: "CRITICAL",
             title: `Late Fee Accruing: ${task.title}`,
-            message: `Task is ${daysLate} day(s) overdue. Accrued fees: ₦${accruedFees.toLocaleString()}`,
+            message: `Task is ${daysLate} day(s) overdue. Accrued fees: NGN ${accruedFees.toLocaleString()}`,
             actionable: true,
             taskId: task.id,
             suggestedAction: "Complete this task immediately",
@@ -138,7 +138,7 @@ export const getInsights = async (
           type: "SUBSCRIPTION_ALERT",
           priority: "MEDIUM",
           title: `Unused Subscription: ${sub.merchantName}`,
-          message: `You haven't engaged with this ${sub.frequency} subscription in over 60 days. Costs: ₦${sub.amount.toLocaleString()}/cycle.`,
+          message: `You haven't engaged with this ${sub.frequency} subscription in over 60 days. Costs: NGN ${sub.amount.toLocaleString()}/cycle.`,
           actionable: true,
           suggestedAction: "Cancel Subscription",
           financialImpact: sub.amount,
@@ -181,7 +181,7 @@ export const getInsights = async (
           type: "PROJECT_RISK",
           priority: "HIGH",
           title: `Project Delay: ${project.title}`,
-          message: `${overdueTasks.length} tasks are overdue. Estimated cost of delay: ₦${potentialLoss.toLocaleString()}`,
+          message: `${overdueTasks.length} tasks are overdue. Estimated cost of delay: NGN ${potentialLoss.toLocaleString()}`,
           actionable: true,
           suggestedAction: "Reschedule or fast-track tasks",
           financialImpact: -potentialLoss,
@@ -208,7 +208,7 @@ export const getInsights = async (
         priority: "LOW",
         title: "Optimize Phone Bill",
         message:
-          "You spent over ₦50,000 on phone bills recently. Switching carriers could save you ~₦15,000/year.",
+          "You spent over NGN 50,000 on phone bills recently. Switching carriers could save you ~NGN 15,000/year.",
         actionable: true,
         suggestedAction: "Compare Data Plans",
         financialImpact: 15000,

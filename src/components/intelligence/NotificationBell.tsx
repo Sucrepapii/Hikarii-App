@@ -48,6 +48,15 @@ export const NotificationBell: React.FC = () => {
     const { currency, getConvertedAmount } = useBudgetStore();
     const isPro = user?.subscriptionStatus === 'PRO';
 
+    const formatInsightMessage = (message: string) => {
+        // Regex to find "NGN 1,000" or similar
+        return message.replace(/NGN\s?([\d,.]+)/g, (match, amountStr) => {
+            const amount = parseFloat(amountStr.replace(/,/g, ''));
+            if (isNaN(amount)) return match;
+            return formatCurrency(getConvertedAmount(amount, 'NGN'), currency);
+        });
+    };
+
     // Filter insights based on subscription:
     // Smart Insights (TASK_RECOMMENDATION) are Pro-only
     const visibleInsights = insights.filter(insight => {
@@ -209,7 +218,7 @@ export const NotificationBell: React.FC = () => {
                                                         {insight.title}
                                                     </h4>
                                                     <p className={clsx("text-xs leading-relaxed", styles.text)}>
-                                                        {insight.message}
+                                                        {formatInsightMessage(insight.message)}
                                                     </p>
                                                     {insight.suggestedAction && (
                                                         <p className="text-xs mt-2 font-medium text-slate-700 dark:text-slate-300 bg-white/50 dark:bg-slate-800/50 rounded-lg px-2 py-1">

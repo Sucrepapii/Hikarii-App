@@ -65,6 +65,7 @@ export class IntelligenceService {
           reason: this.getUrgencyReason(task, budgets),
           urgencyScore,
           financialContext: this.getFinancialContext(task, budgets),
+          estimatedCost: task.financials?.estimatedCost || 0,
         });
       }
     });

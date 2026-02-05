@@ -2,8 +2,9 @@ import React from "react";
 import { TaskRecommendation } from "../../types/intelligence.types";
 import { useTaskStore } from "../../stores/taskStore";
 import { Card } from "../common/Card";
-import { DollarSign } from "lucide-react";
 import { clsx } from "clsx";
+import { useBudgetStore } from "../../stores/budgetStore";
+import { formatCurrency } from "../../utils/currencyFormatter";
 
 interface TaskRecommendationCardProps {
     recommendation: TaskRecommendation;
@@ -15,6 +16,7 @@ export const TaskRecommendationCard: React.FC<TaskRecommendationCardProps> = ({
     onTaskClick,
 }) => {
     const task = useTaskStore((state) => state.getTaskById(recommendation.taskId));
+    const { currency, getConvertedAmount } = useBudgetStore();
 
     if (!task) return null;
 
@@ -74,10 +76,13 @@ export const TaskRecommendationCard: React.FC<TaskRecommendationCardProps> = ({
                 </div>
 
                 {/* Financial Context */}
-                {recommendation.financialContext && (
+                {recommendation.estimatedCost ? (
                     <div className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 rounded-lg px-3 py-2">
-                        <DollarSign className="w-3.5 h-3.5" />
-                        <span>{recommendation.financialContext}</span>
+                        <span>💰 Cost: {formatCurrency(getConvertedAmount(recommendation.estimatedCost, currency), currency)}</span>
+                    </div>
+                ) : recommendation.financialContext && (
+                    <div className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 rounded-lg px-3 py-2">
+                        <span>💰 {recommendation.financialContext}</span>
                     </div>
                 )}
             </div>
