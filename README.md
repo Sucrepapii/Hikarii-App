@@ -2,188 +2,124 @@
 
 **Hikari** is a premium, productivity-focused web application designed to bring light and clarity to your tasks and finances. It combines a robust task tracker with an intuitive budget manager, powered by intelligent insights to help you stay on top of your game.
 
-![Hikari Logo](public/logo.png)
+![Hikari Dashboard Preview](public/hero_dashboard_v2.png)
+
+---
 
 ## 💡 Why Hikari Stands Out
 
 Hikari isn't just another budget tracker. It is built for **Project-Centric Users** who need clarity on specific goals—whether it's a home renovation, a wedding, or a startup launch.
 
-### 1. Project-Centric Focus
+### 🎯 1. Project-Centric Focus
 
 Manage specific goals with dedicated timelines and budgets. No more mixing your "Vacation Fund" with your "Groceries".
 
-### 2. Visual Clarity
+### ✨ 2. Visual Clarity
 
 A "Light & Clarity" theme that goes beyond aesthetics. Accessible color coding, motivational progress visualization, and a dashboard designed to show status at a glance.
 
-### 3. Smart Defaults & Customization
+### 🤖 3. Intelligence & Actionable Insights
 
-Intelligent auto-categorization that learns from you. One-click fixes for uncategorized items and flexible rules that adapt to your workflow.
+We don't just say "Spend less". Hikari gives you proactive, AI-driven guidance.
 
-### 4. Actionable Insights
-
-We simply don't say "Spend less". Hikari tells you:
-
-- _"Cancel this subscription you haven't used in 60 days"_
-- _"This task is overdue and has cost $X in delays"_
-- _"Switch phone carriers to save $240/year based on usage"_
+|                     **Financial Intelligence**                     |                      **Smart Task Management**                       |
+| :----------------------------------------------------------------: | :------------------------------------------------------------------: |
+|            ![Budget Control](public/feature_budget.png)            |        ![AI Task Splitting](public/feature_intelligence.png)         |
+| **"Switch phone carriers to save NGN 15,000/year based on usage"** | **"Split this complex task into smaller, manageable steps with AI"** |
 
 ---
 
-## 🌟 Features
+## 🌟 Key Features
 
 ### 📝 Task Management
 
-- **Task Organization**: Create, edit, and delete tasks with ease.
-- **Categorization**: Group tasks by category (Work, Personal, Health, etc.).
-- **Prioritization**: Set priority levels (High, Medium, Low) and due dates.
-- **Status Tracking**: Track progress with To Do, In Progress, and Completed statuses.
-- **Overdue Alerts**: Automated visual and email indicators for overdue items.
+- **Smart AI Split**: Automatically decompose complex tasks into sub-tasks using Google Gemini AI.
+- **Visual Organization**: Categorize (Work, Personal, etc.) and prioritize (High to Low).
+- **Interactive Status**: Track progress with To-Do, In Progress, and Completed states.
+- **Overdue Alerts**: Stay on track with automated visual indicators and email nudges.
 
 ### 💰 Financial Integration
 
-- **Smart Budgeting**: Set monthly, weekly, or daily budget limits.
-- **Task-Expense Linking**: Connect expenses to tasks to track project-specific costs (e.g., "Office Renovation").
-- **Multi-Currency Support**: Switch between NGN, USD, GBP, and EUR with automatic conversion.
+- **Smart Budgeting**: Set categorical limits (Monthly, Weekly, or Daily).
+- **Multi-Currency Support**: Switch between **NGN, USD, GBP, and EUR** with real-time conversion.
+- **Task-Expense Linking**: Attach costs directly to tasks for precise project tracking.
 - **Visual Analytics**: Interactive charts showing spending vs. budget in real-time.
-- **Filtered Views**: Drill down into financial history by month and year.
-
-### 🧠 Intelligence & Insights
-
-- **Smart Recommendations**: Get AI-driven suggestions on what to tackle next based on priority and deadlines.
-- **Predictive Spending**: Forecast end-of-month spending based on current habits.
-- **Pattern Recognition**: Detect recurring expenses like subscriptions automatically.
-- **Financial Health**: Automated assessment of your spending habits.
-- **Notifications**: System-wide alerts for budget thresholds and upcoming deadlines.
 
 ### 🔒 Security & Accounts
 
-- **Secure Authentication**: JWT-based auth with secure cookies/headers.
-- **Email Verification**: OTP-based email verification for new accounts.
-- **Password Recovery**: Secure "Forgot Password" flow with email codes.
-- **Data Privacy**: Individual data isolation for every user.
+- **Secure Authentication**: JWT-based auth with secure credential handling.
+- **Stripe Integration**: Professional subscription management with **14-day free trials** and Monthly/Yearly options.
+- **Profile Customization**: Manage your name, password, and subscription tier with ease.
+
+---
 
 ## 🛠️ Tech Stack
 
-**Frontend**
+### Frontend
 
-- **Framework**: React 18 (Vite)
-- **Language**: TypeScript
+- **Framework**: React 18 (Vite) / TypeScript
 - **Styling**: Tailwind CSS (Custom "Hikari" Design System)
-- **State Management**: Zustand
-- **Icons**: Lucide React
-- **HTTP Client**: Axios
+- **State**: Zustand
+- **Icons**: Lucide React / Recharts
 
-**Backend**
+### Backend
 
-- **Runtime**: Node.js & Express
-- **Language**: TypeScript
-- **Database ORM**: Prisma
-- **Database**: MongoDB (via Prisma)
-- **Authentication**: JsonWebToken (JWT) & Bcrypt
-- **Email Service**: Resend
+- **Runtime**: Node.js & Express / TypeScript
+- **Database**: MongoDB (via Prisma ORM)
+- **AI Engine**: Google Gemini API
+- **Payments**: Stripe CLI / API
+- **Email**: Resend
+
+---
 
 ## 🚀 Getting Started
 
-Follow these steps to set up the project locally.
-
 ### Prerequisites
 
-- Node.js (v18 or higher)
-- MongoDB (Local or Atlas URI)
+- Node.js (v18+)
+- MongoDB (Local or Atlas)
 - npm or yarn
 
 ### Installation
 
-1.  **Clone the repository:**
+1. **Clone & Install**:
 
-    ```bash
-    git clone https://github.com/yourusername/hikari.git
-    cd hikari
-    ```
+   ```bash
+   git clone https://github.com/yourusername/hikari.git
+   cd hikari
+   npm install && cd server && npm install && cd ..
+   ```
 
-2.  **Install Dependencies:**
+2. **Environment Setup**:
+   Create a `.env` in the `server/` directory:
 
-    ```bash
-    npm install
-    cd server
-    npm install
-    cd ..
-    ```
+   ```env
+   PORT=5000
+   DATABASE_URL="mongodb://localhost:27017/hikari"
+   JWT_SECRET="your_secret"
+   RESEND_API_KEY="re_..."
+   STRIPE_SECRET_KEY="sk_..."
+   GEMINI_API_KEY="AIza..."
+   ```
 
-3.  **Environment Configuration:**
-    Create a `.env` file in the `server` directory (see [Environment Variables](#environment-variables)).
+3. **Database Refresh**:
 
-4.  **Database Setup:**
-    Initialize the Prisma client and push the schema to your database.
-    ```bash
-    # From the root directory
-    npm run db:push
-    ```
+   ```bash
+   npm run db:push
+   ```
 
-### Running the App
+4. **Run Development**:
+   ```bash
+   npm run dev
+   ```
 
-We support a **Monolith** development mode where both frontend and backend run concurrently.
-
-```bash
-# From the root directory
-npm run dev
-```
-
-- **Frontend**: http://localhost:5173
-- **Backend API**: http://localhost:5000
-
-## ⚙️ Environment Variables
-
-Create a file named `.env` in the `server/` directory:
-
-```env
-# Server Configuration
-PORT=5000
-NODE_ENV=development
-
-# Database
-DATABASE_URL="mongodb://localhost:27017/hikari"
-
-# Authentication
-JWT_SECRET="your_highly_secure_secret_key_here"
-JWT_EXPIRES_IN="7d"
-
-# Client URL (for CORS)
-CLIENT_URL="http://localhost:5173,http://localhost:5174"
-
-# Email Service (Resend)
-RESEND_API_KEY="re_123456789..."
-```
-
-## 📦 Project Structure
-
-```
-hikari/
-├── src/                  # Frontend Source
-│   ├── components/       # Reusable UI components
-│   ├── pages/            # Route pages (Login, Dashboard, etc.)
-│   ├── stores/           # Zustand state stores
-│   ├── types/            # TypeScript definitions
-│   └── utils/            # Helper functions
-├── server/               # Backend Source
-│   ├── src/
-│   │   ├── controllers/  # API Logic
-│   │   ├── models/       # Database Models (Prisma)
-│   │   ├── routes/       # API Endpoints
-│   │   ├── services/     # External Services (Email)
-│   │   └── utils/        # Backend Helpers
-│   └── prisma/           # Database Schema
-└── public/               # Static Assets (Logo, Favicon)
-```
+---
 
 ## 🤝 Contributing
 
-1.  Fork the repository.
-2.  Create a feature branch (`git checkout -b feature/AmazingFeature`).
-3.  Commit your changes (`git commit -m 'Add some AmazingFeature'`).
-4.  Push to the branch (`git push origin feature/AmazingFeature`).
-5.  Open a Pull Request.
+1. Fork the repository.
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`).
+3. Commit and push.
 
 ## 📄 License
 
