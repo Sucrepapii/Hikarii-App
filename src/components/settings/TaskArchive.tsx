@@ -1,13 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTaskStore } from '../../stores/taskStore';
 import { Card } from '../common/Card';
 import { Archive, RotateCcw, Trash2, Search } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { format } from 'date-fns';
+import { ConfirmModal } from '../common/ConfirmModal';
 
 export const TaskArchive: React.FC = () => {
     const { tasks, unarchiveTask, deleteTask } = useTaskStore();
-    const [searchTerm, setSearchTerm] = React.useState('');
+    const [searchTerm, setSearchTerm] = useState('');
+    const [deleteId, setDeleteId] = useState<string | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     const archivedTasks = tasks.filter(task =>
         task.status === 'COMPLETED' &&
@@ -24,13 +27,21 @@ export const TaskArchive: React.FC = () => {
         }
     };
 
-    const handleDelete = async (id: string) => {
-        if (!confirm('Are you sure you want to permanently delete this archived task?')) return;
+    const handleDeleteClick = (id: string) => {
+        setDeleteId(id);
+    };
+
+    const handleConfirmDelete = async () => {
+        if (!deleteId) return;
+        setIsDeleting(true);
         try {
-            await deleteTask(id);
+            await deleteTask(deleteId);
             toast.success('Task permanently deleted');
+            setDeleteId(null);
         } catch (error) {
             toast.error('Failed to delete task');
+        } finally {
+            setIsDeleting(false);
         }
     };
 
@@ -103,7 +114,7 @@ export const TaskArchive: React.FC = () => {
                                     <RotateCcw className="w-4 h-4" />
                                 </button>
                                 <button
-                                    onClick={() => handleDelete(task.id)}
+                                    onClick={() => handleDeleteClick(task.id)}
                                     className="p-2 rounded-lg text-slate-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
                                     title="Delete Permanently"
                                 >
@@ -114,6 +125,17 @@ export const TaskArchive: React.FC = () => {
                     ))}
                 </div>
             )}
+
+            <ConfirmModal
+                isOpen={!!deleteId}
+                onClose={() => !isDeleting && setDeleteId(null)}
+                onConfirm={handleConfirmDelete}
+                title="Permanently Delete Task"
+                message="This action cannot be undone. You will lose this task data forever. Are you sure?"
+                confirmText="Yes, Delete Permanently"
+                variant="danger"
+                isLoading={isDeleting}
+            />
         </Card>
     );
 };

@@ -13,6 +13,7 @@ import { useGoogleLogin } from '@react-oauth/google';
 import { GoogleIcon } from '../components/icons/GoogleIcon';
 import { TaskArchive } from '../components/settings/TaskArchive';
 import { ProjectArchive } from '../components/settings/ProjectArchive';
+import { ConfirmModal } from '../components/common/ConfirmModal';
 
 
 
@@ -80,13 +81,15 @@ export const Settings: React.FC = () => {
         }
     }
 
-    const handleCancelSubscription = async () => {
-        if (!confirm("Are you sure you want to cancel your Pro subscription? You will lose access to premium features at the end of your billing period.")) return;
+    const [showCancelModal, setShowCancelModal] = React.useState(false);
 
+    const handleCancelSubscription = async () => {
+        setShowCancelModal(false);
         setIsCanceling(true);
         try {
             await apiClient.post('/stripe/cancel-subscription');
             toast.success("Subscription cancelled. Access remains until period end.");
+            await checkAuth(); // Refresh user state
         } catch (error) {
             toast.error("Failed to cancel subscription. Please try again.");
             console.error(error);
@@ -287,7 +290,7 @@ export const Settings: React.FC = () => {
                                             </div>
                                             <Button
                                                 variant="danger"
-                                                onClick={handleCancelSubscription}
+                                                onClick={() => setShowCancelModal(true)}
                                                 isLoading={isCanceling}
                                             >
                                                 Cancel Subscription
@@ -311,6 +314,17 @@ export const Settings: React.FC = () => {
                                     </div>
                                 )}
                             </div>
+
+                            <ConfirmModal
+                                isOpen={showCancelModal}
+                                onClose={() => !isCanceling && setShowCancelModal(false)}
+                                onConfirm={handleCancelSubscription}
+                                title="Cancel Pro Subscription"
+                                message="Are you sure you want to cancel your Pro subscription? You will lose access to premium features (AI insights, unlimited projects) at the end of your billing period."
+                                confirmText="Yes, Cancel Subscription"
+                                variant="danger"
+                                isLoading={isCanceling}
+                            />
                         </Card>
                     </>
                 )}
