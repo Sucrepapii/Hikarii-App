@@ -46,13 +46,15 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     const location = useLocation();
     const [expandedItem, setExpandedItem] = useState<string | null>('/settings');
 
-    let displayNavItems = [...navItems];
+    let displayNavItems;
     if (user?.role === 'ADMIN') {
-        displayNavItems.push(
+        displayNavItems = [
             { to: '/admin', icon: Shield, label: 'Admin Overview', end: true },
             { to: '/admin/users', icon: User, label: 'Manage Accounts' },
             { to: '/admin/reports', icon: FileText, label: 'Full Report' },
-        );
+        ];
+    } else {
+        displayNavItems = [...navItems];
     }
 
     const handleLogout = () => {

@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { FAQ } from './pages/FAQ';
 import { Toaster } from 'react-hot-toast';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
@@ -41,6 +42,12 @@ function App() {
     const isAuthenticated = useAuthStore((state) => !!state.token);
     const logout = useAuthStore((state) => state.logout);
     const { activeSplitTaskId, closeSplitModal, tasks } = useTaskStore();
+
+    const checkAuth = useAuthStore((state) => state.checkAuth);
+
+    useEffect(() => {
+        checkAuth();
+    }, [checkAuth]);
 
     // Auto-logout after 20 minutes (20 * 60 * 1000 = 1200000ms)
     useInactivity(20 * 60 * 1000, () => {
