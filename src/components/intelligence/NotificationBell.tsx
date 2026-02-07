@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useIntelligenceStore } from "../../stores/intelligenceStore";
-import { Bell, X, AlertTriangle, Lightbulb, TrendingUp, CreditCard, Calendar, DollarSign } from "lucide-react";
+import { Bell, X, AlertTriangle, Lightbulb, TrendingUp, CreditCard, Calendar, DollarSign, Shield } from "lucide-react";
 import { InsightType, InsightPriority } from "../../types/intelligence.types";
 import { clsx } from "clsx";
 import { useAuthStore } from "../../stores/authStore";
@@ -15,6 +15,7 @@ const insightIcons = {
     [InsightType.SUBSCRIPTION_ALERT]: CreditCard,
     [InsightType.PROJECT_RISK]: Calendar,
     [InsightType.SPENDING_OPT]: DollarSign,
+    [InsightType.SYSTEM_UPDATE]: Shield,
 };
 
 const priorityStyles = {
@@ -47,6 +48,7 @@ export const NotificationBell: React.FC = () => {
     const { user } = useAuthStore();
     const { currency, getConvertedAmount } = useBudgetStore();
     const isPro = user?.subscriptionStatus === 'PRO';
+    const isAdmin = user?.role === 'ADMIN';
 
     const formatInsightMessage = (message: string) => {
         // Regex to find "NGN 1,000" or similar
@@ -57,10 +59,25 @@ export const NotificationBell: React.FC = () => {
         });
     };
 
-    // Filter insights based on subscription:
-    // Smart Insights (TASK_RECOMMENDATION) are Pro-only
+    // Filter insights based on subscription and role:
     const visibleInsights = insights.filter(insight => {
-        // If it's a Smart Insight (task recommendation), only show for Pro users
+        // Admins should not see personal financial insights
+        if (isAdmin) {
+            const personalTypes = [
+                InsightType.CASH_FLOW_ALERT,
+                InsightType.BUDGET_WARNING,
+                InsightType.SPENDING_OPT,
+                InsightType.POSTPONE_SUGGESTION
+            ];
+            // Exclude personal types for admins
+            if (personalTypes.includes(insight.type)) return false;
+
+            // For now, allow other types or upcoming system updates
+            return true;
+        }
+
+        // For regular users:
+        // Smart Insights (TASK_RECOMMENDATION) are Pro-only
         if (insight.type === InsightType.TASK_RECOMMENDATION) {
             return isPro;
         }
@@ -68,7 +85,8 @@ export const NotificationBell: React.FC = () => {
         return true;
     });
 
-    const activeRecommendations = isPro ? recommendations : [];
+    // Recommendations are personal task suggestions, hide for admins
+    const activeRecommendations = (isPro && !isAdmin) ? recommendations : [];
 
     // Close dropdown when clicking outside
     useEffect(() => {
@@ -112,7 +130,7 @@ export const NotificationBell: React.FC = () => {
                         ? "bg-primary-500/10 hover:bg-primary-500/20 text-primary-600 dark:text-primary-400"
                         : "bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-400"
                 )}
-                title={`${unreadCount} notification${unreadCount !== 1 ? "s" : ""}`}
+                title={`${unreadCount} ${isAdmin ? "update" : "notification"}${unreadCount !== 1 ? "s" : ""}`}
             >
                 <Bell className={clsx("w-5 h-5", unreadCount > 0 && "animate-pulse")} />
 
@@ -139,7 +157,7 @@ export const NotificationBell: React.FC = () => {
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
                                 <h3 className="font-semibold text-slate-900 dark:text-slate-100">
-                                    Notifications
+                                    {isAdmin ? "Updates" : "Notifications"}
                                 </h3>
                                 <span className="text-xs px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
                                     {unreadCount}
@@ -183,7 +201,7 @@ export const NotificationBell: React.FC = () => {
                                                         rec.urgencyScore >= 60 ? priorityStyles[InsightPriority.HIGH].text :
                                                             priorityStyles[InsightPriority.MEDIUM].text
                                                 )}>
-                                                    Recommendation
+                                                    {isAdmin ? "Suggested Update" : "Recommendation"}
                                                 </h4>
                                                 <p className="text-xs leading-relaxed text-slate-700 dark:text-slate-300">
                                                     {rec.reason}
@@ -247,10 +265,10 @@ export const NotificationBell: React.FC = () => {
                             <div className="text-center py-12">
                                 <Bell className="w-12 h-12 mx-auto mb-3 text-slate-400" />
                                 <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                                    All Clear! 🎉
+                                    {isAdmin ? "Up to Date! 🚀" : "All Clear! 🎉"}
                                 </h3>
                                 <p className="text-xs text-slate-500 dark:text-slate-400">
-                                    No alerts or warnings at the moment
+                                    {isAdmin ? "No system updates at the moment" : "No alerts or warnings at the moment"}
                                 </p>
                             </div>
                         )}

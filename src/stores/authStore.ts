@@ -6,6 +6,7 @@ export interface User {
   name: string;
   email: string;
   createdAt: string;
+  role: "USER" | "ADMIN";
   subscriptionStatus?: "FREE" | "PRO" | "TRIAL";
   stripeCustomerId?: string;
   currentPeriodEnd?: string | Date; // Or just string if serialised
