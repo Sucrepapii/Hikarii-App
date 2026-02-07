@@ -4,9 +4,9 @@
   "description": "Backend API server for Hikaritask and budget app",
   "main": "dist/server.js",
   "scripts": {
-    "dev": "nodemon src/server.ts",
+    "dev": "nodemon src/app.ts",
     "build": "tsc",
-    "start": "node dist/server.js",
+    "start": "node dist/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [

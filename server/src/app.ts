@@ -29,9 +29,8 @@ app.get("/api/ai/test", (req, res) => {
 
 // Routes
 app.use("/api/auth", authRoutes);
-app.use("/api/admin", adminRoutes); // Admin Routes
+app.use("/api/admin", adminRoutes);
 app.use("/api/contact", contactRoutes);
-app.use("/api/tasks", taskRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/projects", projectRoutes);
 app.use("/api", budgetRoutes); // Mounts /budgets and /expenses
@@ -40,7 +39,6 @@ app.use("/api/predictive", predictiveRoutes);
 app.use("/api/patterns", patternRoutes);
 app.use("/api/stripe", stripeRoutes);
 app.use("/api/google", googleRoutes);
-app.use("/api/admin", adminRoutes);
 
 // Health check
 app.get("/health", (req, res) => {
@@ -71,11 +69,8 @@ if (fs.existsSync(clientBuildPath)) {
 }
 
 const PORT = process.env.PORT || 5000;
-
-// Export for server.ts (if separated) or listen directly if main entry
-// based on package.json build script, this file is the entry point.
-
 const PORT_NUM = Number(PORT) || 5000;
+
 app.listen(PORT_NUM, "0.0.0.0", () => {
   // Check if we need to start cron jobs
   if (process.env.NODE_ENV === "production" && !process.env.VERCEL) {
