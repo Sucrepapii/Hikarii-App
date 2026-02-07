@@ -202,7 +202,9 @@ enum ExpenseCategory {
   UTILITIES
   SHOPPING
   HEALTH
-
+  TUITION
+  BOOKS
+  GROCERIES
   OTHER
 }
 

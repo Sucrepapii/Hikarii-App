@@ -48,12 +48,21 @@ export const Budget: React.FC = () => {
         setEditingExpense(null);
     };
 
+    const [isSaving, setIsSaving] = useState(false);
     const [expenseToDelete, setExpenseToDelete] = useState<string | null>(null);
     const [budgetToDelete, setBudgetToDelete] = useState<string | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
 
-    const handleSetBudget = (category: ExpenseCategory, limit: number, period: BudgetPeriod) => {
-        setBudget(category, limit, period);
+    const handleSetBudget = async (category: ExpenseCategory, limit: number, period: BudgetPeriod) => {
+        setIsSaving(true);
+        try {
+            await setBudget(category, limit, period);
+            toast.success(`${category} budget updated`, { id: `budget-${category}` });
+        } catch (error) {
+            toast.error(`Failed to update ${category} budget`);
+        } finally {
+            setIsSaving(false);
+        }
     };
 
     const handleDeleteBudgetClick = (budgetIds: string) => {
@@ -308,9 +317,16 @@ export const Budget: React.FC = () => {
                 title="Set Budget Limits"
             >
                 <div className="space-y-4">
-                    <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
-                        Set monthly budget limits for each category
-                    </p>
+                    <div className="flex items-center justify-between mb-4">
+                        <p className="text-sm text-slate-600 dark:text-slate-400">
+                            Set monthly budget limits for each category
+                        </p>
+                        {isSaving && (
+                            <span className="text-xs text-primary-500 animate-pulse font-medium">
+                                Saving changes...
+                            </span>
+                        )}
+                    </div>
                     {Object.values(ExpenseCategory).map((category) => {
                         const existingBudget = budgets.find(b => b.category === category);
                         return (
@@ -385,10 +401,14 @@ export const Budget: React.FC = () => {
 
                     <Button
                         variant="primary"
-                        onClick={() => setIsBudgetModalOpen(false)}
+                        onClick={() => {
+                            setIsBudgetModalOpen(false);
+                            toast.success('All budget settings applied');
+                        }}
                         className="w-full mt-4"
+                        disabled={isSaving}
                     >
-                        Save Budgets
+                        {isSaving ? 'Synchronizing...' : 'Close & Apply'}
                     </Button>
                 </div>
             </Modal>
