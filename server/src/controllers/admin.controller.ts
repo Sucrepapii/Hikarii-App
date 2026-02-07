@@ -140,3 +140,47 @@ export const updateUser = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Failed to update user" });
   }
 };
+export const deleteUser = async (req: Request, res: Response) => {
+  try {
+    const adminId = (req as any).userId;
+    const { id } = req.params;
+
+    // Verify Admin Access
+    const requestor = await prisma.user.findUnique({
+      where: { id: adminId },
+      select: { role: true },
+    });
+
+    if (!requestor || requestor.role !== "ADMIN") {
+      return res.status(403).json({ message: "Access Denied: Admin only" });
+    }
+
+    // Check if user exists
+    const targetUser = await prisma.user.findUnique({
+      where: { id },
+    });
+
+    if (!targetUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Admins cannot delete themselves via this endpoint (prevent lockout)
+    if (targetUser.id === adminId) {
+      return res
+        .status(400)
+        .json({ message: "Admins cannot delete their own account" });
+    }
+
+    // Delete user (Prisma onDelete: Cascade will handle linked records)
+    await prisma.user.delete({
+      where: { id },
+    });
+
+    res.json({
+      message: "User and all associated data deleted successfully",
+    });
+  } catch (error) {
+    console.error("Delete User Error:", error);
+    res.status(500).json({ message: "Failed to delete user" });
+  }
+};

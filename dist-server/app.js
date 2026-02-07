@@ -2523,11 +2523,43 @@ var updateUser = async (req, res) => {
     res.status(500).json({ message: "Failed to update user" });
   }
 };
+var deleteUser = async (req, res) => {
+  try {
+    const adminId = req.userId;
+    const { id } = req.params;
+    const requestor = await db_default.user.findUnique({
+      where: { id: adminId },
+      select: { role: true }
+    });
+    if (!requestor || requestor.role !== "ADMIN") {
+      return res.status(403).json({ message: "Access Denied: Admin only" });
+    }
+    const targetUser = await db_default.user.findUnique({
+      where: { id }
+    });
+    if (!targetUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    if (targetUser.id === adminId) {
+      return res.status(400).json({ message: "Admins cannot delete their own account" });
+    }
+    await db_default.user.delete({
+      where: { id }
+    });
+    res.json({
+      message: "User and all associated data deleted successfully"
+    });
+  } catch (error) {
+    console.error("Delete User Error:", error);
+    res.status(500).json({ message: "Failed to delete user" });
+  }
+};
 
 // server/src/routes/admin.routes.ts
 var router11 = Router8();
 router11.get("/dashboard", authenticate, getAdminDashboardData);
 router11.put("/users/:id", authenticate, updateUser);
+router11.delete("/users/:id", authenticate, deleteUser);
 var admin_routes_default = router11;
 
 // server/src/app.ts

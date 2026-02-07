@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAuthStore } from '../stores/authStore';
 import { Card } from '../components/common/Card';
-import { Search, Shield, Clock, X, Users } from 'lucide-react';
+import { Search, Shield, Clock, X, Users, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { clsx } from 'clsx';
 import { useNavigate } from 'react-router-dom';
@@ -26,6 +26,7 @@ export const AdminUserManagement: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [editingUser, setEditingUser] = useState<UserData | null>(null);
     const [isUpdating, setIsUpdating] = useState(false);
+    const [userToDelete, setUserToDelete] = useState<UserData | null>(null);
 
     useEffect(() => {
         if (!user || user.role !== 'ADMIN') {
@@ -66,6 +67,23 @@ export const AdminUserManagement: React.FC = () => {
         } catch (error) {
             console.error('Failed to update user:', error);
             toast.error('Failed to update user');
+        } finally {
+            setIsUpdating(false);
+        }
+    };
+
+    const handleDeleteUser = async () => {
+        if (!userToDelete) return;
+
+        setIsUpdating(true);
+        try {
+            await apiClient.delete(`/admin/users/${userToDelete.id}`);
+            toast.success('User and all associated data deleted');
+            setUserToDelete(null);
+            fetchAdminData();
+        } catch (error) {
+            console.error('Failed to delete user:', error);
+            toast.error('Failed to delete user');
         } finally {
             setIsUpdating(false);
         }
@@ -180,12 +198,21 @@ export const AdminUserManagement: React.FC = () => {
                                         </div>
                                     </td>
                                     <td className="p-4 text-right">
-                                        <button
-                                            onClick={() => setEditingUser(u)}
-                                            className="text-primary-600 hover:text-primary-700 transition-colors text-sm font-medium"
-                                        >
-                                            Manage
-                                        </button>
+                                        <div className="flex items-center justify-end gap-3">
+                                            <button
+                                                onClick={() => setEditingUser(u)}
+                                                className="text-primary-600 hover:text-primary-700 transition-colors text-sm font-medium"
+                                            >
+                                                Manage
+                                            </button>
+                                            <button
+                                                onClick={() => setUserToDelete(u)}
+                                                className="text-danger-600 hover:text-danger-700 transition-colors p-1 rounded-md hover:bg-danger-50 dark:hover:bg-danger-900/20"
+                                                title="Delete User"
+                                            >
+                                                <Trash2 className="w-4 h-4" />
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             ))}
@@ -266,6 +293,39 @@ export const AdminUserManagement: React.FC = () => {
                                 </button>
                             </div>
                         </form>
+                    </Card>
+                </div>
+            )}
+            {/* Delete User Confirmation Modal */}
+            {userToDelete && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                    <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={() => !isUpdating && setUserToDelete(null)} />
+                    <Card className="relative w-full max-w-sm animate-scale-in p-6">
+                        <div className="text-center">
+                            <div className="w-12 h-12 bg-danger-100 dark:bg-danger-900/30 text-danger-600 dark:text-danger-400 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <Trash2 className="w-6 h-6" />
+                            </div>
+                            <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Delete User?</h3>
+                            <p className="text-slate-500 dark:text-slate-400 text-sm mb-6">
+                                Are you sure you want to delete <strong>{userToDelete.name}</strong>? This action will permanently remove their account, tasks, and budgets.
+                            </p>
+                            <div className="flex gap-3">
+                                <button
+                                    onClick={() => setUserToDelete(null)}
+                                    disabled={isUpdating}
+                                    className="flex-1 px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-600 dark:text-slate-400 font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors disabled:opacity-50"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={handleDeleteUser}
+                                    disabled={isUpdating}
+                                    className="flex-1 px-4 py-2 bg-danger-600 text-white rounded-lg font-medium hover:bg-danger-700 transition-colors disabled:opacity-50 shadow-lg shadow-danger-600/20"
+                                >
+                                    {isUpdating ? 'Deleting...' : 'Delete User'}
+                                </button>
+                            </div>
+                        </div>
                     </Card>
                 </div>
             )}
