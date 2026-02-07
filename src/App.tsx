@@ -30,6 +30,9 @@ import { useAuthStore } from './stores/authStore';
 import { useTaskStore } from './stores/taskStore';
 import { TaskSplitModal } from './components/tasks/TaskSplitModal';
 import { ScrollToTop } from './components/common/ScrollToTop';
+import { AdminDashboard } from './pages/AdminDashboard';
+import { AdminUserManagement } from './pages/AdminUserManagement';
+import { AdminReport } from './pages/AdminReport';
 import './index.css';
 
 import { useInactivity } from './hooks/useInactivity';
@@ -194,6 +197,38 @@ function App() {
                 <Route path="/help/category/:category" element={<CategoryPage />} />
                 <Route path="/help/article/:slug" element={<ArticlePage />} />
                 <Route path="/faq" element={<FAQ />} />
+
+                {/* Admin Routes */}
+                <Route
+                    path="/admin"
+                    element={
+                        <ProtectedRoute>
+                            <DashboardLayout>
+                                <AdminDashboard />
+                            </DashboardLayout>
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/admin/users"
+                    element={
+                        <ProtectedRoute>
+                            <DashboardLayout>
+                                <AdminUserManagement />
+                            </DashboardLayout>
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/admin/report"
+                    element={
+                        <ProtectedRoute>
+                            <DashboardLayout>
+                                <AdminReport />
+                            </DashboardLayout>
+                        </ProtectedRoute>
+                    }
+                />
             </Routes >
 
             {activeSplitTaskId && (() => {

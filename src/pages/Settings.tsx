@@ -11,10 +11,11 @@ import apiClient from '../api/client';
 import toast from 'react-hot-toast';
 import { useGoogleLogin } from '@react-oauth/google';
 import { GoogleIcon } from '../components/icons/GoogleIcon';
+import { TaskArchive } from '../components/settings/TaskArchive';
 
 
 
-type TabId = 'data' | 'currency' | 'profile' | 'integrations' | 'support';
+type TabId = 'data' | 'currency' | 'profile' | 'integrations' | 'support' | 'archive';
 
 export const Settings: React.FC = () => {
     const { tasks } = useTaskStore();
@@ -495,6 +496,11 @@ export const Settings: React.FC = () => {
                             </div>
                         </Card>
                     </div>
+                )}
+
+                {/* Task Archive */}
+                {activeTab === 'archive' && (
+                    <TaskArchive />
                 )}
             </div>
         </div>

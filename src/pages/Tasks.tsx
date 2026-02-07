@@ -35,6 +35,10 @@ export const Tasks: React.FC = () => {
         const matchesSearch =
             task.title.toLowerCase().includes(searchLower) ||
             (task.description?.toLowerCase().includes(searchLower) ?? false);
+
+        // Hide completed tasks from main view
+        if (task.status === 'COMPLETED' && statusFilter === 'ALL' && !searchQuery) return false;
+
         const matchesStatus = statusFilter === 'ALL' || task.status === statusFilter;
         const matchesPriority = priorityFilter === 'ALL' || task.priority === priorityFilter;
         return matchesSearch && matchesStatus && matchesPriority;

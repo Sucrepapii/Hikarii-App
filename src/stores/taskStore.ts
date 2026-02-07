@@ -14,6 +14,7 @@ interface TaskStore {
   updateTask: (id: string, updates: Partial<Task>) => Promise<void>;
   deleteTask: (id: string) => Promise<void>;
   toggleTaskStatus: (id: string) => Promise<void>;
+  unarchiveTask: (id: string) => Promise<void>;
   getTaskById: (id: string) => Task | undefined;
 
   // Financial integration methods
@@ -112,6 +113,21 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
       }));
     } catch (error: any) {
       set({ error: error.response?.data?.error || "Failed to toggle task" });
+      throw error;
+    }
+  },
+
+  unarchiveTask: async (id) => {
+    try {
+      // Direct update to TODO status
+      const response = await apiClient.put(`/tasks/${id}`, { status: "TODO" });
+      set((state) => ({
+        tasks: state.tasks.map((task) =>
+          task.id === id ? response.data : task,
+        ),
+      }));
+    } catch (error: any) {
+      set({ error: error.response?.data?.error || "Failed to unarchive task" });
       throw error;
     }
   },

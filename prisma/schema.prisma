@@ -34,10 +34,14 @@ model User {
   subscriptionId         String?
   currentPeriodEnd       DateTime?
 
-  // Google Calendar Integration
-  googleId               String?  @unique
-  googleAccessToken      String?
-  googleRefreshToken     String?
+  // Admin Tracking
+  role                   Role     @default(USER)
+  lastLoginAt            DateTime?
+}
+
+enum Role {
+  USER
+  ADMIN
 }
 
 enum SubscriptionStatus {

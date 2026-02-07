@@ -1,20 +1,14 @@
 var __defProp = Object.defineProperty;
 var __getOwnPropNames = Object.getOwnPropertyNames;
-var __require = /* @__PURE__ */ ((x) =>
-  typeof require !== "undefined"
-    ? require
-    : typeof Proxy !== "undefined"
-      ? new Proxy(x, {
-          get: (a, b) => (typeof require !== "undefined" ? require : a)[b],
-        })
-      : x)(function (x) {
+var __require = /* @__PURE__ */ ((x) => typeof require !== "undefined" ? require : typeof Proxy !== "undefined" ? new Proxy(x, {
+  get: (a, b) => (typeof require !== "undefined" ? require : a)[b]
+}) : x)(function(x) {
   if (typeof require !== "undefined") return require.apply(this, arguments);
   throw Error('Dynamic require of "' + x + '" is not supported');
 });
-var __esm = (fn, res) =>
-  function __init() {
-    return (fn && (res = (0, fn[__getOwnPropNames(fn)[0]])((fn = 0))), res);
-  };
+var __esm = (fn, res) => function __init() {
+  return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
+};
 var __export = (target, all) => {
   for (var name in all)
     __defProp(target, name, { get: all[name], enumerable: true });
@@ -27,7 +21,7 @@ var init_db = __esm({
   "server/src/config/db.ts"() {
     prisma = new PrismaClient();
     db_default = prisma;
-  },
+  }
 });
 
 // server/src/services/email.service.ts
@@ -51,7 +45,7 @@ var init_email_service = __esm({
           from: fromEmail,
           to: [to],
           subject,
-          html,
+          html
         });
         if (error) {
           console.error("Resend API Error:", error);
@@ -64,30 +58,21 @@ var init_email_service = __esm({
         throw error;
       }
     };
-  },
+  }
 });
 
 // server/src/utils/emailTemplates.ts
-var getBaseTemplate,
-  getVerificationTemplate,
-  getPasswordResetTemplate,
-  getOverdueReminderTemplate,
-  getContactFormTemplate,
-  getContactAutoReplyTemplate;
+var getBaseTemplate, getVerificationTemplate, getPasswordResetTemplate, getOverdueReminderTemplate, getContactFormTemplate, getContactAutoReplyTemplate;
 var init_emailTemplates = __esm({
   "server/src/utils/emailTemplates.ts"() {
     getBaseTemplate = (title, content, buttonText, buttonUrl, footerText) => {
-      const buttonHtml =
-        buttonText && buttonUrl
-          ? `
+      const buttonHtml = buttonText && buttonUrl ? `
       <div style="margin: 32px 0; text-align: center;">
         <a href="${buttonUrl}" style="background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); color: white; padding: 14px 28px; text-decoration: none; border-radius: 12px; font-weight: 600; font-size: 16px; display: inline-block; box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.4);">
           ${buttonText}
         </a>
-      </div>`
-          : "";
-      const defaultFooter =
-        "This email was sent to identify and secure your account.";
+      </div>` : "";
+      const defaultFooter = "This email was sent to identify and secure your account.";
       return `
     <!DOCTYPE html>
     <html>
@@ -143,7 +128,7 @@ var init_emailTemplates = __esm({
           
           <!-- Footer -->
           <div class="footer">
-            <p style="margin-bottom: 8px;">&copy; ${/* @__PURE__ */ new Date().getFullYear()} Hikari App. All rights reserved.</p>
+            <p style="margin-bottom: 8px;">&copy; ${(/* @__PURE__ */ new Date()).getFullYear()} Hikari App. All rights reserved.</p>
             <p style="margin: 0;">${footerText || defaultFooter}</p>
           </div>
         </div>
@@ -196,15 +181,13 @@ var init_emailTemplates = __esm({
     
     <p>Keeping your workspace clean helps the Hikari intelligence engine give you better insights!</p>
   `;
-      const clientUrl =
-        process.env.CLIENT_URL ||
-        "https://checkmate-production-7067.up.railway.app/";
+      const clientUrl = process.env.CLIENT_URL || "https://checkmate-production-7067.up.railway.app/";
       return getBaseTemplate(
         "Action Required: Overdue Tasks",
         content,
         "Go to Workspace",
         clientUrl,
-        "You received this email because you have pending tasks in your Hikari workspace.",
+        "You received this email because you have pending tasks in your Hikari workspace."
       );
     };
     getContactFormTemplate = (firstName, lastName, email, subject, message) => {
@@ -232,7 +215,7 @@ var init_emailTemplates = __esm({
         content,
         void 0,
         void 0,
-        "This message was sent via the Hikari website contact form.",
+        "This message was sent via the Hikari website contact form."
       );
     };
     getContactAutoReplyTemplate = (firstName) => {
@@ -248,11 +231,10 @@ var init_emailTemplates = __esm({
         content,
         "Visit Help Center",
         "https://www.hikarii.org/help",
-        // In a real app, use env var
-        "You received this because you contacted Hikari Support.",
+        "You received this because you contacted Hikari Support."
       );
     };
-  },
+  }
 });
 
 // server/src/services/google.calendar.service.ts
@@ -261,29 +243,20 @@ __export(google_calendar_service_exports, {
   createCalendarEvent: () => createCalendarEvent,
   exchangeCodeForToken: () => exchangeCodeForToken,
   getAuthUrl: () => getAuthUrl,
-  syncTaskBlocks: () => syncTaskBlocks,
+  syncTaskBlocks: () => syncTaskBlocks
 });
 import { google } from "googleapis";
 import fs from "fs";
 import path from "path";
-var logToFile,
-  oauth2Client,
-  SCOPES,
-  exchangeCodeForToken,
-  createCalendarEvent,
-  syncTaskBlocks,
-  getAuthUrl;
+var logToFile, oauth2Client, SCOPES, exchangeCodeForToken, createCalendarEvent, syncTaskBlocks, getAuthUrl;
 var init_google_calendar_service = __esm({
   "server/src/services/google.calendar.service.ts"() {
     init_db();
     logToFile = (message, data) => {
-      console.log(
-        `[DEBUG] ${message}`,
-        data ? JSON.stringify(data, null, 2) : "",
-      );
+      console.log(`[DEBUG] ${message}`, data ? JSON.stringify(data, null, 2) : "");
       try {
         const logPath = path.join(process.cwd(), "debug.log");
-        const timestamp = /* @__PURE__ */ new Date().toISOString();
+        const timestamp = (/* @__PURE__ */ new Date()).toISOString();
         const logEntry = `[${timestamp}] ${message} ${data ? JSON.stringify(data, null, 2) : ""}
 `;
         fs.appendFileSync(logPath, logEntry);
@@ -294,14 +267,14 @@ var init_google_calendar_service = __esm({
     oauth2Client = new google.auth.OAuth2(
       process.env.GOOGLE_CLIENT_ID,
       process.env.GOOGLE_CLIENT_SECRET,
-      "postmessage",
+      "postmessage"
       // For React One-Tap/Popup flow which handles redirect differently
     );
     SCOPES = [
       "https://www.googleapis.com/auth/calendar",
       "https://www.googleapis.com/auth/calendar.events",
       "https://www.googleapis.com/auth/userinfo.email",
-      "https://www.googleapis.com/auth/userinfo.profile",
+      "https://www.googleapis.com/auth/userinfo.profile"
     ];
     exchangeCodeForToken = async (userId, code) => {
       try {
@@ -309,7 +282,7 @@ var init_google_calendar_service = __esm({
         logToFile("Exchanging code for token");
         logToFile(
           "Client ID prefix:",
-          process.env.GOOGLE_CLIENT_ID?.substring(0, 10),
+          process.env.GOOGLE_CLIENT_ID?.substring(0, 10)
         );
         logToFile("Redirect URI (Configured):", oauth2Client.redirectUri);
         logToFile("Redirect URI (Internal):", oauth2Client._redirectUri);
@@ -318,9 +291,9 @@ var init_google_calendar_service = __esm({
           where: { id: userId },
           data: {
             googleAccessToken: tokens.access_token,
-            googleRefreshToken: tokens.refresh_token,
+            googleRefreshToken: tokens.refresh_token
             // Only returned on first consent
-          },
+          }
         });
         return updatedUser;
       } catch (error) {
@@ -328,64 +301,57 @@ var init_google_calendar_service = __esm({
         logToFile("Error exchanging code:", errorDetails);
         console.error("Error exchanging code for token details:", errorDetails);
         throw new Error(
-          `Google Auth Failed: ${error.response?.data?.error || error.message}`,
+          `Google Auth Failed: ${error.response?.data?.error || error.message}`
         );
       }
     };
     createCalendarEvent = async (userId, task) => {
       try {
-        const user = await db_default.user.findUnique({
-          where: { id: userId },
-        });
+        const user = await db_default.user.findUnique({ where: { id: userId } });
         if (!user?.googleAccessToken) {
           console.log("No Google Access Token for user", userId);
           return null;
         }
         oauth2Client.setCredentials({
           access_token: user.googleAccessToken,
-          refresh_token: user.googleRefreshToken,
+          refresh_token: user.googleRefreshToken
         });
         const calendar = google.calendar({ version: "v3", auth: oauth2Client });
         const event = {
           summary: task.title,
           description: task.description || "",
           start: {
-            dateTime: /* @__PURE__ */ new Date().toISOString(),
+            dateTime: (/* @__PURE__ */ new Date()).toISOString(),
             // Default to now if no due date, logic can be improved
-            timeZone: "UTC",
+            timeZone: "UTC"
             // Use user's timezone if available
           },
           end: {
-            dateTime: new Date(
-              /* @__PURE__ */ new Date().getTime() + 60 * 60 * 1e3,
-            ).toISOString(),
+            dateTime: new Date((/* @__PURE__ */ new Date()).getTime() + 60 * 60 * 1e3).toISOString(),
             // +1 hour default
-            timeZone: "UTC",
+            timeZone: "UTC"
           },
           // If task has specific due date:
-          ...(task.dueDate && {
+          ...task.dueDate && {
             start: {
               dateTime: new Date(task.dueDate).toISOString(),
-              timeZone: "UTC",
+              timeZone: "UTC"
             },
             end: {
               // Use estimated duration if available, otherwise default to 1 hour
               dateTime: new Date(
-                new Date(task.dueDate).getTime() +
-                  (task.estimatedDuration
-                    ? task.estimatedDuration * 6e4
-                    : 60 * 60 * 1e3),
+                new Date(task.dueDate).getTime() + (task.estimatedDuration ? task.estimatedDuration * 6e4 : 60 * 60 * 1e3)
               ).toISOString(),
-              timeZone: "UTC",
-            },
-          }),
-          reminders: {
-            useDefault: true,
+              timeZone: "UTC"
+            }
           },
+          reminders: {
+            useDefault: true
+          }
         };
         const response = await calendar.events.insert({
           calendarId: "primary",
-          requestBody: event,
+          requestBody: event
         });
         return response.data;
       } catch (error) {
@@ -395,18 +361,16 @@ var init_google_calendar_service = __esm({
     };
     syncTaskBlocks = async (userId, taskId, blocks) => {
       try {
-        const user = await db_default.user.findUnique({
-          where: { id: userId },
-        });
+        const user = await db_default.user.findUnique({ where: { id: userId } });
         if (!user?.googleAccessToken) return null;
         oauth2Client.setCredentials({
           access_token: user.googleAccessToken,
-          refresh_token: user.googleRefreshToken,
+          refresh_token: user.googleRefreshToken
         });
         const calendar = google.calendar({ version: "v3", auth: oauth2Client });
         const parentTask = await db_default.task.findUnique({
           where: { id: taskId },
-          select: { title: true, dueDate: true },
+          select: { title: true, dueDate: true }
         });
         const parentTitle = parentTask?.title || "Task";
         let startDate = /* @__PURE__ */ new Date();
@@ -421,7 +385,7 @@ var init_google_calendar_service = __esm({
         for (const block of blocks) {
           if (!block.duration) continue;
           const endTime = new Date(
-            currentStartTime.getTime() + block.duration * 6e4,
+            currentStartTime.getTime() + block.duration * 6e4
           );
           const event = {
             summary: `[${parentTitle}] ${block.title}`,
@@ -431,23 +395,20 @@ var init_google_calendar_service = __esm({
             // "5" is Banana (Yellow) in Google Calendar standard colors
             start: {
               dateTime: currentStartTime.toISOString(),
-              timeZone: "UTC",
+              timeZone: "UTC"
               // or user timezone
             },
             end: {
               dateTime: endTime.toISOString(),
-              timeZone: "UTC",
-            },
+              timeZone: "UTC"
+            }
           };
           try {
             const response = await calendar.events.insert({
               calendarId: "primary",
-              requestBody: event,
+              requestBody: event
             });
-            results.push({
-              blockId: block.id,
-              googleEventId: response.data.id,
-            });
+            results.push({ blockId: block.id, googleEventId: response.data.id });
             currentStartTime = new Date(endTime.getTime() + 5 * 6e4);
           } catch (err) {
             console.error("Failed to sync block", block.title, err);
@@ -464,18 +425,18 @@ var init_google_calendar_service = __esm({
         access_type: "offline",
         // Essential for refresh token
         scope: SCOPES,
-        prompt: "consent",
+        prompt: "consent"
         // Force consent to get refresh token
       });
     };
-  },
+  }
 });
 
 // server/src/services/task.splitter.service.ts
 var task_splitter_service_exports = {};
 __export(task_splitter_service_exports, {
   TaskSplitterService: () => TaskSplitterService,
-  taskSplitterService: () => taskSplitterService,
+  taskSplitterService: () => taskSplitterService
 });
 import { GoogleGenerativeAI } from "@google/generative-ai";
 var TEMPLATES, DEFAULT_TEMPLATE, TaskSplitterService, taskSplitterService;
@@ -483,29 +444,21 @@ var init_task_splitter_service = __esm({
   "server/src/services/task.splitter.service.ts"() {
     TEMPLATES = [
       {
-        keywords: [
-          "write",
-          "draft",
-          "essay",
-          "report",
-          "blog",
-          "article",
-          "paper",
-        ],
+        keywords: ["write", "draft", "essay", "report", "blog", "article", "paper"],
         blocks: [
           { title: "Research & Notes", weight: 0.25 },
           { title: "Outline Structure", weight: 0.15 },
           { title: "Drafting", weight: 0.4 },
-          { title: "Review & Polish", weight: 0.2 },
-        ],
+          { title: "Review & Polish", weight: 0.2 }
+        ]
       },
       {
         keywords: ["study", "learn", "read", "prepare for exam", "course"],
         blocks: [
           { title: "Review Materials", weight: 0.3 },
           { title: "Practice / Exercises", weight: 0.4 },
-          { title: "Summarize Key Points", weight: 0.3 },
-        ],
+          { title: "Summarize Key Points", weight: 0.3 }
+        ]
       },
       {
         keywords: [
@@ -515,29 +468,29 @@ var init_task_splitter_service = __esm({
           "implement",
           "program",
           "fix",
-          "debug",
+          "debug"
         ],
         blocks: [
           { title: "Design & Plan", weight: 0.2 },
           { title: "Implementation", weight: 0.5 },
-          { title: "Testing & Validation", weight: 0.3 },
-        ],
+          { title: "Testing & Validation", weight: 0.3 }
+        ]
       },
       {
         keywords: ["plan", "organize", "schedule"],
         blocks: [
           { title: "Brainstorming", weight: 0.3 },
           { title: "Categorization", weight: 0.3 },
-          { title: "Finalizing Plan", weight: 0.4 },
-        ],
-      },
+          { title: "Finalizing Plan", weight: 0.4 }
+        ]
+      }
     ];
     DEFAULT_TEMPLATE = {
       blocks: [
         { title: "Preparation", weight: 0.1 },
         { title: "Core Work", weight: 0.8 },
-        { title: "Wrap-up & Review", weight: 0.1 },
-      ],
+        { title: "Wrap-up & Review", weight: 0.1 }
+      ]
     };
     TaskSplitterService = class {
       constructor() {
@@ -551,32 +504,27 @@ var init_task_splitter_service = __esm({
           try {
             const dotenv2 = __require("dotenv");
             dotenv2.config();
-          } catch (e) {}
+          } catch (e) {
+          }
         }
         const apiKey = process.env.GEMINI_API_KEY;
         console.log(
-          `[TaskSplitter] Initialize called. API Key present in env: ${!!apiKey}`,
+          `[TaskSplitter] Initialize called. API Key present in env: ${!!apiKey}`
         );
-        console.log(
-          `[TaskSplitter] Current working directory: ${process.cwd()}`,
-        );
+        console.log(`[TaskSplitter] Current working directory: ${process.cwd()}`);
         if (apiKey) {
           try {
             this.genAI = new GoogleGenerativeAI(apiKey);
             this.model = this.genAI.getGenerativeModel({
               model: "gemini-flash-latest",
-              generationConfig: { responseMimeType: "application/json" },
+              generationConfig: { responseMimeType: "application/json" }
             });
-            console.log(
-              "[TaskSplitter] Gemini model initialized successfully.",
-            );
+            console.log("[TaskSplitter] Gemini model initialized successfully.");
           } catch (error) {
             console.error("Failed to initialize Gemini AI:", error);
           }
         } else {
-          console.warn(
-            "[TaskSplitter] No API Key provided. AI features disabled.",
-          );
+          console.warn("[TaskSplitter] No API Key provided. AI features disabled.");
         }
         this.isInitialized = true;
       }
@@ -614,20 +562,17 @@ var init_task_splitter_service = __esm({
             const result = await this.model.generateContent(prompt);
             let responseText = result.response.text();
             console.log("[TaskSplitter] Raw AI Response:", responseText);
-            responseText = responseText
-              .replace(/```json/g, "")
-              .replace(/```/g, "")
-              .trim();
+            responseText = responseText.replace(/```json/g, "").replace(/```/g, "").trim();
             const aiBlocks = JSON.parse(responseText);
             if (Array.isArray(aiBlocks) && aiBlocks.length > 0) {
               console.log(
                 "[TaskSplitter] AI parsed valid blocks:",
-                aiBlocks.length,
+                aiBlocks.length
               );
               return aiBlocks.map((block, index) => ({
                 title: block.title,
                 duration: Number(block.duration),
-                order: index,
+                order: index
               }));
             } else {
               console.warn("[TaskSplitter] AI response was not a valid array.");
@@ -636,26 +581,24 @@ var init_task_splitter_service = __esm({
             console.error(
               "!!! [TaskSplitter] AI generation FAILED !!!",
               error?.message,
-              error?.stack,
+              error?.stack
             );
           }
         } else {
           console.log(
             "[TaskSplitter] Skipping AI (Model not initialized). Keys present:",
-            !!process.env.GEMINI_API_KEY,
+            !!process.env.GEMINI_API_KEY
           );
         }
         const normalizedTitle = title.toLowerCase();
-        const template = TEMPLATES.find((t) =>
-          t.keywords.some((k) => normalizedTitle.includes(k)),
+        const template = TEMPLATES.find(
+          (t) => t.keywords.some((k) => normalizedTitle.includes(k))
         );
-        const blocksToUse = template
-          ? template.blocks
-          : DEFAULT_TEMPLATE.blocks;
+        const blocksToUse = template ? template.blocks : DEFAULT_TEMPLATE.blocks;
         let topic = "";
         if (template) {
-          const matchedKeyword = template.keywords.find((k) =>
-            normalizedTitle.includes(k),
+          const matchedKeyword = template.keywords.find(
+            (k) => normalizedTitle.includes(k)
           );
           if (matchedKeyword) {
             const parts = normalizedTitle.split(matchedKeyword);
@@ -670,42 +613,32 @@ var init_task_splitter_service = __esm({
             }
           }
         }
-        const formattedTopic =
-          topic.length > 0
-            ? topic.charAt(0).toUpperCase() + topic.slice(1)
-            : "";
+        const formattedTopic = topic.length > 0 ? topic.charAt(0).toUpperCase() + topic.slice(1) : "";
         return blocksToUse.map((block, index) => {
           let blockTitle = block.title;
           if (formattedTopic) {
-            if (
-              blockTitle.includes("Review") ||
-              blockTitle.includes("Drafting") ||
-              blockTitle.includes("Research")
-            ) {
+            if (blockTitle.includes("Review") || blockTitle.includes("Drafting") || blockTitle.includes("Research")) {
               blockTitle = `${blockTitle} ${formattedTopic}`;
-            } else if (
-              blockTitle === "Implementation" ||
-              blockTitle === "Design & Plan"
-            ) {
+            } else if (blockTitle === "Implementation" || blockTitle === "Design & Plan") {
               blockTitle = `${blockTitle} for ${formattedTopic}`;
             }
           }
           return {
             title: blockTitle,
             duration: Math.round(totalDurationMinutes * block.weight),
-            order: index,
+            order: index
           };
         });
       }
     };
     taskSplitterService = new TaskSplitterService();
-  },
+  }
 });
 
 // server/src/jobs/reminder.job.ts
 var reminder_job_exports = {};
 __export(reminder_job_exports, {
-  startReminderJob: () => startReminderJob,
+  startReminderJob: () => startReminderJob
 });
 import cron from "node-cron";
 var startReminderJob;
@@ -717,7 +650,7 @@ var init_reminder_job = __esm({
     startReminderJob = () => {
       if (process.env.VERCEL) {
         console.log(
-          "Cron jobs are not supported on Vercel Serverless. Skipping...",
+          "Cron jobs are not supported on Vercel Serverless. Skipping..."
         );
         return;
       }
@@ -733,20 +666,17 @@ var init_reminder_job = __esm({
                 userId: user.id,
                 status: { not: "COMPLETED" },
                 // Prisma enum string matching
-                dueDate: { lt: today },
-              },
+                dueDate: { lt: today }
+              }
             });
             if (overdueTasks.length > 0) {
-              const taskListHtml = overdueTasks
-                .map(
-                  (t) =>
-                    `<li><strong>${t.title}</strong> (Due: ${t.dueDate ? new Date(t.dueDate).toLocaleDateString() : "No date"})</li>`,
-                )
-                .join("");
+              const taskListHtml = overdueTasks.map(
+                (t) => `<li><strong>${t.title}</strong> (Due: ${t.dueDate ? new Date(t.dueDate).toLocaleDateString() : "No date"})</li>`
+              ).join("");
               await sendEmail(
                 user.email,
                 `Action Required: ${overdueTasks.length} Overdue Tasks on Hikari`,
-                getOverdueReminderTemplate(user.name, taskListHtml),
+                getOverdueReminderTemplate(user.name, taskListHtml)
               );
             }
           }
@@ -755,7 +685,7 @@ var init_reminder_job = __esm({
         }
       });
     };
-  },
+  }
 });
 
 // server/src/app.ts
@@ -777,7 +707,7 @@ var JWT_SECRET = process.env.JWT_SECRET || "fallback-secret-key";
 var JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "7d";
 var generateToken = (payload) => {
   const options = {
-    expiresIn: JWT_EXPIRES_IN,
+    expiresIn: JWT_EXPIRES_IN
   };
   return jwt.sign(payload, JWT_SECRET, options);
 };
@@ -822,23 +752,22 @@ var signup = async (req, res) => {
         password: hashedPassword,
         isVerified: false,
         verificationToken: otp,
-        verificationTokenExpires: otpExpires,
-      },
+        verificationTokenExpires: otpExpires
+      }
     });
     try {
       await sendEmail(
         email,
         "Verify your Hikari Account",
-        getVerificationTemplate(name, otp),
+        getVerificationTemplate(name, otp)
       );
     } catch (emailError) {
       console.error("Failed to send verification email:", emailError);
     }
     res.status(201).json({
-      message:
-        "Registration successful. Please check your email for a verification code.",
+      message: "Registration successful. Please check your email for a verification code.",
       email: user.email,
-      requiresVerification: true,
+      requiresVerification: true
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -856,7 +785,7 @@ var login = async (req, res) => {
       res.status(403).json({
         error: "Account not verified. Please verify your email.",
         requiresVerification: true,
-        email: user.email,
+        email: user.email
       });
       return;
     }
@@ -870,7 +799,7 @@ var login = async (req, res) => {
     }
     const token = generateToken({
       userId: user.id,
-      email: user.email,
+      email: user.email
     });
     res.json({
       user: {
@@ -881,9 +810,9 @@ var login = async (req, res) => {
         createdAt: user.createdAt,
         subscriptionStatus: user.subscriptionStatus,
         stripeCustomerId: user.stripeCustomerId,
-        currentPeriodEnd: user.currentPeriodEnd,
+        currentPeriodEnd: user.currentPeriodEnd
       },
-      token,
+      token
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -905,12 +834,9 @@ var verifyEmail = async (req, res) => {
       res.status(400).json({ error: "Invalid verification code" });
       return;
     }
-    if (
-      !user.verificationTokenExpires ||
-      user.verificationTokenExpires < /* @__PURE__ */ new Date()
-    ) {
+    if (!user.verificationTokenExpires || user.verificationTokenExpires < /* @__PURE__ */ new Date()) {
       res.status(400).json({
-        error: "Verification code expired. Please request a new one.",
+        error: "Verification code expired. Please request a new one."
       });
       return;
     }
@@ -919,12 +845,12 @@ var verifyEmail = async (req, res) => {
       data: {
         isVerified: true,
         verificationToken: null,
-        verificationTokenExpires: null,
-      },
+        verificationTokenExpires: null
+      }
     });
     const token = generateToken({
       userId: user.id,
-      email: user.email,
+      email: user.email
     });
     res.json({
       message: "Email verified successfully",
@@ -935,9 +861,9 @@ var verifyEmail = async (req, res) => {
         createdAt: user.createdAt,
         subscriptionStatus: user.subscriptionStatus,
         stripeCustomerId: user.stripeCustomerId,
-        currentPeriodEnd: user.currentPeriodEnd,
+        currentPeriodEnd: user.currentPeriodEnd
       },
-      token,
+      token
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -961,13 +887,13 @@ var resendVerification = async (req, res) => {
       where: { id: user.id },
       data: {
         verificationToken: otp,
-        verificationTokenExpires: otpExpires,
-      },
+        verificationTokenExpires: otpExpires
+      }
     });
     await sendEmail(
       email,
       "Resend: Verify your Hikari Account",
-      getVerificationTemplate(user.name, otp),
+      getVerificationTemplate(user.name, otp)
     );
     res.json({ message: "Verification code resent" });
   } catch (error) {
@@ -976,9 +902,7 @@ var resendVerification = async (req, res) => {
 };
 var getMe = async (req, res) => {
   try {
-    const user = await db_default.user.findUnique({
-      where: { id: req.userId },
-    });
+    const user = await db_default.user.findUnique({ where: { id: req.userId } });
     if (!user) {
       res.status(404).json({ error: "User not found" });
       return;
@@ -991,8 +915,8 @@ var getMe = async (req, res) => {
         createdAt: user.createdAt,
         subscriptionStatus: user.subscriptionStatus,
         stripeCustomerId: user.stripeCustomerId,
-        currentPeriodEnd: user.currentPeriodEnd,
-      },
+        currentPeriodEnd: user.currentPeriodEnd
+      }
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -1009,8 +933,7 @@ var forgotPassword = async (req, res) => {
     if (!user) {
       console.log("Forgot password attempt for non-existent email:", email);
       res.json({
-        message:
-          "If an account exists with that email, a reset code has been sent.",
+        message: "If an account exists with that email, a reset code has been sent."
       });
       return;
     }
@@ -1020,21 +943,20 @@ var forgotPassword = async (req, res) => {
       where: { id: user.id },
       data: {
         resetPasswordToken: otp,
-        resetPasswordExpires: otpExpires,
-      },
+        resetPasswordExpires: otpExpires
+      }
     });
     try {
       await sendEmail(
         email,
         "Reset your Hikari Password",
-        getPasswordResetTemplate(user.name, otp),
+        getPasswordResetTemplate(user.name, otp)
       );
     } catch (emailError) {
       console.error("Failed to send reset email:", emailError);
     }
     res.json({
-      message:
-        "If an account exists with that email, a reset code has been sent.",
+      message: "If an account exists with that email, a reset code has been sent."
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -1044,9 +966,7 @@ var resetPassword = async (req, res) => {
   try {
     const { email, code, newPassword } = req.body;
     if (!email || !code || !newPassword) {
-      res
-        .status(400)
-        .json({ error: "Email, code, and new password are required" });
+      res.status(400).json({ error: "Email, code, and new password are required" });
       return;
     }
     const user = await db_default.user.findUnique({ where: { email } });
@@ -1058,10 +978,7 @@ var resetPassword = async (req, res) => {
       res.status(400).json({ error: "Invalid or expired reset code" });
       return;
     }
-    if (
-      !user.resetPasswordExpires ||
-      user.resetPasswordExpires < /* @__PURE__ */ new Date()
-    ) {
+    if (!user.resetPasswordExpires || user.resetPasswordExpires < /* @__PURE__ */ new Date()) {
       res.status(400).json({ error: "Reset code has expired" });
       return;
     }
@@ -1074,11 +991,70 @@ var resetPassword = async (req, res) => {
         password: hashedPassword,
         resetPasswordToken: null,
         resetPasswordExpires: null,
-        isVerified: true,
+        isVerified: true
         // Resetting password counts as verification if they were stuck
-      },
+      }
     });
     res.json({ message: "Password reset successful. You can now login." });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+var updateProfile = async (req, res) => {
+  try {
+    const { name } = req.body;
+    if (!name) {
+      res.status(400).json({ error: "Name is required" });
+      return;
+    }
+    const user = await db_default.user.update({
+      where: { id: req.userId },
+      data: { name }
+    });
+    res.json({
+      message: "Profile updated successfully",
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        createdAt: user.createdAt,
+        subscriptionStatus: user.subscriptionStatus,
+        stripeCustomerId: user.stripeCustomerId,
+        currentPeriodEnd: user.currentPeriodEnd
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+var changePassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    if (!currentPassword || !newPassword) {
+      res.status(400).json({ error: "Current and new password are required" });
+      return;
+    }
+    const user = await db_default.user.findUnique({ where: { id: req.userId } });
+    if (!user) {
+      res.status(404).json({ error: "User not found" });
+      return;
+    }
+    const bcrypt = await import("bcryptjs");
+    const isMatch = await bcrypt.default.compare(
+      currentPassword,
+      user.password
+    );
+    if (!isMatch) {
+      res.status(400).json({ error: "Incorrect current password" });
+      return;
+    }
+    const salt = await bcrypt.default.genSalt(10);
+    const hashedPassword = await bcrypt.default.hash(newPassword, salt);
+    await db_default.user.update({
+      where: { id: user.id },
+      data: { password: hashedPassword }
+    });
+    res.json({ message: "Password updated successfully" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -1091,9 +1067,9 @@ var debugInfo = async (_req, res) => {
       HAS_DATABASE_URL: !!process.env.DATABASE_URL,
       HAS_JWT_SECRET: !!process.env.JWT_SECRET,
       HAS_RESEND_KEY: !!process.env.RESEND_API_KEY,
-      CLIENT_URL: process.env.CLIENT_URL,
+      CLIENT_URL: process.env.CLIENT_URL
     },
-    dbStatus: "connected",
+    dbStatus: "connected"
     // Prisma manages connection pool
   });
 };
@@ -1116,8 +1092,8 @@ var authenticate = async (req, res, next) => {
         id: true,
         email: true,
         subscriptionStatus: true,
-        stripeCustomerId: true,
-      },
+        stripeCustomerId: true
+      }
     });
     if (!user) {
       res.status(401).json({ error: "User not found" });
@@ -1138,6 +1114,8 @@ router.post("/verify-email", verifyEmail);
 router.post("/resend-verification", resendVerification);
 router.post("/forgot-password", forgotPassword);
 router.post("/reset-password", resetPassword);
+router.put("/profile", authenticate, updateProfile);
+router.put("/password", authenticate, changePassword);
 router.get("/me", authenticate, getMe);
 router.get("/debug", debugInfo);
 var auth_routes_default = router;
@@ -1152,7 +1130,7 @@ var getTasks = async (req, res) => {
   try {
     const tasks = await db_default.task.findMany({
       where: { userId: req.userId },
-      orderBy: { createdAt: "desc" },
+      orderBy: { createdAt: "desc" }
     });
     res.json(tasks);
   } catch (error) {
@@ -1165,10 +1143,10 @@ var createTask = async (req, res) => {
     const taskData = {
       ...rest,
       userId: req.userId,
-      projectId: rest.projectId || void 0,
+      projectId: rest.projectId || void 0
     };
     const task = await db_default.task.create({
-      data: taskData,
+      data: taskData
     });
     if (addToCalendar && task.dueDate) {
       try {
@@ -1187,8 +1165,8 @@ var getTaskById = async (req, res) => {
     const task = await db_default.task.findFirst({
       where: {
         id: req.params.id,
-        userId: req.userId,
-      },
+        userId: req.userId
+      }
     });
     if (!task) {
       res.status(404).json({ error: "Task not found" });
@@ -1202,7 +1180,7 @@ var getTaskById = async (req, res) => {
 var updateTask = async (req, res) => {
   try {
     const existingTask = await db_default.task.findFirst({
-      where: { id: req.params.id, userId: req.userId },
+      where: { id: req.params.id, userId: req.userId }
     });
     if (!existingTask) {
       res.status(404).json({ error: "Task not found" });
@@ -1210,7 +1188,7 @@ var updateTask = async (req, res) => {
     }
     const task = await db_default.task.update({
       where: { id: req.params.id },
-      data: req.body,
+      data: req.body
     });
     res.json(task);
   } catch (error) {
@@ -1220,14 +1198,14 @@ var updateTask = async (req, res) => {
 var deleteTask = async (req, res) => {
   try {
     const existingTask = await db_default.task.findFirst({
-      where: { id: req.params.id, userId: req.userId },
+      where: { id: req.params.id, userId: req.userId }
     });
     if (!existingTask) {
       res.status(404).json({ error: "Task not found" });
       return;
     }
     await db_default.task.delete({
-      where: { id: req.params.id },
+      where: { id: req.params.id }
     });
     res.json({ message: "Task deleted successfully" });
   } catch (error) {
@@ -1239,20 +1217,17 @@ var toggleTaskStatus = async (req, res) => {
     const task = await db_default.task.findFirst({
       where: {
         id: req.params.id,
-        userId: req.userId,
-      },
+        userId: req.userId
+      }
     });
     if (!task) {
       res.status(404).json({ error: "Task not found" });
       return;
     }
-    const newStatus =
-      task.status === "COMPLETED" /* COMPLETED */
-        ? "TODO" /* TODO */
-        : "COMPLETED"; /* COMPLETED */
+    const newStatus = task.status === "COMPLETED" /* COMPLETED */ ? "TODO" /* TODO */ : "COMPLETED" /* COMPLETED */;
     const updatedTask = await db_default.task.update({
       where: { id: task.id },
-      data: { status: newStatus },
+      data: { status: newStatus }
     });
     res.json(updatedTask);
   } catch (error) {
@@ -1265,7 +1240,7 @@ var analyzeTaskSplit = async (req, res) => {
     const { force } = req.body;
     const task = await db_default.task.findFirst({
       where: { id, userId: req.userId },
-      include: { blocks: true },
+      include: { blocks: true }
     });
     if (!task) {
       res.status(404).json({ error: "Task not found" });
@@ -1277,29 +1252,26 @@ var analyzeTaskSplit = async (req, res) => {
         return;
       }
       await db_default.taskBlock.deleteMany({
-        where: { taskId: task.id },
+        where: { taskId: task.id }
       });
     }
-    const { taskSplitterService: taskSplitterService2 } =
-      await Promise.resolve().then(
-        () => (init_task_splitter_service(), task_splitter_service_exports),
-      );
+    const { taskSplitterService: taskSplitterService2 } = await Promise.resolve().then(() => (init_task_splitter_service(), task_splitter_service_exports));
     const suggestions = await taskSplitterService2.suggestBlocks(task.title);
     const createdBlocks = await db_default.$transaction(
-      suggestions.map((block) =>
-        db_default.taskBlock.create({
+      suggestions.map(
+        (block) => db_default.taskBlock.create({
           data: {
             title: block.title,
             duration: block.duration,
             order: block.order,
-            taskId: task.id,
-          },
-        }),
-      ),
+            taskId: task.id
+          }
+        })
+      )
     );
     res.json({
       blocks: createdBlocks,
-      message: "Blocks generated successfully",
+      message: "Blocks generated successfully"
     });
   } catch (error) {
     console.error("Split analysis failed:", error);
@@ -1311,38 +1283,32 @@ var scheduleBlocks = async (req, res) => {
     const { id } = req.params;
     const task = await db_default.task.findUnique({
       where: { id, userId: req.userId },
-      include: { blocks: true },
+      include: { blocks: true }
     });
     if (!task || !task.blocks || task.blocks.length === 0) {
       res.status(404).json({ error: "Task or blocks not found" });
       return;
     }
-    const { syncTaskBlocks: syncTaskBlocks2 } = await Promise.resolve().then(
-      () => (init_google_calendar_service(), google_calendar_service_exports),
-    );
+    const { syncTaskBlocks: syncTaskBlocks2 } = await Promise.resolve().then(() => (init_google_calendar_service(), google_calendar_service_exports));
     const results = await syncTaskBlocks2(req.userId, id, task.blocks);
     if (!results) {
-      res
-        .status(400)
-        .json({ error: "Calendar sync failed. Is Google Calendar connected?" });
+      res.status(400).json({ error: "Calendar sync failed. Is Google Calendar connected?" });
       return;
     }
     if (results && results.length > 0) {
       await db_default.$transaction(
-        results.map((r) =>
-          db_default.taskBlock.update({
+        results.map(
+          (r) => db_default.taskBlock.update({
             where: { id: r.blockId },
-            data: { googleEventId: r.googleEventId },
-          }),
-        ),
+            data: { googleEventId: r.googleEventId }
+          })
+        )
       );
     }
     res.json({ message: "Blocks scheduled", results });
   } catch (error) {
     console.error("Scheduling failed:", error);
-    res
-      .status(500)
-      .json({ error: error.message || "Failed to schedule blocks" });
+    res.status(500).json({ error: error.message || "Failed to schedule blocks" });
   }
 };
 
@@ -1374,8 +1340,8 @@ var createProject = async (req, res) => {
         startDate: startDate ? new Date(startDate) : null,
         endDate: endDate ? new Date(endDate) : null,
         budgetLimit: budgetLimit ? parseFloat(budgetLimit) : null,
-        userId: req.userId,
-      },
+        userId: req.userId
+      }
     });
     res.status(201).json(project);
   } catch (error) {
@@ -1390,19 +1356,19 @@ var getProjects = async (req, res) => {
       orderBy: { createdAt: "desc" },
       include: {
         tasks: {
-          select: { status: true },
-        },
-      },
+          select: { status: true }
+        }
+      }
     });
     const projectsWithProgress = projects.map((project) => {
       const totalTasks = project.tasks.length;
       const completedTasks = project.tasks.filter(
-        (t) => t.status === "COMPLETED",
+        (t) => t.status === "COMPLETED"
       ).length;
-      const progress = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
+      const progress = totalTasks > 0 ? completedTasks / totalTasks * 100 : 0;
       return {
         ...project,
-        progress: Math.round(progress),
+        progress: Math.round(progress)
         // specific cleanup if we don't want to send all tasks back, though select: {status} is small
       };
     });
@@ -1423,9 +1389,9 @@ var getProject = async (req, res) => {
         budgets: true,
         expenses: {
           orderBy: { date: "desc" },
-          take: 10,
-        },
-      },
+          take: 10
+        }
+      }
     });
     if (!project) {
       return res.status(404).json({ error: "Project not found" });
@@ -1438,8 +1404,7 @@ var getProject = async (req, res) => {
 var updateProject = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, description, status, budgetLimit, startDate, endDate } =
-      req.body;
+    const { title, description, status, budgetLimit, startDate, endDate } = req.body;
     const project = await db_default.project.update({
       where: { id, userId: req.userId },
       data: {
@@ -1448,8 +1413,8 @@ var updateProject = async (req, res) => {
         status,
         budgetLimit: budgetLimit ? parseFloat(budgetLimit) : void 0,
         startDate: startDate ? new Date(startDate) : void 0,
-        endDate: endDate ? new Date(endDate) : void 0,
-      },
+        endDate: endDate ? new Date(endDate) : void 0
+      }
     });
     res.json(project);
   } catch (error) {
@@ -1460,7 +1425,7 @@ var deleteProject = async (req, res) => {
   try {
     const { id } = req.params;
     await db_default.project.delete({
-      where: { id, userId: req.userId },
+      where: { id, userId: req.userId }
     });
     res.json({ message: "Project deleted successfully" });
   } catch (error) {
@@ -1475,31 +1440,29 @@ var getProjectSummary = async (req, res) => {
       include: {
         tasks: true,
         budgets: true,
-        expenses: true,
-      },
+        expenses: true
+      }
     });
     if (!project) return res.status(404).json({ error: "Project not found" });
     const totalTasks = project.tasks.length;
     const completedTasks = project.tasks.filter(
-      (t) => t.status === "COMPLETED",
+      (t) => t.status === "COMPLETED"
     ).length;
-    const progress = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
-    const totalSpent = project.expenses.reduce((sum, e) => sum + e.amount, 0);
-    const budgetHealth = project.budgetLimit
-      ? (totalSpent / project.budgetLimit) * 100
-      : 0;
+    const progress = totalTasks > 0 ? completedTasks / totalTasks * 100 : 0;
+    const totalSpent = project.expenses.reduce(
+      (sum, e) => sum + e.amount,
+      0
+    );
+    const budgetHealth = project.budgetLimit ? totalSpent / project.budgetLimit * 100 : 0;
     res.json({
       projectId: project.id,
       progress: Math.round(progress),
       totalSpent,
       budgetLimit: project.budgetLimit || 0,
       budgetHealth: Math.round(budgetHealth),
-      daysRemaining: project.endDate
-        ? Math.ceil(
-            (new Date(project.endDate).getTime() - Date.now()) /
-              (1e3 * 60 * 60 * 24),
-          )
-        : null,
+      daysRemaining: project.endDate ? Math.ceil(
+        (new Date(project.endDate).getTime() - Date.now()) / (1e3 * 60 * 60 * 24)
+      ) : null
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -1525,7 +1488,7 @@ init_db();
 var getBudgets = async (req, res) => {
   try {
     const budgets = await db_default.budget.findMany({
-      where: { userId: req.userId },
+      where: { userId: req.userId }
     });
     res.json(budgets);
   } catch (error) {
@@ -1537,27 +1500,27 @@ var createBudget = async (req, res) => {
     const expenses = await db_default.expense.findMany({
       where: {
         userId: req.userId,
-        category: req.body.category,
-      },
+        category: req.body.category
+      }
     });
     const spent = expenses.reduce((sum, exp) => sum + exp.amount, 0);
     const existingBudget = await db_default.budget.findUnique({
       where: {
         userId_category: {
           userId: req.userId,
-          category: req.body.category,
-        },
-      },
+          category: req.body.category
+        }
+      }
     });
     let budget;
     if (existingBudget) {
       budget = await db_default.budget.update({
         where: { id: existingBudget.id },
-        data: { ...req.body, spent },
+        data: { ...req.body, spent }
       });
     } else {
       budget = await db_default.budget.create({
-        data: { ...req.body, userId: req.userId, spent },
+        data: { ...req.body, userId: req.userId, spent }
       });
     }
     res.status(201).json(budget);
@@ -1568,7 +1531,7 @@ var createBudget = async (req, res) => {
 var deleteBudget = async (req, res) => {
   try {
     const existing = await db_default.budget.findFirst({
-      where: { id: req.params.id, userId: req.userId },
+      where: { id: req.params.id, userId: req.userId }
     });
     if (!existing) {
       res.status(404).json({ error: "Budget not found" });
@@ -1584,7 +1547,7 @@ var getExpenses = async (req, res) => {
   try {
     const expenses = await db_default.expense.findMany({
       where: { userId: req.userId },
-      orderBy: { date: "desc" },
+      orderBy: { date: "desc" }
     });
     res.json(expenses);
   } catch (error) {
@@ -1597,22 +1560,22 @@ var createExpense = async (req, res) => {
       data: {
         ...req.body,
         userId: req.userId,
-        linkedTaskId: req.body.linkedTaskId || null,
+        linkedTaskId: req.body.linkedTaskId || null
         // Explicitly handle linkedTaskId
-      },
+      }
     });
     const budget = await db_default.budget.findUnique({
       where: {
         userId_category: {
           userId: req.userId,
-          category: expense.category,
-        },
-      },
+          category: expense.category
+        }
+      }
     });
     if (budget) {
       await db_default.budget.update({
         where: { id: budget.id },
-        data: { spent: { increment: expense.amount } },
+        data: { spent: { increment: expense.amount } }
       });
     }
     res.status(201).json(expense);
@@ -1625,8 +1588,8 @@ var updateExpense = async (req, res) => {
     const existingExpense = await db_default.expense.findFirst({
       where: {
         id: req.params.id,
-        userId: req.userId,
-      },
+        userId: req.userId
+      }
     });
     if (!existingExpense) {
       res.status(404).json({ error: "Expense not found" });
@@ -1636,40 +1599,37 @@ var updateExpense = async (req, res) => {
       where: { id: req.params.id },
       data: {
         ...req.body,
-        linkedTaskId: req.body.linkedTaskId,
+        linkedTaskId: req.body.linkedTaskId
         // Allow updating link
-      },
+      }
     });
-    if (
-      existingExpense.amount !== updatedExpense.amount ||
-      existingExpense.category !== updatedExpense.category
-    ) {
+    if (existingExpense.amount !== updatedExpense.amount || existingExpense.category !== updatedExpense.category) {
       const oldBudget = await db_default.budget.findUnique({
         where: {
           userId_category: {
             userId: req.userId,
-            category: existingExpense.category,
-          },
-        },
+            category: existingExpense.category
+          }
+        }
       });
       if (oldBudget) {
         await db_default.budget.update({
           where: { id: oldBudget.id },
-          data: { spent: { decrement: existingExpense.amount } },
+          data: { spent: { decrement: existingExpense.amount } }
         });
       }
       const newBudget = await db_default.budget.findUnique({
         where: {
           userId_category: {
             userId: req.userId,
-            category: updatedExpense.category,
-          },
-        },
+            category: updatedExpense.category
+          }
+        }
       });
       if (newBudget) {
         await db_default.budget.update({
           where: { id: newBudget.id },
-          data: { spent: { increment: updatedExpense.amount } },
+          data: { spent: { increment: updatedExpense.amount } }
         });
       }
     }
@@ -1681,27 +1641,27 @@ var updateExpense = async (req, res) => {
 var deleteExpense = async (req, res) => {
   try {
     const existingExpense = await db_default.expense.findFirst({
-      where: { id: req.params.id, userId: req.userId },
+      where: { id: req.params.id, userId: req.userId }
     });
     if (!existingExpense) {
       res.status(404).json({ error: "Expense not found" });
       return;
     }
     const deletedExpense = await db_default.expense.delete({
-      where: { id: req.params.id },
+      where: { id: req.params.id }
     });
     const budget = await db_default.budget.findUnique({
       where: {
         userId_category: {
           userId: req.userId,
-          category: deletedExpense.category,
-        },
-      },
+          category: deletedExpense.category
+        }
+      }
     });
     if (budget) {
       await db_default.budget.update({
         where: { id: budget.id },
-        data: { spent: { decrement: deletedExpense.amount } },
+        data: { spent: { decrement: deletedExpense.amount } }
       });
     }
     res.json({ message: "Expense deleted successfully" });
@@ -1731,42 +1691,35 @@ var getInsights = async (req, res) => {
   try {
     const [tasks, budgets] = await Promise.all([
       db_default.task.findMany({ where: { userId: req.userId } }),
-      db_default.budget.findMany({ where: { userId: req.userId } }),
+      db_default.budget.findMany({ where: { userId: req.userId } })
     ]);
     const insights = [];
     const availableFunds = budgets.reduce(
       (sum, b) => sum + (b.limit - b.spent),
-      0,
+      0
     );
     if (availableFunds < 1e4) {
       const incomeTasks = tasks.filter(
-        (t) =>
-          t.financials?.type === "INCOME" /* INCOME */ &&
-          t.status !== "COMPLETED" /* COMPLETED */,
+        (t) => t.financials?.type === "INCOME" /* INCOME */ && t.status !== "COMPLETED" /* COMPLETED */
       );
       insights.push({
         id: `cashflow-${Date.now()}`,
         type: "CASH_FLOW_ALERT",
         priority: "CRITICAL",
         title: "Low Cash Flow Alert",
-        message: `Only \u20A6${availableFunds.toLocaleString()} remaining in budgets. ${incomeTasks.length > 0 ? `Prioritize ${incomeTasks.length} income task(s).` : "Consider adding income tasks."}`,
+        message: `Only NGN ${availableFunds.toLocaleString()} remaining in budgets. ${incomeTasks.length > 0 ? `Prioritize ${incomeTasks.length} income task(s).` : "Consider adding income tasks."}`,
         actionable: incomeTasks.length > 0,
-        suggestedAction:
-          incomeTasks.length > 0 ? "Focus on income-generating tasks" : void 0,
+        suggestedAction: incomeTasks.length > 0 ? "Focus on income-generating tasks" : void 0,
         financialImpact: availableFunds,
-        createdAt: /* @__PURE__ */ new Date(),
+        createdAt: /* @__PURE__ */ new Date()
       });
     }
-    const pendingExpenses = tasks
-      .filter(
-        (t) =>
-          t.financials?.type === "EXPENSE" /* EXPENSE */ &&
-          t.status !== "COMPLETED" /* COMPLETED */,
-      )
-      .reduce((sum, t) => {
-        const est = t.financials?.estimatedCost || 0;
-        return sum + est;
-      }, 0);
+    const pendingExpenses = tasks.filter(
+      (t) => t.financials?.type === "EXPENSE" /* EXPENSE */ && t.status !== "COMPLETED" /* COMPLETED */
+    ).reduce((sum, t) => {
+      const est = t.financials?.estimatedCost || 0;
+      return sum + est;
+    }, 0);
     if (pendingExpenses > availableFunds) {
       const deficit = pendingExpenses - availableFunds;
       insights.push({
@@ -1774,26 +1727,21 @@ var getInsights = async (req, res) => {
         type: "BUDGET_WARNING",
         priority: "HIGH",
         title: "Budget Conflict Detected",
-        message: `Pending expense tasks (\u20A6${pendingExpenses.toLocaleString()}) exceed available budget (\u20A6${availableFunds.toLocaleString()}). Shortfall: \u20A6${deficit.toLocaleString()}`,
+        message: `Pending expense tasks (NGN ${pendingExpenses.toLocaleString()}) exceed available budget (NGN ${availableFunds.toLocaleString()}). Shortfall: NGN ${deficit.toLocaleString()}`,
         actionable: true,
-        suggestedAction:
-          "Postpone low-priority expense tasks or increase budget",
+        suggestedAction: "Postpone low-priority expense tasks or increase budget",
         financialImpact: -deficit,
-        createdAt: /* @__PURE__ */ new Date(),
+        createdAt: /* @__PURE__ */ new Date()
       });
     }
     const now = /* @__PURE__ */ new Date();
     tasks.forEach((task) => {
-      if (
-        task.financials?.lateFeePerDay &&
-        task.dueDate &&
-        task.status !== "COMPLETED" /* COMPLETED */
-      ) {
+      if (task.financials?.lateFeePerDay && task.dueDate && task.status !== "COMPLETED" /* COMPLETED */) {
         const dueDate = new Date(task.dueDate);
         const isOverdue = dueDate < now;
         if (isOverdue) {
           const daysLate = Math.ceil(
-            (now.getTime() - dueDate.getTime()) / (1e3 * 60 * 60 * 24),
+            (now.getTime() - dueDate.getTime()) / (1e3 * 60 * 60 * 24)
           );
           const accruedFees = daysLate * task.financials.lateFeePerDay;
           insights.push({
@@ -1801,22 +1749,22 @@ var getInsights = async (req, res) => {
             type: "BUDGET_WARNING",
             priority: "CRITICAL",
             title: `Late Fee Accruing: ${task.title}`,
-            message: `Task is ${daysLate} day(s) overdue. Accrued fees: \u20A6${accruedFees.toLocaleString()}`,
+            message: `Task is ${daysLate} day(s) overdue. Accrued fees: NGN ${accruedFees.toLocaleString()}`,
             actionable: true,
             taskId: task.id,
             suggestedAction: "Complete this task immediately",
             financialImpact: -accruedFees,
-            createdAt: now,
+            createdAt: now
           });
         }
       }
     });
     const subscriptions = await db_default.recurringExpense.findMany({
-      where: { userId: req.userId, isActive: true },
+      where: { userId: req.userId, isActive: true }
     });
     subscriptions.forEach((sub) => {
       const daysSinceUpdate = Math.ceil(
-        (Date.now() - new Date(sub.updatedAt).getTime()) / (1e3 * 60 * 60 * 24),
+        (Date.now() - new Date(sub.updatedAt).getTime()) / (1e3 * 60 * 60 * 24)
       );
       if (daysSinceUpdate > 60) {
         insights.push({
@@ -1824,38 +1772,37 @@ var getInsights = async (req, res) => {
           type: "SUBSCRIPTION_ALERT",
           priority: "MEDIUM",
           title: `Unused Subscription: ${sub.merchantName}`,
-          message: `You haven't engaged with this ${sub.frequency} subscription in over 60 days. Costs: \u20A6${sub.amount.toLocaleString()}/cycle.`,
+          message: `You haven't engaged with this ${sub.frequency} subscription in over 60 days. Costs: NGN ${sub.amount.toLocaleString()}/cycle.`,
           actionable: true,
           suggestedAction: "Cancel Subscription",
           financialImpact: sub.amount,
-          createdAt: /* @__PURE__ */ new Date(),
+          createdAt: /* @__PURE__ */ new Date()
         });
       }
     });
     const projects = await db_default.project.findMany({
       where: { userId: req.userId, status: "ACTIVE" },
-      include: { tasks: true },
+      include: { tasks: true }
     });
     projects.forEach((project) => {
       const overdueTasks = project.tasks.filter(
-        (t) =>
-          t.dueDate && new Date(t.dueDate) < now && t.status !== "COMPLETED",
+        (t) => t.dueDate && new Date(t.dueDate) < now && t.status !== "COMPLETED"
       );
       if (overdueTasks.length > 0) {
         const potentialLoss = overdueTasks.reduce(
           (sum, t) => sum + (t.financials?.estimatedCost || 0) * 0.1,
-          0,
+          0
         );
         insights.push({
           id: `project-delay-${project.id}`,
           type: "PROJECT_RISK",
           priority: "HIGH",
           title: `Project Delay: ${project.title}`,
-          message: `${overdueTasks.length} tasks are overdue. Estimated cost of delay: \u20A6${potentialLoss.toLocaleString()}`,
+          message: `${overdueTasks.length} tasks are overdue. Estimated cost of delay: NGN ${potentialLoss.toLocaleString()}`,
           actionable: true,
           suggestedAction: "Reschedule or fast-track tasks",
           financialImpact: -potentialLoss,
-          createdAt: /* @__PURE__ */ new Date(),
+          createdAt: /* @__PURE__ */ new Date()
         });
       }
     });
@@ -1863,9 +1810,9 @@ var getInsights = async (req, res) => {
       where: {
         userId: req.userId,
         category: "UTILITIES",
-        description: { contains: "Phone", mode: "insensitive" },
+        description: { contains: "Phone", mode: "insensitive" }
       },
-      _sum: { amount: true },
+      _sum: { amount: true }
     });
     if ((phoneExpenses._sum.amount || 0) > 5e4) {
       insights.push({
@@ -1873,12 +1820,11 @@ var getInsights = async (req, res) => {
         type: "SPENDING_OPT",
         priority: "LOW",
         title: "Optimize Phone Bill",
-        message:
-          "You spent over \u20A650,000 on phone bills recently. Switching carriers could save you ~\u20A615,000/year.",
+        message: "You spent over NGN 50,000 on phone bills recently. Switching carriers could save you ~NGN 15,000/year.",
         actionable: true,
         suggestedAction: "Compare Data Plans",
         financialImpact: 15e3,
-        createdAt: /* @__PURE__ */ new Date(),
+        createdAt: /* @__PURE__ */ new Date()
       });
     }
     res.json({ insights });
@@ -1892,36 +1838,31 @@ var getRecommendations = async (req, res) => {
       db_default.task.findMany({
         where: {
           userId: req.userId,
-          status: { not: "COMPLETED" /* COMPLETED */ },
-        },
-      }),
-    ]);
-    const recommendations = tasks
-      .map((task) => {
-        let score = 0;
-        const priorityScores = { LOW: 10, MEDIUM: 30, HIGH: 60, URGENT: 90 };
-        score += priorityScores[task.priority] || 0;
-        if (task.dueDate) {
-          const daysUntilDue = Math.ceil(
-            (new Date(task.dueDate).getTime() - Date.now()) /
-              (1e3 * 60 * 60 * 24),
-          );
-          if (daysUntilDue < 0) score += 50;
-          else if (daysUntilDue <= 1) score += 30;
-          else if (daysUntilDue <= 3) score += 20;
+          status: { not: "COMPLETED" /* COMPLETED */ }
         }
-        if (task.financials?.lateFeePerDay) {
-          score += 40;
-        }
-        return {
-          taskId: task.id,
-          task,
-          urgencyScore: Math.min(100, score),
-        };
       })
-      .filter((r) => r.urgencyScore > 50)
-      .sort((a, b) => b.urgencyScore - a.urgencyScore)
-      .slice(0, 5);
+    ]);
+    const recommendations = tasks.map((task) => {
+      let score = 0;
+      const priorityScores = { LOW: 10, MEDIUM: 30, HIGH: 60, URGENT: 90 };
+      score += priorityScores[task.priority] || 0;
+      if (task.dueDate) {
+        const daysUntilDue = Math.ceil(
+          (new Date(task.dueDate).getTime() - Date.now()) / (1e3 * 60 * 60 * 24)
+        );
+        if (daysUntilDue < 0) score += 50;
+        else if (daysUntilDue <= 1) score += 30;
+        else if (daysUntilDue <= 3) score += 20;
+      }
+      if (task.financials?.lateFeePerDay) {
+        score += 40;
+      }
+      return {
+        taskId: task.id,
+        task,
+        urgencyScore: Math.min(100, score)
+      };
+    }).filter((r) => r.urgencyScore > 50).sort((a, b) => b.urgencyScore - a.urgencyScore).slice(0, 5);
     res.json({ recommendations });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -1943,7 +1884,7 @@ init_db();
 import {
   getDaysInMonth,
   differenceInCalendarDays,
-  lastDayOfMonth,
+  lastDayOfMonth
 } from "date-fns";
 var PredictiveService = class {
   async generateForecast(userId) {
@@ -1956,10 +1897,10 @@ var PredictiveService = class {
     const daysRemaining = daysInCurrentMonth - daysPassed;
     const budgets = await db_default.budget.findMany({
       where: { userId },
-      include: { user: false },
+      include: { user: false }
     });
     const recurringExpenses = await db_default.recurringExpense.findMany({
-      where: { userId, isActive: true },
+      where: { userId, isActive: true }
     });
     const forecasts = [];
     for (const budget of budgets) {
@@ -1980,7 +1921,7 @@ var PredictiveService = class {
         status,
         confidence: daysPassed > 10 ? 0.8 : 0.5,
         // Low confidence early in month
-        upcomingRecurrings: [],
+        upcomingRecurrings: []
         // Populated if we had category linking
       });
     }
@@ -2013,11 +1954,7 @@ import { subDays, differenceInDays, addDays } from "date-fns";
 var PatternDetectionService = class {
   // Basic normalization: remove numbers, special chars, trim
   normalizeMerchantName(name) {
-    return name
-      .replace(/[0-9]/g, "")
-      .replace(/[^a-zA-Z\s]/g, " ")
-      .trim()
-      .toLowerCase();
+    return name.replace(/[0-9]/g, "").replace(/[^a-zA-Z\s]/g, " ").trim().toLowerCase();
   }
   async detectPatterns(userId) {
     console.log(`[PatternService] Running detection for user: ${userId}`);
@@ -2025,10 +1962,10 @@ var PatternDetectionService = class {
       where: {
         userId,
         date: {
-          gte: subDays(/* @__PURE__ */ new Date(), 14),
-        },
+          gte: subDays(/* @__PURE__ */ new Date(), 14)
+        }
       },
-      orderBy: { date: "asc" },
+      orderBy: { date: "asc" }
     });
     if (expenses.length < 2) return [];
     const groups = {};
@@ -2043,21 +1980,18 @@ var PatternDetectionService = class {
       if (group.length < 2) continue;
       const amounts = group.map((e) => e.amount);
       const avgAmount = amounts.reduce((a, b) => a + b, 0) / amounts.length;
-      const variance =
-        amounts.reduce((sum, a) => sum + Math.pow(a - avgAmount, 2), 0) /
-        amounts.length;
+      const variance = amounts.reduce((sum, a) => sum + Math.pow(a - avgAmount, 2), 0) / amounts.length;
       const stdDev = Math.sqrt(variance);
       const isConsistentAmount = stdDev / avgAmount < 0.15;
       const intervals = [];
       for (let i = 1; i < group.length; i++) {
         const dayDiff = differenceInDays(
           new Date(group[i].date),
-          new Date(group[i - 1].date),
+          new Date(group[i - 1].date)
         );
         intervals.push(dayDiff);
       }
-      const avgInterval =
-        intervals.reduce((a, b) => a + b, 0) / intervals.length;
+      const avgInterval = intervals.reduce((a, b) => a + b, 0) / intervals.length;
       let frequency = "";
       if (Math.abs(avgInterval - 7) < 3) frequency = "WEEKLY";
       else if (Math.abs(avgInterval - 30) < 5) frequency = "MONTHLY";
@@ -2070,8 +2004,8 @@ var PatternDetectionService = class {
         const existing = await db_default.recurringExpense.findFirst({
           where: {
             userId,
-            merchantName: originalName,
-          },
+            merchantName: originalName
+          }
         });
         if (!existing) {
           const newPattern = await db_default.recurringExpense.create({
@@ -2083,12 +2017,12 @@ var PatternDetectionService = class {
               nextDueDate,
               confidenceScore: 0.8 + group.length * 0.05,
               // More history = more confidence
-              isConfirmed: false,
-            },
+              isConfirmed: false
+            }
           });
           newPatterns.push(newPattern);
           console.log(
-            `[PatternService] Detected: ${originalName} (${frequency})`,
+            `[PatternService] Detected: ${originalName} (${frequency})`
           );
         } else {
           await db_default.recurringExpense.update({
@@ -2096,9 +2030,9 @@ var PatternDetectionService = class {
             data: {
               amount: avgAmount,
               // Update rolling average
-              nextDueDate,
+              nextDueDate
               // Update next due date
-            },
+            }
           });
         }
       }
@@ -2115,11 +2049,11 @@ var detectPatterns = async (req, res) => {
     const patterns = await patternService.detectPatterns(req.userId);
     const allPatterns = await db_default.recurringExpense.findMany({
       where: { userId: req.userId },
-      orderBy: { nextDueDate: "asc" },
+      orderBy: { nextDueDate: "asc" }
     });
     res.json({
       newlyDetected: patterns.length,
-      patterns: allPatterns,
+      patterns: allPatterns
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -2129,7 +2063,7 @@ var getPatterns = async (req, res) => {
   try {
     const patterns = await db_default.recurringExpense.findMany({
       where: { userId: req.userId },
-      orderBy: { nextDueDate: "asc" },
+      orderBy: { nextDueDate: "asc" }
     });
     res.json(patterns);
   } catch (error) {
@@ -2140,7 +2074,7 @@ var confirmPattern = async (req, res) => {
   try {
     const id = req.params.id;
     const pattern = await db_default.recurringExpense.findFirst({
-      where: { id, userId: req.userId },
+      where: { id, userId: req.userId }
     });
     if (!pattern) {
       res.status(404).json({ error: "Pattern not found" });
@@ -2148,7 +2082,7 @@ var confirmPattern = async (req, res) => {
     }
     const updated = await db_default.recurringExpense.update({
       where: { id },
-      data: { isConfirmed: true },
+      data: { isConfirmed: true }
     });
     res.json(updated);
   } catch (error) {
@@ -2159,14 +2093,14 @@ var deletePattern = async (req, res) => {
   try {
     const id = req.params.id;
     const pattern = await db_default.recurringExpense.findFirst({
-      where: { id, userId: req.userId },
+      where: { id, userId: req.userId }
     });
     if (!pattern) {
       res.status(404).json({ error: "Pattern not found" });
       return;
     }
     await db_default.recurringExpense.delete({
-      where: { id },
+      where: { id }
     });
     res.json({ message: "Pattern deleted" });
   } catch (error) {
@@ -2189,7 +2123,7 @@ import express2 from "express";
 init_db();
 import Stripe from "stripe";
 var stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
-  apiVersion: "2026-01-28.clover",
+  apiVersion: "2026-01-28.clover"
   // Use latest API version available
 });
 var PRO_PRICE_ID = process.env.STRIPE_PRO_PRICE_ID;
@@ -2197,7 +2131,7 @@ var createCheckoutSession = async (req, res) => {
   console.log("Stripe: createCheckoutSession started");
   console.log(
     "Stripe: Env Check -> PRO_PRICE_ID:",
-    process.env.STRIPE_PRO_PRICE_ID ? "Set" : "Missing",
+    process.env.STRIPE_PRO_PRICE_ID ? "Set" : "Missing"
   );
   try {
     const userId = req.user?.id;
@@ -2211,23 +2145,29 @@ var createCheckoutSession = async (req, res) => {
       console.log("Stripe: Creating new Stripe customer...");
       const customer = await stripe.customers.create({
         email: user.email,
-        metadata: { userId: user.id },
+        metadata: { userId: user.id }
       });
       customerId = customer.id;
       console.log("Stripe: New Customer ID created:", customerId);
       await db_default.user.update({
         where: { id: userId },
-        data: { stripeCustomerId: customerId },
+        data: { stripeCustomerId: customerId }
       });
     }
-    const priceId = PRO_PRICE_ID;
+    const { billingPeriod } = req.body;
+    console.log("Stripe: Billing Period requested:", billingPeriod);
+    let priceId = process.env.STRIPE_PRO_PRICE_ID;
+    if (billingPeriod === "yearly") {
+      priceId = process.env.STRIPE_PRO_YEARLY_PRICE_ID;
+      console.log("Stripe: Selected YEARLY price ID");
+    } else {
+      console.log("Stripe: Selected MONTHLY price ID");
+    }
     if (!priceId) {
       console.error(
-        "Stripe Error: PRO_PRICE_ID is missing in environment variables",
+        `Stripe Error: Price ID for ${billingPeriod} is missing in environment variables`
       );
-      return res
-        .status(500)
-        .json({ message: "Server configuration error: Missing Price ID" });
+      return res.status(500).json({ message: "Server configuration error: Missing Price ID" });
     }
     console.log("Stripe: Creating checkout session with Price ID:", priceId);
     const clientUrl = process.env.CLIENT_URL || "https://www.hikarii.org";
@@ -2238,18 +2178,18 @@ var createCheckoutSession = async (req, res) => {
       line_items: [
         {
           price: priceId,
-          quantity: 1,
-        },
+          quantity: 1
+        }
       ],
       mode: "subscription",
       subscription_data: {
-        trial_period_days: 14,
+        trial_period_days: 14
       },
       success_url: `${clientUrl}/settings?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${clientUrl}/pricing`,
       metadata: {
-        userId,
-      },
+        userId
+      }
     });
     console.log("Stripe: Session created successfully:", session.id);
     res.json({ sessionId: session.id, url: session.url });
@@ -2257,7 +2197,7 @@ var createCheckoutSession = async (req, res) => {
     console.error("Stripe Checkout Error:", error);
     res.status(500).json({
       message: "Failed to create checkout session",
-      error: error.message,
+      error: error.message
     });
   }
 };
@@ -2271,7 +2211,7 @@ var createPortalSession = async (req, res) => {
     const clientUrl = process.env.CLIENT_URL || "https://www.hikarii.org";
     const session = await stripe.billingPortal.sessions.create({
       customer: user.stripeCustomerId,
-      return_url: `${clientUrl}/settings`,
+      return_url: `${clientUrl}/settings`
     });
     res.json({ url: session.url });
   } catch (error) {
@@ -2290,34 +2230,35 @@ var cancelSubscription = async (req, res) => {
     const subscriptions = await stripe.subscriptions.list({
       customer: user.stripeCustomerId,
       status: "active",
-      limit: 1,
+      limit: 1
     });
     if (subscriptions.data.length === 0) {
-      return res
-        .status(400)
-        .json({ message: "No active subscription to cancel" });
+      return res.status(400).json({ message: "No active subscription to cancel" });
     }
     const subscriptionId = subscriptions.data[0].id;
     const updatedSubscription = await stripe.subscriptions.update(
       subscriptionId,
-      { cancel_at_period_end: true },
+      { cancel_at_period_end: true }
     );
     res.json({
-      message:
-        "Subscription will be cancelled at the end of the billing period",
-      currentPeriodEnd: new Date(updatedSubscription.current_period_end * 1e3),
+      message: "Subscription will be cancelled at the end of the billing period",
+      currentPeriodEnd: new Date(
+        updatedSubscription.current_period_end * 1e3
+      )
     });
   } catch (error) {
     console.error("Cancel Subscription Error:", error);
-    res
-      .status(500)
-      .json({ message: "Failed to cancel subscription", error: error.message });
+    res.status(500).json({ message: "Failed to cancel subscription", error: error.message });
   }
 };
 
 // server/src/routes/stripe.routes.ts
 var router8 = express2.Router();
-router8.post("/create-checkout-session", authenticate, createCheckoutSession);
+router8.post(
+  "/create-checkout-session",
+  authenticate,
+  createCheckoutSession
+);
 router8.post("/create-portal-session", authenticate, createPortalSession);
 router8.post("/cancel-subscription", authenticate, cancelSubscription);
 var stripe_routes_default = router8;
@@ -2339,7 +2280,7 @@ var connectGoogle = async (req, res) => {
     res.json({
       success: true,
       message: "Google Calendar connected successfully",
-      isConnected: !!user.googleAccessToken,
+      isConnected: !!user.googleAccessToken
     });
   } catch (error) {
     console.error("Google Connect Error:", error);
@@ -2350,7 +2291,7 @@ var syncTaskToCalendar = async (req, res) => {
   try {
     const { taskId } = req.body;
     const task = await db_default.task.findFirst({
-      where: { id: taskId, userId: req.userId },
+      where: { id: taskId, userId: req.userId }
     });
     if (!task) {
       res.status(404).json({ error: "Task not found" });
@@ -2358,16 +2299,14 @@ var syncTaskToCalendar = async (req, res) => {
     }
     const event = await createCalendarEvent(req.userId, task);
     if (!event) {
-      res
-        .status(400)
-        .json({ error: "Failed to create event or user not connected" });
+      res.status(400).json({ error: "Failed to create event or user not connected" });
       return;
     }
     res.json({
       success: true,
       message: "Task synced to Google Calendar",
       eventId: event.id,
-      link: event.htmlLink,
+      link: event.htmlLink
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -2380,8 +2319,8 @@ var disconnectGoogle = async (req, res) => {
       data: {
         googleAccessToken: null,
         googleRefreshToken: null,
-        googleId: null,
-      },
+        googleId: null
+      }
     });
     res.json({ success: true, message: "Disconnected from Google Calendar" });
   } catch (error) {
@@ -2392,7 +2331,7 @@ var getGoogleStatus = async (req, res) => {
   try {
     const user = await db_default.user.findUnique({
       where: { id: req.userId },
-      select: { googleAccessToken: true },
+      select: { googleAccessToken: true }
     });
     res.json({ isConnected: !!user?.googleAccessToken });
   } catch (error) {
@@ -2427,14 +2366,14 @@ var submitContactForm = async (req, res) => {
       lastName,
       email,
       subject,
-      message,
+      message
     );
     await sendEmail(adminEmail, `Contact Form: ${subject}`, adminHtml);
     const userHtml = getContactAutoReplyTemplate(firstName);
     await sendEmail(
       email,
       "We received your message - Hikari Support",
-      userHtml,
+      userHtml
     );
     res.status(200).json({ message: "Message sent successfully" });
   } catch (error) {
@@ -2447,6 +2386,110 @@ var submitContactForm = async (req, res) => {
 var router10 = express3.Router();
 router10.post("/", submitContactForm);
 var contact_routes_default = router10;
+
+// server/src/routes/admin.routes.ts
+import { Router as Router8 } from "express";
+
+// server/src/controllers/admin.controller.ts
+init_db();
+var getAdminDashboardData = async (req, res) => {
+  try {
+    const adminId = req.userId;
+    const requestor = await db_default.user.findUnique({
+      where: { id: adminId },
+      select: { role: true }
+    });
+    if (!requestor || requestor.role !== "ADMIN") {
+      return res.status(403).json({ message: "Access Denied: Admin only" });
+    }
+    const [
+      totalUsers,
+      activeUsers,
+      proUsers,
+      totalTasks,
+      totalAiSplits,
+      totalExpenses
+    ] = await Promise.all([
+      db_default.user.count({ where: { role: "USER" } }),
+      db_default.user.count({
+        where: {
+          role: "USER",
+          lastLoginAt: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1e3) }
+        }
+      }),
+      db_default.user.count({ where: { role: "USER", subscriptionStatus: "PRO" } }),
+      db_default.task.count(),
+      db_default.taskBlock.count(),
+      // Using TaskBlock as proxy for AI splits if direct ref missing
+      db_default.expense.count()
+    ]);
+    const engagement = {
+      clarity: await db_default.task.count({ where: { status: "TODO" } }),
+      focus: await db_default.task.count({ where: { status: "IN_PROGRESS" } }),
+      freedom: await db_default.task.count({ where: { status: "COMPLETED" } })
+    };
+    res.json({
+      stats: {
+        totalUsers,
+        activeUsers,
+        proUsers,
+        totalTasks,
+        totalAiSplits,
+        totalExpenses,
+        estimatedMRR: proUsers * 10
+        // Mock MRR
+      },
+      engagement,
+      users: []
+      // Handled in management page
+    });
+  } catch (error) {
+    console.error("Admin Dashboard Error:", error);
+    res.status(500).json({ message: "Failed to fetch admin data" });
+  }
+};
+var updateUser = async (req, res) => {
+  try {
+    const adminId = req.userId;
+    const { id } = req.params;
+    const { name, email, role, subscriptionStatus } = req.body;
+    const requestor = await db_default.user.findUnique({
+      where: { id: adminId },
+      select: { role: true }
+    });
+    if (!requestor || requestor.role !== "ADMIN") {
+      return res.status(403).json({ message: "Access Denied: Admin only" });
+    }
+    const updatedUser = await db_default.user.update({
+      where: { id },
+      data: {
+        name: name || void 0,
+        email: email || void 0,
+        role: role || void 0,
+        subscriptionStatus: subscriptionStatus || void 0
+      }
+    });
+    res.json({
+      message: "User updated successfully",
+      user: {
+        id: updatedUser.id,
+        name: updatedUser.name,
+        email: updatedUser.email,
+        role: updatedUser.role,
+        subscriptionStatus: updatedUser.subscriptionStatus
+      }
+    });
+  } catch (error) {
+    console.error("Update User Error:", error);
+    res.status(500).json({ message: "Failed to update user" });
+  }
+};
+
+// server/src/routes/admin.routes.ts
+var router11 = Router8();
+router11.get("/dashboard", authenticate, getAdminDashboardData);
+router11.put("/users/:id", authenticate, updateUser);
+var admin_routes_default = router11;
 
 // server/src/app.ts
 var app = express4();
@@ -2462,7 +2505,7 @@ app.use("/api/predictive", predictive_routes_default);
 app.use("/api/patterns", pattern_routes_default);
 app.use("/api/stripe", stripe_routes_default);
 app.use("/api/google", google_routes_default);
-
+app.use("/api/admin", admin_routes_default);
 app.get("/health", (req, res) => {
   res.json({ status: "ok" });
 });
@@ -2479,22 +2522,21 @@ if (fs2.existsSync(clientBuildPath)) {
 } else {
   console.log(
     "Client build not found at (only API operational):",
-    clientBuildPath,
+    clientBuildPath
   );
 }
 var PORT = process.env.PORT || 5e3;
 var PORT_NUM = Number(PORT) || 5e3;
 app.listen(PORT_NUM, "0.0.0.0", () => {
   if (process.env.NODE_ENV === "production" && !process.env.VERCEL) {
-    Promise.resolve()
-      .then(() => (init_reminder_job(), reminder_job_exports))
-      .then(({ startReminderJob: startReminderJob2 }) => {
-        startReminderJob2();
-      })
-      .catch((err) => console.error("Failed to load cron job:", err));
+    Promise.resolve().then(() => (init_reminder_job(), reminder_job_exports)).then(({ startReminderJob: startReminderJob2 }) => {
+      startReminderJob2();
+    }).catch((err) => console.error("Failed to load cron job:", err));
   }
   console.log(`
 \u{1F680} Server is running on port ${PORT_NUM}`);
 });
 var app_default = app;
-export { app_default as default };
+export {
+  app_default as default
+};

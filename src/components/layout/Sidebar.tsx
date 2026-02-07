@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { LayoutDashboard, CheckSquare, Wallet, X, Calendar, LineChart, Settings, RefreshCw, LogOut, ChevronDown, ChevronRight, User, Database, DollarSign, Link2, HelpCircle } from 'lucide-react';
+import { LayoutDashboard, CheckSquare, Wallet, X, Calendar, LineChart, Settings, RefreshCw, LogOut, ChevronDown, ChevronRight, User, Database, DollarSign, Link2, HelpCircle, Shield, Users, Activity, Archive } from 'lucide-react';
 import { clsx } from 'clsx';
 import { useAuthStore } from '../../stores/authStore';
 import toast from 'react-hot-toast';
@@ -21,6 +21,7 @@ const navItems = [
             { to: '/settings?tab=data', icon: Database, label: 'Data Management' },
             { to: '/settings?tab=currency', icon: DollarSign, label: 'Currency' },
             { to: '/settings?tab=integrations', icon: Link2, label: 'Integrations' },
+            { to: '/settings?tab=archive', icon: Archive, label: 'Archive' },
             { to: '/settings?tab=support', icon: HelpCircle, label: 'Support & FAQ' },
         ]
     },
@@ -32,7 +33,7 @@ interface SidebarProps {
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
-    const logout = useAuthStore((state) => state.logout);
+    const { user, logout } = useAuthStore();
     const location = useLocation();
     const [expandedItem, setExpandedItem] = useState<string | null>('/settings');
 
@@ -131,9 +132,50 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                     className="flex items-center gap-3 px-4 py-3 w-full rounded-2xl transition-smooth text-slate-700 dark:text-slate-300 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20 dark:hover:text-red-400"
                 >
                     <LogOut className="w-5 h-5" />
-                    <span className="font-medium">Sign Out</span>
                 </button>
             </div>
+
+            {/* Admin Section */}
+            {user?.role === 'ADMIN' && (
+                <div className="pt-4 mt-4 border-t border-slate-200 dark:border-slate-800">
+                    <p className="px-4 mb-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Administration</p>
+                    <div className="space-y-1">
+                        <NavLink
+                            to="/admin"
+                            onClick={() => onClose && onClose()}
+                            className={({ isActive }) => clsx(
+                                'flex items-center gap-3 px-4 py-3 rounded-2xl transition-smooth text-sm',
+                                isActive ? 'bg-primary-900/20 text-primary-400 font-bold border border-primary-500/30' : 'text-slate-400 hover:bg-slate-800/50'
+                            )}
+                        >
+                            <Shield className="w-4 h-4" />
+                            <span>System Overview</span>
+                        </NavLink>
+                        <NavLink
+                            to="/admin/users"
+                            onClick={() => onClose && onClose()}
+                            className={({ isActive }) => clsx(
+                                'flex items-center gap-3 px-4 py-3 rounded-2xl transition-smooth text-sm',
+                                isActive ? 'bg-primary-900/20 text-primary-400 font-bold border border-primary-500/30' : 'text-slate-400 hover:bg-slate-800/50'
+                            )}
+                        >
+                            <Users className="w-4 h-4" />
+                            <span>User Directory</span>
+                        </NavLink>
+                        <NavLink
+                            to="/admin/report"
+                            onClick={() => onClose && onClose()}
+                            className={({ isActive }) => clsx(
+                                'flex items-center gap-3 px-4 py-3 rounded-2xl transition-smooth text-sm',
+                                isActive ? 'bg-primary-900/20 text-primary-400 font-bold border border-primary-500/30' : 'text-slate-400 hover:bg-slate-800/50'
+                            )}
+                        >
+                            <Activity className="w-4 h-4" />
+                            <span>Full Report</span>
+                        </NavLink>
+                    </div>
+                </div>
+            )}
         </div>
     );
 
