@@ -33,6 +33,14 @@ export const projectService = {
     await apiClient.delete(`/projects/${id}`);
   },
 
+  toggleProjectStatus: async (
+    id: string,
+    status: "ACTIVE" | "COMPLETED",
+  ): Promise<Project> => {
+    const response = await apiClient.put(`/projects/${id}`, { status });
+    return response.data;
+  },
+
   getProjectSummary: async (id: string): Promise<ProjectSummary> => {
     const response = await apiClient.get(`/projects/${id}/summary`);
     return response.data;

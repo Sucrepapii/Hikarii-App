@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Project } from '../types/project.types';
-import { projectService } from '../services/project.service';
+import { useProjectStore } from '../stores/projectStore';
 import { Card } from '../components/common/Card';
-import { Plus, Briefcase, Calendar, Edit2, Trash2 } from 'lucide-react';
+import { Plus, Briefcase, Calendar, Edit2, Trash2, CheckCircle2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '../components/common/Button';
 import toast from 'react-hot-toast';
@@ -11,26 +10,16 @@ import { UpgradeModal } from '../components/modals/UpgradeModal';
 import { ConfirmModal } from '../components/common/ConfirmModal';
 
 export const Projects: React.FC = () => {
-    const [projects, setProjects] = useState<Project[]>([]);
-    const [loading, setLoading] = useState(true);
+    const { projects, isLoading, fetchProjects, toggleProjectStatus, deleteProject } = useProjectStore();
     const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
     const { checkAuth } = useAuthStore();
 
-    const loadProjects = async () => {
-        try {
-            await checkAuth(); // Ensure user state is fresh (e.g. subscription status)
-            const data = await projectService.getProjects();
-            setProjects(data);
-        } catch (error) {
-            console.error("Failed to load projects", error);
-            toast.error("Failed to load projects");
-        } finally {
-            setLoading(false);
-        }
-    };
-
     useEffect(() => {
-        loadProjects();
+        const load = async () => {
+            await checkAuth();
+            await fetchProjects();
+        };
+        load();
     }, []);
 
     const [deleteId, setDeleteId] = useState<string | null>(null);
@@ -44,9 +33,8 @@ export const Projects: React.FC = () => {
         if (!deleteId) return;
         setIsDeleting(true);
         try {
-            await projectService.deleteProject(deleteId);
+            await deleteProject(deleteId);
             toast.success("Project deleted");
-            setProjects(projects.filter(p => p.id !== deleteId));
             setDeleteId(null);
         } catch (err) {
             toast.error("Failed to delete project");
@@ -55,7 +43,19 @@ export const Projects: React.FC = () => {
         }
     };
 
-    if (loading) return <div className="p-8 text-center">Loading projects...</div>;
+    const handleToggleStatus = async (id: string, currentStatus: string) => {
+        const newStatus = currentStatus === 'COMPLETED' ? 'ACTIVE' : 'COMPLETED';
+        try {
+            await toggleProjectStatus(id, newStatus as any);
+            toast.success(newStatus === 'COMPLETED' ? 'Project moved to archive' : 'Project restored');
+        } catch (err) {
+            toast.error("Failed to update project status");
+        }
+    };
+
+    const activeProjects = projects.filter(p => !p.status || p.status === 'ACTIVE');
+
+    if (isLoading && projects.length === 0) return <div className="p-8 text-center">Loading projects...</div>;
 
     return (
         <>
@@ -69,26 +69,24 @@ export const Projects: React.FC = () => {
                             Track your goals and big-picture initiatives
                         </p>
                     </div>
-                    <div>
+                    <div className="flex items-center gap-3">
+                        <Link to="/settings?tab=archive">
+                            <Button variant="ghost" className="text-slate-500 hover:text-primary-600">
+                                View Archive
+                            </Button>
+                        </Link>
                         <Button
                             variant="primary"
                             className="gap-2 whitespace-nowrap touch-manipulation min-w-fit"
                             onClick={() => {
                                 // @ts-ignore
                                 const user = useAuthStore.getState().user;
-
-                                // DEBUGGING LOGS
-                                console.log("Projects: Limit Check -> User:", user);
-                                console.log("Projects: Limit Check -> Status:", user?.subscriptionStatus);
-
                                 const isFree = !user?.subscriptionStatus || user?.subscriptionStatus === 'FREE';
                                 const projectLimit = 1;
 
                                 if (isFree && projects.length >= projectLimit) {
-                                    console.log("Projects: Limit Reached! Opening Modal.");
                                     setIsUpgradeModalOpen(true);
                                 } else {
-                                    console.log("Projects: Limit OK. Proceeding.");
                                     window.location.href = '/projects/new';
                                 }
                             }}
@@ -100,27 +98,32 @@ export const Projects: React.FC = () => {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {projects.length === 0 ? (
+                    {activeProjects.length === 0 ? (
                         <div className="col-span-full text-center py-12 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-dashed border-slate-300 dark:border-slate-700">
                             <Briefcase className="w-12 h-12 text-slate-400 mx-auto mb-4" />
-                            <h3 className="text-lg font-medium text-slate-600 dark:text-slate-300">No projects yet</h3>
+                            <h3 className="text-lg font-medium text-slate-600 dark:text-slate-300">No active projects</h3>
                             <p className="text-slate-500 mb-6">Create a project to group your tasks and budget</p>
                             <Link to="/projects/new">
                                 <Button variant="secondary">Get Started</Button>
                             </Link>
                         </div>
                     ) : (
-                        projects.map(project => (
+                        activeProjects.map(project => (
                             <Card key={project.id} className="relative overflow-hidden group hover:shadow-lg transition-all border border-transparent hover:border-primary-200 dark:hover:border-primary-800">
                                 <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary-500/10 to-transparent rounded-full blur-2xl group-hover:from-primary-500/20 transition-all" />
 
-                                <div className="relative">
-                                    <div className="flex items-center gap-2">
-                                        <span className={`px-2 py-1 rounded-md text-xs font-bold ${project.status === 'COMPLETED' ? 'bg-green-100 text-green-700' :
-                                            project.status === 'ARCHIVED' ? 'bg-slate-100 text-slate-700' :
-                                                'bg-blue-100 text-primary-700'
-                                            }`}>
-                                            {project.status}
+                                <div className="relative flex items-center justify-between mb-4">
+                                    <div className="flex items-center gap-3">
+                                        <button
+                                            onClick={() => handleToggleStatus(project.id, project.status)}
+                                            className="group/check relative flex items-center justify-center p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
+                                            title="Mark as Completed"
+                                        >
+                                            <div className="w-6 h-6 rounded-full border-2 border-slate-300 dark:border-slate-600 group-hover/check:border-primary-500 transition-colors" />
+                                            <CheckCircle2 className="w-6 h-6 absolute text-primary-500 scale-0 group-hover/check:scale-110 group-hover/check:opacity-50 transition-all" />
+                                        </button>
+                                        <span className="px-2 py-1 rounded-md text-xs font-bold bg-blue-100 text-primary-700">
+                                            {project.status || 'ACTIVE'}
                                         </span>
                                     </div>
                                     <div className="flex items-center gap-1">

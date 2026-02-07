@@ -12,6 +12,7 @@ import toast from 'react-hot-toast';
 import { useGoogleLogin } from '@react-oauth/google';
 import { GoogleIcon } from '../components/icons/GoogleIcon';
 import { TaskArchive } from '../components/settings/TaskArchive';
+import { ProjectArchive } from '../components/settings/ProjectArchive';
 
 
 
@@ -498,9 +499,13 @@ export const Settings: React.FC = () => {
                     </div>
                 )}
 
-                {/* Task Archive */}
+                {/* Archive Tab (Tasks and Projects) */}
                 {activeTab === 'archive' && (
-                    <TaskArchive />
+                    <div className="space-y-8">
+                        <TaskArchive />
+                        <div className="border-t border-slate-200 dark:border-slate-700 pt-8" />
+                        <ProjectArchive />
+                    </div>
                 )}
             </div>
         </div>
