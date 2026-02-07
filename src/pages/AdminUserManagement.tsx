@@ -5,7 +5,7 @@ import { Search, Shield, Clock, X, Users } from 'lucide-react';
 import { format } from 'date-fns';
 import { clsx } from 'clsx';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import apiClient from '../api/client';
 import toast from 'react-hot-toast';
 
 interface UserData {
@@ -19,7 +19,7 @@ interface UserData {
 }
 
 export const AdminUserManagement: React.FC = () => {
-    const { user, token } = useAuthStore();
+    const { user } = useAuthStore();
     const navigate = useNavigate();
     const [users, setUsers] = useState<UserData[]>([]);
     const [loading, setLoading] = useState(true);
@@ -37,9 +37,7 @@ export const AdminUserManagement: React.FC = () => {
 
     const fetchAdminData = async () => {
         try {
-            const response = await axios.get('http://localhost:5000/api/admin/dashboard', {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const response = await apiClient.get('/admin/dashboard');
             setUsers(response.data.users || []);
         } catch (error) {
             console.error('Failed to fetch admin data:', error);
@@ -55,13 +53,11 @@ export const AdminUserManagement: React.FC = () => {
 
         setIsUpdating(true);
         try {
-            await axios.put(`http://localhost:5000/api/admin/users/${editingUser.id}`, {
+            await apiClient.put(`/admin/users/${editingUser.id}`, {
                 name: editingUser.name,
                 email: editingUser.email,
                 role: editingUser.role,
                 subscriptionStatus: editingUser.subscriptionStatus
-            }, {
-                headers: { Authorization: `Bearer ${token}` }
             });
 
             toast.success('User updated successfully');

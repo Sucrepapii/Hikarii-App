@@ -1,11 +1,19 @@
 import React, { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { LayoutDashboard, CheckSquare, Wallet, X, Calendar, LineChart, Settings, RefreshCw, LogOut, ChevronDown, ChevronRight, User, Database, DollarSign, Link2, HelpCircle, Shield, Users, Activity, Archive, FileText } from 'lucide-react';
+import { LayoutDashboard, CheckSquare, Wallet, X, Calendar, LineChart, Settings, RefreshCw, LogOut, ChevronDown, ChevronRight, User, Database, DollarSign, Link2, HelpCircle, Shield, Archive, FileText } from 'lucide-react';
 import { clsx } from 'clsx';
 import { useAuthStore } from '../../stores/authStore';
 import toast from 'react-hot-toast';
 
-const navItems = [
+interface NavItem {
+    to: string;
+    icon: any;
+    label: string;
+    end?: boolean;
+    subItems?: { to: string; icon: any; label: string }[];
+}
+
+const navItems: NavItem[] = [
     { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
     { to: '/tasks', icon: CheckSquare, label: 'Tasks' },
     { to: '/budget', icon: Wallet, label: 'Budget' },
@@ -38,15 +46,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     const location = useLocation();
     const [expandedItem, setExpandedItem] = useState<string | null>('/settings');
 
-    let displayNavItems;
+    let displayNavItems = [...navItems];
     if (user?.role === 'ADMIN') {
-        displayNavItems = [
-            { to: '/admin', icon: Shield, label: 'Overview', end: true },
+        displayNavItems.push(
+            { to: '/admin', icon: Shield, label: 'Admin Overview', end: true },
             { to: '/admin/users', icon: User, label: 'Manage Accounts' },
             { to: '/admin/reports', icon: FileText, label: 'Full Report' },
-        ];
-    } else {
-        displayNavItems = [...navItems];
+        );
     }
 
     const handleLogout = () => {

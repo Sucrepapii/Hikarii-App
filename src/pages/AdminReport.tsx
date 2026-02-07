@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { clsx } from 'clsx';
 import { useAuthStore } from '../stores/authStore';
 import { Card } from '../components/common/Card';
 import { Users, Activity, Crown, Zap, Printer } from 'lucide-react';
-import axios from 'axios';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, CartesianGrid, PieChart, Pie } from 'recharts';
+import apiClient from '../api/client';
 
 interface DashboardData {
     stats: {
@@ -24,20 +25,14 @@ interface DashboardData {
 }
 
 export const AdminReport: React.FC = () => {
-    const { token } = useAuthStore();
+    const { } = useAuthStore();
     const [data, setData] = useState<DashboardData | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        fetchAdminData();
-    }, []);
-
     const fetchAdminData = async () => {
         try {
-            const response = await axios.get('http://localhost:5000/api/admin/dashboard', {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const response = await apiClient.get('/admin/dashboard');
             setData(response.data);
         } catch (error) {
             console.error('Failed to fetch admin data:', error);
@@ -46,6 +41,10 @@ export const AdminReport: React.FC = () => {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        fetchAdminData();
+    }, []);
 
     if (loading) {
         return (

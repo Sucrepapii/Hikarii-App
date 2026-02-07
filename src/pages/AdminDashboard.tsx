@@ -3,8 +3,8 @@ import { useAuthStore } from '../stores/authStore';
 import { Card } from '../components/common/Card';
 import { Users, Activity, Crown, Shield, Wallet, ListTodo, Split, Zap } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import apiClient from '../api/client';
 
 interface DashboardData {
     stats: {
@@ -25,7 +25,7 @@ interface DashboardData {
 }
 
 export const AdminDashboard: React.FC = () => {
-    const { user, token } = useAuthStore();
+    const { user } = useAuthStore();
     const navigate = useNavigate();
     const [data, setData] = useState<DashboardData | null>(null);
     const [loading, setLoading] = useState(true);
@@ -41,9 +41,7 @@ export const AdminDashboard: React.FC = () => {
 
     const fetchAdminData = async () => {
         try {
-            const response = await axios.get('http://localhost:5000/api/admin/dashboard', {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const response = await apiClient.get('/admin/dashboard');
             setData(response.data);
         } catch (error) {
             console.error('Failed to fetch admin data:', error);
