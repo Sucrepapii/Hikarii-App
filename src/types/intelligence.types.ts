@@ -7,6 +7,7 @@ export enum InsightType {
   SUBSCRIPTION_ALERT = "SUBSCRIPTION_ALERT",
   PROJECT_RISK = "PROJECT_RISK",
   SPENDING_OPT = "SPENDING_OPT",
+  SYSTEM_UPDATE = "SYSTEM_UPDATE",
 }
 
 export enum InsightPriority {

@@ -14,7 +14,6 @@ import { ForgotPassword } from './pages/ForgotPassword';
 import { Settings } from './pages/Settings';
 import { Analytics } from './pages/Analytics';
 import { Subscriptions } from './pages/Subscriptions';
-import { Pricing } from './pages/Pricing';
 import { Projects } from './pages/Projects';
 import { ProjectForm } from './pages/ProjectForm';
 import { TermsOfService } from './pages/TermsOfService';
@@ -164,20 +163,13 @@ function App() {
                         </ProtectedRoute>
                     }
                 />
-                <Route
-                    path="/settings"
-                    element={
-                        <ProtectedRoute>
-                            <DashboardLayout>
-                                <Settings />
-                            </DashboardLayout>
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/pricing"
-                    element={<Pricing />}
-                />
+                <Route path="/settings" element={
+                    <ProtectedRoute>
+                        <DashboardLayout>
+                            <Settings />
+                        </DashboardLayout>
+                    </ProtectedRoute>
+                } />
                 <Route
                     path="/terms"
                     element={<TermsOfService />}
@@ -197,7 +189,6 @@ function App() {
                 <Route path="/help/category/:category" element={<CategoryPage />} />
                 <Route path="/help/article/:slug" element={<ArticlePage />} />
                 <Route path="/faq" element={<FAQ />} />
-
                 {/* Admin Routes */}
                 <Route
                     path="/admin"
@@ -220,7 +211,7 @@ function App() {
                     }
                 />
                 <Route
-                    path="/admin/report"
+                    path="/admin/reports"
                     element={
                         <ProtectedRoute>
                             <DashboardLayout>

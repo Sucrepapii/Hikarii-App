@@ -23,9 +23,15 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+app.get("/api/ai/test", (req, res) => {
+  res.json({ message: "AI route test successful" });
+});
+
 // Routes
 app.use("/api/auth", authRoutes);
+app.use("/api/admin", adminRoutes); // Admin Routes
 app.use("/api/contact", contactRoutes);
+app.use("/api/tasks", taskRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/projects", projectRoutes);
 app.use("/api", budgetRoutes); // Mounts /budgets and /expenses

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { LayoutDashboard, CheckSquare, Wallet, X, Calendar, LineChart, Settings, RefreshCw, LogOut, ChevronDown, ChevronRight, User, Database, DollarSign, Link2, HelpCircle, Shield, Users, Activity, Archive } from 'lucide-react';
+import { LayoutDashboard, CheckSquare, Wallet, X, Calendar, LineChart, Settings, RefreshCw, LogOut, ChevronDown, ChevronRight, User, Database, DollarSign, Link2, HelpCircle, Shield, Users, Activity, Archive, FileText } from 'lucide-react';
 import { clsx } from 'clsx';
 import { useAuthStore } from '../../stores/authStore';
 import toast from 'react-hot-toast';
@@ -16,6 +16,7 @@ const navItems = [
         to: '/settings',
         icon: Settings,
         label: 'Settings',
+        end: false,
         subItems: [
             { to: '/settings?tab=profile', icon: User, label: 'Profile' },
             { to: '/settings?tab=data', icon: Database, label: 'Data Management' },
@@ -33,9 +34,20 @@ interface SidebarProps {
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
-    const { user, logout } = useAuthStore();
+    const { logout, user } = useAuthStore();
     const location = useLocation();
     const [expandedItem, setExpandedItem] = useState<string | null>('/settings');
+
+    let displayNavItems;
+    if (user?.role === 'ADMIN') {
+        displayNavItems = [
+            { to: '/admin', icon: Shield, label: 'Overview', end: true },
+            { to: '/admin/users', icon: User, label: 'Manage Accounts' },
+            { to: '/admin/reports', icon: FileText, label: 'Full Report' },
+        ];
+    } else {
+        displayNavItems = [...navItems];
+    }
 
     const handleLogout = () => {
         logout();
@@ -46,14 +58,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     const toggleExpand = (path: string, e: React.MouseEvent) => {
         e.preventDefault();
         setExpandedItem(expandedItem === path ? null : path);
-        // Close sidebar on mobile when toggling to show content
-        if (onClose) onClose();
     };
 
     const NavContent = () => (
         <div className="flex flex-col h-full">
             <nav className="space-y-1 flex-1 overflow-y-auto pr-2 custom-scrollbar">
-                {navItems.map((item) => {
+                {displayNavItems.map((item: any) => {
                     const isActive = location.pathname === item.to || (item.subItems && location.pathname.startsWith(item.to));
                     const isExpanded = expandedItem === item.to;
                     const hasSubItems = !!item.subItems;
@@ -63,15 +73,15 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                             <div className="relative">
                                 <NavLink
                                     to={item.to}
-                                    end={item.to === '/'}
+                                    end={item.end !== undefined ? item.end : item.to === '/'}
                                     onClick={() => {
-                                        if (onClose) onClose();
+                                        if (!hasSubItems && onClose) onClose();
                                     }}
                                     className={({ isActive: isLinkActive }) =>
                                         clsx(
                                             'flex items-center justify-between px-4 py-3 rounded-2xl transition-smooth w-full',
                                             'hover:bg-white/20 dark:hover:bg-black/30',
-                                            (isLinkActive && !hasSubItems) // Only highlight parent if no subitems active? Or always?
+                                            (isLinkActive && !hasSubItems)
                                                 ? 'bg-gradient-to-r from-primary-600 to-accent-600 text-white shadow-lg'
                                                 : isLinkActive ? 'text-primary-600 dark:text-primary-400 font-semibold' : 'text-slate-700 dark:text-slate-300'
                                         )
@@ -95,8 +105,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                             {/* Submenu */}
                             {hasSubItems && isExpanded && (
                                 <div className="pl-4 space-y-1 animate-slide-down origin-top">
-                                    {item.subItems?.map((sub) => {
-                                        // Check if custom active logic for query params
+                                    {item.subItems?.map((sub: any) => {
                                         const isSubActive = location.pathname + location.search === sub.to;
                                         return (
                                             <NavLink
@@ -132,50 +141,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                     className="flex items-center gap-3 px-4 py-3 w-full rounded-2xl transition-smooth text-slate-700 dark:text-slate-300 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20 dark:hover:text-red-400"
                 >
                     <LogOut className="w-5 h-5" />
+                    <span className="font-medium">Logout</span>
                 </button>
             </div>
-
-            {/* Admin Section */}
-            {user?.role === 'ADMIN' && (
-                <div className="pt-4 mt-4 border-t border-slate-200 dark:border-slate-800">
-                    <p className="px-4 mb-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Administration</p>
-                    <div className="space-y-1">
-                        <NavLink
-                            to="/admin"
-                            onClick={() => onClose && onClose()}
-                            className={({ isActive }) => clsx(
-                                'flex items-center gap-3 px-4 py-3 rounded-2xl transition-smooth text-sm',
-                                isActive ? 'bg-primary-900/20 text-primary-400 font-bold border border-primary-500/30' : 'text-slate-400 hover:bg-slate-800/50'
-                            )}
-                        >
-                            <Shield className="w-4 h-4" />
-                            <span>System Overview</span>
-                        </NavLink>
-                        <NavLink
-                            to="/admin/users"
-                            onClick={() => onClose && onClose()}
-                            className={({ isActive }) => clsx(
-                                'flex items-center gap-3 px-4 py-3 rounded-2xl transition-smooth text-sm',
-                                isActive ? 'bg-primary-900/20 text-primary-400 font-bold border border-primary-500/30' : 'text-slate-400 hover:bg-slate-800/50'
-                            )}
-                        >
-                            <Users className="w-4 h-4" />
-                            <span>User Directory</span>
-                        </NavLink>
-                        <NavLink
-                            to="/admin/report"
-                            onClick={() => onClose && onClose()}
-                            className={({ isActive }) => clsx(
-                                'flex items-center gap-3 px-4 py-3 rounded-2xl transition-smooth text-sm',
-                                isActive ? 'bg-primary-900/20 text-primary-400 font-bold border border-primary-500/30' : 'text-slate-400 hover:bg-slate-800/50'
-                            )}
-                        >
-                            <Activity className="w-4 h-4" />
-                            <span>Full Report</span>
-                        </NavLink>
-                    </div>
-                </div>
-            )}
         </div>
     );
 

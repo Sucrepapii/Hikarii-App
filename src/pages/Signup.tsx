@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { UserPlus, Mail, Lock, User, Sun, Eye, EyeOff, ArrowLeft } from 'lucide-react';
+import { UserPlus, Mail, Lock, User, Eye, EyeOff, ArrowLeft } from 'lucide-react';
 import { useAuthStore } from '../stores/authStore';
 import { Input } from '../components/common/Input';
 import { Button } from '../components/common/Button';
@@ -40,6 +40,7 @@ export const Signup: React.FC = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [resendTimer, setResendTimer] = useState(0);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         let interval: any;
@@ -61,6 +62,7 @@ export const Signup: React.FC = () => {
 
     const onSubmit = async (data: SignupFormData) => {
         setError('');
+        setLoading(true);
         const { confirmPassword, ...signupData } = data;
 
         try {
@@ -75,6 +77,8 @@ export const Signup: React.FC = () => {
             }
         } catch (err: any) {
             setError(err.message || 'Signup failed');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -83,6 +87,7 @@ export const Signup: React.FC = () => {
         setError('');
         try {
             await verifyEmail(emailToVerify, otp);
+
             navigate('/dashboard');
         } catch (err: any) {
             setError(err.message || 'Verification failed');
@@ -93,7 +98,7 @@ export const Signup: React.FC = () => {
         if (resendTimer > 0) return;
 
         try {
-            await resendCode(emailToVerify);
+            await resendCode(emailToVerify); // This remains resendCode, as per its function
             toast.success('Code resent! Check your email.');
             setResendTimer(60);
         } catch (err: any) {
@@ -278,6 +283,8 @@ export const Signup: React.FC = () => {
                                 )}
                             </div>
 
+
+
                             {/* Terms and Privacy Agreement */}
                             <div className="flex items-start gap-3">
                                 <input
@@ -314,10 +321,10 @@ export const Signup: React.FC = () => {
                                 variant="primary"
                                 size="lg"
                                 className="w-full mt-8"
-                                disabled={isSubmitting}
+                                disabled={isSubmitting || loading}
                             >
                                 <UserPlus className="w-5 h-5 mr-2" />
-                                {isSubmitting ? 'Creating account...' : 'Sign Up'}
+                                {isSubmitting || loading ? 'Creating account...' : 'Sign Up'}
                             </Button>
                         </form>
                     )}

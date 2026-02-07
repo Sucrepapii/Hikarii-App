@@ -23,6 +23,7 @@ model User {
   expenses          Expense[]
   recurringExpenses RecurringExpense[]
 
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   
@@ -34,6 +35,10 @@ model User {
   subscriptionId         String?
   currentPeriodEnd       DateTime?
 
+  // Google Calendar Integration
+  googleId               String?  @unique
+  googleAccessToken      String?
+  googleRefreshToken     String?
   // Admin Tracking
   role                   Role     @default(USER)
   lastLoginAt            DateTime?
@@ -197,6 +202,7 @@ enum ExpenseCategory {
   UTILITIES
   SHOPPING
   HEALTH
+
   OTHER
 }
 
@@ -209,12 +215,14 @@ model RecurringExpense {
   confidenceScore Float    // 0.0 to 1.0
   isConfirmed     Boolean  @default(false) // User has manually verified
   isActive        Boolean  @default(true)
-  
   userId          String
   user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
+
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
   @@index([userId, isActive])
 }
+
+
+

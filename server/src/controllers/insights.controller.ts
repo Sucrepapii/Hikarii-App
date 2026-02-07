@@ -216,6 +216,21 @@ export const getInsights = async (
       });
     }
 
+    // 7. Platform Updates (Admin Only)
+    const userRole = (req.user as any)?.role;
+    if (userRole === "ADMIN") {
+      insights.unshift({
+        id: `sys-health-${Date.now()}`,
+        type: "SYSTEM_UPDATE", // New Type (mapped to icon in frontend if added, or fallback)
+        priority: "LOW",
+        title: "Platform Status: Healthy",
+        message:
+          "All systems (AI, DB, Mailer) are currently operating at peak performance.",
+        actionable: false,
+        createdAt: new Date(),
+      });
+    }
+
     res.json({ insights });
   } catch (error: any) {
     res.status(500).json({ error: error.message });

@@ -85,7 +85,7 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
                     )}
 
                     {/* Subscription Status Badge */}
-                    {user && (
+                    {user && user.role !== 'ADMIN' && (
                         <div className={`
                             hidden sm:flex items-center justify-center px-3 py-1 rounded-full text-xs font-bold
                             ${user.subscriptionStatus === 'PRO'
@@ -96,11 +96,8 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
                         </div>
                     )}
 
-                    {/* Mobile Subscription Status - Icon Only or Abbreviated? User asked for "FREE" or "PRO" on smaller screens. 
-                        The header is already crowded on mobile.
-                        Let's try to fit it in.
-                     */}
-                    {user && (
+                    {/* Mobile Subscription Status */}
+                    {user && user.role !== 'ADMIN' && (
                         <div className={`
                             sm:hidden flex items-center justify-center px-2 py-1 rounded-md text-[10px] font-bold
                              ${user.subscriptionStatus === 'PRO'

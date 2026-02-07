@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import prisma from "../config/db";
+import { subDays } from "date-fns";
 
 export const getAdminDashboardData = async (req: Request, res: Response) => {
   try {
@@ -15,33 +16,56 @@ export const getAdminDashboardData = async (req: Request, res: Response) => {
       return res.status(403).json({ message: "Access Denied: Admin only" });
     }
 
-    const [
-      totalUsers,
-      activeUsers,
-      proUsers,
-      totalTasks,
-      totalAiSplits,
-      totalExpenses,
-    ] = await Promise.all([
-      prisma.user.count({ where: { role: "USER" } }),
-      prisma.user.count({
-        where: {
-          role: "USER",
-          lastLoginAt: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) },
-        },
-      }),
-      prisma.user.count({ where: { role: "USER", subscriptionStatus: "PRO" } }),
-      prisma.task.count(),
-      prisma.taskBlock.count(), // Using TaskBlock as proxy for AI splits if direct ref missing
-      prisma.expense.count(),
-    ]);
+    // --- Platform Health ---
+    const totalUsers = await prisma.user.count({ where: { role: "USER" } });
+    const proUsers = await prisma.user.count({
+      where: { subscriptionStatus: "PRO", role: "USER" },
+    });
 
-    // Grouping by engagement (Clarity, Focus, Freedom)
-    const engagement = {
-      clarity: await prisma.task.count({ where: { status: "TODO" } }),
-      focus: await prisma.task.count({ where: { status: "IN_PROGRESS" } }),
-      freedom: await prisma.task.count({ where: { status: "COMPLETED" } }),
-    };
+    const sevenDaysAgo = subDays(new Date(), 7);
+    const thirtyDaysAgo = subDays(new Date(), 30);
+
+    const activeUsers = await prisma.user.count({
+      where: {
+        lastLoginAt: { gte: sevenDaysAgo },
+        role: "USER",
+      },
+    });
+
+    const totalTasks = await prisma.task.count();
+    // Proxy for "AI Splits": Counting TaskBlocks.
+    const totalAiSplits = await prisma.taskBlock.count();
+    const totalExpenses = await prisma.expense.count();
+
+    // --- Method Engagement (Last 30 Days) ---
+    const recentTasks = await prisma.task.count({
+      where: { createdAt: { gte: thirtyDaysAgo } },
+    });
+    const recentSplits = await prisma.taskBlock.count({
+      where: { createdAt: { gte: thirtyDaysAgo } },
+    });
+    const recentExpenses = await prisma.expense.count({
+      where: { createdAt: { gte: thirtyDaysAgo } },
+    });
+
+    // --- Revenue Estimates ---
+    const estimatedMRR = proUsers * 9.99;
+
+    // Fetch Recent Users
+    const users = await prisma.user.findMany({
+      where: { role: "USER" },
+      orderBy: { createdAt: "desc" },
+      take: 50,
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        subscriptionStatus: true,
+        lastLoginAt: true,
+        createdAt: true,
+      },
+    });
 
     res.json({
       stats: {
@@ -51,10 +75,14 @@ export const getAdminDashboardData = async (req: Request, res: Response) => {
         totalTasks,
         totalAiSplits,
         totalExpenses,
-        estimatedMRR: proUsers * 10, // Mock MRR
+        estimatedMRR,
       },
-      engagement,
-      users: [], // Handled in management page
+      engagement: {
+        clarity: recentTasks,
+        focus: recentSplits,
+        freedom: recentExpenses,
+      },
+      users,
     });
   } catch (error) {
     console.error("Admin Dashboard Error:", error);
@@ -76,6 +104,15 @@ export const updateUser = async (req: Request, res: Response) => {
 
     if (!requestor || requestor.role !== "ADMIN") {
       return res.status(403).json({ message: "Access Denied: Admin only" });
+    }
+
+    // Check if user exists
+    const targetUser = await prisma.user.findUnique({
+      where: { id },
+    });
+
+    if (!targetUser) {
+      return res.status(404).json({ message: "User not found" });
     }
 
     const updatedUser = await prisma.user.update({
