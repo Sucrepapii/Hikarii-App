@@ -1,52 +1,49 @@
 import React, { useEffect, useState } from 'react';
-import { Project } from '../../types/project.types';
-import { projectService } from '../../services/project.service';
-import { Card } from '../common/Card';
-import { Plus, Briefcase, ChevronRight, Edit2, Trash2 } from 'lucide-react';
+import { Plus, Briefcase, ChevronRight, Edit2, Trash2, CheckCircle2 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import { Card } from '../common/Card';
 import { Button } from '../common/Button';
 import toast from 'react-hot-toast';
 import { useAuthStore } from '../../stores/authStore';
+import { useProjectStore } from '../../stores/projectStore';
 import { UpgradeModal } from '../modals/UpgradeModal';
 import { ConfirmModal } from '../common/ConfirmModal';
 
 export const ProjectCarousel: React.FC = () => {
-    const [projects, setProjects] = useState<Project[]>([]);
-    const [loading, setLoading] = useState(true);
+    const { projects, fetchProjects, toggleProjectStatus, deleteProject, isLoading } = useProjectStore();
     const [showUpgradeModal, setShowUpgradeModal] = useState(false);
     const [projectToDelete, setProjectToDelete] = useState<string | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     const { user } = useAuthStore();
     const navigate = useNavigate();
 
     useEffect(() => {
-        const loadProjects = async () => {
-            try {
-                const data = await projectService.getProjects();
-                setProjects(data);
-            } catch (error) {
-                console.error("Failed to load projects", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        loadProjects();
-    }, []);
+        fetchProjects();
+    }, [fetchProjects]);
+
+    const activeProjects = projects.filter(p => !p.status || p.status === 'ACTIVE');
 
     const handleNewProjectClick = (e: React.MouseEvent) => {
         e.preventDefault();
         const isPro = user?.subscriptionStatus === 'PRO';
 
-        if (!isPro && projects.length >= 1) {
+        if (!isPro && activeProjects.length >= 1) {
             setShowUpgradeModal(true);
         } else {
             navigate('/projects/new');
         }
     };
 
-    const [isDeleting, setIsDeleting] = useState(false);
-
-    // ... existing handleNewProjectClick ...
+    const handleToggleStatus = async (id: string, currentStatus: string) => {
+        try {
+            const nextStatus = currentStatus === 'COMPLETED' ? 'ACTIVE' : 'COMPLETED';
+            await toggleProjectStatus(id, nextStatus as any);
+            toast.success(nextStatus === 'COMPLETED' ? 'Project moved to archive' : 'Project restored');
+        } catch (error) {
+            toast.error('Failed to update project');
+        }
+    };
 
     const handleDeleteClick = (id: string) => {
         setProjectToDelete(id);
@@ -57,9 +54,8 @@ export const ProjectCarousel: React.FC = () => {
 
         setIsDeleting(true);
         try {
-            await projectService.deleteProject(projectToDelete);
+            await deleteProject(projectToDelete);
             toast.success("Project deleted");
-            setProjects(projects.filter(p => p.id !== projectToDelete));
             setProjectToDelete(null);
         } catch (err) {
             toast.error("Failed to delete project");
@@ -68,7 +64,7 @@ export const ProjectCarousel: React.FC = () => {
         }
     };
 
-    if (loading) return <div className="h-40 animate-pulse bg-slate-100 dark:bg-slate-800 rounded-2xl" />;
+    if (isLoading && projects.length === 0) return <div className="h-40 animate-pulse bg-slate-100 dark:bg-slate-800 rounded-2xl" />;
 
     return (
         <div className="mb-8">
@@ -93,20 +89,33 @@ export const ProjectCarousel: React.FC = () => {
                     </div>
                     <h3 className="font-semibold text-slate-700 dark:text-slate-200">New Project</h3>
                     <p className="text-xs text-slate-500 mt-1">
-                        {user?.subscriptionStatus === 'PRO' ? 'Start a new goal' : `${projects.length}/1 Free Project Used`}
+                        {user?.subscriptionStatus === 'PRO' ? 'Start a new goal' : `${activeProjects.length}/1 Free Project Used`}
                     </p>
                 </div>
 
-                {projects.slice(0, 2).map(project => (
+                {activeProjects.slice(0, 2).map(project => (
                     <Card key={project.id} className="h-48 relative overflow-hidden group hover:shadow-lg transition-all border border-transparent hover:border-primary-200 dark:hover:border-primary-800">
                         <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary-500/10 to-transparent rounded-full blur-2xl group-hover:from-primary-500/20 transition-all" />
 
                         <div className="relative h-full flex flex-col justify-between">
                             <div>
                                 <div className="flex justify-between items-start mb-2">
-                                    <span className="px-2 py-1 rounded-md bg-green-100 dark:bg-green-900/30 text-xs font-bold text-green-700 dark:text-green-300">
-                                        {project.status}
-                                    </span>
+                                    <div className="flex items-center gap-2">
+                                        <button
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                handleToggleStatus(project.id, project.status);
+                                            }}
+                                            className="group/check relative flex items-center justify-center p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
+                                            title="Mark as Completed"
+                                        >
+                                            <div className="w-6 h-6 rounded-full border-2 border-slate-300 dark:border-slate-600 group-hover/check:border-primary-500 transition-colors" />
+                                            <CheckCircle2 className="w-6 h-6 absolute text-primary-500 scale-0 group-hover/check:scale-110 group-hover/check:opacity-50 transition-all" />
+                                        </button>
+                                        <span className="px-2 py-1 rounded-md bg-blue-100 dark:bg-blue-900/30 text-[10px] font-bold text-primary-700 dark:text-primary-300">
+                                            {project.status || 'ACTIVE'}
+                                        </span>
+                                    </div>
                                     <div className="flex items-center gap-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
                                         <Link to={`/projects/edit/${project.id}`}>
                                             <Button
@@ -161,7 +170,6 @@ export const ProjectCarousel: React.FC = () => {
                 onClose={() => setShowUpgradeModal(false)}
             />
 
-            {/* Delete Confirmation Modal */}
             {/* Delete Confirmation Modal */}
             <ConfirmModal
                 isOpen={!!projectToDelete}

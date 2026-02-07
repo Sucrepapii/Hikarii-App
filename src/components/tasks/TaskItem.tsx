@@ -62,19 +62,22 @@ export const TaskItem: React.FC<TaskItemProps> = ({
             <div className="flex flex-col h-full pl-3">
                 {/* Header */}
                 <div className="flex items-start justify-between gap-3 mb-3">
-                    <div className="flex items-start gap-3">
+                    <div className="flex items-start gap-4">
                         <button
                             onClick={() => onToggle(task.id)}
-                            className={clsx(
-                                'mt-0.5 w-5 h-5 rounded-md border-2 flex items-center justify-center transition-smooth shrink-0',
-                                task.status === TaskStatus.COMPLETED
-                                    ? 'bg-gradient-to-r from-success-500 to-success-600 border-success-500'
-                                    : 'border-slate-300 dark:border-slate-600 hover:border-primary-500'
-                            )}
+                            className="group/check relative flex items-center justify-center p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors shrink-0"
+                            title="Mark as Completed"
                         >
-                            {task.status === TaskStatus.COMPLETED && (
-                                <Check className="w-3 h-3 text-white" />
-                            )}
+                            <div className={clsx(
+                                "w-6 h-6 rounded-full border-2 transition-all",
+                                task.status === TaskStatus.COMPLETED
+                                    ? "border-success-500 bg-success-500"
+                                    : "border-slate-300 dark:border-slate-600 group-hover/check:border-primary-500"
+                            )} />
+                            <Check className={clsx(
+                                "w-3.5 h-3.5 absolute text-white transition-all",
+                                task.status === TaskStatus.COMPLETED ? "scale-100 opacity-100" : "scale-0 opacity-0 group-hover/check:scale-100 group-hover/check:opacity-50"
+                            )} />
                         </button>
                         <div>
                             <h3
