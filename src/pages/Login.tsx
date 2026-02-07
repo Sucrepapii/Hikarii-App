@@ -51,7 +51,12 @@ export const Login: React.FC = () => {
 
         try {
             await login(data.email, data.password);
-            navigate('/dashboard');
+            const user = useAuthStore.getState().user;
+            if (user?.role === 'ADMIN') {
+                navigate('/admin');
+            } else {
+                navigate('/dashboard');
+            }
         } catch (err: any) {
             if (err.requiresVerification) {
                 setEmailToVerify(err.email || data.email);
@@ -68,7 +73,12 @@ export const Login: React.FC = () => {
         setError('');
         try {
             await verifyEmail(emailToVerify, otp);
-            navigate('/dashboard');
+            const user = useAuthStore.getState().user;
+            if (user?.role === 'ADMIN') {
+                navigate('/admin');
+            } else {
+                navigate('/dashboard');
+            }
         } catch (err: any) {
             setError(err.message || 'Verification failed');
         }

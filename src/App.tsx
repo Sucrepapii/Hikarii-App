@@ -14,7 +14,6 @@ import { ForgotPassword } from './pages/ForgotPassword';
 import { Settings } from './pages/Settings';
 import { Analytics } from './pages/Analytics';
 import { Subscriptions } from './pages/Subscriptions';
-import { Pricing } from './pages/Pricing';
 import { Projects } from './pages/Projects';
 import { ProjectForm } from './pages/ProjectForm';
 import { TermsOfService } from './pages/TermsOfService';
@@ -30,6 +29,9 @@ import { useAuthStore } from './stores/authStore';
 import { useTaskStore } from './stores/taskStore';
 import { TaskSplitModal } from './components/tasks/TaskSplitModal';
 import { ScrollToTop } from './components/common/ScrollToTop';
+import { AdminDashboard } from './pages/AdminDashboard';
+import { AdminUserManagement } from './pages/AdminUserManagement';
+import { AdminReport } from './pages/AdminReport';
 import './index.css';
 
 import { useInactivity } from './hooks/useInactivity';
@@ -161,20 +163,13 @@ function App() {
                         </ProtectedRoute>
                     }
                 />
-                <Route
-                    path="/settings"
-                    element={
-                        <ProtectedRoute>
-                            <DashboardLayout>
-                                <Settings />
-                            </DashboardLayout>
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/pricing"
-                    element={<Pricing />}
-                />
+                <Route path="/settings" element={
+                    <ProtectedRoute>
+                        <DashboardLayout>
+                            <Settings />
+                        </DashboardLayout>
+                    </ProtectedRoute>
+                } />
                 <Route
                     path="/terms"
                     element={<TermsOfService />}
@@ -194,6 +189,36 @@ function App() {
                 <Route path="/help/category/:category" element={<CategoryPage />} />
                 <Route path="/help/article/:slug" element={<ArticlePage />} />
                 <Route path="/faq" element={<FAQ />} />
+                <Route
+                    path="/admin"
+                    element={
+                        <ProtectedRoute>
+                            <DashboardLayout>
+                                <AdminDashboard />
+                            </DashboardLayout>
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/admin/users"
+                    element={
+                        <ProtectedRoute>
+                            <DashboardLayout>
+                                <AdminUserManagement />
+                            </DashboardLayout>
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/admin/reports"
+                    element={
+                        <ProtectedRoute>
+                            <DashboardLayout>
+                                <AdminReport />
+                            </DashboardLayout>
+                        </ProtectedRoute>
+                    }
+                />
             </Routes >
 
             {activeSplitTaskId && (() => {

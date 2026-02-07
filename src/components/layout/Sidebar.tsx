@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { LayoutDashboard, CheckSquare, Wallet, X, Calendar, LineChart, Settings, RefreshCw, LogOut, ChevronDown, ChevronRight, User, Database, DollarSign, Link2, HelpCircle } from 'lucide-react';
+import { LayoutDashboard, CheckSquare, Wallet, X, Calendar, LineChart, Settings, RefreshCw, LogOut, ChevronDown, ChevronRight, User, Database, DollarSign, Link2, HelpCircle, Shield, FileText } from 'lucide-react';
 import { clsx } from 'clsx';
 import { useAuthStore } from '../../stores/authStore';
 import toast from 'react-hot-toast';
@@ -16,6 +16,7 @@ const navItems = [
         to: '/settings',
         icon: Settings,
         label: 'Settings',
+        end: false,
         subItems: [
             { to: '/settings?tab=profile', icon: User, label: 'Profile' },
             { to: '/settings?tab=data', icon: Database, label: 'Data Management' },
@@ -32,9 +33,20 @@ interface SidebarProps {
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
-    const logout = useAuthStore((state) => state.logout);
+    const { logout, user } = useAuthStore(); // Destructure user
     const location = useLocation();
     const [expandedItem, setExpandedItem] = useState<string | null>('/settings');
+
+    let displayNavItems;
+    if (user?.role === 'ADMIN') {
+        displayNavItems = [
+            { to: '/admin', icon: Shield, label: 'Overview', end: true, subItems: undefined },
+            { to: '/admin/users', icon: User, label: 'Manage Accounts', end: false, subItems: undefined },
+            { to: '/admin/reports', icon: FileText, label: 'Full Report', end: false, subItems: undefined },
+        ];
+    } else {
+        displayNavItems = [...navItems];
+    }
 
     const handleLogout = () => {
         logout();
@@ -52,7 +64,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     const NavContent = () => (
         <div className="flex flex-col h-full">
             <nav className="space-y-1 flex-1 overflow-y-auto pr-2 custom-scrollbar">
-                {navItems.map((item) => {
+                {displayNavItems.map((item) => {
                     const isActive = location.pathname === item.to || (item.subItems && location.pathname.startsWith(item.to));
                     const isExpanded = expandedItem === item.to;
                     const hasSubItems = !!item.subItems;
@@ -62,7 +74,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                             <div className="relative">
                                 <NavLink
                                     to={item.to}
-                                    end={item.to === '/'}
+                                    end={item.end || item.to === '/'}
                                     onClick={() => {
                                         if (onClose) onClose();
                                     }}

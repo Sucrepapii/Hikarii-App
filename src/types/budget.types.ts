@@ -5,6 +5,9 @@ export enum ExpenseCategory {
   UTILITIES = "UTILITIES",
   SHOPPING = "SHOPPING",
   HEALTH = "HEALTH",
+  TUITION = "TUITION",
+  BOOKS = "BOOKS",
+  GROCERIES = "GROCERIES",
   OTHER = "OTHER",
 }
 

@@ -131,11 +131,18 @@ export const login = async (req: AuthRequest, res: Response): Promise<void> => {
       email: user.email,
     });
 
+    // Update lastLoginAt
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { lastLoginAt: new Date() },
+    });
+
     res.json({
       user: {
-        id: user.id, // Prisma uses 'id' not '_id'
+        id: user.id,
         name: user.name,
         email: user.email,
+        role: user.role,
         createdAt: user.createdAt,
         subscriptionStatus: user.subscriptionStatus,
         stripeCustomerId: user.stripeCustomerId,
