@@ -101,6 +101,28 @@ export const login = async (req: AuthRequest, res: Response): Promise<void> => {
       return;
     }
 
+    // Check suspension
+    if (user.isSuspended) {
+      if (user.suspensionExpires && user.suspensionExpires < new Date()) {
+        // Auto-reactivate if expired
+        await prisma.user.update({
+          where: { id: user.id },
+          data: {
+            isSuspended: false,
+            suspensionReason: null,
+            suspensionExpires: null,
+          },
+        });
+      } else {
+        res.status(403).json({
+          error: `Account suspended. Reason: ${user.suspensionReason || "No reason provided"}`,
+          isSuspended: true,
+          expiresAt: user.suspensionExpires,
+        });
+        return;
+      }
+    }
+
     // Check password (In a real app, use bcrypt.compare here.
     // Assuming password stored is hashed or plain text for this demo - update logic as needed)
     // For this migration, we assume simple comparison or bcrypt if imported.

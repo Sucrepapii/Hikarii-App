@@ -42,6 +42,28 @@ model User {
   // Admin Tracking
   role                   Role     @default(USER)
   lastLoginAt            DateTime?
+  
+  // Suspension
+  isSuspended            Boolean   @default(false)
+  suspensionReason       String?
+  suspensionExpires      DateTime?
+
+  auditLogs              AuditLog[] @relation("AdminActions")
+}
+
+model AuditLog {
+  id          String   @id @default(uuid())
+  adminId     String
+  admin       User     @relation("AdminActions", fields: [adminId], references: [id])
+  action      String   // e.g., "BAN_USER", "DELETE_USER", "BATCH_DELETE"
+  targetId    String?  // The ID of the user/item acted upon
+  targetType  String?  // "USER", "PROJECT", etc.
+  details     Json?    // Any extra metadata
+  ipAddress   String?
+  createdAt   DateTime @default(now())
+
+  @@index([adminId])
+  @@index([targetId])
 }
 
 enum Role {

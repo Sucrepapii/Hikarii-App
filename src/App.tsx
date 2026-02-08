@@ -33,6 +33,7 @@ import { ScrollToTop } from './components/common/ScrollToTop';
 import { AdminDashboard } from './pages/AdminDashboard';
 import { AdminUserManagement } from './pages/AdminUserManagement';
 import { AdminReport } from './pages/AdminReport';
+import { AdminAuditLogs } from './pages/AdminAuditLogs';
 import './index.css';
 
 import { useInactivity } from './hooks/useInactivity';
@@ -223,6 +224,16 @@ function App() {
                         <ProtectedRoute>
                             <DashboardLayout>
                                 <AdminReport />
+                            </DashboardLayout>
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/admin/audit"
+                    element={
+                        <ProtectedRoute>
+                            <DashboardLayout>
+                                <AdminAuditLogs />
                             </DashboardLayout>
                         </ProtectedRoute>
                     }
