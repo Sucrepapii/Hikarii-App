@@ -7,7 +7,7 @@ import { useAuthStore } from '../stores/authStore';
 import { loadStripe } from '@stripe/stripe-js';
 import { STRIPE_CONFIG } from '../config/stripe';
 import { useNavigate } from 'react-router-dom';
-import { PLAN_FEATURES } from '../config/features';
+import apiClient from '../api/client';
 
 // Initialize Stripe
 const stripePromise = loadStripe(STRIPE_CONFIG.publishableKey);
@@ -34,25 +34,14 @@ export const Pricing: React.FC = () => {
             }
 
             console.log("Pricing: Calling backend to create session...");
-            // Call backend to create session
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/stripe/create-checkout-session`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                },
-                body: JSON.stringify({ billingPeriod })
+            // Use apiClient for automatic base URL and token handling
+            const response = await apiClient.post('/stripe/create-checkout-session', {
+                billingPeriod
             });
 
-            console.log("Pricing: Backend response status:", response.status);
+            console.log("Pricing: Backend response success");
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                console.error("Pricing Error: Backend returned error:", errorData);
-                throw new Error(errorData.message || 'Failed to create session');
-            }
-
-            const { url } = await response.json();
+            const { url } = response.data;
             console.log("Pricing: Redirecting to Stripe:", url);
 
             if (url) {

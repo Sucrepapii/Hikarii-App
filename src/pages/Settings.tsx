@@ -264,9 +264,9 @@ export const Settings: React.FC = () => {
                                     </p>
                                 </div>
                                 <div className="ml-auto">
-                                    {user?.subscriptionStatus === 'PRO' ? (
+                                    {user?.subscriptionStatus === 'PRO' || user?.subscriptionStatus === 'TRIAL' ? (
                                         <span className="px-3 py-1 rounded-full text-xs font-bold bg-gradient-brand text-white shadow-sm">
-                                            PRO
+                                            {user?.subscriptionStatus}
                                         </span>
                                     ) : (
                                         <span className="px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300">
@@ -277,14 +277,16 @@ export const Settings: React.FC = () => {
                             </div>
 
                             <div className="space-y-4">
-                                {user?.subscriptionStatus === 'PRO' ? (
+                                {user?.subscriptionStatus === 'PRO' || user?.subscriptionStatus === 'TRIAL' ? (
                                     <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
                                         <div className="flex flex-col sm:flex-row justify-between gap-4">
                                             <div>
-                                                <h3 className="font-semibold text-slate-900 dark:text-white">Pro Plan</h3>
+                                                <h3 className="font-semibold text-slate-900 dark:text-white">
+                                                    {user?.subscriptionStatus === 'TRIAL' ? 'Pro (Trial)' : 'Pro Plan'}
+                                                </h3>
                                                 <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
                                                     {user?.currentPeriodEnd
-                                                        ? `Renews on ${new Date(user.currentPeriodEnd).toLocaleDateString()}`
+                                                        ? `Renews/Expires on ${new Date(user.currentPeriodEnd).toLocaleDateString()}`
                                                         : "Active"}
                                                 </p>
                                             </div>
@@ -308,7 +310,7 @@ export const Settings: React.FC = () => {
                                                 Upgrade to unlock advanced insights and features.
                                             </p>
                                         </div>
-                                        <Button variant="primary" onClick={() => window.location.href = '/dashboard/pricing'}>
+                                        <Button variant="primary" onClick={() => window.location.href = '/pricing'}>
                                             Upgrade to Pro
                                         </Button>
                                     </div>
