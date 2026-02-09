@@ -16,8 +16,16 @@ export const FAQ: React.FC = () => {
             a: "Yes! Our core features including task management, basic budgeting, and calendar view are free forever. We believe in providing value first. Our Pro plan unlocks advanced AI insights and unlimited history."
         },
         {
+            q: "How do I set up WhatsApp notifications?",
+            a: "Go to Settings > Profile and enter your phone number. You can then toggle alerts for overdue tasks, budget limits, and project deadlines. If testing in the sandbox, remember to join the sandbox on your phone first by following the Twilio instructions."
+        },
+        {
             q: "How does the AI Smart Split work?",
             a: "Hikari uses advanced AI models to analyze your complex tasks (like 'Plan a wedding') and breaks them down into actionable sub-tasks automatically. It saves you the mental load of planning every detail."
+        },
+        {
+            q: "Can I sync with Google Calendar?",
+            a: "Yes! You can connect your Google account in Settings > Integrations. Once connected, you can choose to sync individual tasks or entire projects to your Google Calendar for better scheduling."
         },
         {
             q: "Can I use Hikari for my business?",

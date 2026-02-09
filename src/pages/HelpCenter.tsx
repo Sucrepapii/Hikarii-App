@@ -140,6 +140,17 @@ export const HelpCenter: React.FC = () => {
                                     <span className="text-pink-600 dark:text-pink-400 text-sm font-bold">{getCount('Troubleshooting')} Articles</span>
                                 )}
                             </Link>
+
+                            <Link to="/help/category/Features%20&%20Integrations" className="p-8 rounded-3xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 hover:-translate-y-1 hover:shadow-lg transition-all cursor-pointer group block">
+                                <div className="w-12 h-12 rounded-2xl bg-green-100 dark:bg-green-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                                    <Zap className="w-6 h-6 text-green-500" />
+                                </div>
+                                <h3 className="text-lg font-bold mb-2">Features & Integrations</h3>
+                                <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">WhatsApp, AI Smart Split, and more.</p>
+                                {getCount('Features & Integrations') > 0 && (
+                                    <span className="text-green-600 dark:text-green-400 text-sm font-bold">{getCount('Features & Integrations')} Articles</span>
+                                )}
+                            </Link>
                         </div>
                     </>
                 )}

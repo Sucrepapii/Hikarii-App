@@ -2,7 +2,11 @@ export interface Article {
   id: string;
   title: string;
   slug: string;
-  category: "Getting Started" | "Account & Billing" | "Troubleshooting";
+  category:
+    | "Getting Started"
+    | "Account & Billing"
+    | "Troubleshooting"
+    | "Features & Integrations";
   content: string; // HTML or Markdown string
   excerpt: string;
 }
@@ -183,6 +187,65 @@ export const helpArticles: Article[] = [
             <li><strong>Privacy:</strong> We do not sell your personal data to third parties.</li>
         </ul>
         <p>For more details, visit our <a href="/security">Security Page</a> and <a href="/privacy">Privacy Policy</a>.</p>
+    `,
+  },
+  {
+    id: "13",
+    title: "Setting up WhatsApp Notifications",
+    slug: "whatsapp-notifications",
+    category: "Features & Integrations",
+    excerpt: "Get real-time alerts on your phone for tasks and budgets.",
+    content: `
+        <h2>Stay Connected with WhatsApp</h2>
+        <p>WhatsApp notifications keep you informed about your workspace even when you're away from your desk.</p>
+        <h3>How to Enable:</h3>
+        <ol>
+            <li>Navigate to <strong>Settings > Profile</strong>.</li>
+            <li>Enter your phone number in international format (e.g., +1234567890).</li>
+            <li>Scroll down to "WhatsApp Notifications" and toggle the categories you want:
+                <ul>
+                    <li><strong>Overdue Tasks:</strong> Get a daily summary of tasks past their due date.</li>
+                    <li><strong>Budget Alerts:</strong> Get an instant message the moment you exceed a budget limit.</li>
+                    <li><strong>Project Deadlines:</strong> Stay informed about upcoming or passed project end dates.</li>
+                </ul>
+            </li>
+            <li>Click <strong>Save Changes</strong>.</li>
+        </ol>
+        <p><em>Note: If you are using the Twilio Sandbox for testing, you must first join the sandbox on your phone by following the instructions in your Twilio console.</em></p>
+    `,
+  },
+  {
+    id: "14",
+    title: "Budget Management 101",
+    slug: "budget-management-basics",
+    category: "Features & Integrations",
+    excerpt: "Learn how to track spending and stay within your limits.",
+    content: `
+        <h2>Take Control of Your Spending</h2>
+        <p>Hikari's budgeting tools help you visualize where your money is going and ensure you stay on track.</p>
+        <h3>1. Create a Budget</h3>
+        <p>Go to the <strong>Budget</strong> page and click "Create Budget". Choose a category (like Food or Utilities) and set a monthly limit.</p>
+        <h3>2. Log Expenses</h3>
+        <p>Every time you spend money, add an expense. You can link expenses to specific projects or even tasks to see the true cost of your work.</p>
+        <h3>3. Real-time Tracking</h3>
+        <p>The progress bars on your Budget page update instantly as you log expenses. If you have WhatsApp notifications enabled, you'll receive an alert the second you hit your limit!</p>
+    `,
+  },
+  {
+    id: "15",
+    title: "Understanding Project Analytics",
+    slug: "project-analytics-guide",
+    category: "Features & Integrations",
+    excerpt: "Insights into your productivity and budget performance.",
+    content: `
+        <h2>Data-Driven Decisions</h2>
+        <p>Hikari provides visual reports to help you understand your performance over time.</p>
+        <h3>Task Velocity</h3>
+        <p>View how many tasks you complete each week. This helps you estimate future projects more accurately.</p>
+        <h3>Budget Burn Rate</h3>
+        <p>See how quickly you're spending your budget over the course of a month. Our AI will alert you if your current spending trajectory will cause you to exceed your limit.</p>
+        <h3>Project Health</h3>
+        <p>A color-coded indicator (Green, Yellow, Red) tells you at a glance if your project is on time and within budget.</p>
     `,
   },
 ];
