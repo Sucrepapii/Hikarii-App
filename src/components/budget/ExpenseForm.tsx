@@ -30,14 +30,29 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
     const {
         register,
         handleSubmit,
+        reset,
         formState: { errors, isSubmitting },
     } = useForm<ExpenseFormData>({
         resolver: zodResolver(expenseSchema),
-        defaultValues: defaultValues || {
-            category: ExpenseCategory.OTHER,
-            date: new Date(),
-        },
     });
+
+    // Handle initial values and formatting
+    React.useEffect(() => {
+        if (defaultValues) {
+            const formattedValues = { ...defaultValues };
+            if (formattedValues.date) {
+                const date = new Date(formattedValues.date);
+                // @ts-ignore
+                formattedValues.date = date.toISOString().split('T')[0];
+            }
+            reset(formattedValues);
+        } else {
+            reset({
+                category: ExpenseCategory.OTHER,
+                date: new Date().toISOString().split('T')[0] as any,
+            });
+        }
+    }, [defaultValues, reset]);
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

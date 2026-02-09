@@ -214,3 +214,53 @@ export const getContactAutoReplyTemplate = (firstName: string) => {
     "You received this because you contacted Hikari Support.",
   );
 };
+
+/**
+ * Template for Account Suspension notification.
+ */
+export const getSuspensionTemplate = (
+  name: string,
+  reason?: string,
+  expires?: Date,
+) => {
+  const content = `
+    <p>Hello <strong>${name}</strong>,</p>
+    <p>Your Hikari account has been <strong style="color: #e11d48;">suspended</strong> due to a violation of our terms or suspicious activity.</p>
+    
+    <div style="background-color: #fff1f2; border: 1px solid #fecaca; padding: 24px; border-radius: 16px; margin: 24px 0;">
+      <p style="margin: 0 0 12px 0;"><strong>Reason:</strong> ${reason || "Terms of Service Violation"}</p>
+      ${expires ? `<p style="margin: 0;"><strong>Suspension Expires:</strong> ${expires.toLocaleDateString()}</p>` : '<p style="margin: 0;"><strong>Duration:</strong> Indefinite</p>'}
+    </div>
+    
+    <p>While suspended, you will not be able to access your projects or financial data. If you believe this is a mistake, please contact our support team.</p>
+  `;
+
+  return getBaseTemplate(
+    "Account Suspended",
+    content,
+    "Contact Support",
+    "mailto:support@hikarii.org",
+    "This is a mandatory security notification regarding your account status.",
+  );
+};
+
+/**
+ * Template for Account Reactivation notification.
+ */
+export const getReactivationTemplate = (name: string) => {
+  const content = `
+    <p>Hello <strong>${name}</strong>,</p>
+    <p>Great news! Your Hikari account has been <strong style="color: #059669;">reactivated</strong>. You now have full access to all your features and data.</p>
+    
+    <p>We're glad to have you back. Shine bright!</p>
+  `;
+
+  return getBaseTemplate(
+    "Account Reactivated",
+    content,
+    "Go to Dashboard",
+    process.env.CLIENT_URL ||
+      "https://checkmate-production-7067.up.railway.app/",
+    "Welcome back to Hikari!",
+  );
+};

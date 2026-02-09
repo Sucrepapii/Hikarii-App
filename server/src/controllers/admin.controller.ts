@@ -2,6 +2,11 @@ import { Request, Response } from "express";
 import prisma from "../config/db";
 import { subDays } from "date-fns";
 import bcrypt from "bcryptjs";
+import { sendEmail } from "../services/email.service";
+import {
+  getSuspensionTemplate,
+  getReactivationTemplate,
+} from "../utils/emailTemplates";
 
 export const createAdmin = async (req: Request, res: Response) => {
   try {
@@ -127,6 +132,7 @@ export const getAdminDashboardData = async (req: Request, res: Response) => {
         subscriptionStatus: true,
         lastLoginAt: true,
         createdAt: true,
+        isSuspended: true,
       },
     });
 
@@ -272,7 +278,7 @@ export const suspendUser = async (req: Request, res: Response) => {
       ? new Date(Date.now() + durationDays * 24 * 60 * 60 * 1000)
       : null;
 
-    await prisma.user.update({
+    const userToSuspend = await prisma.user.update({
       where: { id },
       data: {
         isSuspended: true,
@@ -280,6 +286,23 @@ export const suspendUser = async (req: Request, res: Response) => {
         suspensionExpires: suspensionExpires,
       },
     });
+
+    // Send notification email
+    try {
+      const emailHtml = getSuspensionTemplate(
+        userToSuspend.name,
+        reason,
+        suspensionExpires || undefined,
+      );
+      await sendEmail(
+        userToSuspend.email,
+        "Account Suspended - Hikari",
+        emailHtml,
+      );
+    } catch (emailError) {
+      console.error("Failed to send suspension email:", emailError);
+      // We continue even if email fails, but log it
+    }
 
     await prisma.auditLog.create({
       data: {
@@ -312,7 +335,7 @@ export const reactivateUser = async (req: Request, res: Response) => {
       return res.status(403).json({ message: "Access Denied" });
     }
 
-    await prisma.user.update({
+    const reactivatedUser = await prisma.user.update({
       where: { id },
       data: {
         isSuspended: false,
@@ -320,6 +343,18 @@ export const reactivateUser = async (req: Request, res: Response) => {
         suspensionExpires: null,
       },
     });
+
+    // Send notification email
+    try {
+      const emailHtml = getReactivationTemplate(reactivatedUser.name);
+      await sendEmail(
+        reactivatedUser.email,
+        "Account Reactivated - Hikari",
+        emailHtml,
+      );
+    } catch (emailError) {
+      console.error("Failed to send reactivation email:", emailError);
+    }
 
     await prisma.auditLog.create({
       data: {

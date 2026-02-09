@@ -34,6 +34,7 @@ import { AdminDashboard } from './pages/AdminDashboard';
 import { AdminUserManagement } from './pages/AdminUserManagement';
 import { AdminReport } from './pages/AdminReport';
 import { AdminAuditLogs } from './pages/AdminAuditLogs';
+import { Pricing } from './pages/Pricing';
 import ForcedPasswordChange from './pages/ForcedPasswordChange';
 import './index.css';
 
@@ -206,6 +207,7 @@ function App() {
                 <Route path="/help/category/:category" element={<CategoryPage />} />
                 <Route path="/help/article/:slug" element={<ArticlePage />} />
                 <Route path="/faq" element={<FAQ />} />
+                <Route path="/pricing" element={<Pricing />} />
                 {/* Admin Routes */}
                 <Route
                     path="/admin"

@@ -79,6 +79,13 @@ export const TaskForm: React.FC<TaskFormProps> = ({
                 convertedValues.taskType = convertedValues.financials.type;
             }
 
+            // Format date for the HTML date input (YYYY-MM-DD)
+            if (convertedValues.dueDate) {
+                const date = new Date(convertedValues.dueDate);
+                // @ts-ignore
+                convertedValues.dueDate = date.toISOString().split('T')[0];
+            }
+
             reset(convertedValues);
         } else {
             reset({

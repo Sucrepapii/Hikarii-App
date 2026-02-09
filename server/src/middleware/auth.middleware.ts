@@ -33,11 +33,19 @@ export const authenticate = async (
         email: true,
         subscriptionStatus: true,
         stripeCustomerId: true,
+        isSuspended: true,
       },
     });
 
     if (!user) {
       res.status(401).json({ error: "User not found" });
+      return;
+    }
+
+    if (user.isSuspended) {
+      res
+        .status(403)
+        .json({ error: "Your account is suspended. Please contact support." });
       return;
     }
 
