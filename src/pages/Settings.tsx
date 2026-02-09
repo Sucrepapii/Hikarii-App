@@ -2,7 +2,7 @@ import React from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Card } from '../components/common/Card';
 import { Button } from '../components/common/Button';
-import { Download, Database, Shield, DollarSign, CreditCard, Calendar as CalendarIcon } from 'lucide-react';
+import { Download, Database, Shield, DollarSign, CreditCard, Calendar as CalendarIcon, MessageCircle } from 'lucide-react';
 import { useTaskStore } from '../stores/taskStore';
 import { useBudgetStore } from '../stores/budgetStore';
 import { exportTasks, exportExpenses } from '../utils/exportUtils';
@@ -33,6 +33,10 @@ export const Settings: React.FC = () => {
     const [isEditingName, setIsEditingName] = React.useState(false);
     const [newName, setNewName] = React.useState(user?.name || '');
     const [isUpdatingProfile, setIsUpdatingProfile] = React.useState(false);
+    const [phoneNumber, setPhoneNumber] = React.useState(user?.phoneNumber || '');
+    const [waTasksEnabled, setWaTasksEnabled] = React.useState(user?.waTasksEnabled || false);
+    const [waBudgetEnabled, setWaBudgetEnabled] = React.useState(user?.waBudgetEnabled || false);
+    const [waProjectsEnabled, setWaProjectsEnabled] = React.useState(user?.waProjectsEnabled || false);
 
     // Password Change State
     const [passwordData, setPasswordData] = React.useState({
@@ -44,6 +48,10 @@ export const Settings: React.FC = () => {
 
     React.useEffect(() => {
         if (user?.name) setNewName(user.name);
+        if (user?.phoneNumber) setPhoneNumber(user.phoneNumber);
+        setWaTasksEnabled(user?.waTasksEnabled || false);
+        setWaBudgetEnabled(user?.waBudgetEnabled || false);
+        setWaProjectsEnabled(user?.waProjectsEnabled || false);
     }, [user]);
 
     // Check Google Status
@@ -105,7 +113,13 @@ export const Settings: React.FC = () => {
         }
         setIsUpdatingProfile(true);
         try {
-            await apiClient.put('/auth/profile', { name: newName });
+            await apiClient.put('/auth/profile', {
+                name: newName,
+                phoneNumber,
+                waTasksEnabled,
+                waBudgetEnabled,
+                waProjectsEnabled
+            });
             // Update local store
             await checkAuth();
             toast.success("Profile updated successfully");
@@ -203,6 +217,67 @@ export const Settings: React.FC = () => {
                                     <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400">
                                         {user?.email}
                                     </div>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+                                        WhatsApp Phone Number
+                                    </label>
+                                    <input
+                                        type="tel"
+                                        value={phoneNumber}
+                                        onChange={(e) => setPhoneNumber(e.target.value)}
+                                        placeholder="+234..."
+                                        className="w-full p-2.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white"
+                                    />
+                                </div>
+                            </div>
+
+                            {/* WhatsApp Notification Settings */}
+                            <div className="mt-8 pt-8 border-t border-slate-200 dark:border-slate-700">
+                                <div className="flex items-center gap-2 mb-4">
+                                    <MessageCircle className="w-5 h-5 text-green-500" />
+                                    <h3 className="text-lg font-medium text-slate-800 dark:text-slate-200">WhatsApp Notifications</h3>
+                                </div>
+                                <div className="space-y-4 max-w-md">
+                                    <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
+                                        <div>
+                                            <p className="text-sm font-medium text-slate-900 dark:text-white">Overdue Tasks</p>
+                                            <p className="text-xs text-slate-500">Get alerts for tasks past their due date</p>
+                                        </div>
+                                        <input
+                                            type="checkbox"
+                                            checked={waTasksEnabled}
+                                            onChange={(e) => setWaTasksEnabled(e.target.checked)}
+                                            className="w-5 h-5 rounded border-slate-300 text-primary-600"
+                                        />
+                                    </div>
+                                    <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
+                                        <div>
+                                            <p className="text-sm font-medium text-slate-900 dark:text-white">Budget Alerts</p>
+                                            <p className="text-xs text-slate-500">Get alerts when budget limits are reached</p>
+                                        </div>
+                                        <input
+                                            type="checkbox"
+                                            checked={waBudgetEnabled}
+                                            onChange={(e) => setWaBudgetEnabled(e.target.checked)}
+                                            className="w-5 h-5 rounded border-slate-300 text-primary-600"
+                                        />
+                                    </div>
+                                    <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
+                                        <div>
+                                            <p className="text-sm font-medium text-slate-900 dark:text-white">Project Deadlines</p>
+                                            <p className="text-xs text-slate-500">Get alerts for upcoming project ends</p>
+                                        </div>
+                                        <input
+                                            type="checkbox"
+                                            checked={waProjectsEnabled}
+                                            onChange={(e) => setWaProjectsEnabled(e.target.checked)}
+                                            className="w-5 h-5 rounded border-slate-300 text-primary-600"
+                                        />
+                                    </div>
+                                    <Button onClick={handleUpdateProfile} isLoading={isUpdatingProfile} className="w-full">
+                                        Save Notification Preferences
+                                    </Button>
                                 </div>
                             </div>
 
@@ -449,33 +524,54 @@ export const Settings: React.FC = () => {
                             </div>
                         </div>
 
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
-                            <div>
-                                <h3 className="font-medium text-slate-800 dark:text-slate-200 flex items-center gap-2">
-                                    Google Calendar
-                                    {isGoogleConnected && <span className="text-xs text-green-500 bg-green-100 dark:bg-green-900/30 px-2 py-0.5 rounded-full">Connected</span>}
-                                </h3>
-                                <p className="text-sm text-slate-500">
-                                    Sync individual tasks to Google Calendar (optional per task).
-                                </p>
+                        <div className="space-y-4">
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
+                                <div>
+                                    <h3 className="font-medium text-slate-800 dark:text-slate-200 flex items-center gap-2">
+                                        Google Calendar
+                                        {isGoogleConnected && <span className="text-xs text-green-500 bg-green-100 dark:bg-green-900/30 px-2 py-0.5 rounded-full">Connected</span>}
+                                    </h3>
+                                    <p className="text-sm text-slate-500">
+                                        Sync individual tasks to Google Calendar (optional per task).
+                                    </p>
+                                </div>
+                                {isGoogleConnected ? (
+                                    <Button
+                                        variant="danger"
+                                        onClick={handleDisconnectGoogle}
+                                        className="w-full sm:w-auto"
+                                    >
+                                        Disconnect
+                                    </Button>
+                                ) : (
+                                    <button
+                                        onClick={() => googleLogin()}
+                                        className="w-full sm:w-auto flex items-center justify-center gap-3 px-4 py-2.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg text-slate-700 dark:text-slate-200 font-medium hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors shadow-sm whitespace-nowrap touch-manipulation"
+                                    >
+                                        <GoogleIcon className="w-5 h-5" />
+                                        <span>Connect Google Calendar</span>
+                                    </button>
+                                )}
                             </div>
-                            {isGoogleConnected ? (
+
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-200/50 dark:border-slate-700/50 opacity-60">
+                                <div>
+                                    <h3 className="font-medium text-slate-400 dark:text-slate-500 flex items-center gap-2">
+                                        WhatsApp Business
+                                        <span className="text-[10px] uppercase tracking-wider bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-400 px-2 py-0.5 rounded-full font-bold">Coming Soon</span>
+                                    </h3>
+                                    <p className="text-sm text-slate-400 dark:text-slate-500">
+                                        Direct integration with WhatsApp Business API for advanced features.
+                                    </p>
+                                </div>
                                 <Button
-                                    variant="danger"
-                                    onClick={handleDisconnectGoogle}
+                                    variant="secondary"
+                                    disabled
                                     className="w-full sm:w-auto"
                                 >
-                                    Disconnect
+                                    Connect
                                 </Button>
-                            ) : (
-                                <button
-                                    onClick={() => googleLogin()}
-                                    className="w-full sm:w-auto flex items-center justify-center gap-3 px-4 py-2.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg text-slate-700 dark:text-slate-200 font-medium hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors shadow-sm whitespace-nowrap touch-manipulation"
-                                >
-                                    <GoogleIcon className="w-5 h-5" />
-                                    <span>Connect Google Calendar</span>
-                                </button>
-                            )}
+                            </div>
                         </div>
                     </Card>
                 )}

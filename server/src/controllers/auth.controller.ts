@@ -18,7 +18,7 @@ export const signup = async (
 ): Promise<void> => {
   console.log("Signup request received for:", req.body?.email);
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, phoneNumber } = req.body;
 
     if (!name || !email || !password) {
       console.log("Missing fields in signup request");
@@ -53,6 +53,7 @@ export const signup = async (
         isVerified: false,
         verificationToken: otp,
         verificationTokenExpires: otpExpires,
+        phoneNumber: phoneNumber || null,
       },
     });
 
@@ -310,6 +311,10 @@ export const getMe = async (req: AuthRequest, res: Response): Promise<void> => {
         subscriptionStatus: user.subscriptionStatus,
         stripeCustomerId: user.stripeCustomerId,
         currentPeriodEnd: user.currentPeriodEnd,
+        phoneNumber: user.phoneNumber,
+        waTasksEnabled: user.waTasksEnabled,
+        waBudgetEnabled: user.waBudgetEnabled,
+        waProjectsEnabled: user.waProjectsEnabled,
       },
     });
   } catch (error: any) {
@@ -434,16 +439,25 @@ export const updateProfile = async (
   res: Response,
 ): Promise<void> => {
   try {
-    const { name } = req.body;
+    const {
+      name,
+      phoneNumber,
+      waTasksEnabled,
+      waBudgetEnabled,
+      waProjectsEnabled,
+    } = req.body;
 
-    if (!name) {
-      res.status(400).json({ error: "Name is required" });
-      return;
-    }
+    const data: any = {};
+    if (name) data.name = name;
+    if (phoneNumber !== undefined) data.phoneNumber = phoneNumber;
+    if (waTasksEnabled !== undefined) data.waTasksEnabled = waTasksEnabled;
+    if (waBudgetEnabled !== undefined) data.waBudgetEnabled = waBudgetEnabled;
+    if (waProjectsEnabled !== undefined)
+      data.waProjectsEnabled = waProjectsEnabled;
 
     const user = await prisma.user.update({
       where: { id: req.userId },
-      data: { name },
+      data,
     });
 
     res.json({
@@ -457,6 +471,10 @@ export const updateProfile = async (
         subscriptionStatus: user.subscriptionStatus,
         stripeCustomerId: user.stripeCustomerId,
         currentPeriodEnd: user.currentPeriodEnd,
+        phoneNumber: user.phoneNumber,
+        waTasksEnabled: user.waTasksEnabled,
+        waBudgetEnabled: user.waBudgetEnabled,
+        waProjectsEnabled: user.waProjectsEnabled,
       },
     });
   } catch (error: any) {

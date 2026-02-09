@@ -2,6 +2,7 @@ import cron from "node-cron";
 import prisma from "../config/db";
 // import { TaskStatus } from "../models/types";
 import { sendEmail } from "../services/email.service";
+import { sendWhatsAppMessage } from "../services/whatsapp.service";
 import { getOverdueReminderTemplate } from "../utils/emailTemplates";
 
 export const startReminderJob = () => {
@@ -41,6 +42,60 @@ export const startReminderJob = () => {
             `Action Required: ${overdueTasks.length} Overdue Tasks on Hikari`,
             getOverdueReminderTemplate(user.name, taskListHtml),
           );
+
+          // WhatsApp for Tasks
+          if (user.waTasksEnabled && user.phoneNumber) {
+            const taskList = overdueTasks
+              .map(
+                (t: any) =>
+                  `- ${t.title} (Due: ${t.dueDate ? new Date(t.dueDate).toLocaleDateString() : "No date"})`,
+              )
+              .join("\n");
+            await sendWhatsAppMessage(
+              user.phoneNumber,
+              `Hi ${user.name}, you have ${overdueTasks.length} overdue tasks:\n${taskList}`,
+            );
+          }
+        }
+
+        // WhatsApp for Budgets
+        if (user.waBudgetEnabled && user.phoneNumber) {
+          const budgets = await prisma.budget.findMany({
+            where: { userId: user.id },
+          });
+
+          for (const budget of budgets) {
+            if (budget.spent >= budget.limit) {
+              await sendWhatsAppMessage(
+                user.phoneNumber,
+                `Budget Alert! You have reached your limit for ${budget.category}: Spent ${budget.spent}/${budget.limit}`,
+              );
+            }
+          }
+        }
+
+        // WhatsApp for Projects
+        if (user.waProjectsEnabled && user.phoneNumber) {
+          const overdueProjects = await prisma.project.findMany({
+            where: {
+              userId: user.id,
+              status: "ACTIVE",
+              endDate: { lt: today },
+            },
+          });
+
+          if (overdueProjects.length > 0) {
+            const projectList = overdueProjects
+              .map(
+                (p: any) =>
+                  `- ${p.title} (Ended: ${new Date(p.endDate).toLocaleDateString()})`,
+              )
+              .join("\n");
+            await sendWhatsAppMessage(
+              user.phoneNumber,
+              `Project Alert! The following projects have passed their end date:\n${projectList}`,
+            );
+          }
         }
       }
     } catch (error) {

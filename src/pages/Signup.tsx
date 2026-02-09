@@ -19,6 +19,7 @@ const signupSchema = z.object({
         .regex(/[a-zA-Z]/, 'Password must contain at least one letter')
         .regex(/[0-9]/, 'Password must contain at least one number')
         .regex(/[^a-zA-Z0-9]/, 'Password must contain at least one special character'),
+    phoneNumber: z.string().min(10, 'Please enter a valid phone number (e.g. +234...)'),
     confirmPassword: z.string(),
     agreementAccepted: z.boolean().refine((val) => val === true, {
         message: 'You must agree to the Terms of Use and Privacy Policy',
@@ -66,7 +67,7 @@ export const Signup: React.FC = () => {
         const { confirmPassword, ...signupData } = data;
 
         try {
-            const response = await signup(signupData.name, signupData.email, signupData.password);
+            const response = await signup(signupData.name, signupData.email, signupData.password, signupData.phoneNumber);
 
             // If verification is required, switch mode
             if (response && response.requiresVerification) {
@@ -226,6 +227,26 @@ export const Signup: React.FC = () => {
                                 </div>
                                 {errors.email && (
                                     <p className="mt-2 text-sm text-danger-500">{errors.email.message}</p>
+                                )}
+                            </div>
+
+                            {/* Phone Number Field */}
+                            <div>
+                                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2.5">
+                                    Phone Number (WhatsApp)
+                                </label>
+                                <div className="relative">
+                                    <Logo variant="icon" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 opacity-40" />
+                                    <Input
+                                        {...register('phoneNumber')}
+                                        type="tel"
+                                        placeholder="+234 812 345 6789"
+                                        className="pl-12"
+                                        autoComplete="tel"
+                                    />
+                                </div>
+                                {errors.phoneNumber && (
+                                    <p className="mt-2 text-sm text-danger-500">{errors.phoneNumber.message}</p>
                                 )}
                             </div>
 

@@ -50,6 +50,12 @@ model User {
 
   requiresPasswordChange Boolean   @default(false)
 
+  // WhatsApp Notifications
+  phoneNumber             String?
+  waTasksEnabled         Boolean   @default(false)
+  waBudgetEnabled        Boolean   @default(false)
+  waProjectsEnabled      Boolean   @default(false)
+
   auditLogs              AuditLog[] @relation("AdminActions")
 }
 

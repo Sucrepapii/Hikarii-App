@@ -10,6 +10,10 @@ export interface User {
   subscriptionStatus?: "FREE" | "PRO" | "TRIAL";
   stripeCustomerId?: string;
   currentPeriodEnd?: string | Date; // Or just string if serialised
+  phoneNumber?: string;
+  waTasksEnabled?: boolean;
+  waBudgetEnabled?: boolean;
+  waProjectsEnabled?: boolean;
   requiresPasswordChange?: boolean;
 }
 
@@ -19,7 +23,12 @@ interface AuthState {
   isLoading: boolean;
   error: string | null;
   login: (email: string, password: string) => Promise<void>;
-  signup: (name: string, email: string, password: string) => Promise<any>;
+  signup: (
+    name: string,
+    email: string,
+    password: string,
+    phoneNumber: string,
+  ) => Promise<any>;
   verifyEmail: (email: string, code: string) => Promise<void>;
   resendCode: (email: string) => Promise<void>;
   forgotPassword: (email: string) => Promise<void>;
@@ -59,13 +68,19 @@ export const useAuthStore = create<AuthState>((set) => ({
     }
   },
 
-  signup: async (name: string, email: string, password: string) => {
+  signup: async (
+    name: string,
+    email: string,
+    password: string,
+    phoneNumber: string,
+  ) => {
     try {
       set({ isLoading: true, error: null });
       const response = await apiClient.post("/auth/signup", {
         name,
         email,
         password,
+        phoneNumber,
       });
 
       // If verification required, don't set user/token yet

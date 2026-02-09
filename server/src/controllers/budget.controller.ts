@@ -1,6 +1,7 @@
 import { Response } from "express";
 import prisma from "../config/db";
 import { AuthRequest } from "../middleware/auth.middleware";
+import { sendWhatsAppMessage } from "../services/whatsapp.service";
 
 // Budget Controllers
 export const getBudgets = async (
@@ -139,10 +140,23 @@ export const createExpense = async (
     });
 
     if (budget) {
-      await prisma.budget.update({
+      const updatedBudget = await prisma.budget.update({
         where: { id: budget.id },
         data: { spent: { increment: expense.amount } },
+        include: { user: true },
       });
+
+      // Immediate WhatsApp Alert for Budget
+      if (
+        updatedBudget.user.waBudgetEnabled &&
+        updatedBudget.user.phoneNumber &&
+        updatedBudget.spent >= updatedBudget.limit
+      ) {
+        await sendWhatsAppMessage(
+          updatedBudget.user.phoneNumber,
+          `Budget Alert! You have reached your limit for ${updatedBudget.category}: Spent ${updatedBudget.spent}/${updatedBudget.limit}`,
+        );
+      }
     }
 
     res.status(201).json(expense);
