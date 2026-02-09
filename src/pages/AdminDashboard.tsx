@@ -90,8 +90,8 @@ export const AdminDashboard: React.FC = () => {
     }
 
     const engagementData = [
-        { name: 'Clarity (Dump)', value: data.engagement.clarity, color: '#3b82f6' },
-        { name: 'Focus (Split)', value: data.engagement.focus, color: '#8b5cf6' },
+        { name: 'Clarity (Dump)', value: data.engagement.clarity, color: '#6366f1' },
+        { name: 'Focus (Split)', value: data.engagement.focus, color: '#a855f7' },
         { name: 'Freedom (Track)', value: data.engagement.freedom, color: '#10b981' },
     ];
 

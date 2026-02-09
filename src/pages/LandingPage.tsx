@@ -170,7 +170,7 @@ export const LandingPage: React.FC = () => {
             {/* METHODOLOGY SECTION */}
             <section className="py-32 px-6 max-w-7xl mx-auto relative">
                 {/* Background Decor */}
-                <div className="absolute top-1/4 -left-64 w-[500px] h-[500px] bg-blue-400/10 rounded-full blur-[120px] mix-blend-multiply dark:mix-blend-screen pointer-events-none"></div>
+                <div className="absolute top-1/4 -left-64 w-[500px] h-[500px] bg-indigo-400/10 rounded-full blur-[120px] mix-blend-multiply dark:mix-blend-screen pointer-events-none"></div>
                 <div className="absolute bottom-1/4 -right-64 w-[500px] h-[500px] bg-purple-400/10 rounded-full blur-[120px] mix-blend-multiply dark:mix-blend-screen pointer-events-none"></div>
 
                 <div className="text-center mb-20 relative z-10">
@@ -201,7 +201,7 @@ export const LandingPage: React.FC = () => {
                             </ul>
                         </div>
                         <div className="flex-1 order-1 md:order-2 relative group perspective-1000">
-                            <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/20 to-blue-500/20 blur-[60px] rounded-full group-hover:bg-indigo-500/30 transition-all duration-700"></div>
+                            <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/20 to-indigo-600/20 blur-[60px] rounded-full group-hover:bg-indigo-500/30 transition-all duration-700"></div>
                             <img src={MethodClarity} alt="Clarity" className="relative z-10 w-full h-auto rounded-2xl border border-slate-200 dark:border-white/10 shadow-2xl transition-transform hover:scale-[1.02] duration-500 hover:shadow-indigo-500/20" />
                         </div>
                     </div>
@@ -264,7 +264,7 @@ export const LandingPage: React.FC = () => {
             <section id="features" className="py-32 px-6 max-w-7xl mx-auto bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 rounded-[3rem] my-20 relative overflow-hidden shadow-2xl">
                 {/* Enhanced Background Effects - Reduced Purple */}
                 <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-indigo-500/20 rounded-full blur-[120px] mix-blend-screen animate-pulse-slow"></div>
-                <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-blue-500/10 rounded-full blur-[120px] mix-blend-screen animate-pulse-slow delay-700"></div>
+                <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-indigo-500/10 rounded-full blur-[120px] mix-blend-screen animate-pulse-slow delay-700"></div>
 
                 <div className="relative z-10 p-4">
                     <div className="text-center mb-16">
@@ -277,7 +277,7 @@ export const LandingPage: React.FC = () => {
                         {/* Large Card: Task-Expense Linking */}
                         <div className="col-span-1 md:col-span-2 row-span-2 bg-white/5 border border-white/10 rounded-3xl p-8 flex flex-col justify-between hover:bg-white/10 transition-all duration-300 group backdrop-blur-md hover:scale-[1.01] hover:shadow-xl hover:shadow-black/20">
                             <div>
-                                <div className="w-14 h-14 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-2xl flex items-center justify-center mb-6 text-white shadow-lg">
+                                <div className="w-14 h-14 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-2xl flex items-center justify-center mb-6 text-white shadow-lg">
                                     <Link2 className="w-7 h-7" />
                                 </div>
                                 <h3 className="text-2xl font-bold mb-3 text-white">Task-Expense Linking</h3>
@@ -367,9 +367,9 @@ export const LandingPage: React.FC = () => {
                         </div>
 
                         {/* Last Card: Advanced Reporting (Moved here) */}
-                        <div className="col-span-1 md:col-span-1 bg-gradient-to-br from-blue-500/10 to-indigo-500/10 border border-blue-500/20 rounded-3xl p-6 flex flex-col justify-between hover:bg-blue-500/20 transition-all duration-300 backdrop-blur-md hover:scale-[1.02] group">
+                        <div className="col-span-1 md:col-span-1 bg-gradient-to-br from-indigo-500/10 to-indigo-600/10 border border-indigo-500/20 rounded-3xl p-6 flex flex-col justify-between hover:bg-indigo-500/20 transition-all duration-300 backdrop-blur-md hover:scale-[1.02] group">
                             <div>
-                                <FileText className="w-8 h-8 text-blue-400 mb-3 drop-shadow-lg" />
+                                <FileText className="w-8 h-8 text-indigo-400 mb-3 drop-shadow-lg" />
                                 <h3 className="font-bold text-white text-lg mb-1">Reporting</h3>
                                 <p className="text-xs text-slate-300">Export professional CSV/PDF reports.</p>
                             </div>

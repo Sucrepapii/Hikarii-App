@@ -124,9 +124,9 @@ export const AdminAuditLogs: React.FC = () => {
                                     </td>
                                     <td className="p-4">
                                         <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${log.action.includes('DELETE') ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' :
-                                                log.action.includes('SUSPEND') ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400' :
-                                                    log.action.includes('UPDATE') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' :
-                                                        'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300'
+                                            log.action.includes('SUSPEND') ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400' :
+                                                log.action.includes('UPDATE') ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400' :
+                                                    'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300'
                                             }`}>
                                             {log.action.replace('_', ' ')}
                                         </span>

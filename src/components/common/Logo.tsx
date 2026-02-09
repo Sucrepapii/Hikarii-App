@@ -40,29 +40,36 @@ export const Logo: React.FC<LogoProps> = ({
             containerSizes[size],
             'bg-gradient-to-br from-primary-500 to-accent-500 shadow-lg flex items-center justify-center transition-transform duration-300 hover:scale-105 overflow-hidden relative'
         )}>
-            {/* Custom Hikari Brand Icon: Abstract Sun/Lens Flare */}
+            {/* Custom Hikari Brand Icon: Modern Lightbulb */}
             <svg
                 viewBox="0 0 24 24"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
                 className={clsx('text-white', iconSizes[size])}
             >
-                {/* Central Core */}
-                <circle cx="12" cy="12" r="6" stroke="currentColor" strokeWidth="1.5" />
-                <path d="M12 8L12 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                <path d="M12 18L12 16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                <path d="M16 12L18 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                <path d="M6 12L8 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-
-                {/* Diagonal Rays (finer) */}
-                <path d="M14.828 9.172L16.242 7.758" stroke="currentColor" strokeWidth="1" strokeLinecap="round" />
-                <path d="M7.758 16.242L9.172 14.828" stroke="currentColor" strokeWidth="1" strokeLinecap="round" />
-                <path d="M14.828 14.828L16.242 16.242" stroke="currentColor" strokeWidth="1" strokeLinecap="round" />
-                <path d="M7.758 7.758L9.172 9.172" stroke="currentColor" strokeWidth="1" strokeLinecap="round" />
-
-                {/* Inner 'H' implication / Prism cut */}
-                <path d="M10 10L14 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" opacity="0.8" />
-                <path d="M14 10L10 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" opacity="0.8" />
+                {/* Bulb Glass */}
+                <path
+                    d="M9 18H15M9 21H15M12 2C7.58172 2 4 5.58172 4 10C4 12.308 4.965 14.39 6.5 15.856V19C6.5 20.1046 7.39543 21 8.5 21H15.5C16.6046 21 17.5 20.1046 17.5 19V15.856C19.035 14.39 20 12.308 20 10C20 5.58172 16.4183 2 12 2Z"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                />
+                {/* Filament */}
+                <path
+                    d="M12 6V11"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                />
+                {/* Glow stripes around the bulb base */}
+                <path
+                    d="M10 15H14"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    opacity="0.6"
+                />
             </svg>
         </div>
     );

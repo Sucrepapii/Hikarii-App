@@ -436,7 +436,7 @@ export const Settings: React.FC = () => {
                 {activeTab === 'integrations' && (
                     <Card>
                         <div className="flex items-center gap-4 mb-6">
-                            <div className="p-3 rounded-xl bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">
+                            <div className="p-3 rounded-xl bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400">
                                 <CalendarIcon className="w-6 h-6" />
                             </div>
                             <div>

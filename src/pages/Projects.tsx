@@ -122,7 +122,7 @@ export const Projects: React.FC = () => {
                                             <div className="w-6 h-6 rounded-full border-2 border-slate-300 dark:border-slate-600 group-hover/check:border-primary-500 transition-colors" />
                                             <CheckCircle2 className="w-6 h-6 absolute text-primary-500 scale-0 group-hover/check:scale-110 group-hover/check:opacity-50 transition-all" />
                                         </button>
-                                        <span className="px-2 py-1 rounded-md text-xs font-bold bg-blue-100 text-primary-700">
+                                        <span className="px-2 py-1 rounded-md text-xs font-bold bg-primary-100 text-primary-700">
                                             {project.status || 'ACTIVE'}
                                         </span>
                                     </div>
@@ -131,7 +131,7 @@ export const Projects: React.FC = () => {
                                             <Button
                                                 variant="ghost"
                                                 size="sm"
-                                                className="p-2 bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 dark:text-blue-400 rounded-lg transition-smooth"
+                                                className="p-2 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 rounded-lg transition-smooth"
                                             >
                                                 <Edit2 className="w-4 h-4" />
                                             </Button>

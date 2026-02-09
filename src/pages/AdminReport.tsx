@@ -73,8 +73,8 @@ export const AdminReport: React.FC = () => {
     }
 
     const engagementData = [
-        { name: 'Clarity (Dump)', value: data.engagement.clarity, color: '#3b82f6' },
-        { name: 'Focus (Split)', value: data.engagement.focus, color: '#8b5cf6' },
+        { name: 'Clarity (Dump)', value: data.engagement.clarity, color: '#6366f1' },
+        { name: 'Focus (Split)', value: data.engagement.focus, color: '#a855f7' },
         { name: 'Freedom (Track)', value: data.engagement.freedom, color: '#10b981' },
     ];
 
@@ -109,7 +109,7 @@ export const AdminReport: React.FC = () => {
             {/* Key Performance Indicators */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {[
-                    { label: 'Total Users', value: data.stats.totalUsers, icon: Users, color: 'blue' },
+                    { label: 'Total Users', value: data.stats.totalUsers, icon: Users, color: 'indigo' },
                     { label: 'Active (7d)', value: data.stats.activeUsers, icon: Activity, color: 'emerald' },
                     { label: 'Pro Members', value: data.stats.proUsers, icon: Crown, color: 'amber' },
                     { label: 'MRR', value: `$${data.stats.estimatedMRR.toFixed(2)}`, icon: Zap, color: 'indigo' },
@@ -122,10 +122,9 @@ export const AdminReport: React.FC = () => {
                             </div>
                             <div className={clsx(
                                 "p-2 rounded-lg",
-                                stat.color === 'blue' && "bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400",
+                                stat.color === 'indigo' && "bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400",
                                 stat.color === 'emerald' && "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400",
-                                stat.color === 'amber' && "bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400",
-                                stat.color === 'indigo' && "bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400"
+                                stat.color === 'amber' && "bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400"
                             )}>
                                 <stat.icon className="w-5 h-5" />
                             </div>
@@ -160,7 +159,7 @@ export const AdminReport: React.FC = () => {
                     </div>
                     <div className="mt-6 grid grid-cols-3 gap-4 border-t border-slate-100 dark:border-slate-800 pt-6">
                         <div className="text-center">
-                            <p className="text-2xl font-bold text-blue-500">{data.stats.totalTasks}</p>
+                            <p className="text-2xl font-bold text-indigo-500">{data.stats.totalTasks}</p>
                             <p className="text-xs text-slate-400 mt-1 uppercase tracking-wider font-semibold">Tasks</p>
                         </div>
                         <div className="text-center">
