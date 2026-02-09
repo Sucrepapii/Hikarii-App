@@ -501,7 +501,10 @@ export const changePassword = async (
 
     await prisma.user.update({
       where: { id: user.id },
-      data: { password: hashedPassword },
+      data: {
+        password: hashedPassword,
+        requiresPasswordChange: false,
+      },
     });
 
     res.json({ message: "Password updated successfully" });

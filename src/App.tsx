@@ -34,6 +34,7 @@ import { AdminDashboard } from './pages/AdminDashboard';
 import { AdminUserManagement } from './pages/AdminUserManagement';
 import { AdminReport } from './pages/AdminReport';
 import { AdminAuditLogs } from './pages/AdminAuditLogs';
+import ForcedPasswordChange from './pages/ForcedPasswordChange';
 import './index.css';
 
 import { useInactivity } from './hooks/useInactivity';
@@ -78,6 +79,14 @@ function App() {
                 <Route
                     path="/forgot-password"
                     element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <ForgotPassword />}
+                />
+                <Route
+                    path="/change-password"
+                    element={
+                        <ProtectedRoute>
+                            <ForcedPasswordChange />
+                        </ProtectedRoute>
+                    }
                 />
 
                 {/* Protected Routes */}

@@ -47,11 +47,22 @@ export const createBudget = async (
     if (existingBudget) {
       budget = await prisma.budget.update({
         where: { id: existingBudget.id },
-        data: { ...req.body, spent },
+        data: {
+          ...req.body,
+          spent,
+          projectId:
+            req.body.projectId ||
+            (req.body.projectId === "" ? null : undefined),
+        },
       });
     } else {
       budget = await prisma.budget.create({
-        data: { ...req.body, userId: req.userId, spent },
+        data: {
+          ...req.body,
+          userId: req.userId,
+          spent,
+          projectId: req.body.projectId || null,
+        },
       });
     }
 
@@ -111,7 +122,8 @@ export const createExpense = async (
       data: {
         ...req.body,
         userId: req.userId,
-        linkedTaskId: req.body.linkedTaskId || null, // Explicitly handle linkedTaskId
+        projectId: req.body.projectId || null,
+        linkedTaskId: req.body.linkedTaskId || null,
       },
     });
 
@@ -160,7 +172,11 @@ export const updateExpense = async (
       where: { id: req.params.id as string },
       data: {
         ...req.body,
-        linkedTaskId: req.body.linkedTaskId, // Allow updating link
+        projectId:
+          req.body.projectId || (req.body.projectId === "" ? null : undefined),
+        linkedTaskId:
+          req.body.linkedTaskId ||
+          (req.body.linkedTaskId === "" ? null : undefined),
       },
     });
 

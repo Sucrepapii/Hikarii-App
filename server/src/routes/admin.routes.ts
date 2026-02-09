@@ -8,6 +8,7 @@ import {
   reactivateUser,
   getAuditLogs,
   handleBatchOperations,
+  createAdmin,
 } from "../controllers/admin.controller";
 
 const router = Router();
@@ -15,6 +16,7 @@ const router = Router();
 // Protected Routes (Admin only check inside controller logic)
 router.get("/dashboard", authenticate, getAdminDashboardData);
 router.get("/audit-logs", authenticate, getAuditLogs);
+router.post("/create-admin", authenticate, createAdmin);
 router.put("/users/:id", authenticate, updateUser);
 router.post("/users/:id/suspend", authenticate, suspendUser);
 router.post("/users/:id/reactivate", authenticate, reactivateUser);

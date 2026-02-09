@@ -29,14 +29,12 @@ export const createTask = async (
     const { addToCalendar, ...rest } = req.body; // Extract flag
 
     // Sanitize projectId
-    const taskData = {
-      ...rest,
-      userId: req.userId,
-      projectId: rest.projectId || undefined,
-    };
-
     const task = await prisma.task.create({
-      data: taskData,
+      data: {
+        ...rest,
+        userId: req.userId,
+        projectId: rest.projectId || null,
+      },
     });
 
     // Handle Calendar Sync
@@ -95,7 +93,11 @@ export const updateTask = async (
 
     const task = await prisma.task.update({
       where: { id: req.params.id as string },
-      data: req.body,
+      data: {
+        ...req.body,
+        projectId:
+          req.body.projectId || (req.body.projectId === "" ? null : undefined),
+      },
     });
 
     /* Handled above */
@@ -175,10 +177,10 @@ export const analyzeTaskSplit = async (
     const { id } = req.params;
     const { force } = req.body;
 
-    const task = await prisma.task.findFirst({
-      where: { id, userId: req.userId },
+    const task = (await prisma.task.findFirst({
+      where: { id: id as string, userId: req.userId },
       include: { blocks: true },
-    });
+    })) as any;
 
     if (!task) {
       res.status(404).json({ error: "Task not found" });
@@ -235,10 +237,10 @@ export const scheduleBlocks = async (
 ): Promise<void> => {
   try {
     const { id } = req.params;
-    const task = await prisma.task.findUnique({
-      where: { id, userId: req.userId },
+    const task = (await prisma.task.findUnique({
+      where: { id: id as string, userId: req.userId },
       include: { blocks: true },
-    });
+    })) as any;
 
     if (!task || !task.blocks || task.blocks.length === 0) {
       res.status(404).json({ error: "Task or blocks not found" });
@@ -247,7 +249,11 @@ export const scheduleBlocks = async (
 
     const { syncTaskBlocks } =
       await import("../services/google.calendar.service.js");
-    const results = await syncTaskBlocks(req.userId!, id, task.blocks);
+    const results = await syncTaskBlocks(
+      req.userId!,
+      id as string,
+      task.blocks,
+    );
 
     if (!results) {
       res

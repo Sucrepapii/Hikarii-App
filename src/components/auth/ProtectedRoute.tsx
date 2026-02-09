@@ -7,10 +7,15 @@ interface ProtectedRouteProps {
 }
 
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-    const isAuthenticated = useAuthStore((state) => !!state.token);
+    const { user, token } = useAuthStore();
+    const isAuthenticated = !!token;
 
     if (!isAuthenticated) {
         return <Navigate to="/" replace />;
+    }
+
+    if (user?.requiresPasswordChange && window.location.pathname !== '/change-password') {
+        return <Navigate to="/change-password" replace />;
     }
 
     return <>{children}</>;

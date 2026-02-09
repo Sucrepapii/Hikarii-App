@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAuthStore } from '../stores/authStore';
 import { Card } from '../components/common/Card';
-import { Search, Shield, Clock, X, Users, Trash2, Ban, CheckCircle, AlertTriangle, MoreVertical } from 'lucide-react';
+import { Search, Shield, Clock, X, Users, Trash2, Ban, CheckCircle, AlertTriangle, MoreVertical, UserPlus } from 'lucide-react';
 import { format } from 'date-fns';
 import { clsx } from 'clsx';
 import { useNavigate } from 'react-router-dom';
@@ -19,6 +19,7 @@ interface UserData {
     isSuspended: boolean;
     suspensionReason?: string;
     suspensionExpires?: string;
+    requiresPasswordChange?: boolean;
 }
 
 export const AdminUserManagement: React.FC = () => {
@@ -37,6 +38,10 @@ export const AdminUserManagement: React.FC = () => {
     // Suspension State
     const [suspensionReason, setSuspensionReason] = useState('');
     const [suspensionDuration, setSuspensionDuration] = useState('7'); // days
+
+    // Create Admin State
+    const [isCreatingAdmin, setIsCreatingAdmin] = useState(false);
+    const [newAdmin, setNewAdmin] = useState({ name: '', email: '', password: '' });
 
     useEffect(() => {
         if (!user || user.role !== 'ADMIN') {
@@ -112,6 +117,24 @@ export const AdminUserManagement: React.FC = () => {
             fetchAdminData();
         } catch (error) {
             toast.error('Failed to suspend user');
+        } finally {
+            setIsUpdating(false);
+        }
+    };
+
+    const handleCreateAdmin = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsUpdating(true);
+        try {
+            await apiClient.post('/admin/create-admin', newAdmin);
+            toast.success('Admin account created successfully');
+            setIsCreatingAdmin(false);
+            setNewAdmin({ name: '', email: '', password: '' });
+            fetchAdminData();
+        } catch (error: any) {
+            console.error('Failed to create admin:', error);
+            const message = error.response?.data?.message || 'Failed to create admin';
+            toast.error(message);
         } finally {
             setIsUpdating(false);
         }
@@ -197,30 +220,39 @@ export const AdminUserManagement: React.FC = () => {
                     <p className="text-slate-600 dark:text-slate-400 mt-1">View and manage user accounts, permissions, and status</p>
                 </div>
 
-                {selectedUserIds.length > 0 && (
-                    <div className="flex items-center gap-2 animate-slide-in-right bg-primary-50 dark:bg-primary-900/20 p-2 rounded-xl border border-primary-100 dark:border-primary-800">
-                        <span className="text-sm font-bold text-primary-700 dark:text-primary-300 px-2">{selectedUserIds.length} Selected</span>
-                        <div className="h-6 w-px bg-primary-200 dark:bg-primary-700 mx-1" />
-                        <button
-                            onClick={() => handleBatchAction('SUSPEND')}
-                            className="px-3 py-1.5 bg-amber-500 text-white rounded-lg text-xs font-bold hover:bg-amber-600 transition-colors"
-                        >
-                            Bulk Suspend
-                        </button>
-                        <button
-                            onClick={() => handleBatchAction('DELETE')}
-                            className="px-3 py-1.5 bg-red-600 text-white rounded-lg text-xs font-bold hover:bg-red-700 transition-colors"
-                        >
-                            Bulk Delete
-                        </button>
-                        <button
-                            onClick={() => setSelectedUserIds([])}
-                            className="p-1.5 text-primary-600 hover:bg-primary-100 dark:hover:bg-primary-800 rounded-lg"
-                        >
-                            <X className="w-4 h-4" />
-                        </button>
-                    </div>
-                )}
+                <div className="flex items-center gap-3">
+                    <button
+                        onClick={() => setIsCreatingAdmin(true)}
+                        className="flex items-center gap-2 px-6 py-2.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-xl font-bold hover:opacity-90 transition-all shadow-xl shadow-slate-900/10 dark:shadow-white/5"
+                    >
+                        <UserPlus className="w-5 h-5" />
+                        Create Admin
+                    </button>
+                    {selectedUserIds.length > 0 && (
+                        <div className="flex items-center gap-2 animate-slide-in-right bg-primary-50 dark:bg-primary-900/20 p-2 rounded-xl border border-primary-100 dark:border-primary-800">
+                            <span className="text-sm font-bold text-primary-700 dark:text-primary-300 px-2">{selectedUserIds.length} Selected</span>
+                            <div className="h-6 w-px bg-primary-200 dark:bg-primary-700 mx-1" />
+                            <button
+                                onClick={() => handleBatchAction('SUSPEND')}
+                                className="px-3 py-1.5 bg-amber-500 text-white rounded-lg text-xs font-bold hover:bg-amber-600 transition-colors"
+                            >
+                                Bulk Suspend
+                            </button>
+                            <button
+                                onClick={() => handleBatchAction('DELETE')}
+                                className="px-3 py-1.5 bg-red-600 text-white rounded-lg text-xs font-bold hover:bg-red-700 transition-colors"
+                            >
+                                Bulk Delete
+                            </button>
+                            <button
+                                onClick={() => setSelectedUserIds([])}
+                                className="p-1.5 text-primary-600 hover:bg-primary-100 dark:hover:bg-primary-800 rounded-lg"
+                            >
+                                <X className="w-4 h-4" />
+                            </button>
+                        </div>
+                    )}
+                </div>
             </div>
 
             <Card className="overflow-hidden">
@@ -539,6 +571,78 @@ export const AdminUserManagement: React.FC = () => {
                                 </button>
                             </div>
                         </div>
+                    </Card>
+                </div>
+            )}
+            {/* Create Admin Modal */}
+            {isCreatingAdmin && (
+                <div className="fixed inset-0 z-[70] flex items-center justify-center p-4">
+                    <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-md" onClick={() => !isUpdating && setIsCreatingAdmin(false)} />
+                    <Card className="relative w-full max-w-md animate-scale-in overflow-hidden border-none shadow-2xl">
+                        <div className="p-8 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-slate-900/50">
+                            <h3 className="text-2xl font-display font-bold text-slate-900 dark:text-white flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-xl bg-primary-600 text-white flex items-center justify-center">
+                                    <UserPlus className="w-6 h-6" />
+                                </div>
+                                Create New Admin
+                            </h3>
+                            <button onClick={() => setIsCreatingAdmin(false)} className="p-2 hover:bg-white dark:hover:bg-slate-800 rounded-xl transition-colors shadow-sm">
+                                <X className="w-6 h-6 text-slate-400" />
+                            </button>
+                        </div>
+
+                        <form onSubmit={handleCreateAdmin} className="p-8 space-y-6">
+                            <div className="p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-900 rounded-xl flex gap-3">
+                                <Shield className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                                <p className="text-xs text-amber-800 dark:text-amber-300 font-medium">
+                                    New admins will be required to change their temporary password upon their first login for security.
+                                </p>
+                            </div>
+
+                            <div className="space-y-4">
+                                <div>
+                                    <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Full Name</label>
+                                    <input
+                                        required
+                                        type="text"
+                                        placeholder="Enter admin name"
+                                        value={newAdmin.name}
+                                        onChange={e => setNewAdmin({ ...newAdmin, name: e.target.value })}
+                                        className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm focus:ring-4 focus:ring-primary-500/10 outline-none transition-all"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Email Address</label>
+                                    <input
+                                        required
+                                        type="email"
+                                        placeholder="admin@example.com"
+                                        value={newAdmin.email}
+                                        onChange={e => setNewAdmin({ ...newAdmin, email: e.target.value })}
+                                        className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm focus:ring-4 focus:ring-primary-500/10 outline-none transition-all"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Temporary Password</label>
+                                    <input
+                                        required
+                                        type="password"
+                                        placeholder="Create a temporary password"
+                                        value={newAdmin.password}
+                                        onChange={e => setNewAdmin({ ...newAdmin, password: e.target.value })}
+                                        className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm focus:ring-4 focus:ring-primary-500/10 outline-none transition-all"
+                                    />
+                                </div>
+                            </div>
+
+                            <button
+                                type="submit"
+                                disabled={isUpdating}
+                                className="w-full py-4 bg-primary-600 text-white rounded-xl font-bold hover:bg-primary-700 transition-all shadow-xl shadow-primary-600/20 disabled:opacity-50"
+                            >
+                                {isUpdating ? 'Creating Account...' : 'Create Admin Account'}
+                            </button>
+                        </form>
                     </Card>
                 </div>
             )}

@@ -1,6 +1,69 @@
 import { Request, Response } from "express";
 import prisma from "../config/db";
 import { subDays } from "date-fns";
+import bcrypt from "bcryptjs";
+
+export const createAdmin = async (req: Request, res: Response) => {
+  try {
+    const adminId = (req as any).userId;
+    const { name, email, password } = req.body;
+
+    const requestor = await prisma.user.findUnique({
+      where: { id: adminId },
+      select: { role: true },
+    });
+
+    if (!requestor || requestor.role !== "ADMIN") {
+      return res.status(403).json({ message: "Access Denied: Admin only" });
+    }
+
+    if (!name || !email || !password) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    const existingUser = await prisma.user.findUnique({ where: { email } });
+    if (existingUser) {
+      return res.status(400).json({ message: "User already exists" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newAdmin = await prisma.user.create({
+      data: {
+        name,
+        email,
+        password: hashedPassword,
+        role: "ADMIN",
+        isVerified: true, // Auto-verify admins created by other admins
+        requiresPasswordChange: true,
+      },
+    });
+
+    await prisma.auditLog.create({
+      data: {
+        adminId,
+        action: "CREATE_ADMIN",
+        targetId: newAdmin.id,
+        targetType: "USER",
+        details: { email, name },
+        ipAddress: req.ip,
+      },
+    });
+
+    res.status(201).json({
+      message: "Admin created successfully",
+      user: {
+        id: newAdmin.id,
+        name: newAdmin.name,
+        email: newAdmin.email,
+        role: newAdmin.role,
+      },
+    });
+  } catch (error) {
+    console.error("Create Admin Error:", error);
+    res.status(500).json({ message: "Failed to create admin" });
+  }
+};
 
 export const getAdminDashboardData = async (req: Request, res: Response) => {
   try {

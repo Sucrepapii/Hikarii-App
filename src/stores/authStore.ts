@@ -10,6 +10,7 @@ export interface User {
   subscriptionStatus?: "FREE" | "PRO" | "TRIAL";
   stripeCustomerId?: string;
   currentPeriodEnd?: string | Date; // Or just string if serialised
+  requiresPasswordChange?: boolean;
 }
 
 interface AuthState {
