@@ -11,7 +11,6 @@ import { useAuthStore } from '../stores/authStore';
 // Note: In this environment, we will assume the files are placed in public or handled via typical asset workflow.
 // For the sake of this edit, I'll allow the user to visualize where they go.
 
-const HeroDashboard = "/hero_dashboard_v2.png"; // Updated with user provided screenshot
 const MethodClarity = "/method_clarity_1769981543788.png";
 const MethodFocus = "/method_focus_1769981556726.png";
 const MethodFreedom = "/method_freedom_v2.jpg";
@@ -139,27 +138,24 @@ export const LandingPage: React.FC = () => {
                     </Link>
                 </div>
 
-                {/* 3D Dashboard Mockup */}
                 <div
                     className="relative w-full max-w-5xl aspect-[16/9] transition-transform duration-200 ease-out animate-fade-in-up delay-300 group"
                     onMouseMove={handleMouseMove}
                     onMouseLeave={handleMouseLeave}
                     style={{ transformStyle: 'preserve-3d' }}
                 >
-                    {/* Vibrant Glow */}
-                    <div className="absolute inset-0 bg-gradient-to-b from-indigo-500/20 to-purple-600/20 rounded-2xl blur-3xl transform translate-y-10 scale-95 opacity-60 transition-opacity duration-500 group-hover:opacity-80"></div>
-
                     <div className="relative rounded-2xl overflow-hidden border border-indigo-100/50 dark:border-white/10 shadow-2xl bg-white dark:bg-[#0F111A]">
-                        <img
-                            src={HeroDashboard}
-                            alt="Hikari Dashboard"
+                        <video
+                            src="/Task - budget linking.mp4"
+                            autoPlay
+                            loop
+                            muted
+                            playsInline
                             className="w-full h-full object-cover"
-                            onError={(e) => {
-                                e.currentTarget.style.display = 'none';
-                                e.currentTarget.parentElement!.classList.add('bg-gradient-to-br', 'from-indigo-50', 'to-purple-50', 'dark:from-gray-900', 'dark:to-gray-800');
-                                e.currentTarget.parentElement!.innerHTML += '<div class="flex items-center justify-center h-full text-slate-400 font-display text-4xl">Dashboard Preview</div>';
-                            }}
-                        />
+                            poster="/hero_dashboard_v2.png"
+                        >
+                            Your browser does not support the video tag.
+                        </video>
 
                         {/* Subtle Glass Overlay */}
                         <div className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent pointer-events-none mix-blend-overlay"></div>
