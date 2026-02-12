@@ -139,26 +139,45 @@ export const LandingPage: React.FC = () => {
                 </div>
 
                 <div
-                    className="relative w-full max-w-5xl aspect-[16/9] transition-transform duration-200 ease-out animate-fade-in-up delay-300 group"
+                    className="relative w-full max-w-5xl aspect-[16/9] transition-transform duration-300 ease-out animate-fade-in-up delay-300 group"
                     onMouseMove={handleMouseMove}
                     onMouseLeave={handleMouseLeave}
                     style={{ transformStyle: 'preserve-3d' }}
                 >
-                    <div className="relative rounded-2xl overflow-hidden border border-indigo-100/50 dark:border-white/10 shadow-2xl bg-white dark:bg-[#0F111A]">
-                        <video
-                            src="/Task - budget linking.mp4"
-                            autoPlay
-                            loop
-                            muted
-                            playsInline
-                            className="w-full h-full object-cover"
-                            poster="/hero_dashboard_v2.png"
-                        >
-                            Your browser does not support the video tag.
-                        </video>
+                    {/* Professional Glow/Elevation */}
+                    <div className="absolute -inset-4 bg-gradient-to-r from-indigo-500/20 via-purple-500/20 to-pink-500/20 rounded-[2.5rem] blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                    <div className="absolute inset-0 bg-slate-900/10 dark:bg-black/20 rounded-2xl blur-2xl transform translate-y-8 scale-95 opacity-50 transition-transform duration-500 group-hover:translate-y-12"></div>
 
-                        {/* Subtle Glass Overlay */}
-                        <div className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent pointer-events-none mix-blend-overlay"></div>
+                    <div className="relative rounded-2xl overflow-hidden border border-slate-200 dark:border-white/10 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.3)] bg-white dark:bg-[#0F111A]">
+                        {/* Browser Window Bar */}
+                        <div className="absolute top-0 left-0 w-full h-10 bg-slate-50/80 dark:bg-[#1A1C29]/80 backdrop-blur-md border-b border-slate-200 dark:border-white/5 flex items-center px-4 z-20">
+                            <div className="flex gap-2">
+                                <div className="w-3 h-3 rounded-full bg-red-400/80"></div>
+                                <div className="w-3 h-3 rounded-full bg-yellow-400/80"></div>
+                                <div className="w-3 h-3 rounded-full bg-green-400/80"></div>
+                            </div>
+                            <div className="absolute left-1/2 -translate-x-1/2 text-[10px] font-medium text-slate-400 uppercase tracking-[0.2em]">
+                                Checkmate Dashboard
+                            </div>
+                        </div>
+
+                        <div className="pt-10 h-full">
+                            <video
+                                src="/Task - budget linking.mp4"
+                                autoPlay
+                                loop
+                                muted
+                                playsInline
+                                className="w-full h-full object-cover"
+                                poster="/hero_dashboard_v2.png"
+                            >
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+
+                        {/* Professional Glass Grading */}
+                        <div className="absolute inset-0 bg-gradient-to-tr from-indigo-500/5 via-transparent to-purple-500/5 pointer-events-none z-10"></div>
+                        <div className="absolute inset-0 ring-1 ring-inset ring-white/10 dark:ring-white/5 pointer-events-none rounded-2xl z-20"></div>
                     </div>
                 </div>
             </section>
