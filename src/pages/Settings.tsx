@@ -143,7 +143,7 @@ export const Settings: React.FC = () => {
 
         setIsChangingPassword(true);
         try {
-            await apiClient.put('/auth/password', {
+            await apiClient.post('/auth/change-password', {
                 currentPassword: passwordData.currentPassword,
                 newPassword: passwordData.newPassword
             });

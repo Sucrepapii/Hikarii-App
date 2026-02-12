@@ -22,7 +22,7 @@ router.post("/resend-verification", resendVerification);
 router.post("/forgot-password", forgotPassword);
 router.post("/reset-password", resetPassword);
 router.put("/profile", authenticate, updateProfile);
-router.put("/password", authenticate, changePassword);
+router.post("/change-password", authenticate, changePassword);
 router.get("/me", authenticate, getMe);
 router.get("/debug", debugInfo);
 
