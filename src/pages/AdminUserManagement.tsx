@@ -31,6 +31,11 @@ export const AdminUserManagement: React.FC = () => {
     const [editingUser, setEditingUser] = useState<UserData | null>(null);
     const [isUpdating, setIsUpdating] = useState(false);
     const [userToDelete, setUserToDelete] = useState<UserData | null>(null);
+    const [pagination, setPagination] = useState({
+        currentPage: 1,
+        pages: 1,
+        total: 0
+    });
 
     // Batch Operations State
     const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
@@ -49,18 +54,28 @@ export const AdminUserManagement: React.FC = () => {
             return;
         }
         fetchAdminData();
-    }, [user, navigate]);
+    }, [user, navigate, pagination.currentPage]);
 
     const fetchAdminData = async () => {
+        setLoading(true);
         try {
-            const response = await apiClient.get('/admin/dashboard');
+            const response = await apiClient.get(`/admin/dashboard?page=${pagination.currentPage}&limit=10`);
             setUsers(response.data.users || []);
+            setPagination(prev => ({
+                ...prev,
+                pages: response.data.pagination.pages,
+                total: response.data.pagination.total
+            }));
         } catch (error) {
             console.error('Failed to fetch admin data:', error);
             toast.error('Failed to load user directory');
         } finally {
             setLoading(false);
         }
+    };
+
+    const handlePageChange = (newPage: number) => {
+        setPagination(prev => ({ ...prev, currentPage: newPage }));
     };
 
     const handleUpdateUser = async (e: React.FormEvent) => {
@@ -398,6 +413,29 @@ export const AdminUserManagement: React.FC = () => {
                             ))}
                         </tbody>
                     </table>
+                </div>
+
+                {/* Pagination Controls */}
+                <div className="p-4 border-t border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 flex items-center justify-between">
+                    <div className="text-sm text-slate-500">
+                        Page {pagination.currentPage} of {pagination.pages} (Total {pagination.total} users)
+                    </div>
+                    <div className="flex gap-2">
+                        <button
+                            onClick={() => handlePageChange(pagination.currentPage - 1)}
+                            disabled={pagination.currentPage === 1 || loading}
+                            className="px-4 py-2 text-sm font-medium bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 disabled:opacity-50 transition-colors"
+                        >
+                            Previous
+                        </button>
+                        <button
+                            onClick={() => handlePageChange(pagination.currentPage + 1)}
+                            disabled={pagination.currentPage === pagination.pages || loading}
+                            className="px-4 py-2 text-sm font-medium bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 disabled:opacity-50 transition-colors"
+                        >
+                            Next
+                        </button>
+                    </div>
                 </div>
             </Card>
 

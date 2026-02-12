@@ -131,10 +131,15 @@ export const getAdminDashboardData = async (req: Request, res: Response) => {
     // --- Revenue Estimates ---
     const estimatedMRR = proUsers * 9.99;
 
-    // Fetch Recent Users
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const skip = (page - 1) * limit;
+
+    // Fetch Recent Users with pagination
     const users = await prisma.user.findMany({
       orderBy: { createdAt: "desc" },
-      take: 50,
+      skip,
+      take: limit,
       select: {
         id: true,
         name: true,
@@ -163,6 +168,12 @@ export const getAdminDashboardData = async (req: Request, res: Response) => {
         freedom: recentExpenses,
       },
       users,
+      pagination: {
+        total: totalUsers,
+        pages: Math.ceil(totalUsers / limit),
+        currentPage: page,
+        limit,
+      },
     });
   } catch (error) {
     console.error("Admin Dashboard Error:", error);

@@ -65,8 +65,9 @@ export const AdminAuditLogs: React.FC = () => {
     };
 
     const filteredLogs = logs.filter(log =>
-        log.admin.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        log.action.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        log.admin?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        log.admin?.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        log.action?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         (log.targetId && log.targetId.toLowerCase().includes(searchTerm.toLowerCase()))
     );
 
