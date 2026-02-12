@@ -19,7 +19,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
             <div className="flex flex-1 relative">
                 <Sidebar isOpen={isSidebarOpen} onClose={closeSidebar} />
 
-                <main className="flex-1 p-4 md:p-6 lg:p-8 overflow-auto">
+                <main className="flex-1 p-4 md:px-6 md:pt-2 md:pb-8 lg:px-8 lg:pt-2 lg:pb-12 overflow-auto">
                     {children}
                 </main>
             </div>

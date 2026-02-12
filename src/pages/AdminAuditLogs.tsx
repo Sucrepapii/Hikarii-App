@@ -80,7 +80,7 @@ export const AdminAuditLogs: React.FC = () => {
     }
 
     return (
-        <div className="space-y-8 animate-fade-in max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="space-y-4 animate-fade-in max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
                     <h1 className="text-3xl font-display font-bold text-slate-900 dark:text-white">Audit Trail</h1>

@@ -36,8 +36,8 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
 
 
     return (
-        <header className="glass-card sticky top-0 z-40 mb-4 md:mb-8 animate-slide-down">
-            <div className="flex items-center justify-between p-4 md:p-6">
+        <header className="glass-card sticky top-0 z-40 mb-2 md:mb-4 animate-slide-down">
+            <div className="flex items-center justify-between p-3 md:p-4">
                 <div className="flex items-center gap-3">
                     {/* Burger Menu Button - Mobile Only */}
                     <Button

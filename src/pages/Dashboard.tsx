@@ -100,7 +100,7 @@ export const Dashboard: React.FC = () => {
 
     return (
         <div className="animate-fade-in">
-            <div className="mb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+            <div className="mb-4 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
                 <div>
                     <h1 className="text-3xl font-display font-bold gradient-text mb-2">
                         Dashboard

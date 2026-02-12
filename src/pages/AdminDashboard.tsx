@@ -96,7 +96,7 @@ export const AdminDashboard: React.FC = () => {
     ];
 
     return (
-        <div className="space-y-8 animate-fade-in max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="space-y-4 animate-fade-in max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
             {/* Admin Header */}
             <div className="bg-slate-900 text-white p-6 rounded-2xl shadow-lg relative overflow-hidden">
                 <div className="absolute top-0 right-0 p-4 opacity-10">
