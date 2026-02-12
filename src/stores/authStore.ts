@@ -179,6 +179,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     try {
       const response = await apiClient.get("/auth/me");
       const { user } = response.data;
+      localStorage.setItem("auth-user", JSON.stringify(user));
       set({ user });
     } catch (error) {
       // Token invalid, clear auth

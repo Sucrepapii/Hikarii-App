@@ -48,7 +48,7 @@ export const Settings: React.FC = () => {
 
     React.useEffect(() => {
         if (user?.name) setNewName(user.name);
-        if (user?.phoneNumber) setPhoneNumber(user.phoneNumber);
+        setPhoneNumber(user?.phoneNumber || '');
         setWaTasksEnabled(user?.waTasksEnabled || false);
         setWaBudgetEnabled(user?.waBudgetEnabled || false);
         setWaProjectsEnabled(user?.waProjectsEnabled || false);
@@ -222,13 +222,16 @@ export const Settings: React.FC = () => {
                                     <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
                                         WhatsApp Phone Number
                                     </label>
-                                    <input
-                                        type="tel"
-                                        value={phoneNumber}
-                                        onChange={(e) => setPhoneNumber(e.target.value)}
-                                        placeholder="+234..."
-                                        className="w-full p-2.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white"
-                                    />
+                                    <div className="flex gap-2">
+                                        <input
+                                            type="tel"
+                                            value={phoneNumber}
+                                            onChange={(e) => setPhoneNumber(e.target.value)}
+                                            placeholder="+234..."
+                                            className="flex-1 p-2.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white"
+                                        />
+                                        <Button size="sm" onClick={handleUpdateProfile} isLoading={isUpdatingProfile}>Save</Button>
+                                    </div>
                                 </div>
                             </div>
 
