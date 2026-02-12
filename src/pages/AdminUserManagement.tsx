@@ -331,14 +331,16 @@ export const AdminUserManagement: React.FC = () => {
                                                         ADMIN
                                                     </span>
                                                 )}
-                                                <span className={clsx(
-                                                    "px-2 py-0.5 rounded-lg text-[10px] font-bold border",
-                                                    u.subscriptionStatus === 'PRO'
-                                                        ? "bg-purple-100 text-purple-700 border-purple-200 dark:bg-purple-900/30 dark:text-purple-300 dark:border-purple-800"
-                                                        : "bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700"
-                                                )}>
-                                                    {u.subscriptionStatus}
-                                                </span>
+                                                {u.role !== 'ADMIN' && (
+                                                    <span className={clsx(
+                                                        "px-2 py-0.5 rounded-lg text-[10px] font-bold border",
+                                                        u.subscriptionStatus === 'PRO'
+                                                            ? "bg-purple-100 text-purple-700 border-purple-200 dark:bg-purple-900/30 dark:text-purple-300 dark:border-purple-800"
+                                                            : "bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700"
+                                                    )}>
+                                                        {u.subscriptionStatus}
+                                                    </span>
+                                                )}
                                                 <span className={clsx(
                                                     "px-2 py-0.5 rounded-lg text-[10px] font-bold border",
                                                     u.isSuspended
@@ -447,18 +449,25 @@ export const AdminUserManagement: React.FC = () => {
                                     </div>
                                 </div>
 
-                                <div>
-                                    <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Subscription Tier</label>
-                                    <select
-                                        value={editingUser.subscriptionStatus}
-                                        onChange={(e) => setEditingUser({ ...editingUser, subscriptionStatus: e.target.value })}
-                                        className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm font-medium focus:ring-4 focus:ring-primary-500/10 outline-none"
-                                    >
-                                        <option value="FREE">FREE (Standard)</option>
-                                        <option value="TRIAL">TRIAL (14-Day)</option>
-                                        <option value="PRO">PRO (Premium)</option>
-                                    </select>
-                                </div>
+                                {editingUser.role !== 'ADMIN' ? (
+                                    <div>
+                                        <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Subscription Tier</label>
+                                        <select
+                                            value={editingUser.subscriptionStatus}
+                                            onChange={(e) => setEditingUser({ ...editingUser, subscriptionStatus: e.target.value })}
+                                            className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm font-medium focus:ring-4 focus:ring-primary-500/10 outline-none"
+                                        >
+                                            <option value="FREE">FREE (Standard)</option>
+                                            <option value="TRIAL">TRIAL (14-Day)</option>
+                                            <option value="PRO">PRO (Premium)</option>
+                                        </select>
+                                    </div>
+                                ) : (
+                                    <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-dashed border-slate-200 dark:border-slate-700">
+                                        <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Subscription Restricted</p>
+                                        <p className="text-sm text-slate-500">Administrators have full platform access by default.</p>
+                                    </div>
+                                )}
 
                                 <div className="pt-4">
                                     <button

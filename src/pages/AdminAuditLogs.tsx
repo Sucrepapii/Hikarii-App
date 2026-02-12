@@ -28,6 +28,11 @@ export const AdminAuditLogs: React.FC = () => {
     const [logs, setLogs] = useState<AuditLog[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
+    const [pagination, setPagination] = useState({
+        currentPage: 1,
+        pages: 1,
+        total: 0
+    });
 
     useEffect(() => {
         if (!user || user.role !== 'ADMIN') {
@@ -35,12 +40,18 @@ export const AdminAuditLogs: React.FC = () => {
             return;
         }
         fetchLogs();
-    }, [user, navigate]);
+    }, [user, navigate, pagination.currentPage]);
 
     const fetchLogs = async () => {
+        setLoading(true);
         try {
-            const response = await apiClient.get('/admin/audit-logs');
-            setLogs(response.data);
+            const response = await apiClient.get(`/admin/audit-logs?page=${pagination.currentPage}&limit=10`);
+            setLogs(response.data.logs);
+            setPagination(prev => ({
+                ...prev,
+                pages: response.data.pagination.pages,
+                total: response.data.pagination.total
+            }));
         } catch (error) {
             console.error('Failed to fetch audit logs:', error);
             toast.error('Failed to load system audit trail');
@@ -49,13 +60,17 @@ export const AdminAuditLogs: React.FC = () => {
         }
     };
 
+    const handlePageChange = (newPage: number) => {
+        setPagination(prev => ({ ...prev, currentPage: newPage }));
+    };
+
     const filteredLogs = logs.filter(log =>
         log.admin.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         log.action.toLowerCase().includes(searchTerm.toLowerCase()) ||
         (log.targetId && log.targetId.toLowerCase().includes(searchTerm.toLowerCase()))
     );
 
-    if (loading) {
+    if (loading && logs.length === 0) {
         return (
             <div className="flex items-center justify-center min-h-[60vh]">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
@@ -85,7 +100,7 @@ export const AdminAuditLogs: React.FC = () => {
                         <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                         <input
                             type="text"
-                            placeholder="Filter by admin, action, or target ID..."
+                            placeholder="Filter on current page..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             className="pl-9 pr-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 w-full"
@@ -93,7 +108,7 @@ export const AdminAuditLogs: React.FC = () => {
                     </div>
                     <div className="flex items-center gap-2">
                         <Filter className="w-4 h-4 text-slate-400" />
-                        <span className="text-sm text-slate-500">Latest 200 actions</span>
+                        <span className="text-sm text-slate-500">Total {pagination.total} actions</span>
                     </div>
                 </div>
 
@@ -155,12 +170,36 @@ export const AdminAuditLogs: React.FC = () => {
                             ))}
                         </tbody>
                     </table>
-                    {filteredLogs.length === 0 && (
+
+                    {filteredLogs.length === 0 && !loading && (
                         <div className="p-12 text-center">
                             <FileText className="w-12 h-12 text-slate-300 mx-auto mb-4" />
                             <p className="text-slate-500">No matching audit records found</p>
                         </div>
                     )}
+                </div>
+
+                {/* Pagination Controls */}
+                <div className="p-4 border-t border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 flex items-center justify-between">
+                    <div className="text-sm text-slate-500">
+                        Page {pagination.currentPage} of {pagination.pages}
+                    </div>
+                    <div className="flex gap-2">
+                        <button
+                            onClick={() => handlePageChange(pagination.currentPage - 1)}
+                            disabled={pagination.currentPage === 1 || loading}
+                            className="px-4 py-2 text-sm font-medium bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 disabled:opacity-50 transition-colors"
+                        >
+                            Previous
+                        </button>
+                        <button
+                            onClick={() => handlePageChange(pagination.currentPage + 1)}
+                            disabled={pagination.currentPage === pagination.pages || loading}
+                            className="px-4 py-2 text-sm font-medium bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 disabled:opacity-50 transition-colors"
+                        >
+                            Next
+                        </button>
+                    </div>
                 </div>
             </Card>
         </div>

@@ -395,17 +395,33 @@ export const getAuditLogs = async (req: Request, res: Response) => {
       return res.status(403).json({ message: "Access Denied" });
     }
 
-    const logs = await prisma.auditLog.findMany({
-      orderBy: { createdAt: "desc" },
-      include: {
-        admin: {
-          select: { name: true, email: true },
-        },
-      },
-      take: 200,
-    });
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const skip = (page - 1) * limit;
 
-    res.json(logs);
+    const [logs, total] = await Promise.all([
+      prisma.auditLog.findMany({
+        orderBy: { createdAt: "desc" },
+        include: {
+          admin: {
+            select: { name: true, email: true },
+          },
+        },
+        skip,
+        take: limit,
+      }),
+      prisma.auditLog.count(),
+    ]);
+
+    res.json({
+      logs,
+      pagination: {
+        total,
+        pages: Math.ceil(total / limit),
+        currentPage: page,
+        limit,
+      },
+    });
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch audit logs" });
   }
