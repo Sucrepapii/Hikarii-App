@@ -157,7 +157,7 @@ export const LandingPage: React.FC = () => {
                                 <div className="w-3 h-3 rounded-full bg-green-400/80"></div>
                             </div>
                             <div className="absolute left-1/2 -translate-x-1/2 text-[10px] font-medium text-slate-400 uppercase tracking-[0.2em]">
-                                Checkmate Dashboard
+                                Task-Budget Linking
                             </div>
                         </div>
 
