@@ -6,6 +6,7 @@ import { sendEmail } from "../services/email.service";
 import {
   getSuspensionTemplate,
   getReactivationTemplate,
+  getAdminOnboardingTemplate,
 } from "../utils/emailTemplates";
 
 export const createAdmin = async (req: Request, res: Response) => {
@@ -55,6 +56,18 @@ export const createAdmin = async (req: Request, res: Response) => {
       },
     });
 
+    // Send Onboarding Email
+    try {
+      await sendEmail(
+        email,
+        "Welcome to the Admin Team - Hikari",
+        getAdminOnboardingTemplate(name, email, password),
+      );
+    } catch (emailError) {
+      console.error("Failed to send admin onboarding email:", emailError);
+      // In a real app we might still succeed the request but flag the email failure
+    }
+
     res.status(201).json({
       message: "Admin created successfully",
       user: {
@@ -85,9 +98,9 @@ export const getAdminDashboardData = async (req: Request, res: Response) => {
     }
 
     // --- Platform Health ---
-    const totalUsers = await prisma.user.count({ where: { role: "USER" } });
+    const totalUsers = await prisma.user.count();
     const proUsers = await prisma.user.count({
-      where: { subscriptionStatus: "PRO", role: "USER" },
+      where: { subscriptionStatus: "PRO" },
     });
 
     const sevenDaysAgo = subDays(new Date(), 7);
@@ -96,7 +109,6 @@ export const getAdminDashboardData = async (req: Request, res: Response) => {
     const activeUsers = await prisma.user.count({
       where: {
         lastLoginAt: { gte: sevenDaysAgo },
-        role: "USER",
       },
     });
 
@@ -121,7 +133,6 @@ export const getAdminDashboardData = async (req: Request, res: Response) => {
 
     // Fetch Recent Users
     const users = await prisma.user.findMany({
-      where: { role: "USER" },
       orderBy: { createdAt: "desc" },
       take: 50,
       select: {

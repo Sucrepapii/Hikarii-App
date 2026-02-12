@@ -186,10 +186,8 @@ export const AdminUserManagement: React.FC = () => {
     };
 
     const filteredUsers = users.filter(u =>
-        u.role !== 'ADMIN' && (
-            u.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            u.email.toLowerCase().includes(searchTerm.toLowerCase())
-        )
+        u.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        u.email.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     if (!user || user.role !== 'ADMIN') {
@@ -328,6 +326,11 @@ export const AdminUserManagement: React.FC = () => {
                                     <td className="p-4">
                                         <div className="flex flex-col gap-1.5">
                                             <div className="flex items-center gap-2">
+                                                {u.role === 'ADMIN' && (
+                                                    <span className="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-slate-900 text-white dark:bg-white dark:text-slate-900 border border-slate-900 dark:border-white">
+                                                        ADMIN
+                                                    </span>
+                                                )}
                                                 <span className={clsx(
                                                     "px-2 py-0.5 rounded-lg text-[10px] font-bold border",
                                                     u.subscriptionStatus === 'PRO'

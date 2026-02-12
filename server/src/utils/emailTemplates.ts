@@ -264,3 +264,37 @@ export const getReactivationTemplate = (name: string) => {
     "Welcome back to Hikari!",
   );
 };
+/**
+ * Template for new Admin onboarding.
+ */
+export const getAdminOnboardingTemplate = (
+  name: string,
+  email: string,
+  temporaryPassword: string,
+) => {
+  const loginUrl =
+    process.env.CLIENT_URL ||
+    "https://checkmate-production-7067.up.railway.app/";
+
+  const content = `
+    <p>Hello <strong>${name}</strong>,</p>
+    <p>You have been added as an <strong>Administrator</strong> for the Hikari Platform. This role grants you access to manage users, view system analytics, and maintain platform health.</p>
+    
+    <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 24px; border-radius: 16px; margin: 24px 0;">
+      <p style="margin: 0 0 12px 0;"><strong>Email:</strong> ${email}</p>
+      <p style="margin: 0;"><strong>Temporary Password:</strong> <code style="background: #eef2ff; padding: 4px 8px; border-radius: 4px; color: #4338ca;">${temporaryPassword}</code></p>
+    </div>
+    
+    <p>For security reasons, you will be <span class="highlight">required to change your password</span> upon your first login.</p>
+    
+    <p style="text-align: center; font-size: 14px; color: #94a3b8; margin-top: 8px;">If you were not expecting this invitation, please contact the system administrator immediately.</p>
+  `;
+
+  return getBaseTemplate(
+    "Welcome to the Admin Team",
+    content,
+    "Login to Admin Console",
+    loginUrl,
+    "This is a mandatory administrative notification.",
+  );
+};
