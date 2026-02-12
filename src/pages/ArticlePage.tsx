@@ -29,8 +29,8 @@ export const ArticlePage: React.FC = () => {
                         <Logo variant="full" size="md" />
                     </div>
                     <div className="flex items-center gap-4">
-                        <Button onClick={() => navigate('/help')} variant="ghost" size="sm" className="gap-2">
-                            <ArrowLeft className="w-4 h-4" /> Back to Help
+                        <Button onClick={() => navigate(-1)} variant="ghost" size="sm" className="gap-2">
+                            <ArrowLeft className="w-4 h-4" /> Back
                         </Button>
                     </div>
                 </div>
