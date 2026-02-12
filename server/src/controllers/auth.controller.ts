@@ -170,6 +170,7 @@ export const login = async (req: AuthRequest, res: Response): Promise<void> => {
         subscriptionStatus: user.subscriptionStatus,
         stripeCustomerId: user.stripeCustomerId,
         currentPeriodEnd: user.currentPeriodEnd,
+        requiresPasswordChange: user.requiresPasswordChange,
       },
       token,
     });
@@ -240,6 +241,7 @@ export const verifyEmail = async (
         subscriptionStatus: user.subscriptionStatus,
         stripeCustomerId: user.stripeCustomerId,
         currentPeriodEnd: user.currentPeriodEnd,
+        requiresPasswordChange: user.requiresPasswordChange,
       },
       token,
     });
@@ -315,6 +317,7 @@ export const getMe = async (req: AuthRequest, res: Response): Promise<void> => {
         waTasksEnabled: user.waTasksEnabled,
         waBudgetEnabled: user.waBudgetEnabled,
         waProjectsEnabled: user.waProjectsEnabled,
+        requiresPasswordChange: user.requiresPasswordChange,
       },
     });
   } catch (error: any) {
@@ -475,6 +478,7 @@ export const updateProfile = async (
         waTasksEnabled: user.waTasksEnabled,
         waBudgetEnabled: user.waBudgetEnabled,
         waProjectsEnabled: user.waProjectsEnabled,
+        requiresPasswordChange: user.requiresPasswordChange,
       },
     });
   } catch (error: any) {
