@@ -2,12 +2,13 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Instagram, Twitter, Linkedin } from 'lucide-react';
 import { Logo } from '../common/Logo';
+import { LeadCaptureForm } from '../common/LeadCaptureForm';
 
 export const Footer: React.FC = () => {
     return (
         <footer className="bg-slate-900 border-t border-white/5 pt-20 pb-10">
             <div className="max-w-7xl mx-auto px-6">
-                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-12 mb-16">
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 mb-16">
                     {/* Brand Column */}
                     <div className="col-span-2 lg:col-span-2">
                         <Link to="/" className="flex items-center gap-2 mb-6 group">
@@ -57,6 +58,16 @@ export const Footer: React.FC = () => {
                             <li><Link to="/about" className="hover:text-indigo-400 transition-colors">About Us</Link></li>
                             <li><Link to="/contact" className="hover:text-indigo-400 transition-colors">Contact</Link></li>
                         </ul>
+                    </div>
+
+                    {/* Subscription / Lead Magnet Column */}
+                    <div className="col-span-2 md:col-span-2 lg:col-span-1 flex flex-col justify-start">
+                        <LeadCaptureForm
+                            variant="footer"
+                            source="FOOTER_SIGNUP"
+                            title="STAY FOCUSED"
+                            description="Radical clarity delivered to your inbox. No spam, just systems that work."
+                        />
                     </div>
                 </div>
 

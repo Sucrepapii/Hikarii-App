@@ -59,6 +59,13 @@ model User {
   auditLogs              AuditLog[] @relation("AdminActions")
 }
 
+model Lead {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  source    String?  // e.g., "NOTION_TEMPLATE", "ROI_CALCULATOR"
+  createdAt DateTime @default(now())
+}
+
 model AuditLog {
   id          String   @id @default(uuid())
   adminId     String

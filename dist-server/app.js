@@ -62,7 +62,7 @@ var init_email_service = __esm({
 });
 
 // server/src/utils/emailTemplates.ts
-var getBaseTemplate, getVerificationTemplate, getPasswordResetTemplate, getOverdueReminderTemplate, getContactFormTemplate, getContactAutoReplyTemplate;
+var getBaseTemplate, getVerificationTemplate, getPasswordResetTemplate, getOverdueReminderTemplate, getContactFormTemplate, getContactAutoReplyTemplate, getSuspensionTemplate, getReactivationTemplate, getAdminOnboardingTemplate, getLeadMagnetTemplate;
 var init_emailTemplates = __esm({
   "server/src/utils/emailTemplates.ts"() {
     getBaseTemplate = (title, content, buttonText, buttonUrl, footerText) => {
@@ -232,6 +232,92 @@ var init_emailTemplates = __esm({
         "Visit Help Center",
         "https://www.hikarii.org/help",
         "You received this because you contacted Hikari Support."
+      );
+    };
+    getSuspensionTemplate = (name, reason, expires) => {
+      const content = `
+    <p>Hello <strong>${name}</strong>,</p>
+    <p>Your Hikari account has been <strong style="color: #e11d48;">suspended</strong> due to a violation of our terms or suspicious activity.</p>
+    
+    <div style="background-color: #fff1f2; border: 1px solid #fecaca; padding: 24px; border-radius: 16px; margin: 24px 0;">
+      <p style="margin: 0 0 12px 0;"><strong>Reason:</strong> ${reason || "Terms of Service Violation"}</p>
+      ${expires ? `<p style="margin: 0;"><strong>Suspension Expires:</strong> ${expires.toLocaleDateString()}</p>` : '<p style="margin: 0;"><strong>Duration:</strong> Indefinite</p>'}
+    </div>
+    
+    <p>While suspended, you will not be able to access your projects or financial data. If you believe this is a mistake, please contact our support team.</p>
+  `;
+      return getBaseTemplate(
+        "Account Suspended",
+        content,
+        "Contact Support",
+        "mailto:support@hikarii.org",
+        "This is a mandatory security notification regarding your account status."
+      );
+    };
+    getReactivationTemplate = (name) => {
+      const content = `
+    <p>Hello <strong>${name}</strong>,</p>
+    <p>Great news! Your Hikari account has been <strong style="color: #059669;">reactivated</strong>. You now have full access to all your features and data.</p>
+    
+    <p>We're glad to have you back. Shine bright!</p>
+  `;
+      return getBaseTemplate(
+        "Account Reactivated",
+        content,
+        "Go to Dashboard",
+        process.env.CLIENT_URL || "https://checkmate-production-7067.up.railway.app/",
+        "Welcome back to Hikari!"
+      );
+    };
+    getAdminOnboardingTemplate = (name, email, temporaryPassword) => {
+      const loginUrl = process.env.CLIENT_URL || "https://checkmate-production-7067.up.railway.app/";
+      const content = `
+    <p>Hello <strong>${name}</strong>,</p>
+    <p>You have been added as an <strong>Administrator</strong> for the Hikari Platform. This role grants you access to manage users, view system analytics, and maintain platform health.</p>
+    
+    <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 24px; border-radius: 16px; margin: 24px 0;">
+      <p style="margin: 0 0 12px 0;"><strong>Email:</strong> ${email}</p>
+      <p style="margin: 0;"><strong>Temporary Password:</strong> <code style="background: #eef2ff; padding: 4px 8px; border-radius: 4px; color: #4338ca;">${temporaryPassword}</code></p>
+    </div>
+    
+    <p>For security reasons, you will be <span class="highlight">required to change your password</span> upon your first login.</p>
+    
+    <p style="text-align: center; font-size: 14px; color: #94a3b8; margin-top: 8px;">If you were not expecting this invitation, please contact the system administrator immediately.</p>
+  `;
+      return getBaseTemplate(
+        "Welcome to the Admin Team",
+        content,
+        "Login to Admin Console",
+        loginUrl,
+        "This is a mandatory administrative notification."
+      );
+    };
+    getLeadMagnetTemplate = (email) => {
+      const content = `
+    <p>Success! You're one step closer to radical clarity.</p>
+    <p>As promised, here is your access to the <strong>Hikari Method Notion Template</strong>. This is the exact system we use to bridge the gap between tasks and finances.</p>
+    
+    <div style="background-color: #f0fdf4; border: 1px solid #bbf7d0; padding: 24px; border-radius: 16px; margin: 24px 0; text-align: center;">
+      <h3 style="margin-top: 0; color: #166534; font-size: 18px; margin-bottom: 8px;">\u{1F381} Your Lead Magnet is Ready</h3>
+      <p style="color: #15803d; margin-bottom: 0;">The Hikari Method: Task-Budget Integration System</p>
+    </div>
+    
+    <p><strong>What's inside:</strong></p>
+    <ul style="color: #475569; line-height: 1.8;">
+      <li>Custom Task-Expense Linking Database</li>
+      <li>Monthly Financial Reflection Framework</li>
+      <li>The "Smart Split" Project Planner</li>
+    </ul>
+    
+    <p>Once you've had a look, we'd love to hear how it helps your workflow!</p>
+  `;
+      const templateStoreUrl = "https://www.notion.so/templates/hikari-method-task-budget-linking";
+      return getBaseTemplate(
+        "Your Hikari Method Template Inside!",
+        content,
+        "Download Notion Template",
+        templateStoreUrl,
+        "You received this because you requested the Hikari Method magnet on our website."
       );
     };
   }
@@ -502,8 +588,8 @@ var init_task_splitter_service = __esm({
         if (this.isInitialized) return;
         if (!process.env.GEMINI_API_KEY) {
           try {
-            const dotenv2 = __require("dotenv");
-            dotenv2.config();
+            const dotenv3 = __require("dotenv");
+            dotenv3.config();
           } catch (e) {
           }
         }
@@ -635,6 +721,39 @@ var init_task_splitter_service = __esm({
   }
 });
 
+// server/src/services/whatsapp.service.ts
+import twilio from "twilio";
+import dotenv2 from "dotenv";
+var accountSid, authToken, fromNumber, sendWhatsAppMessage;
+var init_whatsapp_service = __esm({
+  "server/src/services/whatsapp.service.ts"() {
+    dotenv2.config();
+    accountSid = process.env.TWILIO_ACCOUNT_SID;
+    authToken = process.env.TWILIO_AUTH_TOKEN;
+    fromNumber = process.env.TWILIO_WHATSAPP_FROM || "whatsapp:+14155238886";
+    sendWhatsAppMessage = async (to, message) => {
+      try {
+        if (!accountSid || !authToken) {
+          console.log("Skipping WhatsApp: No TWILIO credentials provided.");
+          return;
+        }
+        const client = twilio(accountSid, authToken);
+        const formattedTo = to.startsWith("whatsapp:") ? to : `whatsapp:${to}`;
+        const response = await client.messages.create({
+          from: fromNumber,
+          body: message,
+          to: formattedTo
+        });
+        console.log("WhatsApp message sent successfully:", response.sid);
+        return response;
+      } catch (error) {
+        console.error("Error sending WhatsApp message:", error);
+        throw error;
+      }
+    };
+  }
+});
+
 // server/src/jobs/reminder.job.ts
 var reminder_job_exports = {};
 __export(reminder_job_exports, {
@@ -646,6 +765,7 @@ var init_reminder_job = __esm({
   "server/src/jobs/reminder.job.ts"() {
     init_db();
     init_email_service();
+    init_whatsapp_service();
     init_emailTemplates();
     startReminderJob = () => {
       if (process.env.VERCEL) {
@@ -678,6 +798,48 @@ var init_reminder_job = __esm({
                 `Action Required: ${overdueTasks.length} Overdue Tasks on Hikari`,
                 getOverdueReminderTemplate(user.name, taskListHtml)
               );
+              if (user.waTasksEnabled && user.phoneNumber) {
+                const taskList = overdueTasks.map(
+                  (t) => `- ${t.title} (Due: ${t.dueDate ? new Date(t.dueDate).toLocaleDateString() : "No date"})`
+                ).join("\n");
+                await sendWhatsAppMessage(
+                  user.phoneNumber,
+                  `Hi ${user.name}, you have ${overdueTasks.length} overdue tasks:
+${taskList}`
+                );
+              }
+            }
+            if (user.waBudgetEnabled && user.phoneNumber) {
+              const budgets = await db_default.budget.findMany({
+                where: { userId: user.id }
+              });
+              for (const budget of budgets) {
+                if (budget.spent >= budget.limit) {
+                  await sendWhatsAppMessage(
+                    user.phoneNumber,
+                    `Budget Alert! You have reached your limit for ${budget.category}: Spent ${budget.spent}/${budget.limit}`
+                  );
+                }
+              }
+            }
+            if (user.waProjectsEnabled && user.phoneNumber) {
+              const overdueProjects = await db_default.project.findMany({
+                where: {
+                  userId: user.id,
+                  status: "ACTIVE",
+                  endDate: { lt: today }
+                }
+              });
+              if (overdueProjects.length > 0) {
+                const projectList = overdueProjects.map(
+                  (p) => `- ${p.title} (Ended: ${new Date(p.endDate).toLocaleDateString()})`
+                ).join("\n");
+                await sendWhatsAppMessage(
+                  user.phoneNumber,
+                  `Project Alert! The following projects have passed their end date:
+${projectList}`
+                );
+              }
             }
           }
         } catch (error) {
@@ -726,7 +888,7 @@ var generateOTP = () => Math.floor(1e5 + Math.random() * 9e5).toString();
 var signup = async (req, res) => {
   console.log("Signup request received for:", req.body?.email);
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, phoneNumber } = req.body;
     if (!name || !email || !password) {
       console.log("Missing fields in signup request");
       res.status(400).json({ error: "Name, email, and password are required" });
@@ -742,9 +904,9 @@ var signup = async (req, res) => {
     console.log("Creating new user...");
     const otp = generateOTP();
     const otpExpires = new Date(Date.now() + 60 * 60 * 1e3);
-    const bcrypt = await import("bcryptjs");
-    const salt = await bcrypt.default.genSalt(10);
-    const hashedPassword = await bcrypt.default.hash(password, salt);
+    const bcrypt2 = await import("bcryptjs");
+    const salt = await bcrypt2.default.genSalt(10);
+    const hashedPassword = await bcrypt2.default.hash(password, salt);
     const user = await db_default.user.create({
       data: {
         name,
@@ -752,7 +914,8 @@ var signup = async (req, res) => {
         password: hashedPassword,
         isVerified: false,
         verificationToken: otp,
-        verificationTokenExpires: otpExpires
+        verificationTokenExpires: otpExpires,
+        phoneNumber: phoneNumber || null
       }
     });
     try {
@@ -789,10 +952,29 @@ var login = async (req, res) => {
       });
       return;
     }
+    if (user.isSuspended) {
+      if (user.suspensionExpires && user.suspensionExpires < /* @__PURE__ */ new Date()) {
+        await db_default.user.update({
+          where: { id: user.id },
+          data: {
+            isSuspended: false,
+            suspensionReason: null,
+            suspensionExpires: null
+          }
+        });
+      } else {
+        res.status(403).json({
+          error: `Account suspended. Reason: ${user.suspensionReason || "No reason provided"}`,
+          isSuspended: true,
+          expiresAt: user.suspensionExpires
+        });
+        return;
+      }
+    }
     if (user.password !== password) {
     }
-    const bcrypt = await import("bcryptjs");
-    const isMatch = await bcrypt.default.compare(password, user.password);
+    const bcrypt2 = await import("bcryptjs");
+    const isMatch = await bcrypt2.default.compare(password, user.password);
     if (!isMatch) {
       res.status(401).json({ error: "Invalid credentials" });
       return;
@@ -814,7 +996,8 @@ var login = async (req, res) => {
         createdAt: user.createdAt,
         subscriptionStatus: user.subscriptionStatus,
         stripeCustomerId: user.stripeCustomerId,
-        currentPeriodEnd: user.currentPeriodEnd
+        currentPeriodEnd: user.currentPeriodEnd,
+        requiresPasswordChange: user.requiresPasswordChange
       },
       token
     });
@@ -862,10 +1045,12 @@ var verifyEmail = async (req, res) => {
         id: user.id,
         name: user.name,
         email: user.email,
+        role: user.role,
         createdAt: user.createdAt,
         subscriptionStatus: user.subscriptionStatus,
         stripeCustomerId: user.stripeCustomerId,
-        currentPeriodEnd: user.currentPeriodEnd
+        currentPeriodEnd: user.currentPeriodEnd,
+        requiresPasswordChange: user.requiresPasswordChange
       },
       token
     });
@@ -916,10 +1101,17 @@ var getMe = async (req, res) => {
         id: user.id,
         name: user.name,
         email: user.email,
+        role: user.role,
+        isVerified: user.isVerified,
         createdAt: user.createdAt,
         subscriptionStatus: user.subscriptionStatus,
         stripeCustomerId: user.stripeCustomerId,
-        currentPeriodEnd: user.currentPeriodEnd
+        currentPeriodEnd: user.currentPeriodEnd,
+        phoneNumber: user.phoneNumber,
+        waTasksEnabled: user.waTasksEnabled,
+        waBudgetEnabled: user.waBudgetEnabled,
+        waProjectsEnabled: user.waProjectsEnabled,
+        requiresPasswordChange: user.requiresPasswordChange
       }
     });
   } catch (error) {
@@ -986,9 +1178,9 @@ var resetPassword = async (req, res) => {
       res.status(400).json({ error: "Reset code has expired" });
       return;
     }
-    const bcrypt = await import("bcryptjs");
-    const salt = await bcrypt.default.genSalt(10);
-    const hashedPassword = await bcrypt.default.hash(newPassword, salt);
+    const bcrypt2 = await import("bcryptjs");
+    const salt = await bcrypt2.default.genSalt(10);
+    const hashedPassword = await bcrypt2.default.hash(newPassword, salt);
     await db_default.user.update({
       where: { id: user.id },
       data: {
@@ -1006,14 +1198,23 @@ var resetPassword = async (req, res) => {
 };
 var updateProfile = async (req, res) => {
   try {
-    const { name } = req.body;
-    if (!name) {
-      res.status(400).json({ error: "Name is required" });
-      return;
-    }
+    const {
+      name,
+      phoneNumber,
+      waTasksEnabled,
+      waBudgetEnabled,
+      waProjectsEnabled
+    } = req.body;
+    const data = {};
+    if (name) data.name = name;
+    if (phoneNumber !== void 0) data.phoneNumber = phoneNumber;
+    if (waTasksEnabled !== void 0) data.waTasksEnabled = waTasksEnabled;
+    if (waBudgetEnabled !== void 0) data.waBudgetEnabled = waBudgetEnabled;
+    if (waProjectsEnabled !== void 0)
+      data.waProjectsEnabled = waProjectsEnabled;
     const user = await db_default.user.update({
       where: { id: req.userId },
-      data: { name }
+      data
     });
     res.json({
       message: "Profile updated successfully",
@@ -1021,10 +1222,16 @@ var updateProfile = async (req, res) => {
         id: user.id,
         name: user.name,
         email: user.email,
+        role: user.role,
         createdAt: user.createdAt,
         subscriptionStatus: user.subscriptionStatus,
         stripeCustomerId: user.stripeCustomerId,
-        currentPeriodEnd: user.currentPeriodEnd
+        currentPeriodEnd: user.currentPeriodEnd,
+        phoneNumber: user.phoneNumber,
+        waTasksEnabled: user.waTasksEnabled,
+        waBudgetEnabled: user.waBudgetEnabled,
+        waProjectsEnabled: user.waProjectsEnabled,
+        requiresPasswordChange: user.requiresPasswordChange
       }
     });
   } catch (error) {
@@ -1043,8 +1250,8 @@ var changePassword = async (req, res) => {
       res.status(404).json({ error: "User not found" });
       return;
     }
-    const bcrypt = await import("bcryptjs");
-    const isMatch = await bcrypt.default.compare(
+    const bcrypt2 = await import("bcryptjs");
+    const isMatch = await bcrypt2.default.compare(
       currentPassword,
       user.password
     );
@@ -1052,11 +1259,14 @@ var changePassword = async (req, res) => {
       res.status(400).json({ error: "Incorrect current password" });
       return;
     }
-    const salt = await bcrypt.default.genSalt(10);
-    const hashedPassword = await bcrypt.default.hash(newPassword, salt);
+    const salt = await bcrypt2.default.genSalt(10);
+    const hashedPassword = await bcrypt2.default.hash(newPassword, salt);
     await db_default.user.update({
       where: { id: user.id },
-      data: { password: hashedPassword }
+      data: {
+        password: hashedPassword,
+        requiresPasswordChange: false
+      }
     });
     res.json({ message: "Password updated successfully" });
   } catch (error) {
@@ -1096,11 +1306,16 @@ var authenticate = async (req, res, next) => {
         id: true,
         email: true,
         subscriptionStatus: true,
-        stripeCustomerId: true
+        stripeCustomerId: true,
+        isSuspended: true
       }
     });
     if (!user) {
       res.status(401).json({ error: "User not found" });
+      return;
+    }
+    if (user.isSuspended) {
+      res.status(403).json({ error: "Your account is suspended. Please contact support." });
       return;
     }
     req.user = user;
@@ -1119,7 +1334,7 @@ router.post("/resend-verification", resendVerification);
 router.post("/forgot-password", forgotPassword);
 router.post("/reset-password", resetPassword);
 router.put("/profile", authenticate, updateProfile);
-router.put("/password", authenticate, changePassword);
+router.post("/change-password", authenticate, changePassword);
 router.get("/me", authenticate, getMe);
 router.get("/debug", debugInfo);
 var auth_routes_default = router;
@@ -1144,13 +1359,12 @@ var getTasks = async (req, res) => {
 var createTask = async (req, res) => {
   try {
     const { addToCalendar, ...rest } = req.body;
-    const taskData = {
-      ...rest,
-      userId: req.userId,
-      projectId: rest.projectId || void 0
-    };
     const task = await db_default.task.create({
-      data: taskData
+      data: {
+        ...rest,
+        userId: req.userId,
+        projectId: rest.projectId || null
+      }
     });
     if (addToCalendar && task.dueDate) {
       try {
@@ -1192,7 +1406,10 @@ var updateTask = async (req, res) => {
     }
     const task = await db_default.task.update({
       where: { id: req.params.id },
-      data: req.body
+      data: {
+        ...req.body,
+        projectId: req.body.projectId || (req.body.projectId === "" ? null : void 0)
+      }
     });
     res.json(task);
   } catch (error) {
@@ -1294,7 +1511,11 @@ var scheduleBlocks = async (req, res) => {
       return;
     }
     const { syncTaskBlocks: syncTaskBlocks2 } = await Promise.resolve().then(() => (init_google_calendar_service(), google_calendar_service_exports));
-    const results = await syncTaskBlocks2(req.userId, id, task.blocks);
+    const results = await syncTaskBlocks2(
+      req.userId,
+      id,
+      task.blocks
+    );
     if (!results) {
       res.status(400).json({ error: "Calendar sync failed. Is Google Calendar connected?" });
       return;
@@ -1489,6 +1710,7 @@ import { Router as Router3 } from "express";
 
 // server/src/controllers/budget.controller.ts
 init_db();
+init_whatsapp_service();
 var getBudgets = async (req, res) => {
   try {
     const budgets = await db_default.budget.findMany({
@@ -1520,11 +1742,20 @@ var createBudget = async (req, res) => {
     if (existingBudget) {
       budget = await db_default.budget.update({
         where: { id: existingBudget.id },
-        data: { ...req.body, spent }
+        data: {
+          ...req.body,
+          spent,
+          projectId: req.body.projectId || (req.body.projectId === "" ? null : void 0)
+        }
       });
     } else {
       budget = await db_default.budget.create({
-        data: { ...req.body, userId: req.userId, spent }
+        data: {
+          ...req.body,
+          userId: req.userId,
+          spent,
+          projectId: req.body.projectId || null
+        }
       });
     }
     res.status(201).json(budget);
@@ -1564,8 +1795,8 @@ var createExpense = async (req, res) => {
       data: {
         ...req.body,
         userId: req.userId,
+        projectId: req.body.projectId || null,
         linkedTaskId: req.body.linkedTaskId || null
-        // Explicitly handle linkedTaskId
       }
     });
     const budget = await db_default.budget.findUnique({
@@ -1577,10 +1808,17 @@ var createExpense = async (req, res) => {
       }
     });
     if (budget) {
-      await db_default.budget.update({
+      const updatedBudget = await db_default.budget.update({
         where: { id: budget.id },
-        data: { spent: { increment: expense.amount } }
+        data: { spent: { increment: expense.amount } },
+        include: { user: true }
       });
+      if (updatedBudget.user.waBudgetEnabled && updatedBudget.user.phoneNumber && updatedBudget.spent >= updatedBudget.limit) {
+        await sendWhatsAppMessage(
+          updatedBudget.user.phoneNumber,
+          `Budget Alert! You have reached your limit for ${updatedBudget.category}: Spent ${updatedBudget.spent}/${updatedBudget.limit}`
+        );
+      }
     }
     res.status(201).json(expense);
   } catch (error) {
@@ -1603,8 +1841,8 @@ var updateExpense = async (req, res) => {
       where: { id: req.params.id },
       data: {
         ...req.body,
-        linkedTaskId: req.body.linkedTaskId
-        // Allow updating link
+        projectId: req.body.projectId || (req.body.projectId === "" ? null : void 0),
+        linkedTaskId: req.body.linkedTaskId || (req.body.linkedTaskId === "" ? null : void 0)
       }
     });
     if (existingExpense.amount !== updatedExpense.amount || existingExpense.category !== updatedExpense.category) {
@@ -2409,7 +2647,73 @@ import { Router as Router8 } from "express";
 
 // server/src/controllers/admin.controller.ts
 init_db();
+init_email_service();
+init_emailTemplates();
 import { subDays as subDays2 } from "date-fns";
+import bcrypt from "bcryptjs";
+var createAdmin = async (req, res) => {
+  try {
+    const adminId = req.userId;
+    const { name, email, password } = req.body;
+    const requestor = await db_default.user.findUnique({
+      where: { id: adminId },
+      select: { role: true }
+    });
+    if (!requestor || requestor.role !== "ADMIN") {
+      return res.status(403).json({ message: "Access Denied: Admin only" });
+    }
+    if (!name || !email || !password) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+    const existingUser = await db_default.user.findUnique({ where: { email } });
+    if (existingUser) {
+      return res.status(400).json({ message: "User already exists" });
+    }
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newAdmin = await db_default.user.create({
+      data: {
+        name,
+        email,
+        password: hashedPassword,
+        role: "ADMIN",
+        isVerified: true,
+        // Auto-verify admins created by other admins
+        requiresPasswordChange: true
+      }
+    });
+    await db_default.auditLog.create({
+      data: {
+        adminId,
+        action: "CREATE_ADMIN",
+        targetId: newAdmin.id,
+        targetType: "USER",
+        details: { email, name },
+        ipAddress: req.ip
+      }
+    });
+    try {
+      await sendEmail(
+        email,
+        "Welcome to the Admin Team - Hikari",
+        getAdminOnboardingTemplate(name, email, password)
+      );
+    } catch (emailError) {
+      console.error("Failed to send admin onboarding email:", emailError);
+    }
+    res.status(201).json({
+      message: "Admin created successfully",
+      user: {
+        id: newAdmin.id,
+        name: newAdmin.name,
+        email: newAdmin.email,
+        role: newAdmin.role
+      }
+    });
+  } catch (error) {
+    console.error("Create Admin Error:", error);
+    res.status(500).json({ message: "Failed to create admin" });
+  }
+};
 var getAdminDashboardData = async (req, res) => {
   try {
     const adminId = req.userId;
@@ -2420,16 +2724,15 @@ var getAdminDashboardData = async (req, res) => {
     if (!requestor || requestor.role !== "ADMIN") {
       return res.status(403).json({ message: "Access Denied: Admin only" });
     }
-    const totalUsers = await db_default.user.count({ where: { role: "USER" } });
+    const totalUsers = await db_default.user.count();
     const proUsers = await db_default.user.count({
-      where: { subscriptionStatus: "PRO", role: "USER" }
+      where: { subscriptionStatus: "PRO" }
     });
     const sevenDaysAgo = subDays2(/* @__PURE__ */ new Date(), 7);
     const thirtyDaysAgo = subDays2(/* @__PURE__ */ new Date(), 30);
     const activeUsers = await db_default.user.count({
       where: {
-        lastLoginAt: { gte: sevenDaysAgo },
-        role: "USER"
+        lastLoginAt: { gte: sevenDaysAgo }
       }
     });
     const totalTasks = await db_default.task.count();
@@ -2445,10 +2748,13 @@ var getAdminDashboardData = async (req, res) => {
       where: { createdAt: { gte: thirtyDaysAgo } }
     });
     const estimatedMRR = proUsers * 9.99;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
     const users = await db_default.user.findMany({
-      where: { role: "USER" },
       orderBy: { createdAt: "desc" },
-      take: 50,
+      skip,
+      take: limit,
       select: {
         id: true,
         name: true,
@@ -2456,7 +2762,8 @@ var getAdminDashboardData = async (req, res) => {
         role: true,
         subscriptionStatus: true,
         lastLoginAt: true,
-        createdAt: true
+        createdAt: true,
+        isSuspended: true
       }
     });
     res.json({
@@ -2474,7 +2781,13 @@ var getAdminDashboardData = async (req, res) => {
         focus: recentSplits,
         freedom: recentExpenses
       },
-      users
+      users,
+      pagination: {
+        total: totalUsers,
+        pages: Math.ceil(totalUsers / limit),
+        currentPage: page,
+        limit
+      }
     });
   } catch (error) {
     console.error("Admin Dashboard Error:", error);
@@ -2488,16 +2801,10 @@ var updateUser = async (req, res) => {
     const { name, email, role, subscriptionStatus } = req.body;
     const requestor = await db_default.user.findUnique({
       where: { id: adminId },
-      select: { role: true }
+      select: { role: true, name: true }
     });
     if (!requestor || requestor.role !== "ADMIN") {
       return res.status(403).json({ message: "Access Denied: Admin only" });
-    }
-    const targetUser = await db_default.user.findUnique({
-      where: { id }
-    });
-    if (!targetUser) {
-      return res.status(404).json({ message: "User not found" });
     }
     const updatedUser = await db_default.user.update({
       where: { id },
@@ -2506,6 +2813,16 @@ var updateUser = async (req, res) => {
         email: email || void 0,
         role: role || void 0,
         subscriptionStatus: subscriptionStatus || void 0
+      }
+    });
+    await db_default.auditLog.create({
+      data: {
+        adminId,
+        action: "UPDATE_USER",
+        targetId: id,
+        targetType: "USER",
+        details: { name, email, role, subscriptionStatus },
+        ipAddress: req.ip
       }
     });
     res.json({
@@ -2534,33 +2851,275 @@ var deleteUser = async (req, res) => {
     if (!requestor || requestor.role !== "ADMIN") {
       return res.status(403).json({ message: "Access Denied: Admin only" });
     }
-    const targetUser = await db_default.user.findUnique({
-      where: { id }
-    });
-    if (!targetUser) {
-      return res.status(404).json({ message: "User not found" });
-    }
-    if (targetUser.id === adminId) {
+    if (id === adminId) {
       return res.status(400).json({ message: "Admins cannot delete their own account" });
     }
-    await db_default.user.delete({
-      where: { id }
+    const targetUser = await db_default.user.findUnique({ where: { id } });
+    if (!targetUser) return res.status(404).json({ message: "User not found" });
+    await db_default.user.delete({ where: { id } });
+    await db_default.auditLog.create({
+      data: {
+        adminId,
+        action: "DELETE_USER",
+        targetId: id,
+        targetType: "USER",
+        details: { email: targetUser.email, name: targetUser.name },
+        ipAddress: req.ip
+      }
     });
-    res.json({
-      message: "User and all associated data deleted successfully"
-    });
+    res.json({ message: "User and all associated data deleted successfully" });
   } catch (error) {
     console.error("Delete User Error:", error);
     res.status(500).json({ message: "Failed to delete user" });
+  }
+};
+var suspendUser = async (req, res) => {
+  try {
+    const adminId = req.userId;
+    const { id } = req.params;
+    const { reason, durationDays } = req.body;
+    const requestor = await db_default.user.findUnique({
+      where: { id: adminId },
+      select: { role: true }
+    });
+    if (!requestor || requestor.role !== "ADMIN") {
+      return res.status(403).json({ message: "Access Denied" });
+    }
+    const suspensionExpires = durationDays ? new Date(Date.now() + durationDays * 24 * 60 * 60 * 1e3) : null;
+    const userToSuspend = await db_default.user.update({
+      where: { id },
+      data: {
+        isSuspended: true,
+        suspensionReason: reason,
+        suspensionExpires
+      }
+    });
+    try {
+      const emailHtml = getSuspensionTemplate(
+        userToSuspend.name,
+        reason,
+        suspensionExpires || void 0
+      );
+      await sendEmail(
+        userToSuspend.email,
+        "Account Suspended - Hikari",
+        emailHtml
+      );
+    } catch (emailError) {
+      console.error("Failed to send suspension email:", emailError);
+    }
+    await db_default.auditLog.create({
+      data: {
+        adminId,
+        action: "SUSPEND_USER",
+        targetId: id,
+        targetType: "USER",
+        details: { reason, durationDays, expires: suspensionExpires },
+        ipAddress: req.ip
+      }
+    });
+    res.json({ message: "User suspended successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to suspend user" });
+  }
+};
+var reactivateUser = async (req, res) => {
+  try {
+    const adminId = req.userId;
+    const { id } = req.params;
+    const requestor = await db_default.user.findUnique({
+      where: { id: adminId },
+      select: { role: true }
+    });
+    if (!requestor || requestor.role !== "ADMIN") {
+      return res.status(403).json({ message: "Access Denied" });
+    }
+    const reactivatedUser = await db_default.user.update({
+      where: { id },
+      data: {
+        isSuspended: false,
+        suspensionReason: null,
+        suspensionExpires: null
+      }
+    });
+    try {
+      const emailHtml = getReactivationTemplate(reactivatedUser.name);
+      await sendEmail(
+        reactivatedUser.email,
+        "Account Reactivated - Hikari",
+        emailHtml
+      );
+    } catch (emailError) {
+      console.error("Failed to send reactivation email:", emailError);
+    }
+    await db_default.auditLog.create({
+      data: {
+        adminId,
+        action: "REACTIVATE_USER",
+        targetId: id,
+        targetType: "USER",
+        ipAddress: req.ip
+      }
+    });
+    res.json({ message: "User reactivated successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to reactivate user" });
+  }
+};
+var getAuditLogs = async (req, res) => {
+  try {
+    const adminId = req.userId;
+    const requestor = await db_default.user.findUnique({
+      where: { id: adminId },
+      select: { role: true }
+    });
+    if (!requestor || requestor.role !== "ADMIN") {
+      return res.status(403).json({ message: "Access Denied" });
+    }
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+    const [logs, total] = await Promise.all([
+      db_default.auditLog.findMany({
+        orderBy: { createdAt: "desc" },
+        include: {
+          admin: {
+            select: { name: true, email: true }
+          }
+        },
+        skip,
+        take: limit
+      }),
+      db_default.auditLog.count()
+    ]);
+    res.json({
+      logs,
+      pagination: {
+        total,
+        pages: Math.ceil(total / limit),
+        currentPage: page,
+        limit
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch audit logs" });
+  }
+};
+var handleBatchOperations = async (req, res) => {
+  try {
+    const adminId = req.userId;
+    const { userIds, action, details } = req.body;
+    const requestor = await db_default.user.findUnique({
+      where: { id: adminId },
+      select: { role: true }
+    });
+    if (!requestor || requestor.role !== "ADMIN") {
+      return res.status(403).json({ message: "Access Denied" });
+    }
+    if (!Array.isArray(userIds) || userIds.length === 0) {
+      return res.status(400).json({ message: "No users selected" });
+    }
+    if (action === "DELETE") {
+      const filteredIds = userIds.filter((id) => id !== adminId);
+      await db_default.user.deleteMany({
+        where: { id: { in: filteredIds } }
+      });
+    } else if (action === "SUSPEND") {
+      const { reason, durationDays } = details || {};
+      const suspensionExpires = durationDays ? new Date(Date.now() + durationDays * 24 * 60 * 60 * 1e3) : null;
+      await db_default.user.updateMany({
+        where: { id: { in: userIds } },
+        data: {
+          isSuspended: true,
+          suspensionReason: reason,
+          suspensionExpires
+        }
+      });
+    }
+    await db_default.auditLog.create({
+      data: {
+        adminId,
+        action: `BATCH_${action}`,
+        details: { userCount: userIds.length, userIds, ...details },
+        ipAddress: req.ip
+      }
+    });
+    res.json({ message: `Batch ${action} completed successfully` });
+  } catch (error) {
+    res.status(500).json({ message: "Batch operation failed" });
   }
 };
 
 // server/src/routes/admin.routes.ts
 var router11 = Router8();
 router11.get("/dashboard", authenticate, getAdminDashboardData);
+router11.get("/audit-logs", authenticate, getAuditLogs);
+router11.post("/create-admin", authenticate, createAdmin);
 router11.put("/users/:id", authenticate, updateUser);
+router11.post("/users/:id/suspend", authenticate, suspendUser);
+router11.post("/users/:id/reactivate", authenticate, reactivateUser);
 router11.delete("/users/:id", authenticate, deleteUser);
+router11.post("/batch", authenticate, handleBatchOperations);
 var admin_routes_default = router11;
+
+// server/src/routes/lead.routes.ts
+import { Router as Router9 } from "express";
+
+// server/src/controllers/lead.controller.ts
+init_db();
+init_email_service();
+init_emailTemplates();
+var createLead = async (req, res) => {
+  try {
+    const { email, source } = req.body;
+    if (!email) {
+      res.status(400).json({ error: "Email is required" });
+      return;
+    }
+    const existingLead = await db_default.lead.findUnique({
+      where: { email }
+    });
+    if (existingLead) {
+      if (source && existingLead.source !== source) {
+        await db_default.lead.update({
+          where: { email },
+          data: { source }
+        });
+      }
+      res.status(200).json({
+        message: "Thank you for your interest! We already have your email on file."
+      });
+      return;
+    }
+    const lead = await db_default.lead.create({
+      data: {
+        email,
+        source: source || "GENERAL_INTEREST"
+      }
+    });
+    try {
+      await sendEmail(
+        email,
+        "Your Hikari Method Template Inside!",
+        getLeadMagnetTemplate(email)
+      );
+    } catch (emailError) {
+      console.error("Lead magnet email failed to send:", emailError);
+    }
+    res.status(201).json({
+      message: "Success! You've been added to our interest list. Check your inbox for the Hikari Method magnet!",
+      lead
+    });
+  } catch (error) {
+    console.error("Lead capture error:", error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// server/src/routes/lead.routes.ts
+var router12 = Router9();
+router12.post("/", createLead);
+var lead_routes_default = router12;
 
 // server/src/app.ts
 var app = express4();
@@ -2580,6 +3139,7 @@ app.use("/api/predictive", predictive_routes_default);
 app.use("/api/patterns", pattern_routes_default);
 app.use("/api/stripe", stripe_routes_default);
 app.use("/api/google", google_routes_default);
+app.use("/api/leads", lead_routes_default);
 app.get("/health", (req, res) => {
   res.json({ status: "ok" });
 });

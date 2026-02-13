@@ -46,9 +46,6 @@ export const About: React.FC = () => {
                             <p>
                                 We asked a simple question: <strong>What if your task list knew what your bank account looked like?</strong>
                             </p>
-                            <p>
-                                What if finishing a project automatically updated your financial forecast? What if your budget could tell your calendar when you can afford to take a break? Hikari is the answer to that question.
-                            </p>
                         </div>
                     </div>
                     <div className="relative">
@@ -59,6 +56,46 @@ export const About: React.FC = () => {
                                 <h3 className="text-2xl font-bold">Clarity via Integration</h3>
                                 <p className="mt-2 text-slate-500">When data flows together, insight follows.</p>
                             </div>
+                        </div>
+                    </div>
+                </section>
+
+                {/* Targeted Niche Section */}
+                <section className="max-w-7xl mx-auto mb-32">
+                    <div className="text-center mb-16">
+                        <h2 className="text-3xl md:text-5xl font-display font-bold mb-4">Who is Hikari For?</h2>
+                        <p className="text-slate-500 dark:text-slate-400 text-lg">Specific tools for specific problems.</p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div className="group p-8 rounded-3xl bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 hover:border-indigo-500 transition-all">
+                            <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 flex items-center justify-center mb-6 text-indigo-500 group-hover:bg-indigo-500 group-hover:text-white transition-all">
+                                <Users className="w-6 h-6" />
+                            </div>
+                            <h3 className="text-2xl font-bold mb-4">Freelancers</h3>
+                            <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+                                Stop losing track of billable time vs. actual expenses. hikari links your tasks directly to your receipts, ensuring every hour worked accounts for every dollar spent.
+                            </p>
+                        </div>
+
+                        <div className="group p-8 rounded-3xl bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 hover:border-purple-500 transition-all">
+                            <div className="w-12 h-12 rounded-2xl bg-purple-500/10 flex items-center justify-center mb-6 text-purple-500 group-hover:bg-purple-500 group-hover:text-white transition-all">
+                                <Heart className="w-6 h-6" />
+                            </div>
+                            <h3 className="text-2xl font-bold mb-4">Home Reno Projects</h3>
+                            <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+                                For the project that always goes over budget. Map out your renovation tasks and see exactly how each purchase impacts your bottom line in real-time.
+                            </p>
+                        </div>
+
+                        <div className="group p-8 rounded-3xl bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 hover:border-emerald-500 transition-all">
+                            <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center mb-6 text-emerald-500 group-hover:bg-emerald-500 group-hover:text-white transition-all">
+                                <Target className="w-6 h-6" />
+                            </div>
+                            <h3 className="text-2xl font-bold mb-4">Small Biz Owners</h3>
+                            <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+                                Bridge the gap between operations and finance. See the ROI of your team's tasks and forecast your cash flow without the spreadsheet nightmare.
+                            </p>
                         </div>
                     </div>
                 </section>
@@ -94,27 +131,6 @@ export const About: React.FC = () => {
                         </div>
                     </div>
                 </section>
-
-                {/* Team (Mock) */}
-                {/* <section className="max-w-7xl mx-auto text-center">
-                    <h2 className="text-3xl font-bold mb-16">Meet the Builders</h2>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-                        {[
-                            { name: "Elena R.", role: "Founder & CEO", color: "bg-indigo-500" },
-                            { name: "Marcus T.", role: "Head of Product", color: "bg-purple-500" },
-                            { name: "Sarah K.", role: "Lead Engineer", color: "bg-blue-500" },
-                            { name: "David L.", role: "Design Director", color: "bg-pink-500" }
-                        ].map((member, i) => (
-                            <div key={i} className="group">
-                                <div className={`w-24 h-24 mx-auto rounded-full ${member.color} mb-4 flex items-center justify-center text-white font-bold text-2xl shadow-lg group-hover:scale-110 transition-transform`}>
-                                    {member.name.charAt(0)}
-                                </div>
-                                <h3 className="font-bold text-lg">{member.name}</h3>
-                                <p className="text-slate-500 text-sm">{member.role}</p>
-                            </div>
-                        ))}
-                    </div>
-                </section> */}
             </main>
             <Footer />
         </div>

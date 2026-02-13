@@ -298,3 +298,39 @@ export const getAdminOnboardingTemplate = (
     "This is a mandatory administrative notification.",
   );
 };
+
+/**
+ * Template for Lead Magnet (Hikari Method Notion Template).
+ */
+export const getLeadMagnetTemplate = (email: string) => {
+  const content = `
+    <p>Success! You're one step closer to radical clarity.</p>
+    <p>As promised, here is your access to the <strong>Hikari Method Guide</strong>. This is the exact system we use to bridge the gap between tasks and finances.</p>
+    
+    <div style="background-color: #f0fdf4; border: 1px solid #bbf7d0; padding: 24px; border-radius: 16px; margin: 24px 0; text-align: center;">
+      <h3 style="margin-top: 0; color: #166534; font-size: 18px; margin-bottom: 8px;">🎁 Your Hikari Method Guide is Ready</h3>
+      <p style="color: #15803d; margin-bottom: 0;">Clarity. Focus. Freedom. The guide to mastering your life & money.</p>
+    </div>
+    
+    <p><strong>Inside the guide:</strong></p>
+    <ul style="color: #475569; line-height: 1.8;">
+      <li><strong>Pillar 1: Clarity</strong> - How to visualize the chaos.</li>
+      <li><strong>Pillar 2: Focus</strong> - The logic behind 15-minute block splitting.</li>
+      <li><strong>Pillar 3: Freedom</strong> - Turning productivity into profit (ROI tracking).</li>
+    </ul>
+    
+    <p>Once you've had a look, we'd love to hear how it helps your workflow!</p>
+  `;
+
+  const leadMagnetUrl =
+    (process.env.CLIENT_URL || "http://localhost:5173") +
+    "/resources/HIKARI_METHOD.md";
+
+  return getBaseTemplate(
+    "Your Hikari Method Guide Inside!",
+    content,
+    "Read the Hikari Method Guide",
+    leadMagnetUrl,
+    "You received this because you requested the Hikari Method magnet on our website.",
+  );
+};
