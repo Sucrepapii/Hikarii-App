@@ -45,6 +45,7 @@ export const createLead = async (
 
     // Trigger lead magnet email
     try {
+      console.log(`Sending lead magnet to: ${email}`);
       await sendEmail(
         email,
         "Your Hikari Method Template Inside!",

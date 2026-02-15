@@ -20,8 +20,55 @@ import leadRoutes from "./routes/lead.routes";
 
 const app = express();
 
-// Middleware
-app.use(cors());
+// 1. Request Logging for Debugging CORS/Preflight in Production
+app.use((req, res, next) => {
+  if (process.env.NODE_ENV === "production") {
+    console.log(
+      `[${new Date().toISOString()}] ${req.method} ${req.url} - Origin: ${req.headers.origin || "No Origin"}`,
+    );
+  }
+  next();
+});
+
+// CORS Configuration
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:3000",
+  "https://www.hikarii.org",
+  "https://hikarii.org",
+  "https://checkmate-production-7067.up.railway.app",
+];
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+
+      const isAllowed =
+        allowedOrigins.indexOf(origin) !== -1 ||
+        origin.endsWith(".railway.app") ||
+        process.env.NODE_ENV === "development";
+
+      if (isAllowed) {
+        callback(null, true);
+      } else {
+        console.warn(`[CORS Blocked] Origin: ${origin}`);
+        callback(null, false);
+      }
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "X-Requested-With",
+      "Accept",
+    ],
+    optionsSuccessStatus: 204,
+  }),
+);
+
 app.use(express.json());
 
 app.get("/api/ai/test", (req, res) => {

@@ -38,10 +38,12 @@ export const submitContactForm = async (
     // However, the user asked to connect it, implying they might have a domain.
     // We'll use a safe fallback if ADMIN_EMAIL isn't set, likely matching the sender for now to avoid errors if verify needed.
 
+    console.log(`Sending contact notification to Admin: ${adminEmail}`);
     await sendEmail(adminEmail, `Contact Form: ${subject}`, adminHtml);
 
     // 2. Send Auto-Reply to User
     const userHtml = getContactAutoReplyTemplate(firstName);
+    console.log(`Sending auto-reply to user: ${email}`);
     await sendEmail(
       email,
       "We received your message - Hikari Support",
