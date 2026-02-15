@@ -68,6 +68,16 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
 
     console.log("Stripe: Creating checkout session with Price ID:", priceId);
 
+    // Calculate trial period: 2 months (60 days) promo until June 2026, then 14 days
+    const promoCutoff = new Date("2026-07-01");
+    const now = new Date();
+    const isPromoActive = now < promoCutoff;
+    const trialDays = isPromoActive ? 60 : 14;
+
+    console.log(
+      `Stripe: Trial period set to ${trialDays} days (Promo active: ${isPromoActive})`,
+    );
+
     const clientUrl = process.env.CLIENT_URL || "https://www.hikarii.org";
     console.log("Stripe: Using Client URL:", clientUrl);
 
@@ -82,7 +92,7 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
       ],
       mode: "subscription",
       subscription_data: {
-        trial_period_days: 14,
+        trial_period_days: trialDays,
       },
       success_url: `${clientUrl}/settings?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${clientUrl}/pricing`,
