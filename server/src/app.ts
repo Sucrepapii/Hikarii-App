@@ -3,6 +3,9 @@ import express from "express";
 import cors from "cors";
 import path from "path";
 import fs from "fs";
+import helmet from "helmet";
+import hpp from "hpp";
+import rateLimit from "express-rate-limit";
 
 // Import route handlers
 import authRoutes from "./routes/auth.routes";
@@ -20,7 +23,16 @@ import leadRoutes from "./routes/lead.routes";
 
 const app = express();
 
-// 1. Request Logging for Debugging CORS/Preflight in Production
+// 1. Security Headers (Helmet)
+app.use(helmet());
+
+// 2. HTTP Parameter Pollution protection
+app.use(hpp());
+
+// 3. Body Parser with Size Limits (Prevents large payload attacks)
+app.use(express.json({ limit: "10kb" }));
+
+// 4. Request Logging for Debugging CORS/Preflight in Production
 app.use((req, res, next) => {
   if (process.env.NODE_ENV === "production") {
     console.log(
@@ -68,8 +80,6 @@ app.use(
     optionsSuccessStatus: 204,
   }),
 );
-
-app.use(express.json());
 
 app.get("/api/ai/test", (req, res) => {
   res.json({ message: "AI route test successful" });
