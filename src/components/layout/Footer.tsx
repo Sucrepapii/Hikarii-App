@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Instagram, Twitter, Linkedin } from 'lucide-react';
+import { Instagram, Twitter } from 'lucide-react';
 import { Logo } from '../common/Logo';
 import { LeadCaptureForm } from '../common/LeadCaptureForm';
 
@@ -20,14 +20,11 @@ export const Footer: React.FC = () => {
                             Gain clarity, find focus, and achieve financial freedom.
                         </p>
                         <div className="flex items-center gap-4">
-                            <a href="#" className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-colors">
+                            <a href="https://www.instagram.com/hikariiapp?igsh=ejNzOGsybWltMWk4&utm_source=qr" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-colors">
                                 <Instagram className="w-5 h-5" />
                             </a>
-                            <a href="#" className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-colors">
+                            <a href="https://x.com/hikariiapp?s=21&t=QnoqdrIaByUDrhoWj0KuLA" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-colors">
                                 <Twitter className="w-5 h-5" />
-                            </a>
-                            <a href="#" className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-colors">
-                                <Linkedin className="w-5 h-5" />
                             </a>
                         </div>
                     </div>
