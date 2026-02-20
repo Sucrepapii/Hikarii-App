@@ -12,14 +12,42 @@ build
 
 # Misc
 .DS_Store
+
+# Environment & Secrets (all variants)
 .env
+.env.*
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+
+# Private keys & certificates
+*.pem
+*.key
+*.p12
+secrets.json
+service-account.json
+
+# Debug & build log files
+*.log
+auth_error.txt
+build_error.txt
+build_errors.txt
+build_errors_2.txt
+build_errors_utf8.txt
+build_log_full.txt
+build_npm_log.txt
+debug.log
+error.txt
+jwt_error.txt
+root_tsc_log.txt
+server_error.txt
+server_full_error.txt
+tsc_frontend_error.log
+tsc_frontend_error_utf8.txt
+
+# Compiled server output
+dist-server/
 
 # Editor
 .vscode/*
@@ -29,4 +57,5 @@ yarn-error.log*
 .idea
 .fleet
 
+# Prisma generated
 /src/generated/prisma
