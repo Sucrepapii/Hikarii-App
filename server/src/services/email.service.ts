@@ -16,15 +16,13 @@ export const sendEmail = async (to: string, subject: string, html: string) => {
     // Use custom domain from environment variable, fallback to hikarii.org
     // IMPORTANT: If you are using a new Resend account without a verified domain,
     // you MUST use onboarding@resend.dev as the 'from' address.
-    const emailDomain = process.env.EMAIL_DOMAIN;
-    let fromEmail = "";
+    const emailDomain = process.env.EMAIL_DOMAIN || "hikarii.org";
+    const fromEmail = `Hikari <noreply@${emailDomain}>`;
 
-    if (emailDomain) {
-      fromEmail = `Hikari <noreply@${emailDomain}>`;
-    } else {
-      // Automatic fallback for testing/new accounts
-      fromEmail = "onboarding@resend.dev";
-      console.log("Using Resend onboarding address (onboarding@resend.dev)");
+    if (!process.env.EMAIL_DOMAIN) {
+      console.log(
+        "Using default email domain: hikarii.org (EMAIL_DOMAIN not set)",
+      );
     }
 
     const { data, error } = await resend.emails.send({
