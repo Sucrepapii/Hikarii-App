@@ -11,7 +11,7 @@ export const Footer: React.FC = () => {
                 <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 mb-16">
                     {/* Brand Column */}
                     <div className="col-span-2 lg:col-span-2">
-                        <Link to="/" className="flex items-center gap-2 mb-6 group">
+                        <Link to="/" className="flex items-center gap-1.5 mb-6 group">
                             <Logo variant="icon" size="md" />
                             <span className="text-2xl font-display font-bold text-white tracking-tight">Hikari</span>
                         </Link>

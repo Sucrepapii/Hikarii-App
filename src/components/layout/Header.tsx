@@ -49,17 +49,20 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
                         <Menu className="w-5 h-5" />
                     </Button>
 
-                    <Logo variant="icon" size="md" />
+                    {/* Logo + brand name grouped tightly */}
+                    <div className="flex items-center gap-2">
+                        <Logo variant="icon" size="md" />
 
-                    {user ? (
-                        <span className="font-display font-bold gradient-text text-xl md:text-2xl tracking-tight hidden sm:block">
-                            Hi, {user.name.split(' ')[0]}
-                        </span>
-                    ) : (
-                        <span className="font-display font-bold gradient-text text-xl md:text-2xl tracking-tight hidden sm:block">
-                            Hikari
-                        </span>
-                    )}
+                        {user ? (
+                            <span className="font-display font-bold gradient-text text-xl md:text-2xl tracking-tight hidden sm:block">
+                                Hi, {user.name.split(' ')[0]}
+                            </span>
+                        ) : (
+                            <span className="font-display font-bold gradient-text text-xl md:text-2xl tracking-tight hidden sm:block">
+                                Hikari
+                            </span>
+                        )}
+                    </div>
                 </div>
 
                 <div className="flex items-center gap-4">
