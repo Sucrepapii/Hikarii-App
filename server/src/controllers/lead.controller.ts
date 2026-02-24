@@ -46,10 +46,20 @@ export const createLead = async (
     // Trigger lead magnet email
     try {
       console.log(`Sending lead magnet to: ${email}`);
+      const emailOptions: any = {};
+
+      if (source === "FOOTER_SIGNUP") {
+        emailOptions.fromName = "Stay Focused";
+        if (process.env.STAY_FOCUSED_EMAIL_DOMAIN) {
+          emailOptions.fromDomain = process.env.STAY_FOCUSED_EMAIL_DOMAIN;
+        }
+      }
+
       await sendEmail(
         email,
         "Your Hikari Method Template Inside!",
         getLeadMagnetTemplate(email),
+        emailOptions,
       );
     } catch (emailError) {
       console.error("Lead magnet email failed to send:", emailError);

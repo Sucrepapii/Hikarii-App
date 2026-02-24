@@ -2,7 +2,12 @@ import { Resend } from "resend";
 import dotenv from "dotenv";
 dotenv.config();
 
-export const sendEmail = async (to: string, subject: string, html: string) => {
+export const sendEmail = async (
+  to: string,
+  subject: string,
+  html: string,
+  options?: { fromName?: string; fromDomain?: string },
+) => {
   try {
     const apiKey = process.env.RESEND_API_KEY;
 
@@ -13,13 +18,12 @@ export const sendEmail = async (to: string, subject: string, html: string) => {
 
     const resend = new Resend(apiKey);
 
-    // Use custom domain from environment variable, fallback to hikarii.org
-    // IMPORTANT: If you are using a new Resend account without a verified domain,
-    // you MUST use onboarding@resend.dev as the 'from' address.
-    const emailDomain = process.env.EMAIL_DOMAIN || "hikarii.org";
-    const fromEmail = `Hikari <noreply@${emailDomain}>`;
+    const defaultDomain = process.env.EMAIL_DOMAIN || "hikarii.org";
+    const emailDomain = options?.fromDomain || defaultDomain;
+    const fromName = options?.fromName || "Hikari";
+    const fromEmail = `${fromName} <noreply@${emailDomain}>`;
 
-    if (!process.env.EMAIL_DOMAIN) {
+    if (!process.env.EMAIL_DOMAIN && !options?.fromDomain) {
       console.log(
         "Using default email domain: hikarii.org (EMAIL_DOMAIN not set)",
       );
