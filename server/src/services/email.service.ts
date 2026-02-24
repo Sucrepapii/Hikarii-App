@@ -2,6 +2,8 @@ import { Resend } from "resend";
 import dotenv from "dotenv";
 dotenv.config();
 
+// Deployment Trigger: 2026-02-24 09:21
+
 export const sendEmail = async (
   to: string,
   subject: string,
