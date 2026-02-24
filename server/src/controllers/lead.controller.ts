@@ -21,33 +21,28 @@ export const createLead = async (
       where: { email },
     });
 
+    let lead;
     if (existingLead) {
-      // Update source if provided, or just return success
+      lead = existingLead;
+      // Update source if provided
       if (source && existingLead.source !== source) {
-        await prisma.lead.update({
+        lead = await prisma.lead.update({
           where: { email },
           data: { source },
         });
       }
-      res.status(200).json({
-        message:
-          "Thank you for your interest! We already have your email on file.",
+    } else {
+      lead = await prisma.lead.create({
+        data: {
+          email,
+          source: source || "GENERAL_INTEREST",
+        },
       });
-      return;
     }
-
-    const lead = await prisma.lead.create({
-      data: {
-        email,
-        source: source || "GENERAL_INTEREST",
-      },
-    });
 
     // Trigger lead magnet email
     try {
-      console.log(`Sending lead magnet to: ${email}`);
       const emailOptions: any = {};
-
       if (source === "FOOTER_SIGNUP") {
         emailOptions.fromName = "Stay Focused";
         if (process.env.STAY_FOCUSED_EMAIL_DOMAIN) {
@@ -55,12 +50,16 @@ export const createLead = async (
         }
       }
 
+      console.log(
+        `Attempting to send lead magnet to: ${email} (Source: ${source || "n/a"})`,
+      );
       await sendEmail(
         email,
         "Your Hikari Method Template Inside!",
         getLeadMagnetTemplate(email),
         emailOptions,
       );
+      console.log(`Lead magnet sent successfully to: ${email}`);
     } catch (emailError) {
       console.error("Lead magnet email failed to send:", emailError);
     }

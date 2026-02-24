@@ -29,6 +29,8 @@ export const sendEmail = async (
       );
     }
 
+    console.log(`Sending email from: ${fromEmail} to: ${to}`);
+
     const { data, error } = await resend.emails.send({
       from: fromEmail,
       to: [to],
