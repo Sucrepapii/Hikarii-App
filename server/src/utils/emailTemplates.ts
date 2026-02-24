@@ -323,8 +323,9 @@ export const getLeadMagnetTemplate = (email: string) => {
   `;
 
   const leadMagnetUrl =
-    (process.env.CLIENT_URL || "http://localhost:5173") +
-    "/resources/HIKARI_METHOD.md";
+    (process.env.CLIENT_URL ||
+      "https://checkmate-production-7067.up.railway.app") +
+    "/resources/HIKARI_METHOD_GUIDE.pdf";
 
   return getBaseTemplate(
     "Your Hikari Method Guide Inside!",
