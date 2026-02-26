@@ -31,7 +31,7 @@ var sendEmail;
 var init_email_service = __esm({
   "server/src/services/email.service.ts"() {
     dotenv.config();
-    sendEmail = async (to, subject, html) => {
+    sendEmail = async (to, subject, html, options) => {
       try {
         const apiKey = process.env.RESEND_API_KEY;
         if (!apiKey) {
@@ -39,8 +39,16 @@ var init_email_service = __esm({
           return;
         }
         const resend = new Resend(apiKey);
-        const emailDomain = process.env.EMAIL_DOMAIN || "hikarii.org";
-        const fromEmail = `Hikari <noreply@${emailDomain}>`;
+        const defaultDomain = process.env.EMAIL_DOMAIN || "hikarii.org";
+        const emailDomain = options?.fromDomain || defaultDomain;
+        const fromName = options?.fromName || "Hikari";
+        const fromEmail = `${fromName} <noreply@${emailDomain}>`;
+        if (!process.env.EMAIL_DOMAIN && !options?.fromDomain) {
+          console.log(
+            "Using default email domain: hikarii.org (EMAIL_DOMAIN not set)"
+          );
+        }
+        console.log(`Sending email from: ${fromEmail} to: ${to}`);
         const { data, error } = await resend.emails.send({
           from: fromEmail,
           to: [to],
@@ -295,28 +303,28 @@ var init_emailTemplates = __esm({
     getLeadMagnetTemplate = (email) => {
       const content = `
     <p>Success! You're one step closer to radical clarity.</p>
-    <p>As promised, here is your access to the <strong>Hikari Method Notion Template</strong>. This is the exact system we use to bridge the gap between tasks and finances.</p>
+    <p>As promised, here is your access to the <strong>Hikari Method Guide</strong>. This is the exact system we use to bridge the gap between tasks and finances.</p>
     
     <div style="background-color: #f0fdf4; border: 1px solid #bbf7d0; padding: 24px; border-radius: 16px; margin: 24px 0; text-align: center;">
-      <h3 style="margin-top: 0; color: #166534; font-size: 18px; margin-bottom: 8px;">\u{1F381} Your Lead Magnet is Ready</h3>
-      <p style="color: #15803d; margin-bottom: 0;">The Hikari Method: Task-Budget Integration System</p>
+      <h3 style="margin-top: 0; color: #166534; font-size: 18px; margin-bottom: 8px;">\u{1F381} Your Hikari Method Guide is Ready</h3>
+      <p style="color: #15803d; margin-bottom: 0;">Clarity. Focus. Freedom. The guide to mastering your life & money.</p>
     </div>
     
-    <p><strong>What's inside:</strong></p>
+    <p><strong>Inside the guide:</strong></p>
     <ul style="color: #475569; line-height: 1.8;">
-      <li>Custom Task-Expense Linking Database</li>
-      <li>Monthly Financial Reflection Framework</li>
-      <li>The "Smart Split" Project Planner</li>
+      <li><strong>Pillar 1: Clarity</strong> - How to visualize the chaos.</li>
+      <li><strong>Pillar 2: Focus</strong> - The logic behind 15-minute block splitting.</li>
+      <li><strong>Pillar 3: Freedom</strong> - Turning productivity into profit (ROI tracking).</li>
     </ul>
     
     <p>Once you've had a look, we'd love to hear how it helps your workflow!</p>
   `;
-      const templateStoreUrl = "https://www.notion.so/templates/hikari-method-task-budget-linking";
+      const leadMagnetUrl = (process.env.CLIENT_URL || "https://checkmate-production-7067.up.railway.app") + "/resources/HIKARI_METHOD_GUIDE.pdf";
       return getBaseTemplate(
-        "Your Hikari Method Template Inside!",
+        "Your Hikari Method Guide Inside!",
         content,
-        "Download Notion Template",
-        templateStoreUrl,
+        "Read the Hikari Method Guide",
+        leadMagnetUrl,
         "You received this because you requested the Hikari Method magnet on our website."
       );
     };
@@ -852,13 +860,18 @@ ${projectList}`
 
 // server/src/app.ts
 import "dotenv/config";
+import * as Sentry from "@sentry/node";
+import { nodeProfilingIntegration } from "@sentry/profiling-node";
 import express4 from "express";
 import cors from "cors";
 import path2 from "path";
 import fs2 from "fs";
+import helmet from "helmet";
+import hpp from "hpp";
 
 // server/src/routes/auth.routes.ts
 import { Router } from "express";
+import rateLimit from "express-rate-limit";
 
 // server/src/controllers/auth.controller.ts
 init_db();
@@ -997,6 +1010,10 @@ var login = async (req, res) => {
         subscriptionStatus: user.subscriptionStatus,
         stripeCustomerId: user.stripeCustomerId,
         currentPeriodEnd: user.currentPeriodEnd,
+        phoneNumber: user.phoneNumber,
+        waTasksEnabled: user.waTasksEnabled,
+        waBudgetEnabled: user.waBudgetEnabled,
+        waProjectsEnabled: user.waProjectsEnabled,
         requiresPasswordChange: user.requiresPasswordChange
       },
       token
@@ -1050,6 +1067,10 @@ var verifyEmail = async (req, res) => {
         subscriptionStatus: user.subscriptionStatus,
         stripeCustomerId: user.stripeCustomerId,
         currentPeriodEnd: user.currentPeriodEnd,
+        phoneNumber: user.phoneNumber,
+        waTasksEnabled: user.waTasksEnabled,
+        waBudgetEnabled: user.waBudgetEnabled,
+        waProjectsEnabled: user.waProjectsEnabled,
         requiresPasswordChange: user.requiresPasswordChange
       },
       token
@@ -1325,14 +1346,96 @@ var authenticate = async (req, res, next) => {
   }
 };
 
+// server/src/middleware/validate.middleware.ts
+import { ZodError } from "zod";
+var validate = (schema) => {
+  return async (req, res, next) => {
+    try {
+      await schema.parseAsync({
+        body: req.body,
+        query: req.query,
+        params: req.params
+      });
+      return next();
+    } catch (error) {
+      if (error instanceof ZodError) {
+        return res.status(400).json({
+          error: "Validation error",
+          details: error.errors.map((err) => ({
+            path: err.path,
+            message: err.message
+          }))
+        });
+      }
+      return res.status(500).json({ error: "Internal server error during validation" });
+    }
+  };
+};
+
+// server/src/schemas/auth.schema.ts
+import { z } from "zod";
+var signupSchema = z.object({
+  body: z.object({
+    name: z.string({
+      required_error: "Name is required"
+    }).min(2, "Name must be at least 2 characters long"),
+    email: z.string({
+      required_error: "Email is required"
+    }).email("Invalid email format"),
+    password: z.string({
+      required_error: "Password is required"
+    }).min(8, "Password must be at least 8 characters long").regex(/[A-Z]/, "Password must contain at least one uppercase letter").regex(/[a-z]/, "Password must contain at least one lowercase letter").regex(/[0-9]/, "Password must contain at least one number").regex(
+      /[^A-Za-z0-9]/,
+      "Password must contain at least one special character"
+    ),
+    phoneNumber: z.string().optional()
+  })
+});
+var loginSchema = z.object({
+  body: z.object({
+    email: z.string({
+      required_error: "Email is required"
+    }).email("Invalid email format"),
+    password: z.string({
+      required_error: "Password is required"
+    })
+  })
+});
+var verifyEmailSchema = z.object({
+  body: z.object({
+    email: z.string({
+      required_error: "Email is required"
+    }).email("Invalid email format"),
+    code: z.string({
+      required_error: "Verification code is required"
+    }).length(6, "Code must be exactly 6 digits")
+  })
+});
+
 // server/src/routes/auth.routes.ts
 var router = Router();
-router.post("/signup", signup);
-router.post("/login", login);
-router.post("/verify-email", verifyEmail);
-router.post("/resend-verification", resendVerification);
-router.post("/forgot-password", forgotPassword);
-router.post("/reset-password", resetPassword);
+var authRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1e3,
+  // 15 minutes
+  max: 20,
+  // Limit each IP to 20 requests per windowMs for auth routes
+  message: {
+    error: "Too many requests from this IP, please try again after 15 minutes"
+  },
+  standardHeaders: true,
+  legacyHeaders: false
+});
+router.post("/signup", authRateLimiter, validate(signupSchema), signup);
+router.post("/login", authRateLimiter, validate(loginSchema), login);
+router.post(
+  "/verify-email",
+  authRateLimiter,
+  validate(verifyEmailSchema),
+  verifyEmail
+);
+router.post("/resend-verification", authRateLimiter, resendVerification);
+router.post("/forgot-password", authRateLimiter, forgotPassword);
+router.post("/reset-password", authRateLimiter, resetPassword);
 router.put("/profile", authenticate, updateProfile);
 router.post("/change-password", authenticate, changePassword);
 router.get("/me", authenticate, getMe);
@@ -1914,14 +2017,13 @@ var deleteExpense = async (req, res) => {
 
 // server/src/routes/budget.routes.ts
 var router4 = Router3();
-router4.use(authenticate);
-router4.get("/budgets", getBudgets);
-router4.post("/budgets", createBudget);
-router4.delete("/budgets/:id", deleteBudget);
-router4.get("/expenses", getExpenses);
-router4.post("/expenses", createExpense);
-router4.put("/expenses/:id", updateExpense);
-router4.delete("/expenses/:id", deleteExpense);
+router4.get("/budgets", authenticate, getBudgets);
+router4.post("/budgets", authenticate, createBudget);
+router4.delete("/budgets/:id", authenticate, deleteBudget);
+router4.get("/expenses", authenticate, getExpenses);
+router4.post("/expenses", authenticate, createExpense);
+router4.put("/expenses/:id", authenticate, updateExpense);
+router4.delete("/expenses/:id", authenticate, deleteExpense);
 var budget_routes_default = router4;
 
 // server/src/routes/insights.routes.ts
@@ -2425,6 +2527,13 @@ var createCheckoutSession = async (req, res) => {
       return res.status(500).json({ message: "Server configuration error: Missing Price ID" });
     }
     console.log("Stripe: Creating checkout session with Price ID:", priceId);
+    const promoCutoff = /* @__PURE__ */ new Date("2026-07-01");
+    const now = /* @__PURE__ */ new Date();
+    const isPromoActive = now < promoCutoff;
+    const trialDays = isPromoActive ? 60 : 14;
+    console.log(
+      `Stripe: Trial period set to ${trialDays} days (Promo active: ${isPromoActive})`
+    );
     const clientUrl = process.env.CLIENT_URL || "https://www.hikarii.org";
     console.log("Stripe: Using Client URL:", clientUrl);
     const session = await stripe.checkout.sessions.create({
@@ -2438,7 +2547,7 @@ var createCheckoutSession = async (req, res) => {
       ],
       mode: "subscription",
       subscription_data: {
-        trial_period_days: 14
+        trial_period_days: trialDays
       },
       success_url: `${clientUrl}/settings?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${clientUrl}/pricing`,
@@ -2623,8 +2732,10 @@ var submitContactForm = async (req, res) => {
       subject,
       message
     );
+    console.log(`Sending contact notification to Admin: ${adminEmail}`);
     await sendEmail(adminEmail, `Contact Form: ${subject}`, adminHtml);
     const userHtml = getContactAutoReplyTemplate(firstName);
+    console.log(`Sending auto-reply to user: ${email}`);
     await sendEmail(
       email,
       "We received your message - Hikari Support",
@@ -3079,30 +3190,41 @@ var createLead = async (req, res) => {
     const existingLead = await db_default.lead.findUnique({
       where: { email }
     });
+    let lead;
     if (existingLead) {
+      lead = existingLead;
       if (source && existingLead.source !== source) {
-        await db_default.lead.update({
+        lead = await db_default.lead.update({
           where: { email },
           data: { source }
         });
       }
-      res.status(200).json({
-        message: "Thank you for your interest! We already have your email on file."
+    } else {
+      lead = await db_default.lead.create({
+        data: {
+          email,
+          source: source || "GENERAL_INTEREST"
+        }
       });
-      return;
     }
-    const lead = await db_default.lead.create({
-      data: {
-        email,
-        source: source || "GENERAL_INTEREST"
-      }
-    });
     try {
+      const emailOptions = {};
+      if (source === "FOOTER_SIGNUP") {
+        emailOptions.fromName = "Stay Focused";
+        if (process.env.STAY_FOCUSED_EMAIL_DOMAIN) {
+          emailOptions.fromDomain = process.env.STAY_FOCUSED_EMAIL_DOMAIN;
+        }
+      }
+      console.log(
+        `Attempting to send lead magnet to: ${email} (Source: ${source || "n/a"})`
+      );
       await sendEmail(
         email,
         "Your Hikari Method Template Inside!",
-        getLeadMagnetTemplate(email)
+        getLeadMagnetTemplate(email),
+        emailOptions
       );
+      console.log(`Lead magnet sent successfully to: ${email}`);
     } catch (emailError) {
       console.error("Lead magnet email failed to send:", emailError);
     }
@@ -3122,9 +3244,54 @@ router12.post("/", createLead);
 var lead_routes_default = router12;
 
 // server/src/app.ts
+Sentry.init({
+  dsn: process.env.SENTRY_DSN || process.env.VITE_SENTRY_DSN,
+  integrations: [nodeProfilingIntegration()],
+  tracesSampleRate: 1,
+  profilesSampleRate: 1
+});
 var app = express4();
-app.use(cors());
-app.use(express4.json());
+app.use(helmet());
+app.use(hpp());
+app.use(express4.json({ limit: "10kb" }));
+app.use((req, res, next) => {
+  if (process.env.NODE_ENV === "production") {
+    console.log(
+      `[${(/* @__PURE__ */ new Date()).toISOString()}] ${req.method} ${req.url} - Origin: ${req.headers.origin || "No Origin"}`
+    );
+  }
+  next();
+});
+var allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:3000",
+  "https://www.hikarii.org",
+  "https://hikarii.org",
+  "https://checkmate-production-7067.up.railway.app"
+];
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      const isAllowed = allowedOrigins.indexOf(origin) !== -1 || origin.endsWith(".railway.app") || process.env.NODE_ENV === "development";
+      if (isAllowed) {
+        callback(null, true);
+      } else {
+        console.warn(`[CORS Blocked] Origin: ${origin}`);
+        callback(null, false);
+      }
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "X-Requested-With",
+      "Accept"
+    ],
+    optionsSuccessStatus: 204
+  })
+);
 app.get("/api/ai/test", (req, res) => {
   res.json({ message: "AI route test successful" });
 });
@@ -3159,6 +3326,7 @@ if (fs2.existsSync(clientBuildPath)) {
     clientBuildPath
   );
 }
+Sentry.setupExpressErrorHandler(app);
 var PORT = process.env.PORT || 5e3;
 var PORT_NUM = Number(PORT) || 5e3;
 app.listen(PORT_NUM, "0.0.0.0", () => {

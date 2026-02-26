@@ -41,6 +41,30 @@ import './index.css';
 import { useInactivity } from './hooks/useInactivity';
 import toast from 'react-hot-toast';
 
+function ErrorButton() {
+    return (
+        <button
+            style={{
+                position: 'fixed',
+                bottom: '20px',
+                right: '20px',
+                zIndex: 9999,
+                padding: '10px 20px',
+                backgroundColor: 'red',
+                color: 'white',
+                border: 'none',
+                borderRadius: '5px',
+                cursor: 'pointer'
+            }}
+            onClick={() => {
+                throw new Error('This is your first error!');
+            }}
+        >
+            Break the world
+        </button>
+    );
+}
+
 function App() {
     const isAuthenticated = useAuthStore((state) => !!state.token);
     const logout = useAuthStore((state) => state.logout);
@@ -64,6 +88,7 @@ function App() {
         <BrowserRouter>
             <ScrollToTop />
             <Toaster position="top-right" />
+            <ErrorButton />
             <Routes>
                 <Route
                     path="/"
