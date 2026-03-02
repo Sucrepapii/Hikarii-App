@@ -87,6 +87,8 @@ app.use(
       "Authorization",
       "X-Requested-With",
       "Accept",
+      "baggage",
+      "sentry-trace",
     ],
     optionsSuccessStatus: 204,
   }),
