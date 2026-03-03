@@ -36,8 +36,9 @@ export const Tasks: React.FC = () => {
             task.title.toLowerCase().includes(searchLower) ||
             (task.description?.toLowerCase().includes(searchLower) ?? false);
 
-        // Hide completed tasks from main view
-        if (task.status === 'COMPLETED' && statusFilter === 'ALL' && !searchQuery) return false;
+        // Remove the logic that hides completed tasks from main view
+        // We want users to see the task get checked and stay there with strikethrough
+        // if (task.status === 'COMPLETED' && statusFilter === 'ALL' && !searchQuery) return false;
 
         const matchesStatus = statusFilter === 'ALL' || task.status === statusFilter;
         const matchesPriority = priorityFilter === 'ALL' || task.priority === priorityFilter;

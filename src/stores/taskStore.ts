@@ -106,13 +106,24 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
   toggleTaskStatus: async (id) => {
     try {
       const response = await apiClient.patch(`/tasks/${id}/toggle`);
+      const updatedTask = response.data;
       set((state) => ({
-        tasks: state.tasks.map((task) =>
-          task.id === id ? response.data : task,
-        ),
+        tasks: state.tasks.map((task) => (task.id === id ? updatedTask : task)),
       }));
+
+      const isCompleted = updatedTask.status === "COMPLETED";
+      import("react-hot-toast").then(({ default: toast }) => {
+        toast.success(
+          isCompleted ? "Task completed! 🏆" : "Task marked as TODO",
+        );
+      });
     } catch (error: any) {
-      set({ error: error.response?.data?.error || "Failed to toggle task" });
+      const errorMessage =
+        error.response?.data?.error || "Failed to toggle task";
+      set({ error: errorMessage });
+      import("react-hot-toast").then(({ default: toast }) => {
+        toast.error(errorMessage);
+      });
       throw error;
     }
   },
