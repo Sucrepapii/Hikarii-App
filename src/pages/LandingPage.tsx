@@ -49,7 +49,7 @@ export const LandingPage: React.FC = () => {
                     <div className="flex items-center gap-2 cursor-pointer group" onClick={() => navigate('/')}>
                         <Logo variant="full" size="md" />
                         <span className="text-sm font-medium bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-500 bg-clip-text text-transparent bg-[length:200%_auto] animate-shimmer overflow-hidden whitespace-nowrap opacity-0 max-w-0 group-hover:opacity-100 group-hover:max-w-xs transition-all duration-700 ease-out pl-2 border-l border-slate-200 dark:border-white/10 hidden md:block">
-                            Bring clarity to your life
+                            Clarity. Focus. Control.
                         </span>
                     </div>
 
@@ -115,7 +115,7 @@ export const LandingPage: React.FC = () => {
 
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-indigo-100 dark:border-white/10 bg-white/50 dark:bg-white/5 backdrop-blur-sm mb-8 animate-fade-in-up shadow-sm">
                     <Zap className="w-4 h-4 text-indigo-600 fill-indigo-600" />
-                    <span className="text-sm font-medium text-indigo-900 dark:text-indigo-200">Bring clarity to your life</span>
+                    <span className="text-sm font-medium text-indigo-900 dark:text-indigo-200">Clarity. Focus. Control.</span>
                 </div>
 
                 <h1 className="text-6xl md:text-8xl font-display font-bold tracking-tight mb-8 leading-[1.1] animate-fade-in-up delay-100 text-slate-900 dark:text-white">
