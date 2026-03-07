@@ -11,7 +11,7 @@ export const detectPatterns = async (
 ): Promise<void> => {
   try {
     // This triggers the analysis logic
-    const patterns = await patternService.detectPatterns(req.userId);
+    const detectionResult = await patternService.detectPatterns(req.userId);
 
     // Also fetch all current patterns to return comprehensive list
     const allPatterns = await prisma.recurringExpense.findMany({
@@ -20,8 +20,11 @@ export const detectPatterns = async (
     });
 
     res.json({
-      newlyDetected: patterns.length,
+      newlyDetected: Array.isArray(detectionResult)
+        ? detectionResult.length
+        : detectionResult.newPatterns?.length || 0,
       patterns: allPatterns,
+      advice: Array.isArray(detectionResult) ? null : detectionResult.advice,
     });
   } catch (error: any) {
     res.status(500).json({ error: error.message });

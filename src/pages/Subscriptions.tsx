@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 
 import apiClient from '../api/client';
@@ -7,7 +6,8 @@ import {
     Calendar, CheckCircle,
     XCircle,
     RefreshCw,
-    Trash2
+    Trash2,
+    Lightbulb
 } from "lucide-react";
 import { format } from 'date-fns';
 import { toast } from 'react-hot-toast';
@@ -31,6 +31,7 @@ interface RecurringExpense {
 export const Subscriptions: React.FC = () => {
     // const { token } = useAuthStore();
     const [patterns, setPatterns] = useState<RecurringExpense[]>([]);
+    const [advice, setAdvice] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [scanning, setScanning] = useState(false);
 
@@ -51,6 +52,8 @@ export const Subscriptions: React.FC = () => {
         try {
             const res = await apiClient.get('/patterns');
             setPatterns(res.data);
+            // In a full implementation, we might want to fetch advice on load too, 
+            // but for now we generate it fresh during the manual scan.
         } catch (err) {
             toast.error("Failed to load subscriptions");
         } finally {
@@ -62,8 +65,11 @@ export const Subscriptions: React.FC = () => {
         setScanning(true);
         try {
             const res = await apiClient.post('/patterns/detect');
-            toast.success(`Scan complete! Found ${res.data.newlyDetected} new patterns.`);
+            toast.success(`Analysis complete! Found ${res.data.newlyDetected} new patterns.`);
             setPatterns(res.data.patterns); // Update list
+            if (res.data.advice) {
+                setAdvice(res.data.advice);
+            }
         } catch (err) {
             toast.error("Scan failed");
         } finally {
@@ -126,9 +132,23 @@ export const Subscriptions: React.FC = () => {
                     className="btn btn-primary flex items-center gap-2"
                 >
                     <RefreshCw className={`w-4 h-4 ${scanning ? 'animate-spin' : ''}`} />
-                    {scanning ? 'Scanning...' : 'Scan for Patterns'}
+                    {scanning ? 'Applying AI...' : 'Scan Data with AI Insights'}
                 </button>
             </div>
+
+            {advice && (
+                <div className="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 border border-indigo-100 dark:border-indigo-800 rounded-xl p-5 mb-6 flex gap-4 animate-fade-in-up">
+                    <div className="bg-white dark:bg-slate-800 p-2 rounded-lg h-fit shadow-sm border border-indigo-50 dark:border-indigo-900">
+                        <Lightbulb className="w-6 h-6 text-indigo-500 fill-indigo-100 dark:fill-indigo-900" />
+                    </div>
+                    <div>
+                        <h3 className="font-semibold text-slate-800 dark:text-slate-200 mb-1">AI Financial Analysis</h3>
+                        <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">
+                            {advice}
+                        </p>
+                    </div>
+                </div>
+            )}
 
             {loading ? (
                 <div className="text-center py-12">Loading...</div>
@@ -138,8 +158,8 @@ export const Subscriptions: React.FC = () => {
                         <div className="col-span-full text-center py-12 bg-slate-50 dark:bg-slate-900 rounded-xl border border-dashed border-slate-300 dark:border-slate-700">
                             <RefreshCw className="w-12 h-12 text-slate-400 mx-auto mb-4" />
                             <h3 className="text-lg font-medium text-slate-600 dark:text-slate-300">No subscriptions detected yet</h3>
-                            <p className="text-slate-500 mb-6">Run a scan to analyze your expense history</p>
-                            <button onClick={handleScanClick} className="btn btn-secondary">Run Analysis</button>
+                            <p className="text-slate-500 mb-6">Run an AI scan to analyze your expense history</p>
+                            <button onClick={handleScanClick} className="btn btn-secondary">Analyze My Spending</button>
                         </div>
                     ) : (
                         patterns.map(pattern => (
