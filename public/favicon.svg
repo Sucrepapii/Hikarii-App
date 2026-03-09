@@ -13,6 +13,6 @@
   </defs>
 
   <!-- Thickened strokes (from 16 to 24) to ensure the 'H' is readable at 16x16px -->
-  <path d="M 80 15 Q 30 50 60 85" stroke="url(#fav-right)" strokeWidth="24" strokeLinecap="round" fill="none" />
-  <path d="M 40 15 Q 70 50 20 85" stroke="url(#fav-left)" strokeWidth="24" strokeLinecap="round" fill="none" />
+  <path d="M 80 15 Q 30 50 60 85" stroke="#ffffff" strokeWidth="24" strokeLinecap="round" fill="none" />
+  <path d="M 40 15 Q 70 50 20 85" stroke="#ffffff" strokeWidth="24" strokeLinecap="round" fill="none" />
 </svg>
