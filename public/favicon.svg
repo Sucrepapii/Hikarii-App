@@ -1,0 +1,18 @@
+<svg viewBox="0 0 100 100" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Ultra bright left stroke for max visibility on dark tabs -->
+    <linearGradient id="fav-left" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stopColor="#f3e8ff" />
+      <stop offset="100%" stopColor="#d8b4fe" />
+    </linearGradient>
+    <!-- Deep purple right stroke -->
+    <linearGradient id="fav-right" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stopColor="#c084fc" />
+      <stop offset="100%" stopColor="#7e22ce" />
+    </linearGradient>
+  </defs>
+
+  <!-- Thickened strokes (from 16 to 24) to ensure the 'H' is readable at 16x16px -->
+  <path d="M 80 15 Q 30 50 60 85" stroke="url(#fav-right)" strokeWidth="24" strokeLinecap="round" fill="none" />
+  <path d="M 40 15 Q 70 50 20 85" stroke="url(#fav-left)" strokeWidth="24" strokeLinecap="round" fill="none" />
+</svg>
