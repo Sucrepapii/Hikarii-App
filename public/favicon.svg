@@ -1,23 +1,8 @@
 <svg viewBox="0 0 100 100" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <!-- Ultra bright left stroke for max visibility on dark tabs -->
-    <linearGradient id="fav-left" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stopColor="#f3e8ff" />
-      <stop offset="100%" stopColor="#d8b4fe" />
-    </linearGradient>
-    <!-- Deep purple right stroke -->
-    <linearGradient id="fav-right" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stopColor="#c084fc" />
-      <stop offset="100%" stopColor="#7e22ce" />
-    </linearGradient>
-  </defs>
-
   <!-- Deep purple background with rounded corners -->
   <rect width="100" height="100" rx="25" fill="#4338ca" />
   
-  <!-- Scaled down white H to fit inside the new background box -->
-  <g transform="translate(15, 15) scale(0.7)">
-    <path d="M 80 15 Q 30 50 60 85" stroke="#ffffff" strokeWidth="24" strokeLinecap="round" fill="none" />
-    <path d="M 40 15 Q 70 50 20 85" stroke="#ffffff" strokeWidth="24" strokeLinecap="round" fill="none" />
-  </g>
+  <!-- Manually scaled & centered 'H' using absolute coordinates (NO TRANSFORMS) -->
+  <path d="M 71 25.5 Q 36 50 57 74.5" stroke="#ffffff" strokeWidth="18" strokeLinecap="round" fill="none" />
+  <path d="M 43 25.5 Q 64 50 29 74.5" stroke="#ffffff" strokeWidth="18" strokeLinecap="round" fill="none" />
 </svg>
