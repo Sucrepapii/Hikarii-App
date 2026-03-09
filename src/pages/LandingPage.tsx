@@ -11,9 +11,9 @@ import { useAuthStore } from '../stores/authStore';
 // Note: In this environment, we will assume the files are placed in public or handled via typical asset workflow.
 // For the sake of this edit, I'll allow the user to visualize where they go.
 
-const MethodClarity = "/method_clarity_1769981543788.png";
-const MethodFocus = "/method_focus_1769981556726.png";
-const MethodFreedom = "/method_freedom_v2.jpg";
+const MethodClarity = "/hikari_method_clarity_1773066889589.png";
+const MethodFocus = "/hikari_method_focus_1773066906292.png";
+const MethodFreedom = "/hikari_method_freedom_1773066920626.png";
 
 export const LandingPage: React.FC = () => {
     const navigate = useNavigate();
