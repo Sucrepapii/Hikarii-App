@@ -33,74 +33,62 @@ export const Logo: React.FC<LogoProps> = ({
 
     const IconComponent = (
         <svg
-            viewBox="0 0 100 130"
+            viewBox="0 0 100 100"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
             className={clsx('transition-transform duration-300 hover:scale-105', iconSizes[size])}
             aria-label="Hikari logo"
         >
             <defs>
-                {/* Brand gradient: indigo → purple */}
-                <radialGradient id={gradId} cx="50%" cy="38%" r="55%" fx="50%" fy="30%">
-                    <stop offset="0%" stopColor="#a78bfa" stopOpacity="1" />
-                    <stop offset="40%" stopColor="#6366f1" stopOpacity="1" />
-                    <stop offset="100%" stopColor="#4338ca" stopOpacity="1" />
-                </radialGradient>
-                {/* Soft inner glow */}
-                <radialGradient id={glowId} cx="50%" cy="35%" r="35%">
-                    <stop offset="0%" stopColor="#e0e7ff" stopOpacity="0.7" />
-                    <stop offset="100%" stopColor="#e0e7ff" stopOpacity="0" />
-                </radialGradient>
+                <linearGradient id={`${gradId}-left`} x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#ffffff" />
+                    <stop offset="100%" stopColor="#a5b4fc" />
+                </linearGradient>
+                <linearGradient id={`${gradId}-right`} x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#c084fc" />
+                    <stop offset="100%" stopColor="#4338ca" />
+                </linearGradient>
+                {/* Soft glow filter for premium effect */}
+                <filter id={`${glowId}-filter`} x="-20%" y="-20%" width="140%" height="140%">
+                    <feGaussianBlur stdDeviation="6" result="blur" />
+                    <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                </filter>
             </defs>
 
-            {/* === Bulb globe === */}
+            {/* Background glow for depth */}
             <path
-                d="M50 5
-                   C27 5 10 22 10 44
-                   C10 58 17 70 28 78
-                   L28 90
-                   L72 90
-                   L72 78
-                   C83 70 90 58 90 44
-                   C90 22 73 5 50 5Z"
-                fill={`url(#${gradId})`}
-            />
-            {/* Inner glow overlay */}
-            <path
-                d="M50 5
-                   C27 5 10 22 10 44
-                   C10 58 17 70 28 78
-                   L28 90
-                   L72 90
-                   L72 78
-                   C83 70 90 58 90 44
-                   C90 22 73 5 50 5Z"
-                fill={`url(#${glowId})`}
-            />
-
-            {/* === Filament (white vertical line inside bulb) === */}
-            <line
-                x1="50" y1="30"
-                x2="50" y2="72"
-                stroke="white"
-                strokeWidth="4"
+                d="M 40 15 Q 70 50 20 85"
+                stroke="#a5b4fc"
+                strokeWidth="16"
                 strokeLinecap="round"
-                opacity="0.9"
+                opacity="0.3"
+                filter={`url(#${glowId}-filter)`}
+            />
+            <path
+                d="M 80 15 Q 30 50 60 85"
+                stroke="#8b5cf6"
+                strokeWidth="16"
+                strokeLinecap="round"
+                opacity="0.3"
+                filter={`url(#${glowId}-filter)`}
             />
 
-            {/* === Screw base ribs === */}
-            {/* Top collar separator */}
-            <line x1="28" y1="90" x2="72" y2="90" stroke={`url(#${gradId})`} strokeWidth="2" />
+            {/* Main interlocking strokes */}
+            {/* Right purple stroke (background layer) */}
+            <path
+                d="M 80 15 Q 30 50 60 85"
+                stroke={`url(#${gradId}-right)`}
+                strokeWidth="16"
+                strokeLinecap="round"
+            />
 
-            {/* Rib 1 */}
-            <rect x="28" y="93" width="44" height="6" rx="1" fill={`url(#${gradId})`} />
-            {/* Rib 2 */}
-            <rect x="30" y="102" width="40" height="6" rx="1" fill={`url(#${gradId})`} />
-            {/* Rib 3 */}
-            <rect x="33" y="111" width="34" height="6" rx="1" fill={`url(#${gradId})`} />
-
-            {/* === Bottom cap === */}
-            <ellipse cx="50" cy="120" rx="16" ry="5" fill="#4338ca" />
+            {/* Left white/blue stroke (foreground layer) */}
+            <path
+                d="M 40 15 Q 70 50 20 85"
+                stroke={`url(#${gradId}-left)`}
+                strokeWidth="16"
+                strokeLinecap="round"
+            />
         </svg>
     );
 
