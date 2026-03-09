@@ -41,12 +41,12 @@ export const Logo: React.FC<LogoProps> = ({
         >
             <defs>
                 <linearGradient id={`${gradId}-left`} x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#ffffff" />
-                    <stop offset="100%" stopColor="#a5b4fc" />
+                    <stop offset="0%" stopColor="#e9d5ff" />
+                    <stop offset="100%" stopColor="#c084fc" />
                 </linearGradient>
                 <linearGradient id={`${gradId}-right`} x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#c084fc" />
-                    <stop offset="100%" stopColor="#4338ca" />
+                    <stop offset="0%" stopColor="#a855f7" />
+                    <stop offset="100%" stopColor="#6b21a8" />
                 </linearGradient>
                 {/* Soft glow filter for premium effect */}
                 <filter id={`${glowId}-filter`} x="-20%" y="-20%" width="140%" height="140%">
@@ -58,7 +58,7 @@ export const Logo: React.FC<LogoProps> = ({
             {/* Background glow for depth */}
             <path
                 d="M 40 15 Q 70 50 20 85"
-                stroke="#a5b4fc"
+                stroke="#d8b4fe"
                 strokeWidth="16"
                 strokeLinecap="round"
                 opacity="0.3"
@@ -66,10 +66,10 @@ export const Logo: React.FC<LogoProps> = ({
             />
             <path
                 d="M 80 15 Q 30 50 60 85"
-                stroke="#8b5cf6"
+                stroke="#a855f7"
                 strokeWidth="16"
                 strokeLinecap="round"
-                opacity="0.3"
+                opacity="0.4"
                 filter={`url(#${glowId}-filter)`}
             />
 
