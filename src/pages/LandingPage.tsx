@@ -162,22 +162,39 @@ export const LandingPage: React.FC = () => {
                         </div>
 
                         <div className="pt-10 h-full">
-                            <video
-                                src="/Task - budget linking.mp4"
-                                autoPlay
-                                loop
-                                muted
-                                playsInline
+                            <img
+                                src="/hikari_hero_desk.png"
+                                alt="A serene, highly organized workspace representing clarity and control"
                                 className="w-full h-full object-cover"
-                                poster="/hero_dashboard_v2.png"
-                            >
-                                Your browser does not support the video tag.
-                            </video>
+                            />
                         </div>
 
                         {/* Professional Glass Grading */}
                         <div className="absolute inset-0 bg-gradient-to-tr from-indigo-500/5 via-transparent to-purple-500/5 pointer-events-none z-10"></div>
                         <div className="absolute inset-0 ring-1 ring-inset ring-white/10 dark:ring-white/5 pointer-events-none rounded-2xl z-20"></div>
+                    </div>
+                </div>
+            </section>
+
+            {/* TESTIMONIAL/SOCIAL PROOF SECTION */}
+            <section className="py-20 relative px-6 border-y border-slate-200 dark:border-white/5 bg-slate-50/50 dark:bg-white/[0.02] backdrop-blur-sm z-20">
+                <div className="max-w-4xl mx-auto text-center animate-fade-in-up delay-[400ms]">
+                    <div className="flex justify-center gap-1.5 text-yellow-500 dark:text-yellow-400 mb-8 drop-shadow-[0_0_10px_rgba(250,204,21,0.2)]">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                            <svg key={star} className="w-6 h-6 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+                        ))}
+                    </div>
+                    <blockquote className="text-2xl md:text-4xl font-display font-medium text-slate-800 dark:text-white mb-10 leading-snug">
+                        "Hikari helped me save my first <span className="text-emerald-600 dark:text-emerald-400 font-bold">$1,000</span> in 3 months. Having my tasks and budget perfectly synchronized changed the way I work."
+                    </blockquote>
+                    <div className="flex items-center justify-center gap-4">
+                        <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold text-lg shadow-lg border-2 border-white/20">
+                            SJ
+                        </div>
+                        <div className="text-left">
+                            <div className="font-bold text-slate-900 dark:text-white leading-tight">Sarah Jenkins</div>
+                            <div className="text-sm text-slate-500 dark:text-slate-400 font-medium">Freelance Designer</div>
+                        </div>
                     </div>
                 </div>
             </section>
