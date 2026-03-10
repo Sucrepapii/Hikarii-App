@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { X, Zap, Sparkles, Trophy, Calendar, TrendingUp } from 'lucide-react';
-import { Button } from '../common/Button';
+import { X, Zap, Trophy, Calendar, TrendingUp } from 'lucide-react';
 import { Logo } from '../common/Logo';
 import apiClient from '../../api/client';
 
@@ -241,15 +240,10 @@ export const HikariWrapped: React.FC<HikariWrappedProps> = ({ onClose }) => {
                     </div>
 
                     <div className="mt-12 flex flex-col gap-4 w-full z-50 relative">
-                        <Button
-                            className="w-full h-14 bg-white text-black hover:bg-slate-200 rounded-full text-lg font-bold shadow-[0_0_20px_rgba(255,255,255,0.3)]"
-                            onClick={() => {
-                                alert("In a real app, this would use the browser Web Share API or html2canvas to generate an image for Instagram!");
-                            }}
+                        <button
+                            onClick={onClose}
+                            className="w-full h-14 bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 text-white font-bold rounded-full transition-colors text-lg"
                         >
-                            Share My Month <Sparkles className="w-5 h-5 ml-2" />
-                        </Button>
-                        <button onClick={onClose} className="text-slate-400 font-medium hover:text-white transition-colors">
                             Close
                         </button>
                     </div>
