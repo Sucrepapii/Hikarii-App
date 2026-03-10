@@ -8,7 +8,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
 
 const PRO_PRICE_ID = process.env.STRIPE_PRO_PRICE_ID;
 
-export const createCheckoutSession = async (req: Request, res: Response) => {
+export const createCheckoutSession = async (req: any, res: Response) => {
   console.log("Stripe: createCheckoutSession started");
   console.log(
     "Stripe: Env Check -> PRO_PRICE_ID:",
@@ -112,7 +112,7 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
   }
 };
 
-export const createPortalSession = async (req: Request, res: Response) => {
+export const createPortalSession = async (req: any, res: Response) => {
   try {
     const userId = req.user?.id;
     if (!userId) return res.status(401).json({ message: "Unauthorized" });
@@ -134,7 +134,7 @@ export const createPortalSession = async (req: Request, res: Response) => {
   }
 };
 
-export const cancelSubscription = async (req: Request, res: Response) => {
+export const cancelSubscription = async (req: any, res: Response) => {
   try {
     const userId = req.user?.id;
     if (!userId) return res.status(401).json({ message: "Unauthorized" });
