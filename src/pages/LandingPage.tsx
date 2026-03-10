@@ -19,7 +19,7 @@ const TESTIMONIALS = [
     {
         quote: (
             <>
-                "Hikari helped me save my first <span className="text-emerald-600 dark:text-emerald-400 font-bold">₦5,000,000</span> in 3 months. Having my tasks and budget perfectly synchronized changed the way I work."
+                "Hikari helped me save my first <span className="text-emerald-600 dark:text-emerald-400 font-bold">₦500,000</span> in 3 months. Having my tasks and budget perfectly synchronized changed the way I work."
             </>
         ),
         name: "Oluwaseun Adeyemi",
