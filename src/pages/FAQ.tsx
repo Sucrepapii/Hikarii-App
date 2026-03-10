@@ -12,36 +12,36 @@ export const FAQ: React.FC = () => {
 
     const faqs = [
         {
-            q: "Is Hikari really free?",
-            a: "Yes! Our core features including task management, basic budgeting, and calendar view are free forever. We believe in providing value first. Our Pro plan unlocks advanced AI insights and unlimited history."
+            q: "Do I really get to use Hikari for free?",
+            a: "Yes! We give you the core features—like task management, basic budgeting, and the calendar view—completely free, forever. We believe in proving our value to you first. When you're ready, our Pro plan unlocks advanced AI insights and unlimited history."
         },
         {
-            q: "How do I set up WhatsApp notifications?",
-            a: "Go to Settings > Profile and enter your phone number. You can then toggle alerts for overdue tasks, budget limits, and project deadlines. If testing in the sandbox, remember to join the sandbox on your phone first by following the Twilio instructions."
+            q: "How do I get my notifications on WhatsApp?",
+            a: "It's easy! Just head over to Settings > Profile and drop in your phone number. From there, you can toggle exactly what you want to be alerted about—like overdue tasks, budget limits, and project deadlines."
         },
         {
-            q: "How does the AI Smart Split work?",
-            a: "Hikari uses advanced AI models to analyze your complex tasks (like 'Plan a wedding') and breaks them down into actionable sub-tasks automatically. It saves you the mental load of planning every detail."
+            q: "How does your AI Smart Split actually help me?",
+            a: "Think of it as your personal assistant. When you give Hikari a massive, overwhelming project (like 'Plan a wedding'), our AI analyzes it and instantly breaks it down into bite-sized, actionable tasks. We take the mental load of planning off your shoulders."
         },
         {
-            q: "Can I sync with Google Calendar?",
-            a: "Yes! You can connect your Google account in Settings > Integrations. Once connected, you can choose to sync individual tasks or entire projects to your Google Calendar for better scheduling."
+            q: "Can I sync my schedule with Google Calendar?",
+            a: "Absolutely! You can securely connect your Google account in Settings > Integrations. Once you're linked up, you can seamlessly push individual tasks or entire projects straight to your Google Calendar."
         },
         {
-            q: "Can I use Hikari for my business?",
-            a: "Absolutely. Many freelancers and small business owners use Hikari to track client projects and expenses. The data export feature makes it easy to send reports to accountants."
+            q: "Is Hikari a good fit for my freelance business?",
+            a: "Definitely. We have tons of freelancers and small business owners using Hikari to manage client projects and track business expenses. Plus, our data export feature makes it a breeze to hand everything over to your accountant."
         },
         {
-            q: "Is my financial data safe?",
-            a: "Security is our top priority. We use bank-grade encryption for all data transmission and storage. We never sell your data to third parties."
+            q: "How do you keep my financial data secure?",
+            a: "Your security is our absolute top priority. We lock down all your data using bank-grade encryption, both in transit and at rest. And we promise: we will never sell your personal data to third parties."
         },
         {
-            q: "How do I upgrade to Pro?",
-            a: "You can upgrade to Pro at any time from your account settings. Pro gives you access to advanced AI features, unlimited task history, and custom budget categories."
+            q: "How do I upgrade my account to Pro?",
+            a: "Whenever you're ready, you can upgrade to Pro directly from your account settings. Becoming a Pro member instantly gives you access to our advanced AI intelligence, unlimited task history, and customizable budget categories."
         },
         {
-            q: "Can I cancel my subscription?",
-            a: "Yes, you can cancel your Pro subscription at any time. You will continue to have access to Pro features until the end of your current billing period."
+            q: "Am I locked in if I subscribe to Pro?",
+            a: "Not at all. You have full control, and you can cancel your Pro subscription at any time with just a few clicks. Even after you cancel, we'll make sure you keep your Pro access until the end of your current billing cycle."
         }
     ];
 

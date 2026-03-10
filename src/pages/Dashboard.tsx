@@ -36,8 +36,7 @@ export const Dashboard: React.FC = () => {
     // Hikari Wrapped State
     const [isWrappedOpen, setIsWrappedOpen] = useState(false);
     const today = new Date();
-    // FORCE TEST: Temporary override to always show the wrapped banner
-    const isLastDayOfMonth = true; // isSameDay(today, endOfMonth(today));
+    const isLastDayOfMonth = isSameDay(today, endOfMonth(today));
 
     // Fetch data on mount
     useEffect(() => {
