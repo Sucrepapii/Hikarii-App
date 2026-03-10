@@ -8,7 +8,8 @@ import { TaskStatus, Task } from '../types/task.types';
 import { TaskItem } from '../components/tasks/TaskItem';
 import { BudgetProgress } from '../components/budget/Charts/BudgetProgress';
 import { SpendingChart } from '../components/budget/Charts/SpendingChart';
-import { startOfDay } from 'date-fns';
+import { startOfDay, endOfMonth, isSameDay } from 'date-fns';
+import { HikariWrapped } from '../components/dashboard/HikariWrapped';
 import { Modal } from '../components/common/Modal';
 import { ConfirmModal } from '../components/common/ConfirmModal';
 import { TaskForm } from '../components/tasks/TaskForm';
@@ -31,6 +32,11 @@ export const Dashboard: React.FC = () => {
     const [showUpgradeModal, setShowUpgradeModal] = useState(false);
     const [isRefreshingInsights, setIsRefreshingInsights] = useState(false);
     const { refreshInsights } = useIntelligenceStore();
+
+    // Hikari Wrapped State
+    const [isWrappedOpen, setIsWrappedOpen] = useState(false);
+    const today = new Date();
+    const isLastDayOfMonth = isSameDay(today, endOfMonth(today));
 
     // Fetch data on mount
     useEffect(() => {
@@ -127,6 +133,24 @@ export const Dashboard: React.FC = () => {
                     <span className="text-sm font-medium text-slate-600 dark:text-slate-300">Refresh Insights</span>
                 </button>
             </div>
+
+            {/* Hikari Wrapped Trigger (Only visible on last day of month) */}
+            {isLastDayOfMonth && (
+                <div className="mb-6 p-1 rounded-2xl bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 animate-pulse-slow">
+                    <div className="bg-[#0B0C15] rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <div>
+                            <h3 className="text-xl font-display font-bold text-white mb-1">Your {today.toLocaleString('default', { month: 'long' })} Wrapped is ready!</h3>
+                            <p className="text-indigo-200 text-sm">See your productivity and financial story for this month.</p>
+                        </div>
+                        <button
+                            onClick={() => setIsWrappedOpen(true)}
+                            className="whitespace-nowrap px-6 py-2.5 bg-white text-black font-bold rounded-full hover:scale-105 transition-transform"
+                        >
+                            Play Story
+                        </button>
+                    </div>
+                </div>
+            )}
 
             {/* Overdue Alert Banner */}
             {overdueTasks.length > 0 && (
@@ -322,6 +346,11 @@ export const Dashboard: React.FC = () => {
                 isOpen={showUpgradeModal}
                 onClose={() => setShowUpgradeModal(false)}
             />
+
+            {/* Fullscreen Hikari Wrapped Overlay */}
+            {isWrappedOpen && (
+                <HikariWrapped onClose={() => setIsWrappedOpen(false)} />
+            )}
         </div>
     );
 };

@@ -287,3 +287,95 @@ export const getRecommendations = async (
     res.status(500).json({ error: error.message });
   }
 };
+
+export const getWrappedData = async (
+  req: AuthRequest,
+  res: Response,
+): Promise<void> => {
+  try {
+    const now = new Date();
+    // Start from the 1st of the current month
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+    // Fetch all tasks for the current month
+    const tasks = await prisma.task.findMany({
+      where: {
+        userId: req.userId,
+        createdAt: {
+          gte: startOfMonth,
+        },
+      },
+    });
+
+    // 1. Total Tasks Completed
+    const completedTasks = tasks.filter(
+      (t) => t.status === TaskStatus.COMPLETED,
+    );
+    const totalCompleted = completedTasks.length;
+
+    // 2. Top Productive Day
+    const daysOfWeek = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ];
+    const dayCounts = [0, 0, 0, 0, 0, 0, 0];
+
+    completedTasks.forEach((t) => {
+      // Use updatedAt as the proxy for when they completed it
+      const completionDay = t.updatedAt.getDay();
+      dayCounts[completionDay]++;
+    });
+
+    const topDayIndex = dayCounts.indexOf(Math.max(...dayCounts));
+    const topDay = daysOfWeek[topDayIndex];
+    const topDayCount = dayCounts[topDayIndex];
+
+    // 3. Total Income Generated & Subscriptions Cancelled (Mocked from tasks)
+    let totalIncome = 0;
+    let deadWeightCut = 0;
+
+    tasks.forEach((t) => {
+      const financials = t.financials as any;
+      if (financials?.type === TaskType.INCOME && financials?.actualCost) {
+        totalIncome += Number(financials.actualCost);
+      }
+      if (
+        t.title.toLowerCase().includes("cancel") &&
+        financials?.type === TaskType.EXPENSE
+      ) {
+        deadWeightCut += Number(
+          financials.actualCost || financials.estimatedCost || 0,
+        );
+      }
+    });
+
+    // 4. Determine Archetype
+    let archetype = "The Consistent Starter"; // Default
+    if (totalCompleted > 50 && totalIncome > 100000) {
+      archetype = "The Rainmaker";
+    } else if (totalCompleted > 100) {
+      archetype = "The Sprinter";
+    } else if (tasks.length > 0 && totalCompleted / tasks.length > 0.8) {
+      archetype = "The Finisher";
+    }
+
+    res.json({
+      totalTasksList: tasks.length,
+      totalCompleted,
+      topDay,
+      topDayCount,
+      totalIncome,
+      deadWeightCut,
+      archetype,
+      month: now.toLocaleString("default", { month: "long" }),
+      year: now.getFullYear(),
+    });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+};
