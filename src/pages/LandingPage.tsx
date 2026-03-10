@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Check, Zap, Link2, FileText, Split, ArrowRight, Menu, X, ChevronDown } from 'lucide-react';
 import { Button } from '../components/common/Button';
@@ -15,11 +15,56 @@ const MethodClarity = "/hikari_method_clarity_1773066889589.png";
 const MethodFocus = "/hikari_method_focus_1773066906292.png";
 const MethodFreedom = "/hikari_method_freedom_1773066920626.png";
 
+const TESTIMONIALS = [
+    {
+        quote: (
+            <>
+                "Hikari helped me save my first <span className="text-emerald-600 dark:text-emerald-400 font-bold">₦5,000,000</span> in 3 months. Having my tasks and budget perfectly synchronized changed the way I work."
+            </>
+        ),
+        name: "Oluwaseun Adeyemi",
+        role: "Freelance Designer, Lagos",
+        initials: "OA",
+        color: "from-indigo-500 to-purple-500"
+    },
+    {
+        quote: (
+            <>
+                "I used to be paralyzed by my own ambitions. The AI smart split broke down my entire product launch into daily 15-minute blocks. <span className="text-purple-600 dark:text-purple-400 font-bold">Unbelievable.</span>"
+            </>
+        ),
+        name: "Marcus Thorne",
+        role: "Indie Developer",
+        initials: "MT",
+        color: "from-fuchsia-500 to-purple-500"
+    },
+    {
+        quote: (
+            <>
+                "Finally, a tool that respects my time. Finding out I was losing <span className="text-rose-600 dark:text-rose-400 font-bold">$200/mo</span> on dead subscriptions while organizing my daily tasks was a wake-up call."
+            </>
+        ),
+        name: "Elena Rodriguez",
+        role: "Small Business Owner",
+        initials: "ER",
+        color: "from-orange-500 to-rose-500"
+    }
+];
+
 export const LandingPage: React.FC = () => {
     const navigate = useNavigate();
     const { token } = useAuthStore();
     const isAuthenticated = !!token;
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [activeTestimonial, setActiveTestimonial] = useState(0);
+
+    // Auto-advance testimonials
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setActiveTestimonial((prev) => (prev + 1) % TESTIMONIALS.length);
+        }, 7000);
+        return () => clearInterval(interval);
+    }, []);
 
     // 3D Tilt Effect
     const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -176,26 +221,52 @@ export const LandingPage: React.FC = () => {
                 </div>
             </section>
 
-            {/* TESTIMONIAL/SOCIAL PROOF SECTION */}
-            <section className="py-20 relative px-6 border-y border-slate-200 dark:border-white/5 bg-slate-50/50 dark:bg-white/[0.02] backdrop-blur-sm z-20">
-                <div className="max-w-4xl mx-auto text-center animate-fade-in-up delay-[400ms]">
-                    <div className="flex justify-center gap-1.5 text-yellow-500 dark:text-yellow-400 mb-8 drop-shadow-[0_0_10px_rgba(250,204,21,0.2)]">
-                        {[1, 2, 3, 4, 5].map((star) => (
-                            <svg key={star} className="w-6 h-6 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+            {/* TESTIMONIAL/SOCIAL PROOF CAROUSEL */}
+            <section className="py-20 relative px-6 border-y border-slate-200 dark:border-white/5 bg-slate-50/50 dark:bg-white/[0.02] backdrop-blur-sm z-20 overflow-hidden">
+                <div className="max-w-4xl mx-auto text-center animate-fade-in-up delay-[400ms] relative h-[380px] md:h-[280px]">
+
+                    {TESTIMONIALS.map((testimonial, idx) => (
+                        <div
+                            key={idx}
+                            className={`absolute inset-0 w-full flex flex-col items-center justify-center transition-all duration-1000 ease-in-out ${idx === activeTestimonial
+                                ? 'opacity-100 translate-x-0 scale-100'
+                                : idx < activeTestimonial
+                                    ? 'opacity-0 -translate-x-12 scale-95 pointer-events-none'
+                                    : 'opacity-0 translate-x-12 scale-95 pointer-events-none'
+                                }`}
+                        >
+                            <div className="flex justify-center gap-1.5 text-yellow-500 dark:text-yellow-400 mb-8 drop-shadow-[0_0_10px_rgba(250,204,21,0.2)]">
+                                {[1, 2, 3, 4, 5].map((star) => (
+                                    <svg key={star} className="w-6 h-6 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+                                ))}
+                            </div>
+                            <blockquote className="text-2xl md:text-4xl font-display font-medium text-slate-800 dark:text-white mb-10 leading-snug">
+                                {testimonial.quote}
+                            </blockquote>
+                            <div className="flex items-center justify-center gap-4">
+                                <div className={`w-12 h-12 rounded-full bg-gradient-to-tr ${testimonial.color} flex items-center justify-center text-white font-bold text-lg shadow-lg border-2 border-white/20`}>
+                                    {testimonial.initials}
+                                </div>
+                                <div className="text-left">
+                                    <div className="font-bold text-slate-900 dark:text-white leading-tight">{testimonial.name}</div>
+                                    <div className="text-sm text-slate-500 dark:text-slate-400 font-medium">{testimonial.role}</div>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+
+                    {/* Carousel Dots */}
+                    <div className="absolute bottom-0 left-1/2 -main-translate-x-1/2 -translate-x-1/2 flex gap-3">
+                        {TESTIMONIALS.map((_, idx) => (
+                            <button
+                                key={idx}
+                                onClick={() => setActiveTestimonial(idx)}
+                                className={`h-1.5 rounded-full transition-all duration-500 ${idx === activeTestimonial ? 'w-8 bg-indigo-500' : 'w-2 bg-slate-300 dark:bg-white/20 hover:bg-slate-400 dark:hover:bg-white/40'}`}
+                                aria-label={`Go to slide ${idx + 1}`}
+                            />
                         ))}
                     </div>
-                    <blockquote className="text-2xl md:text-4xl font-display font-medium text-slate-800 dark:text-white mb-10 leading-snug">
-                        "Hikari helped me save my first <span className="text-emerald-600 dark:text-emerald-400 font-bold">$1,000</span> in 3 months. Having my tasks and budget perfectly synchronized changed the way I work."
-                    </blockquote>
-                    <div className="flex items-center justify-center gap-4">
-                        <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold text-lg shadow-lg border-2 border-white/20">
-                            SJ
-                        </div>
-                        <div className="text-left">
-                            <div className="font-bold text-slate-900 dark:text-white leading-tight">Sarah Jenkins</div>
-                            <div className="text-sm text-slate-500 dark:text-slate-400 font-medium">Freelance Designer</div>
-                        </div>
-                    </div>
+
                 </div>
             </section>
 
