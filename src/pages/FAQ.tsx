@@ -48,7 +48,7 @@ export const FAQ: React.FC = () => {
     return (
         <div className="min-h-screen bg-slate-900 selection:bg-primary-500/30">
             {/* Header/Nav */}
-            <nav className="sticky top-0 z-50 glass border-b border-white/5 px-6 py-4">
+            <nav className="sticky top-0 z-50 bg-slate-900/80 backdrop-blur-md border-b border-white/10 px-6 py-4">
                 <div className="max-w-7xl mx-auto flex items-center justify-between">
                     <Link to="/" className="flex items-center gap-2 group">
                         <Logo variant="icon" size="sm" />
