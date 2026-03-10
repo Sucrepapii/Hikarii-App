@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { X, Zap, Sparkles, Trophy, Calendar, TrendingUp } from 'lucide-react';
 import { Button } from '../common/Button';
 import { Logo } from '../common/Logo';
+import apiClient from '../../api/client';
 
 interface WrappedData {
     totalTasksList: number;
@@ -36,14 +37,8 @@ export const HikariWrapped: React.FC<HikariWrappedProps> = ({ onClose }) => {
         // Fetch user data for the wrap
         const fetchWrappedData = async () => {
             try {
-                const token = localStorage.getItem('token');
-                const res = await fetch('/api/insights/wrapped', {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
-                if (res.ok) {
-                    const json = await res.json();
-                    setData(json);
-                }
+                const res = await apiClient.get('/insights/wrapped');
+                setData(res.data);
             } catch (err) {
                 console.error("Failed to fetch wrapped data", err);
             } finally {
