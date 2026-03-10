@@ -131,7 +131,10 @@ export const HikariWrapped: React.FC<HikariWrappedProps> = ({ onClose }) => {
     );
 
     return (
-        <div className="fixed inset-0 z-[100] bg-black text-white overflow-hidden flex justify-center selection:bg-purple-500/30">
+        <div
+            className="fixed inset-0 z-[100] bg-black text-white overflow-hidden flex justify-center selection:bg-purple-500/30"
+            onClick={handleTap}
+        >
 
             {/* Background ambient light - changes per slide */}
             <div className="absolute inset-0 z-0">
@@ -149,12 +152,12 @@ export const HikariWrapped: React.FC<HikariWrappedProps> = ({ onClose }) => {
                 <SlideIndicator />
 
                 {/* Close button */}
-                <button onClick={onClose} className="absolute top-16 right-4 z-50 p-2 bg-black/20 backdrop-blur-md rounded-full border border-white/10 hover:bg-white/10 transition-colors">
+                <button
+                    onClick={(e) => { e.stopPropagation(); onClose(); }}
+                    className="absolute top-16 right-4 z-50 p-2 bg-black/20 backdrop-blur-md rounded-full border border-white/10 hover:bg-white/10 transition-colors"
+                >
                     <X className="w-6 h-6 text-white" />
                 </button>
-
-                {/* Tap Areas */}
-                <div className="absolute inset-0 z-40" onClick={handleTap} />
 
                 {/* === SLIDE 1: INTRO & VOLUME === */}
                 <div className={`absolute inset-0 flex flex-col items-center justify-center p-8 text-center transition-all duration-700 ${activeSlide === 0 ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-8 scale-95 pointer-events-none'}`}>
@@ -241,7 +244,7 @@ export const HikariWrapped: React.FC<HikariWrappedProps> = ({ onClose }) => {
 
                     <div className="mt-12 flex flex-col gap-4 w-full z-50 relative">
                         <button
-                            onClick={onClose}
+                            onClick={(e) => { e.stopPropagation(); onClose(); }}
                             className="w-full h-14 bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 text-white font-bold rounded-full transition-colors text-lg"
                         >
                             Close
