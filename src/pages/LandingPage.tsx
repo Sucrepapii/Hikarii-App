@@ -389,30 +389,34 @@ export const LandingPage: React.FC = () => {
                             <div className="mt-8 bg-black/40 rounded-2xl border border-white/10 backdrop-blur-sm relative h-[120px] overflow-hidden">
                                 {/* Entry 1: Static (Default Visible) */}
                                 <div className="absolute inset-0 p-6 flex items-center gap-4 transition-all duration-500 opacity-100 group-hover:opacity-0 group-hover:scale-95">
-                                    <div className="bg-white/10 p-4 rounded-xl shadow-inner border border-white/5 flex-1">
+                                    <div className="bg-white/10 p-4 rounded-xl shadow-inner border border-white/5 flex-1 w-1/2">
                                         <div className="text-xs text-white/60 mb-1 font-medium uppercase tracking-wider">Project</div>
-                                        <div className="font-semibold text-white">Website Launch</div>
+                                        <div className="font-semibold text-white truncate">Sarah's Dream Wedding</div>
                                     </div>
-                                    <ArrowRight className="text-white/40 w-5 h-5" />
+                                    <ArrowRight className="text-white/40 w-5 h-5 shrink-0" />
                                     <div className="bg-white/10 p-4 rounded-xl shadow-inner border border-white/5 flex-1">
-                                        <div className="text-xs text-white/60 mb-1 font-medium uppercase tracking-wider">Cost</div>
-                                        <div className="font-semibold text-red-300">-$450.00</div>
+                                        <div className="text-xs text-white/60 mb-1 font-medium uppercase tracking-wider">Spent / Remaining</div>
+                                        <div className="font-semibold text-white">
+                                            <span className="text-emerald-400">$2,400</span> <span className="text-slate-500 font-normal">/</span> <span className="text-slate-300">$600</span>
+                                        </div>
                                     </div>
                                 </div>
 
                                 {/* Entry 2: Hover Reveal / Typing Effect (Hover Visible) */}
                                 <div className="absolute inset-0 p-6 flex items-center gap-4 transition-all duration-500 opacity-0 scale-105 group-hover:opacity-100 group-hover:scale-100">
-                                    <div className="bg-white/10 p-4 rounded-xl shadow-inner border border-white/5 flex-1">
-                                        <div className="text-xs text-white/60 mb-1 font-medium uppercase tracking-wider">Project</div>
-                                        <div className="font-semibold text-white">Office Revamp</div>
+                                    <div className="bg-white/10 p-4 rounded-xl shadow-inner border border-white/5 flex-1 w-1/2">
+                                        <div className="text-xs text-white/60 mb-1 font-medium uppercase tracking-wider">Task</div>
+                                        <div className="font-semibold text-white flex items-center gap-2">
+                                            <Check className="w-4 h-4 text-emerald-400" /> <span className="line-through text-slate-400 truncate">Book Venue</span>
+                                        </div>
                                     </div>
-                                    <ArrowRight className="text-white/40 w-5 h-5" />
+                                    <ArrowRight className="text-white/40 w-5 h-5 shrink-0" />
                                     <div className="bg-white/10 p-4 rounded-xl shadow-inner border border-white/5 flex-1">
-                                        <div className="text-xs text-white/60 mb-1 font-medium uppercase tracking-wider">Cost</div>
-                                        <div className="font-semibold text-red-300 relative w-fit">
-                                            <span className="invisible">-$7,500</span>
-                                            <span className="absolute top-0 left-0 overflow-hidden whitespace-nowrap w-0 group-hover:w-full transition-[width] duration-[1500ms] ease-linear border-r-2 border-transparent group-hover:border-red-300/50 delay-100">
-                                                -$7,500
+                                        <div className="text-xs text-white/60 mb-1 font-medium uppercase tracking-wider">Task</div>
+                                        <div className="font-semibold text-white relative w-fit">
+                                            <span className="invisible">Order Dress</span>
+                                            <span className="absolute top-0 left-0 overflow-hidden whitespace-nowrap w-0 group-hover:w-full transition-[width] duration-[1500ms] ease-linear border-r-2 border-transparent group-hover:border-indigo-400/50 delay-100">
+                                                Order Dress
                                             </span>
                                         </div>
                                     </div>
@@ -433,24 +437,34 @@ export const LandingPage: React.FC = () => {
                             {/* Visual Task Breakdown */}
                             <div className="mt-6 space-y-3 font-mono text-xs">
                                 <div className="bg-white/5 p-3 rounded-xl border border-white/10 backdrop-blur-sm flex items-center justify-between group-hover:bg-white/10 transition-colors duration-300">
-                                    <span className="text-white font-medium">Vacation to the Maldives</span>
+                                    <span className="text-white font-medium">My 2025 Family Adventure Fund</span>
                                     <span className="text-green-400 text-[10px] bg-green-400/10 px-1.5 py-0.5 rounded">Project</span>
                                 </div>
                                 <div className="relative pl-6 space-y-2 before:absolute before:left-3 before:top-0 before:bottom-0 before:w-px before:bg-white/10">
-                                    <div className="bg-green-500/10 p-2 rounded-lg border border-green-500/10 flex items-center gap-2 opacity-100 translate-x-0 md:opacity-0 md:-translate-x-2 md:group-hover:opacity-100 md:group-hover:translate-x-0 transition-all duration-500 delay-100 ease-out">
-                                        <div className="w-1.5 h-1.5 rounded-full bg-green-400 shrink-0"></div>
-                                        <span className="text-green-100/90 truncate">Visa appointment</span>
+                                    <div className="bg-green-500/10 p-2 rounded-lg border border-green-500/10 flex items-center justify-between opacity-100 translate-x-0 md:opacity-0 md:-translate-x-2 md:group-hover:opacity-100 md:group-hover:translate-x-0 transition-all duration-500 delay-100 ease-out">
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-1.5 h-1.5 rounded-full bg-green-400 shrink-0"></div>
+                                            <span className="text-green-100/90 truncate">Research flights</span>
+                                        </div>
+                                        <span className="text-slate-400">$0</span>
                                     </div>
-                                    <div className="bg-green-500/10 p-2 rounded-lg border border-green-500/10 flex items-center gap-2 opacity-100 translate-x-0 md:opacity-0 md:-translate-x-2 md:group-hover:opacity-100 md:group-hover:translate-x-0 transition-all duration-500 delay-200 ease-out">
-                                        <div className="w-1.5 h-1.5 rounded-full bg-green-400 shrink-0"></div>
-                                        <span className="text-green-100/90 truncate">Ticket purchase</span>
+                                    <div className="bg-green-500/10 p-2 rounded-lg border border-green-500/10 flex items-center justify-between opacity-100 translate-x-0 md:opacity-0 md:-translate-x-2 md:group-hover:opacity-100 md:group-hover:translate-x-0 transition-all duration-500 delay-200 ease-out">
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-1.5 h-1.5 rounded-full bg-green-400 shrink-0"></div>
+                                            <span className="text-green-100/90 truncate">Book hotel stay</span>
+                                        </div>
+                                        <span className="text-red-300">-$850</span>
                                     </div>
-                                    <div className="bg-green-500/10 p-2 rounded-lg border border-green-500/10 flex items-center gap-2 opacity-100 translate-x-0 md:opacity-0 md:-translate-x-2 md:group-hover:opacity-100 md:group-hover:translate-x-0 transition-all duration-500 delay-300 ease-out">
-                                        <div className="w-1.5 h-1.5 rounded-full bg-green-400 shrink-0"></div>
-                                        <span className="text-green-100/90 truncate">Hotel Reservation</span>
+                                    <div className="bg-green-500/10 p-2 rounded-lg border border-green-500/10 flex items-center justify-between opacity-100 translate-x-0 md:opacity-0 md:-translate-x-2 md:group-hover:opacity-100 md:group-hover:translate-x-0 transition-all duration-500 delay-300 ease-out">
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-1.5 h-1.5 rounded-full bg-green-400 shrink-0"></div>
+                                            <span className="text-green-100/90 truncate">Excursion tickets</span>
+                                        </div>
+                                        <span className="text-red-300">-$120</span>
                                     </div>
                                 </div>
                             </div>
+
                         </div>
 
                         {/* Wide Card: AI Insights */}
