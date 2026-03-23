@@ -31,6 +31,7 @@ import googleRoutes from "./routes/google.routes";
 import contactRoutes from "./routes/contact.routes";
 import adminRoutes from "./routes/admin.routes";
 import leadRoutes from "./routes/lead.routes";
+import feedbackRoutes from "./routes/feedback.routes";
 
 const app = express();
 
@@ -111,6 +112,7 @@ app.use("/api/patterns", patternRoutes);
 app.use("/api/stripe", stripeRoutes);
 app.use("/api/google", googleRoutes);
 app.use("/api/leads", leadRoutes);
+app.use("/api/feedback", feedbackRoutes);
 
 // Health check
 app.get("/health", (req, res) => {

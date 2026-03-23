@@ -265,3 +265,10 @@ model RecurringExpense {
 
 
 
+model Feedback {
+  id        String   @id @default(uuid())
+  name      String
+  rating    Int
+  comment   String
+  createdAt DateTime @default(now())
+}

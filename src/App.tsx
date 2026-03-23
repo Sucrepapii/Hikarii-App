@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { FAQ } from './pages/FAQ';
+import { Feedback } from './pages/Feedback';
 import { Toaster } from 'react-hot-toast';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { LandingPage } from './pages/LandingPage';
@@ -207,6 +208,7 @@ function App() {
                 <Route path="/help/category/:category" element={<CategoryPage />} />
                 <Route path="/help/article/:slug" element={<ArticlePage />} />
                 <Route path="/faq" element={<FAQ />} />
+                <Route path="/feedback" element={<Feedback />} />
                 <Route path="/pricing" element={<Pricing />} />
                 {/* Admin Routes */}
                 <Route
