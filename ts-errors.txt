@@ -1,0 +1,15 @@
+﻿src/components/budget/ExpenseList.tsx(62,38): error TS7053: Element implicitly has an 'any' type because expression of type 'ExpenseCategory' can't be used to index type '{ FOOD: LucideIcon; TRANSPORT: LucideIcon; ENTERTAINMENT: LucideIcon; UTILITIES: LucideIcon; SHOPPING: LucideIcon; HEALTH: LucideIcon; OTHER: LucideIcon; }'.
+  Property '[ExpenseCategory.TUITION]' does not exist on type '{ FOOD: LucideIcon; TRANSPORT: LucideIcon; ENTERTAINMENT: LucideIcon; UTILITIES: LucideIcon; SHOPPING: LucideIcon; HEALTH: LucideIcon; OTHER: LucideIcon; }'.
+src/components/budget/ExpenseList.tsx(71,37): error TS7053: Element implicitly has an 'any' type because expression of type 'ExpenseCategory' can't be used to index type '{ FOOD: string; TRANSPORT: string; ENTERTAINMENT: string; UTILITIES: string; SHOPPING: string; HEALTH: string; OTHER: string; }'.
+  Property '[ExpenseCategory.TUITION]' does not exist on type '{ FOOD: string; TRANSPORT: string; ENTERTAINMENT: string; UTILITIES: string; SHOPPING: string; HEALTH: string; OTHER: string; }'.
+src/components/common/FeedbackSection.tsx(13,7): error TS6133: 'INITIAL_FEEDBACK' is declared but its value is never read.
+src/components/common/FeedbackSection.tsx(36,12): error TS6133: 'isLoading' is declared but its value is never read.
+src/components/icons/GoogleIcon.tsx(1,1): error TS6133: 'React' is declared but its value is never read.
+src/pages/LandingPage.tsx(1,20): error TS6133: 'useEffect' is declared but its value is never read.
+src/pages/LandingPage.tsx(3,10): error TS6133: 'Check' is declared but its value is never read.
+src/pages/LandingPage.tsx(3,39): error TS6133: 'Split' is declared but its value is never read.
+src/pages/LandingPage.tsx(3,46): error TS6133: 'ArrowRight' is declared but its value is never read.
+src/pages/LandingPage.tsx(3,67): error TS6133: 'ChevronDown' is declared but its value is never read.
+src/pages/LandingPage.tsx(10,7): error TS6133: 'MethodClarity' is declared but its value is never read.
+src/pages/LandingPage.tsx(11,7): error TS6133: 'MethodFocus' is declared but its value is never read.
+src/pages/LandingPage.tsx(12,7): error TS6133: 'MethodFreedom' is declared but its value is never read.

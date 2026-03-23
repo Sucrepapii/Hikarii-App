@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Check, Zap, Link2, FileText, Split, ArrowRight, Menu, X, ChevronDown } from 'lucide-react';
+import { Check, Zap, Link2, FileText, Split, ArrowRight, Menu, X, ChevronDown, Star } from 'lucide-react';
 import { Button } from '../components/common/Button';
 import { Logo } from '../components/common/Logo';
 import { Footer } from '../components/layout/Footer';
@@ -11,59 +11,107 @@ import { useAuthStore } from '../stores/authStore';
 // Note: In this environment, we will assume the files are placed in public or handled via typical asset workflow.
 // For the sake of this edit, I'll allow the user to visualize where they go.
 
-const MethodClarity = "/hikari_method_clarity_1773066889589.png";
-const MethodFocus = "/hikari_method_focus_1773066906292.png";
-const MethodFreedom = "/hikari_method_freedom_1773066920626.png";
 
-const TESTIMONIALS = [
+
+const ONBOARDING_STEPS = [
     {
-        quote: (
-            <>
-                "Hikari helped me save my first <span className="text-emerald-600 dark:text-emerald-400 font-bold">₦500,000</span> in 3 months. Having my tasks and budget perfectly synchronized changed the way I work."
-            </>
-        ),
-        name: "Oluwaseun Adeyemi",
-        role: "Freelance Designer, Lagos",
+        title: "Create account",
+        body: "Sign up easily and get instant access to your centralized dashboard.",
+        image: "/step1_realistic_1774274821092.png"
+    },
+    {
+        title: "Dump your thoughts",
+        body: "Add all your pending tasks, goals, and recurring expenses into one secure vault.",
+        image: "/step2_realistic_1774274840396.png"
+    },
+    {
+        title: "Organize & Split",
+        body: "Use our AI to break down massive projects into focused, bite-sized blocks.",
+        image: "/step3_realistic_1774274858410.png"
+    },
+    {
+        title: "Execute & Track",
+        body: "Check off tasks and watch your financial progress update in real-time.",
+        image: "/step4_realistic_1774274876575.png"
+    }
+];
+
+const SEED_TESTIMONIALS = [
+    {
+        topic: "FINANCIAL GOALS",
+        quote: "Hikari helped me save my first ₦500,000 in 3 months. Having my tasks and budget perfectly synchronized changed the way I work.",
+        name: "OLUWASEUN ADEYEMI",
+        location: "Lagos",
+        rating: 5,
         initials: "OA",
         color: "from-indigo-500 to-purple-500"
     },
     {
-        quote: (
-            <>
-                "I used to be paralyzed by my own ambitions. The AI smart split broke down my entire product launch into daily 15-minute blocks. <span className="text-purple-600 dark:text-purple-400 font-bold">Unbelievable.</span>"
-            </>
-        ),
-        name: "Marcus Thorne",
-        role: "Indie Developer",
+        topic: "AI SPLIT",
+        quote: "I used to be paralyzed by my own ambitions. The AI smart split broke down my entire product launch into daily 15-minute blocks. Unbelievable.",
+        name: "MARCUS THORNE",
+        location: "Abuja",
+        rating: 5,
         initials: "MT",
         color: "from-fuchsia-500 to-purple-500"
     },
     {
-        quote: (
-            <>
-                "Finally, a tool that respects my time. Finding out I was losing <span className="text-rose-600 dark:text-rose-400 font-bold">$200/mo</span> on dead subscriptions while organizing my daily tasks was a wake-up call."
-            </>
-        ),
-        name: "Elena Rodriguez",
-        role: "Small Business Owner",
+        topic: "SUBSCRIPTION TRACKING",
+        quote: "Finally, a tool that respects my time. Finding out I was losing $200/mo on dead subscriptions while organizing my daily tasks was a wake-up call.",
+        name: "ELENA RODRIGUEZ",
+        location: "Nairobi",
+        rating: 5,
         initials: "ER",
         color: "from-orange-500 to-rose-500"
     }
 ];
+
+const GRADIENT_COLORS = [
+    "from-indigo-500 to-purple-500",
+    "from-fuchsia-500 to-purple-500",
+    "from-orange-500 to-rose-500",
+    "from-teal-500 to-emerald-500",
+    "from-sky-500 to-blue-500",
+    "from-pink-500 to-rose-500",
+];
+
+function getInitials(name: string): string {
+    return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+}
 
 export const LandingPage: React.FC = () => {
     const navigate = useNavigate();
     const { token } = useAuthStore();
     const isAuthenticated = !!token;
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [activeTestimonial, setActiveTestimonial] = useState(0);
+    const [testimonials, setTestimonials] = useState<any[]>(SEED_TESTIMONIALS);
 
-    // Auto-advance testimonials
+    // Fetch real feedback from the API
     useEffect(() => {
-        const interval = setInterval(() => {
-            setActiveTestimonial((prev) => (prev + 1) % TESTIMONIALS.length);
-        }, 7000);
-        return () => clearInterval(interval);
+        const fetchFeedback = async () => {
+            try {
+                const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+                const res = await fetch(`${API_URL}/feedback`);
+                if (res.ok) {
+                    const data = await res.json();
+                    if (Array.isArray(data) && data.length > 0) {
+                        const mapped = data.map((fb: any, idx: number) => ({
+                            topic: fb.rating >= 4 ? "HIGHLY RATED" : "USER REVIEW",
+                            quote: fb.comment,
+                            name: fb.name.toUpperCase(),
+                            location: new Date(fb.createdAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
+                            rating: fb.rating,
+                            initials: getInitials(fb.name),
+                            color: GRADIENT_COLORS[idx % GRADIENT_COLORS.length]
+                        }));
+                        setTestimonials(mapped);
+                    }
+                }
+            } catch {
+                // Keep seed testimonials on error
+            }
+        };
+        fetchFeedback();
     }, []);
 
     // 3D Tilt Effect
@@ -193,7 +241,7 @@ export const LandingPage: React.FC = () => {
                     <div className="absolute -inset-4 bg-gradient-to-r from-indigo-500/20 via-purple-500/20 to-pink-500/20 rounded-[2.5rem] blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
                     <div className="absolute inset-0 bg-slate-900/10 dark:bg-black/20 rounded-2xl blur-2xl transform translate-y-8 scale-95 opacity-50 transition-transform duration-500 group-hover:translate-y-12"></div>
 
-                    <div className="relative rounded-2xl overflow-hidden border border-slate-200 dark:border-white/10 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.3)] bg-white dark:bg-[#0F111A]">
+                    <div className="relative w-full h-full rounded-2xl overflow-hidden border border-slate-200 dark:border-white/10 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.3)] bg-white dark:bg-[#0F111A]">
                         {/* Browser Window Bar */}
                         <div className="absolute top-0 left-0 w-full h-10 bg-slate-50/80 dark:bg-[#1A1C29]/80 backdrop-blur-md border-b border-slate-200 dark:border-white/5 flex items-center px-4 z-20">
                             <div className="flex gap-2">
@@ -221,143 +269,71 @@ export const LandingPage: React.FC = () => {
                 </div>
             </section>
 
-            {/* TESTIMONIAL/SOCIAL PROOF CAROUSEL */}
-            <section className="py-20 relative px-6 border-y border-slate-200 dark:border-white/5 bg-slate-50/50 dark:bg-white/[0.02] backdrop-blur-sm z-20 overflow-hidden">
-                <div className="max-w-4xl mx-auto text-center animate-fade-in-up delay-[400ms] relative h-[380px] md:h-[280px]">
-
-                    {TESTIMONIALS.map((testimonial, idx) => (
-                        <div
-                            key={idx}
-                            className={`absolute inset-0 w-full flex flex-col items-center justify-center transition-all duration-1000 ease-in-out ${idx === activeTestimonial
-                                ? 'opacity-100 translate-x-0 scale-100'
-                                : idx < activeTestimonial
-                                    ? 'opacity-0 -translate-x-12 scale-95 pointer-events-none'
-                                    : 'opacity-0 translate-x-12 scale-95 pointer-events-none'
-                                }`}
-                        >
-                            <div className="flex justify-center gap-1.5 text-yellow-500 dark:text-yellow-400 mb-8 drop-shadow-[0_0_10px_rgba(250,204,21,0.2)]">
-                                {[1, 2, 3, 4, 5].map((star) => (
-                                    <svg key={star} className="w-6 h-6 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
-                                ))}
-                            </div>
-                            <blockquote className="text-2xl md:text-4xl font-display font-medium text-slate-800 dark:text-white mb-10 leading-snug">
-                                {testimonial.quote}
-                            </blockquote>
-                            <div className="flex items-center justify-center gap-4">
-                                <div className={`w-12 h-12 rounded-full bg-gradient-to-tr ${testimonial.color} flex items-center justify-center text-white font-bold text-lg shadow-lg border-2 border-white/20`}>
-                                    {testimonial.initials}
+            {/* FOUR SIMPLE STEPS TO GET STARTED */}
+            <section className="py-24 px-6 max-w-7xl mx-auto relative z-20">
+                <div className="text-center mb-16">
+                    <h2 className="text-3xl md:text-5xl font-display font-bold text-slate-900 dark:text-white mb-4">Four simple steps to get started</h2>
+                    <p className="text-lg text-slate-500 dark:text-slate-400">Join Hikari and take control of your tasks and finances in minutes.</p>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12">
+                    {ONBOARDING_STEPS.map((step, idx) => {
+                        return (
+                            <div key={idx} className="flex flex-col text-left group cursor-default">
+                                <div className="w-full aspect-[4/3] rounded-[2rem] mb-6 flex items-center justify-center border border-slate-200/50 dark:border-white/5 overflow-hidden shadow-sm relative hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] transition-all duration-500 bg-slate-100 dark:bg-slate-800">
+                                    <img src={step.image} alt={step.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                                    <div className="absolute inset-0 ring-1 ring-inset ring-black/5 dark:ring-white/10 rounded-[2rem]"></div>
                                 </div>
-                                <div className="text-left">
-                                    <div className="font-bold text-slate-900 dark:text-white leading-tight">{testimonial.name}</div>
-                                    <div className="text-sm text-slate-500 dark:text-slate-400 font-medium">{testimonial.role}</div>
-                                </div>
+                                <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2 tracking-tight">
+                                    {step.title}
+                                </h3>
+                                <p className="text-slate-500 dark:text-slate-400 leading-relaxed text-sm md:text-base">
+                                    {step.body}
+                                </p>
                             </div>
-                        </div>
-                    ))}
-
-                    {/* Carousel Dots */}
-                    <div className="absolute bottom-0 left-1/2 -main-translate-x-1/2 -translate-x-1/2 flex gap-3">
-                        {TESTIMONIALS.map((_, idx) => (
-                            <button
-                                key={idx}
-                                onClick={() => setActiveTestimonial(idx)}
-                                className={`h-1.5 rounded-full transition-all duration-500 ${idx === activeTestimonial ? 'w-8 bg-indigo-500' : 'w-2 bg-slate-300 dark:bg-white/20 hover:bg-slate-400 dark:hover:bg-white/40'}`}
-                                aria-label={`Go to slide ${idx + 1}`}
-                            />
-                        ))}
-                    </div>
-
+                        );
+                    })}
                 </div>
             </section>
 
-            {/* METHODOLOGY SECTION */}
-            <section className="py-32 px-6 max-w-7xl mx-auto relative">
-                {/* Background Decor */}
-                <div className="absolute top-1/4 -left-64 w-[500px] h-[500px] bg-indigo-400/10 rounded-full blur-[120px] mix-blend-multiply dark:mix-blend-screen pointer-events-none"></div>
-                <div className="absolute bottom-1/4 -right-64 w-[500px] h-[500px] bg-purple-400/10 rounded-full blur-[120px] mix-blend-multiply dark:mix-blend-screen pointer-events-none"></div>
-
-                <div className="text-center mb-20 relative z-10">
-                    <h2 className="text-4xl font-display font-bold mb-4 bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 bg-clip-text text-transparent">The Hikari Method</h2>
-                    <p className="text-slate-500 dark:text-slate-400 text-lg">Total control in three steps.</p>
-                </div>
-
-                <div className="space-y-32 relative z-10">
-                    {/* Step 1 */}
-                    <div className="flex flex-col md:flex-row items-center gap-16">
-                        <div className="flex-1 order-2 md:order-1">
-                            <div className="inline-block px-3 py-1 rounded-full bg-indigo-100 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-mono text-xs font-bold mb-6">01. CLARITY</div>
-                            <h3 className="text-3xl font-bold mb-4 text-slate-900 dark:text-white">Visualize the Chaos</h3>
-                            <p className="text-lg text-slate-500 dark:text-slate-400 leading-relaxed mb-8">
-                                Dump every task, thought, and expense into one secure vault.
-                                Stop holding it all in your head. See your entire life mapped out
-                                before you start executing.
-                            </p>
-                            <ul className="space-y-4">
-                                {['Unified Inbox', 'Brain Dump Mode', 'Endless Scroll Prevention'].map(item => (
-                                    <li key={item} className="flex items-center gap-3 text-slate-600 dark:text-slate-300 font-medium">
-                                        <div className="w-6 h-6 rounded-full bg-indigo-100 dark:bg-indigo-500/20 flex items-center justify-center shrink-0">
-                                            <Check className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
-                                        </div>
-                                        {item}
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                        <div className="flex-1 order-1 md:order-2 relative group perspective-1000">
-                            <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/20 to-indigo-600/20 blur-[60px] rounded-full group-hover:bg-indigo-500/30 transition-all duration-700"></div>
-                            <img src={MethodClarity} alt="Clarity" className="relative z-10 w-full h-auto rounded-2xl border border-slate-200 dark:border-white/10 shadow-2xl transition-transform hover:scale-[1.02] duration-500 hover:shadow-indigo-500/20" />
-                        </div>
+            {/* CUSTOMER TESTIMONIALS */}
+            <section className="py-24 px-6 bg-[#f8f9fb] dark:bg-white/[0.02] border-y border-slate-200 dark:border-white/5 relative z-20 w-full overflow-hidden">
+                <div className="max-w-7xl mx-auto">
+                    <div className="text-center mb-16">
+                        <h2 className="text-3xl md:text-5xl font-display font-bold text-slate-900 dark:text-white">Customer Testimonials</h2>
+                        <p className="text-lg text-slate-500 dark:text-slate-400 mt-4">See how others are taking back control of their time and money.</p>
                     </div>
 
-                    {/* Step 2 */}
-                    <div className="flex flex-col md:flex-row items-center gap-16">
-                        <div className="flex-1 relative group perspective-1000">
-                            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-pink-500/20 blur-[60px] rounded-full group-hover:bg-purple-500/30 transition-all duration-700"></div>
-                            <img src={MethodFocus} alt="Focus" className="relative z-10 w-full h-auto rounded-2xl border border-slate-200 dark:border-white/10 shadow-2xl transition-transform hover:scale-[1.02] duration-500 hover:shadow-purple-500/20" />
-                        </div>
-                        <div className="flex-1">
-                            <div className="inline-block px-3 py-1 rounded-full bg-purple-100 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 font-mono text-xs font-bold mb-6">02. FOCUS</div>
-                            <h3 className="text-3xl font-bold mb-4 text-slate-900 dark:text-white">Split to Conquer</h3>
-                            <p className="text-lg text-slate-500 dark:text-slate-400 leading-relaxed mb-8">
-                                Overwhelmed by "Write Thesis"? Hikari's AI splits massive projects
-                                into 15-minute bite-sized blocks. Focus on one block, forget the rest.
-                            </p>
-                            <ul className="space-y-4">
-                                {['AI Smart Splitter', 'Focus Mode', 'Pomodoro Timer'].map(item => (
-                                    <li key={item} className="flex items-center gap-3 text-slate-600 dark:text-slate-300 font-medium">
-                                        <div className="w-6 h-6 rounded-full bg-purple-100 dark:bg-purple-500/20 flex items-center justify-center shrink-0">
-                                            <Check className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400" />
+                    {/* Full viewport width extension for the scrolling track */}
+                    <div className="relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw]">
+                        <div className="flex overflow-x-auto gap-6 pb-8 snap-x hide-scrollbar px-6 md:px-[calc((100vw-1280px)/2)]" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                            {testimonials.map((testimonial, idx) => (
+                                <div key={idx} className="min-w-[320px] md:min-w-[400px] snap-center bg-white dark:bg-[#1A1C29] p-8 md:p-10 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] transition-all duration-300 border border-slate-200/60 dark:border-white/[0.05] flex flex-col justify-between group">
+                                    <div>
+                                        <div className="flex justify-between items-center mb-8">
+                                            <div className="px-3 py-1 bg-slate-100 dark:bg-white/5 rounded-full text-xs font-bold tracking-wider text-slate-600 dark:text-slate-300">
+                                                {testimonial.topic}
+                                            </div>
+                                            <div className="flex items-center gap-1.5">
+                                                <Star className="w-4 h-4 text-emerald-500 fill-emerald-500" />
+                                                <span className="text-sm font-bold text-slate-900 dark:text-white">{testimonial.rating}.0</span>
+                                            </div>
                                         </div>
-                                        {item}
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    </div>
-
-                    {/* Step 3 */}
-                    <div className="flex flex-col md:flex-row items-center gap-16">
-                        <div className="flex-1 order-2 md:order-1">
-                            <div className="inline-block px-3 py-1 rounded-full bg-pink-100 dark:bg-pink-500/10 text-pink-600 dark:text-pink-400 font-mono text-xs font-bold mb-6">03. FREEDOM</div>
-                            <h3 className="text-3xl font-bold mb-4 text-slate-900 dark:text-white">Watch it Grow</h3>
-                            <p className="text-lg text-slate-500 dark:text-slate-400 leading-relaxed mb-8">
-                                Productivity is profit. Track every dollar saved and earned alongside
-                                your tasks. See the direct correlation between your focus and your finances.
-                            </p>
-                            <ul className="space-y-4">
-                                {['Expense Tracking', 'Net Worth Graph', 'Subscription Manager'].map(item => (
-                                    <li key={item} className="flex items-center gap-3 text-slate-600 dark:text-slate-300 font-medium">
-                                        <div className="w-6 h-6 rounded-full bg-pink-100 dark:bg-pink-500/20 flex items-center justify-center shrink-0">
-                                            <Check className="w-3.5 h-3.5 text-pink-600 dark:text-pink-400" />
+                                        <p className="text-lg md:text-xl text-slate-700 dark:text-slate-200 font-medium leading-relaxed mb-12">
+                                            "{testimonial.quote}"
+                                        </p>
+                                    </div>
+                                    <div className="pt-6 border-t border-slate-100 dark:border-white/10 flex items-center gap-4 mt-auto">
+                                        <div className={`w-12 h-12 rounded-full bg-gradient-to-tr ${testimonial.color} flex items-center justify-center text-white font-bold tracking-wide shadow-sm`}>
+                                            {testimonial.initials}
                                         </div>
-                                        {item}
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                        <div className="flex-1 order-1 md:order-2 relative group perspective-1000">
-                            <div className="absolute inset-0 bg-gradient-to-br from-pink-500/20 to-orange-500/20 blur-[60px] rounded-full group-hover:bg-pink-500/30 transition-all duration-700"></div>
-                            <img src={MethodFreedom} alt="Freedom" className="relative z-10 w-full h-auto rounded-2xl border border-slate-200 dark:border-white/10 shadow-2xl transition-transform hover:scale-[1.02] duration-500 hover:shadow-pink-500/20" />
+                                        <div>
+                                            <div className="font-bold text-slate-900 dark:text-white">{testimonial.name}</div>
+                                            <div className="text-sm text-slate-500 dark:text-slate-400">{testimonial.location}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     </div>
                 </div>

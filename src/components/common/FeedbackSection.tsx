@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Star, Send, MessageSquare, User } from 'lucide-react';
+import { Star, Send, MessageSquare, User, LogIn } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { useAuthStore } from '../../stores/authStore';
 
 interface FeedbackItem {
     id: string;
@@ -10,24 +12,10 @@ interface FeedbackItem {
     date: string;
 }
 
-const INITIAL_FEEDBACK: FeedbackItem[] = [
-    {
-        id: '1',
-        name: 'Oluwaseun A.',
-        rating: 5,
-        comment: 'This app has completely changed how I organize my life. The task-expense linking feature is a game-changer!',
-        date: '2 days ago'
-    },
-    {
-        id: '2',
-        name: 'Ngozi O.',
-        rating: 4,
-        comment: 'Really love the dark mode aesthetic and the AI splitting features. Would love to see more customization options in the future.',
-        date: '1 week ago'
-    }
-];
-
 export const FeedbackSection: React.FC = () => {
+    const { token, user } = useAuthStore();
+    const isAuthenticated = !!token;
+
     const [rating, setRating] = useState<number>(0);
     const [hoverRating, setHoverRating] = useState<number>(0);
     const [comment, setComment] = useState('');
@@ -35,8 +23,14 @@ export const FeedbackSection: React.FC = () => {
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     
-    // Store for our feedback items
     const [feedbacks, setFeedbacks] = useState<FeedbackItem[]>([]);
+
+    // Auto-populate name from user profile
+    useEffect(() => {
+        if (user?.name) {
+            setName(user.name);
+        }
+    }, [user]);
 
     useEffect(() => {
         const fetchFeedbacks = async () => {
@@ -70,7 +64,10 @@ export const FeedbackSection: React.FC = () => {
             const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
             const res = await fetch(`${API_URL}/feedback`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+                },
                 body: JSON.stringify({
                     name: name.trim() || 'Anonymous',
                     rating,
@@ -96,10 +93,11 @@ export const FeedbackSection: React.FC = () => {
                     setIsSubmitted(false);
                     setRating(0);
                     setComment('');
-                    setName('');
+                    if (!user?.name) setName('');
                 }, 3000);
             } else {
-                toast.error("Failed to submit feedback.");
+                const errData = await res.json().catch(() => ({}));
+                toast.error(errData.error || "Failed to submit feedback.");
             }
         } catch (err) {
             console.error("Error posting feedback:", err);
@@ -131,76 +129,99 @@ export const FeedbackSection: React.FC = () => {
                         </p>
                     </div>
 
-                    <form onSubmit={handleSubmit} className="relative z-10 space-y-6">
-                        {/* Rating Stars */}
-                        <div className="flex flex-col items-center gap-3">
-                            <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-widest">
-                                Rate Your Experience
-                            </label>
-                            <div className="flex items-center gap-1">
-                                {[1, 2, 3, 4, 5].map((star) => (
-                                    <button
-                                        key={star}
-                                        type="button"
-                                        onClick={() => setRating(star)}
-                                        onMouseEnter={() => setHoverRating(star)}
-                                        onMouseLeave={() => setHoverRating(0)}
-                                        className="focus:outline-none transition-transform hover:scale-110 active:scale-95 p-1"
-                                    >
-                                        <Star
-                                            className={`w-8 h-8 transition-colors duration-200 ${
-                                                (hoverRating || rating) >= star
-                                                    ? 'fill-amber-400 text-amber-400 drop-shadow-[0_0_12px_rgba(251,191,36,0.4)]'
-                                                    : 'text-slate-300 dark:text-slate-700 fill-transparent'
-                                            }`}
-                                        />
-                                    </button>
-                                ))}
+                    {!isAuthenticated ? (
+                        /* Sign-in prompt for unauthenticated users */
+                        <div className="relative z-10 flex flex-col items-center gap-6 py-8">
+                            <div className="w-16 h-16 rounded-full bg-slate-100 dark:bg-white/5 flex items-center justify-center">
+                                <LogIn className="w-7 h-7 text-slate-400 dark:text-slate-500" />
                             </div>
+                            <div className="text-center">
+                                <p className="text-slate-700 dark:text-slate-300 font-medium mb-1">Sign in to share your thoughts</p>
+                                <p className="text-sm text-slate-500 dark:text-slate-400">Your feedback helps us build a better product.</p>
+                            </div>
+                            <Link
+                                to="/login"
+                                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-indigo-600 text-white font-semibold text-sm hover:bg-indigo-500 transition-colors shadow-lg shadow-indigo-600/30"
+                            >
+                                <LogIn className="w-4 h-4" /> Sign In to Leave Feedback
+                            </Link>
+                            <Link to="/signup" className="text-sm text-indigo-600 dark:text-indigo-400 hover:underline">
+                                Don't have an account? Sign up
+                            </Link>
                         </div>
+                    ) : (
+                        /* Feedback form for authenticated users */
+                        <form onSubmit={handleSubmit} className="relative z-10 space-y-6">
+                            {/* Rating Stars */}
+                            <div className="flex flex-col items-center gap-3">
+                                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-widest">
+                                    Rate Your Experience
+                                </label>
+                                <div className="flex items-center gap-1">
+                                    {[1, 2, 3, 4, 5].map((star) => (
+                                        <button
+                                            key={star}
+                                            type="button"
+                                            onClick={() => setRating(star)}
+                                            onMouseEnter={() => setHoverRating(star)}
+                                            onMouseLeave={() => setHoverRating(0)}
+                                            className="focus:outline-none transition-transform hover:scale-110 active:scale-95 p-1"
+                                        >
+                                            <Star
+                                                className={`w-8 h-8 transition-colors duration-200 ${
+                                                    (hoverRating || rating) >= star
+                                                        ? 'fill-amber-400 text-amber-400 drop-shadow-[0_0_12px_rgba(251,191,36,0.4)]'
+                                                        : 'text-slate-300 dark:text-slate-700 fill-transparent'
+                                                }`}
+                                            />
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
 
-                        {/* Input Fields */}
-                        <div className="space-y-4">
-                            <input
-                                type="text"
-                                placeholder="Your Name (Optional)"
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
-                                className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all shadow-sm text-sm"
-                            />
-                            <textarea
-                                placeholder="Tell us what you think..."
-                                value={comment}
-                                onChange={(e) => setComment(e.target.value)}
-                                required
-                                rows={4}
-                                className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all shadow-sm resize-none text-sm"
-                            ></textarea>
-                        </div>
+                            {/* Input Fields */}
+                            <div className="space-y-4">
+                                <input
+                                    type="text"
+                                    placeholder="Your Name"
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                    className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all shadow-sm text-sm"
+                                />
+                                <textarea
+                                    placeholder="Tell us what you think..."
+                                    value={comment}
+                                    onChange={(e) => setComment(e.target.value)}
+                                    required
+                                    rows={4}
+                                    className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all shadow-sm resize-none text-sm"
+                                ></textarea>
+                            </div>
 
-                        {/* Submit Button */}
-                        <button
-                            type="submit"
-                            disabled={isSubmitted || rating === 0 || !comment.trim()}
-                            className="w-full relative group overflow-hidden rounded-xl bg-indigo-600 text-white font-semibold py-3.5 px-6 flex items-center justify-center gap-2 transition-all hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-indigo-600/30"
-                        >
-                            <span className="relative z-10 flex items-center gap-2 text-sm">
-                                {isSubmitted ? (
-                                    'Feedback Posted!'
-                                ) : (
-                                    <>
-                                        Post Feedback <Send className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-                                    </>
-                                )}
-                            </span>
-                        </button>
-                        
-                        {rating === 0 && !isSubmitted && (
-                            <p className="text-center text-xs text-rose-500 dark:text-rose-400 mt-2">
-                                Please select a rating to submit.
-                            </p>
-                        )}
-                    </form>
+                            {/* Submit Button */}
+                            <button
+                                type="submit"
+                                disabled={isSubmitted || rating === 0 || !comment.trim()}
+                                className="w-full relative group overflow-hidden rounded-xl bg-indigo-600 text-white font-semibold py-3.5 px-6 flex items-center justify-center gap-2 transition-all hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-indigo-600/30"
+                            >
+                                <span className="relative z-10 flex items-center gap-2 text-sm">
+                                    {isSubmitted ? (
+                                        'Feedback Posted!'
+                                    ) : (
+                                        <>
+                                            Post Feedback <Send className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                                        </>
+                                    )}
+                                </span>
+                            </button>
+                            
+                            {rating === 0 && !isSubmitted && (
+                                <p className="text-center text-xs text-rose-500 dark:text-rose-400 mt-2">
+                                    Please select a rating to submit.
+                                </p>
+                            )}
+                        </form>
+                    )}
                 </div>
 
                 {/* VISIBLE COMMUNITY COMMENTS COLUMN */}

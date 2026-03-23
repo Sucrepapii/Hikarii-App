@@ -116,8 +116,11 @@ var init_emailTemplates = __esm({
       <div class="wrapper">
         <div class="container">
           <!-- Colorful Header -->
-          <div class="header">
-            <div class="header-logo">HIKARI</div>
+          <div class="header" style="text-align: center;">
+            <div style="display: inline-flex; align-items: center; justify-content: center; gap: 12px;">
+              <img src="\${process.env.CLIENT_URL || 'https://checkmate-production-7067.up.railway.app'}/logo.svg" width="45" height="45" alt="H" style="display: block; border: 0; outline: none; text-decoration: none;" />
+              <div class="header-logo">HIKARI</div>
+            </div>
             <div class="header-subtitle">Light & Clarity</div>
           </div>
           
@@ -2225,12 +2228,82 @@ var getRecommendations = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+var getWrappedData = async (req, res) => {
+  try {
+    const now = /* @__PURE__ */ new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const tasks = await db_default.task.findMany({
+      where: {
+        userId: req.userId,
+        createdAt: {
+          gte: startOfMonth
+        }
+      }
+    });
+    const completedTasks = tasks.filter(
+      (t) => t.status === "COMPLETED" /* COMPLETED */
+    );
+    const totalCompleted = completedTasks.length;
+    const daysOfWeek = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday"
+    ];
+    const dayCounts = [0, 0, 0, 0, 0, 0, 0];
+    completedTasks.forEach((t) => {
+      const completionDay = t.updatedAt.getDay();
+      dayCounts[completionDay]++;
+    });
+    const topDayIndex = dayCounts.indexOf(Math.max(...dayCounts));
+    const topDay = daysOfWeek[topDayIndex];
+    const topDayCount = dayCounts[topDayIndex];
+    let totalIncome = 0;
+    let deadWeightCut = 0;
+    tasks.forEach((t) => {
+      const financials = t.financials;
+      if (financials?.type === "INCOME" /* INCOME */ && financials?.actualCost) {
+        totalIncome += Number(financials.actualCost);
+      }
+      if (t.title.toLowerCase().includes("cancel") && financials?.type === "EXPENSE" /* EXPENSE */) {
+        deadWeightCut += Number(
+          financials.actualCost || financials.estimatedCost || 0
+        );
+      }
+    });
+    let archetype = "The Consistent Starter";
+    if (totalCompleted > 50 && totalIncome > 1e5) {
+      archetype = "The Rainmaker";
+    } else if (totalCompleted > 100) {
+      archetype = "The Sprinter";
+    } else if (tasks.length > 0 && totalCompleted / tasks.length > 0.8) {
+      archetype = "The Finisher";
+    }
+    res.json({
+      totalTasksList: tasks.length,
+      totalCompleted,
+      topDay,
+      topDayCount,
+      totalIncome,
+      deadWeightCut,
+      archetype,
+      month: now.toLocaleString("default", { month: "long" }),
+      year: now.getFullYear()
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 // server/src/routes/insights.routes.ts
 var router5 = Router4();
 router5.use(authenticate);
 router5.get("/", getInsights);
 router5.get("/recommendations", getRecommendations);
+router5.get("/wrapped", getWrappedData);
 var insights_routes_default = router5;
 
 // server/src/routes/predictive.routes.ts
@@ -2309,7 +2382,6 @@ import { Router as Router6 } from "express";
 init_db();
 import { subDays, differenceInDays, addDays } from "date-fns";
 var PatternDetectionService = class {
-  // Basic normalization: remove numbers, special chars, trim
   normalizeMerchantName(name) {
     return name.replace(/[0-9]/g, "").replace(/[^a-zA-Z\s]/g, " ").trim().toLowerCase();
   }
@@ -2319,14 +2391,49 @@ var PatternDetectionService = class {
       where: {
         userId,
         date: {
-          gte: subDays(/* @__PURE__ */ new Date(), 14)
+          gte: subDays(/* @__PURE__ */ new Date(), 400)
         }
       },
       orderBy: { date: "asc" }
     });
-    if (expenses.length < 2) return [];
+    const tasks = await db_default.task.findMany({
+      where: {
+        userId,
+        status: { in: ["COMPLETED", "TODO", "IN_PROGRESS"] },
+        createdAt: {
+          gte: subDays(/* @__PURE__ */ new Date(), 400)
+        }
+      },
+      orderBy: { createdAt: "asc" }
+    });
+    const mappedTasks = tasks.filter((t) => t.financials?.type === "EXPENSE").map((t) => {
+      const amount = t.financials?.actualCost || t.financials?.estimatedCost || 0;
+      return {
+        id: t.id,
+        title: t.title,
+        amount,
+        date: t.dueDate || t.createdAt,
+        category: "OTHER",
+        // Generic fallback
+        description: t.description,
+        linkedTaskId: t.id,
+        isAutoCreated: false,
+        userId: t.userId,
+        projectId: t.projectId,
+        createdAt: t.createdAt,
+        updatedAt: t.updatedAt
+      };
+    });
+    const combinedData = [...expenses, ...mappedTasks].sort(
+      (a, b) => a.date.getTime() - b.date.getTime()
+    );
+    if (combinedData.length < 2)
+      return {
+        newPatterns: [],
+        advice: "Not enough data yet. Add more tasks or expenses to detect patterns!"
+      };
     const groups = {};
-    expenses.forEach((e) => {
+    combinedData.forEach((e) => {
       const key = this.normalizeMerchantName(e.title);
       if (key.length < 3) return;
       if (!groups[key]) groups[key] = [];
@@ -2337,6 +2444,7 @@ var PatternDetectionService = class {
       if (group.length < 2) continue;
       const amounts = group.map((e) => e.amount);
       const avgAmount = amounts.reduce((a, b) => a + b, 0) / amounts.length;
+      if (avgAmount <= 0) continue;
       const variance = amounts.reduce((sum, a) => sum + Math.pow(a - avgAmount, 2), 0) / amounts.length;
       const stdDev = Math.sqrt(variance);
       const isConsistentAmount = stdDev / avgAmount < 0.15;
@@ -2351,8 +2459,9 @@ var PatternDetectionService = class {
       const avgInterval = intervals.reduce((a, b) => a + b, 0) / intervals.length;
       let frequency = "";
       if (Math.abs(avgInterval - 7) < 3) frequency = "WEEKLY";
-      else if (Math.abs(avgInterval - 30) < 5) frequency = "MONTHLY";
-      else if (Math.abs(avgInterval - 365) < 10) frequency = "YEARLY";
+      else if (avgInterval >= 25 && avgInterval <= 35)
+        frequency = "MONTHLY";
+      else if (Math.abs(avgInterval - 365) < 15) frequency = "YEARLY";
       if (frequency && isConsistentAmount) {
         const mostRecent = group[group.length - 1];
         const originalName = mostRecent.title;
@@ -2372,8 +2481,8 @@ var PatternDetectionService = class {
               amount: avgAmount,
               frequency,
               nextDueDate,
-              confidenceScore: 0.8 + group.length * 0.05,
-              // More history = more confidence
+              confidenceScore: Math.min(0.8 + group.length * 0.05, 0.99),
+              // Cap confidence at 99%
               isConfirmed: false
             }
           });
@@ -2394,7 +2503,26 @@ var PatternDetectionService = class {
         }
       }
     }
-    return newPatterns;
+    const allActiveRecurrings = await db_default.recurringExpense.findMany({
+      where: { userId, isActive: true }
+    });
+    let advice = "";
+    if (combinedData.length > 0 && allActiveRecurrings.length === 0) {
+      advice = `We analyzed ${combinedData.length} of your tasks and expenses over the last year, but haven't detected any consistent subscriptions yet. Make sure you log recurring bills with the same name and amount!`;
+    } else if (allActiveRecurrings.length > 0) {
+      let totalMonthly = 0;
+      let highestSub = allActiveRecurrings[0];
+      allActiveRecurrings.forEach((sub) => {
+        if (sub.amount > highestSub.amount) highestSub = sub;
+        if (sub.frequency === "WEEKLY") totalMonthly += sub.amount * 4.33;
+        if (sub.frequency === "MONTHLY") totalMonthly += sub.amount;
+        if (sub.frequency === "YEARLY") totalMonthly += sub.amount / 12;
+      });
+      advice = `We analyzed ${combinedData.length} records. You have ${allActiveRecurrings.length} active recurring items amounting to roughly NGN ${totalMonthly.toLocaleString(void 0, { maximumFractionDigits: 0 })} per month. Your highest recurring cost is ${highestSub.merchantName}. Consider reviewing your list to cancel any unused services and free up your budget.`;
+    } else {
+      advice = "Welcome! Add some tasks or expenses and we will monitor them for recurring patterns to help you save money.";
+    }
+    return { newPatterns, advice };
   }
 };
 
@@ -2403,14 +2531,15 @@ init_db();
 var patternService = new PatternDetectionService();
 var detectPatterns = async (req, res) => {
   try {
-    const patterns = await patternService.detectPatterns(req.userId);
+    const detectionResult = await patternService.detectPatterns(req.userId);
     const allPatterns = await db_default.recurringExpense.findMany({
       where: { userId: req.userId },
       orderBy: { nextDueDate: "asc" }
     });
     res.json({
-      newlyDetected: patterns.length,
-      patterns: allPatterns
+      newlyDetected: Array.isArray(detectionResult) ? detectionResult.length : detectionResult.newPatterns?.length || 0,
+      patterns: allPatterns,
+      advice: Array.isArray(detectionResult) ? null : detectionResult.advice
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -3243,6 +3372,45 @@ var router12 = Router9();
 router12.post("/", createLead);
 var lead_routes_default = router12;
 
+// server/src/routes/feedback.routes.ts
+import { Router as Router10 } from "express";
+
+// server/src/controllers/feedback.controller.ts
+init_db();
+var getFeedbacks = async (req, res) => {
+  try {
+    const feedbacks = await db_default.feedback.findMany({
+      orderBy: { createdAt: "desc" },
+      take: 50
+      // Limit to recent 50
+    });
+    res.json(feedbacks);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+var createFeedback = async (req, res) => {
+  try {
+    const { name, rating, comment } = req.body;
+    const feedback = await db_default.feedback.create({
+      data: {
+        name: name || "Anonymous",
+        rating: Number(rating),
+        comment
+      }
+    });
+    res.status(201).json(feedback);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// server/src/routes/feedback.routes.ts
+var router13 = Router10();
+router13.get("/", getFeedbacks);
+router13.post("/", createFeedback);
+var feedback_routes_default = router13;
+
 // server/src/app.ts
 Sentry.init({
   dsn: process.env.SENTRY_DSN || process.env.VITE_SENTRY_DSN,
@@ -3282,12 +3450,14 @@ app.use(
       }
     },
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: [
       "Content-Type",
       "Authorization",
       "X-Requested-With",
-      "Accept"
+      "Accept",
+      "baggage",
+      "sentry-trace"
     ],
     optionsSuccessStatus: 204
   })
@@ -3307,6 +3477,7 @@ app.use("/api/patterns", pattern_routes_default);
 app.use("/api/stripe", stripe_routes_default);
 app.use("/api/google", google_routes_default);
 app.use("/api/leads", lead_routes_default);
+app.use("/api/feedback", feedback_routes_default);
 app.get("/health", (req, res) => {
   res.json({ status: "ok" });
 });
