@@ -17,13 +17,14 @@ export const getFeedbacks = async (req: Request, res: Response) => {
 // Create Feedback
 export const createFeedback = async (req: Request, res: Response) => {
   try {
-    const { name, rating, comment } = req.body;
+    const { name, rating, comment, topic } = req.body;
 
     const feedback = await prisma.feedback.create({
       data: {
         name: name || "Anonymous",
         rating: Number(rating),
         comment,
+        topic: topic || null,
       },
     });
 

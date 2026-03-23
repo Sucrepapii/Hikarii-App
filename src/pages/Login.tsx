@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -20,6 +20,8 @@ type LoginFormData = z.infer<typeof loginSchema>;
 
 export const Login: React.FC = () => {
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+    const redirectTo = searchParams.get('redirect') || '/dashboard';
     const { login, verifyEmail, resendCode } = useAuthStore();
     const [error, setError] = useState<string>('');
     const [verificationMode, setVerificationMode] = useState(false);
@@ -55,7 +57,7 @@ export const Login: React.FC = () => {
             if (user?.role === 'ADMIN') {
                 navigate('/admin');
             } else {
-                navigate('/dashboard');
+                navigate(redirectTo);
             }
         } catch (err: any) {
             if (err.requiresVerification) {
@@ -77,7 +79,7 @@ export const Login: React.FC = () => {
             if (user?.role === 'ADMIN') {
                 navigate('/admin');
             } else {
-                navigate('/dashboard');
+                navigate(redirectTo);
             }
         } catch (err: any) {
             setError(err.message || 'Verification failed');

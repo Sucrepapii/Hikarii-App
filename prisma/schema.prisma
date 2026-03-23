@@ -270,5 +270,6 @@ model Feedback {
   name      String
   rating    Int
   comment   String
+  topic     String?
   createdAt DateTime @default(now())
 }

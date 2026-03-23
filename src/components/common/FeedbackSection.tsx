@@ -9,8 +9,21 @@ interface FeedbackItem {
     name: string;
     rating: number;
     comment: string;
+    topic?: string;
     date: string;
 }
+
+const FEATURE_TOPICS = [
+    'General',
+    'Task Management',
+    'Budget Tracking',
+    'AI Smart Split',
+    'Dashboard',
+    'Subscription Tracking',
+    'Calendar Integration',
+    'Projects',
+    'Other'
+];
 
 export const FeedbackSection: React.FC = () => {
     const { token, user } = useAuthStore();
@@ -20,6 +33,7 @@ export const FeedbackSection: React.FC = () => {
     const [hoverRating, setHoverRating] = useState<number>(0);
     const [comment, setComment] = useState('');
     const [name, setName] = useState('');
+    const [topic, setTopic] = useState('General');
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     
@@ -71,7 +85,8 @@ export const FeedbackSection: React.FC = () => {
                 body: JSON.stringify({
                     name: name.trim() || 'Anonymous',
                     rating,
-                    comment
+                    comment,
+                    topic
                 })
             });
 
@@ -93,6 +108,7 @@ export const FeedbackSection: React.FC = () => {
                     setIsSubmitted(false);
                     setRating(0);
                     setComment('');
+                    setTopic('General');
                     if (!user?.name) setName('');
                 }, 3000);
             } else {
@@ -140,7 +156,7 @@ export const FeedbackSection: React.FC = () => {
                                 <p className="text-sm text-slate-500 dark:text-slate-400">Your feedback helps us build a better product.</p>
                             </div>
                             <Link
-                                to="/login"
+                                to="/login?redirect=/feedback"
                                 className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-indigo-600 text-white font-semibold text-sm hover:bg-indigo-500 transition-colors shadow-lg shadow-indigo-600/30"
                             >
                                 <LogIn className="w-4 h-4" /> Sign In to Leave Feedback
@@ -177,6 +193,22 @@ export const FeedbackSection: React.FC = () => {
                                         </button>
                                     ))}
                                 </div>
+                            </div>
+
+                            {/* Feature Topic Dropdown */}
+                            <div className="space-y-2">
+                                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-widest">
+                                    What feature are you reviewing?
+                                </label>
+                                <select
+                                    value={topic}
+                                    onChange={(e) => setTopic(e.target.value)}
+                                    className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all shadow-sm text-sm appearance-none cursor-pointer"
+                                >
+                                    {FEATURE_TOPICS.map((t) => (
+                                        <option key={t} value={t}>{t}</option>
+                                    ))}
+                                </select>
                             </div>
 
                             {/* Input Fields */}

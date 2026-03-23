@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { FAQ } from './pages/FAQ';
 import { Feedback } from './pages/Feedback';
 import { Toaster } from 'react-hot-toast';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useSearchParams } from 'react-router-dom';
 import { LandingPage } from './pages/LandingPage';
 import { DashboardLayout } from './components/layout/DashboardLayout';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
@@ -42,6 +42,21 @@ import './index.css';
 import { useInactivity } from './hooks/useInactivity';
 import toast from 'react-hot-toast';
 
+function AuthRoute({ children }: { children: JSX.Element }) {
+    const { token, user } = useAuthStore((state) => ({ token: state.token, user: state.user }));
+    const isAuthenticated = !!token;
+    const [searchParams] = useSearchParams();
+    const redirectTo = searchParams.get('redirect');
+    
+    if (isAuthenticated) {
+        if (user?.role === 'ADMIN' && !redirectTo) {
+            return <Navigate to="/admin" replace />;
+        }
+        return <Navigate to={redirectTo || "/dashboard"} replace />;
+    }
+    return children;
+}
+
 function App() {
     const isAuthenticated = useAuthStore((state) => !!state.token);
     const logout = useAuthStore((state) => state.logout);
@@ -72,15 +87,15 @@ function App() {
                 />
                 <Route
                     path="/login"
-                    element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />}
+                    element={<AuthRoute><Login /></AuthRoute>}
                 />
                 <Route
                     path="/signup"
-                    element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Signup />}
+                    element={<AuthRoute><Signup /></AuthRoute>}
                 />
                 <Route
                     path="/forgot-password"
-                    element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <ForgotPassword />}
+                    element={<AuthRoute><ForgotPassword /></AuthRoute>}
                 />
                 <Route
                     path="/change-password"

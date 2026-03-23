@@ -96,7 +96,7 @@ export const LandingPage: React.FC = () => {
                     const data = await res.json();
                     if (Array.isArray(data) && data.length > 0) {
                         const mapped = data.map((fb: any, idx: number) => ({
-                            topic: fb.rating >= 4 ? "HIGHLY RATED" : "USER REVIEW",
+                            topic: (fb.topic || (fb.rating >= 4 ? "HIGHLY RATED" : "USER REVIEW")).toUpperCase(),
                             quote: fb.comment,
                             name: fb.name.toUpperCase(),
                             location: new Date(fb.createdAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
