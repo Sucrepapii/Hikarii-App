@@ -172,6 +172,28 @@ export const Settings: React.FC = () => {
                 {activeTab === 'profile' && (
 
                     <>
+                        {/* Feedback Banner */}
+                        <Card className="mb-6 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/10 dark:to-purple-900/10 border-indigo-100 dark:border-indigo-800/30">
+                            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                                <div className="flex items-center gap-4">
+                                    <div className="p-3 rounded-xl bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400">
+                                        <MessageCircle className="w-6 h-6" />
+                                    </div>
+                                    <div>
+                                        <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
+                                            Have an idea or spotted a bug?
+                                        </h2>
+                                        <p className="text-sm text-slate-500 dark:text-slate-400">
+                                            We'd love to hear from you. Help us shape the future of Hikari.
+                                        </p>
+                                    </div>
+                                </div>
+                                <Button onClick={() => window.location.href = '/feedback'} className="w-full sm:w-auto shadow-sm">
+                                    Drop a Feedback
+                                </Button>
+                            </div>
+                        </Card>
+
                         <Card>
                             <div className="flex items-center gap-4 mb-6">
                                 <div className="p-3 rounded-xl bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400">

@@ -3391,12 +3391,13 @@ var getFeedbacks = async (req, res) => {
 };
 var createFeedback = async (req, res) => {
   try {
-    const { name, rating, comment } = req.body;
+    const { name, rating, comment, topic } = req.body;
     const feedback = await db_default.feedback.create({
       data: {
         name: name || "Anonymous",
         rating: Number(rating),
-        comment
+        comment,
+        topic: topic || null
       }
     });
     res.status(201).json(feedback);
@@ -3408,7 +3409,7 @@ var createFeedback = async (req, res) => {
 // server/src/routes/feedback.routes.ts
 var router13 = Router10();
 router13.get("/", getFeedbacks);
-router13.post("/", createFeedback);
+router13.post("/", authenticate, createFeedback);
 var feedback_routes_default = router13;
 
 // server/src/app.ts
