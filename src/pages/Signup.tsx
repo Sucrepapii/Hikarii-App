@@ -15,11 +15,12 @@ const signupSchema = z.object({
     name: z.string().min(2, 'Name must be at least 2 characters'),
     email: z.string().email('Please enter a valid email address'),
     password: z.string()
-        .min(6, 'Password must be at least 6 characters')
-        .regex(/[a-zA-Z]/, 'Password must contain at least one letter')
+        .min(8, 'Password must be at least 8 characters')
+        .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
+        .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
         .regex(/[0-9]/, 'Password must contain at least one number')
         .regex(/[^a-zA-Z0-9]/, 'Password must contain at least one special character'),
-    phoneNumber: z.string().min(10, 'Please enter a valid phone number (e.g. +234...)'),
+    phoneNumber: z.string().optional(),
     confirmPassword: z.string(),
     agreementAccepted: z.boolean().refine((val) => val === true, {
         message: 'You must agree to the Terms of Use and Privacy Policy',
@@ -67,7 +68,7 @@ export const Signup: React.FC = () => {
         const { confirmPassword, ...signupData } = data;
 
         try {
-            const response = await signup(signupData.name, signupData.email, signupData.password, signupData.phoneNumber);
+            const response = await signup(signupData.name, signupData.email, signupData.password, signupData.phoneNumber || '');
 
             // If verification is required, switch mode
             if (response && response.requiresVerification) {
@@ -77,7 +78,9 @@ export const Signup: React.FC = () => {
                 navigate('/dashboard');
             }
         } catch (err: any) {
-            setError(err.message || 'Signup failed');
+            const msg = err.message || 'Signup failed';
+            setError(msg);
+            toast.error(msg);
         } finally {
             setLoading(false);
         }
@@ -91,7 +94,16 @@ export const Signup: React.FC = () => {
 
             navigate('/dashboard');
         } catch (err: any) {
-            setError(err.message || 'Verification failed');
+            const msg = err.message || 'Verification failed';
+            setError(msg);
+            toast.error(msg);
+        }
+    };
+
+    const handleFormError = (formErrors: any) => {
+        const firstError: any = Object.values(formErrors)[0];
+        if (firstError?.message) {
+            toast.error(firstError.message);
         }
     };
 
@@ -189,7 +201,7 @@ export const Signup: React.FC = () => {
                         </form>
                     ) : (
                         /* Standard Signup Form */
-                        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                        <form onSubmit={handleSubmit(onSubmit, handleFormError)} className="space-y-6">
                             {/* Name Field */}
                             <div>
                                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2.5">

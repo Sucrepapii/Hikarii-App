@@ -63,10 +63,21 @@ export const Login: React.FC = () => {
             if (err.requiresVerification) {
                 setEmailToVerify(err.email || data.email);
                 setVerificationMode(true);
-                setError('Account not verified. Please check your email for the code.');
+                const msg = 'Account not verified. Please check your email for the code.';
+                setError(msg);
+                toast.error(msg);
             } else {
-                setError(err.message || 'Login failed');
+                const msg = err.message || 'Login failed';
+                setError(msg);
+                toast.error(msg);
             }
+        }
+    };
+
+    const handleFormError = (formErrors: any) => {
+        const firstError: any = Object.values(formErrors)[0];
+        if (firstError?.message) {
+            toast.error(firstError.message);
         }
     };
 
@@ -82,7 +93,9 @@ export const Login: React.FC = () => {
                 navigate(redirectTo);
             }
         } catch (err: any) {
-            setError(err.message || 'Verification failed');
+            const msg = err.message || 'Verification failed';
+            setError(msg);
+            toast.error(msg);
         }
     };
 
@@ -180,7 +193,7 @@ export const Login: React.FC = () => {
                         </form>
                     ) : (
                         /* Standard Login Form */
-                        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                        <form onSubmit={handleSubmit(onSubmit, handleFormError)} className="space-y-6">
                             {/* Email Field */}
                             <div>
                                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2.5">
