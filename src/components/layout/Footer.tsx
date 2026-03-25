@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Instagram, Twitter } from 'lucide-react';
+import { Instagram, Twitter, Linkedin } from 'lucide-react';
 import { Logo } from '../common/Logo';
 import { LeadCaptureForm } from '../common/LeadCaptureForm';
 
@@ -26,6 +26,9 @@ export const Footer: React.FC = () => {
                             <a href="https://x.com/hikariiapp?s=21&t=QnoqdrIaByUDrhoWj0KuLA" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-colors">
                                 <Twitter className="w-5 h-5" />
                             </a>
+                            <a href="https://www.linkedin.com/company/hikari-world/" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-colors">
+                                <Linkedin className="w-5 h-5" />
+                            </a>
                         </div>
                     </div>
 
@@ -42,7 +45,7 @@ export const Footer: React.FC = () => {
                     <div>
                         <h4 className="font-bold text-white mb-6">Resources</h4>
                         <ul className="space-y-4 text-sm text-slate-400">
-                            <li><a href="#" className="hover:text-indigo-400 transition-colors">Blog</a></li>
+                            <li><a href="https://www.linkedin.com/company/hikari-world/" target="_blank" rel="noopener noreferrer" className="hover:text-indigo-400 transition-colors">Blog</a></li>
                             <li><Link to="/help" className="hover:text-indigo-400 transition-colors">Help Center</Link></li>
                             <li><Link to="/faq" className="hover:text-indigo-400 transition-colors">FAQ</Link></li>
                             <li><Link to="/feedback" className="hover:text-indigo-400 transition-colors">Feedback</Link></li>
