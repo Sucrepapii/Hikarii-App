@@ -36,12 +36,12 @@ export const useIntelligenceStore = create<IntelligenceStore>((set) => ({
         recommendations:
           recommendationsResponse.data.recommendations?.map((r: any) => ({
             taskId: r.taskId,
-            reason: `Priority: ${r.task.priority}`,
+            reason: `Priority: ${r.task?.priority || 'N/A'}`,
             urgencyScore: r.urgencyScore,
-            financialContext: r.task.financials?.estimatedCost
+            financialContext: r.task?.financials?.estimatedCost
               ? "Has associated cost"
               : "",
-            estimatedCost: r.task.financials?.estimatedCost || 0,
+            estimatedCost: r.task?.financials?.estimatedCost || 0,
           })) || [],
         lastRefresh: new Date(),
         isLoading: false,

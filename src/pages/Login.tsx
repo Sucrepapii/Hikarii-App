@@ -125,7 +125,7 @@ export const Login: React.FC = () => {
             <div className="w-full max-w-md">
                 {/* Logo and Title */}
                 <div className="flex flex-col items-center mb-10 animate-fade-in">
-                    <Logo size="xl" className="!gap-4 !pointer-events-none flex-col" />
+                    <Logo size="xl" className="!gap-4 !pointer-events-none flex-col" suppressLink={true} />
                     <p className="text-lg text-slate-600 dark:text-slate-400 mt-2">
                         Light & Clarity
                     </p>

@@ -51,7 +51,7 @@ export const FAQ: React.FC = () => {
             <nav className="sticky top-0 z-50 bg-slate-900/80 backdrop-blur-md border-b border-white/10 px-6 py-4">
                 <div className="max-w-7xl mx-auto flex items-center justify-between">
                     <Link to="/" className="flex items-center gap-2 group">
-                        <Logo variant="icon" size="sm" />
+                        <Logo variant="icon" size="sm" suppressLink={true} />
                         <span className="font-display font-bold text-xl text-white">Hikari</span>
                     </Link>
                     <Link to="/" className="text-slate-400 hover:text-white transition-colors flex items-center gap-2 text-sm font-medium">

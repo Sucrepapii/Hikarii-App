@@ -88,8 +88,10 @@ app.use(
       "Authorization",
       "X-Requested-With",
       "Accept",
+      "Origin",
       "baggage",
       "sentry-trace",
+      "access-control-allow-headers", // Sometimes needed
     ],
     optionsSuccessStatus: 204,
   }),

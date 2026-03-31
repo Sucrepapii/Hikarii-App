@@ -32,7 +32,7 @@ export const HelpCenter: React.FC = () => {
             <nav className="fixed top-0 w-full z-50 bg-white/80 dark:bg-[#0B0C15]/80 backdrop-blur-md border-b border-slate-200 dark:border-white/5">
                 <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
                     <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/')}>
-                        <Logo variant="full" size="md" />
+                        <Logo variant="full" size="md" suppressLink={true} />
                     </div>
                     <div className="flex items-center gap-4">
                         <Button onClick={() => navigate('/')} variant="ghost" size="sm">Back to Home</Button>

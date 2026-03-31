@@ -139,7 +139,7 @@ export const LandingPage: React.FC = () => {
             {/* Navbar */}
             <nav className="fixed top-0 w-full z-50 bg-white/80 dark:bg-[#0B0C15]/80 backdrop-blur-md border-b border-slate-200 dark:border-white/5">
                 <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-                    <div className="flex items-center gap-2 cursor-pointer group" onClick={() => navigate('/')}>
+                    <div className="flex items-center gap-2 group">
                         <Logo variant="full" size="md" />
                         <span className="text-sm font-medium bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-500 bg-clip-text text-transparent bg-[length:200%_auto] animate-shimmer overflow-hidden whitespace-nowrap opacity-0 max-w-0 group-hover:opacity-100 group-hover:max-w-xs transition-all duration-700 ease-out pl-2 border-l border-slate-200 dark:border-white/10 hidden md:block">
                             Clarity. Focus. Control.

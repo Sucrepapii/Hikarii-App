@@ -12,7 +12,7 @@ export const Footer: React.FC = () => {
                     {/* Brand Column */}
                     <div className="col-span-2 lg:col-span-2">
                         <Link to="/" className="flex items-center gap-1.5 mb-6 group">
-                            <Logo variant="icon" size="md" />
+                            <Logo variant="icon" size="md" suppressLink={true} />
                             <span className="text-2xl font-display font-bold text-white tracking-tight">Hikari</span>
                         </Link>
                         <p className="text-slate-400 text-sm leading-relaxed mb-6 max-w-sm">

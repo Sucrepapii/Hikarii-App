@@ -21,8 +21,8 @@ import { useAuthStore } from '../stores/authStore';
 import { clsx } from 'clsx';
 
 export const Dashboard: React.FC = () => {
-    const { tasks, fetchTasks, toggleTaskStatus, updateTask, deleteTask } = useTaskStore();
-    const { expenses, fetchExpenses, currency, getConvertedAmount } = useBudgetStore();
+    const { tasks, fetchTasks, toggleTaskStatus, updateTask, deleteTask, isLoading: tasksLoading, error: tasksError } = useTaskStore();
+    const { expenses, fetchExpenses, currency, getConvertedAmount, isLoading: budgetLoading, error: budgetError } = useBudgetStore();
     const { user } = useAuthStore();
 
     // Edit State
@@ -104,6 +104,35 @@ export const Dashboard: React.FC = () => {
         }
     };
 
+    if (tasksLoading || budgetLoading) {
+        return (
+            <div className="flex flex-col items-center justify-center min-h-[400px] animate-fade-in">
+                <RefreshCw className="w-12 h-12 text-primary-500 animate-spin mb-4" />
+                <p className="text-slate-500 dark:text-slate-400 font-medium">Loading your insights...</p>
+            </div>
+        );
+    }
+
+    if (tasksError || budgetError) {
+        return (
+            <div className="flex flex-col items-center justify-center min-h-[400px] animate-fade-in">
+                <div className="p-4 bg-red-100 dark:bg-red-900/20 rounded-full mb-4">
+                    <AlertCircle className="w-12 h-12 text-red-500" />
+                </div>
+                <h3 className="text-xl font-bold mb-2">Something went wrong</h3>
+                <p className="text-slate-500 dark:text-slate-400 mb-6 max-w-md text-center">
+                    {tasksError || budgetError}
+                </p>
+                <button 
+                    onClick={() => { fetchTasks(); fetchExpenses(); }}
+                    className="px-6 py-2 bg-primary-600 hover:bg-primary-500 text-white font-bold rounded-xl transition-all"
+                >
+                    Try Again
+                </button>
+            </div>
+        );
+    }
+
     return (
         <div className="animate-fade-in">
             <div className="mb-4 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
@@ -112,7 +141,7 @@ export const Dashboard: React.FC = () => {
                         Dashboard
                     </h1>
                     <p className="text-slate-600 dark:text-slate-400">
-                        Welcome back, {user?.name.split(' ')[0]}! Here's your overview
+                        Welcome back, {user?.name?.split(' ')[0] || 'User'}! Here's your overview
                     </p>
                 </div>
                 <button

@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { FAQ } from './pages/FAQ';
 import { Feedback } from './pages/Feedback';
 import { Toaster } from 'react-hot-toast';
-import { BrowserRouter, Routes, Route, Navigate, useSearchParams } from 'react-router-dom';
+import { Routes, Route, Navigate, useSearchParams } from 'react-router-dom';
 import { LandingPage } from './pages/LandingPage';
 import { DashboardLayout } from './components/layout/DashboardLayout';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
@@ -84,7 +84,7 @@ function App() {
     });
 
     return (
-        <BrowserRouter>
+        <>
             <ScrollToTop />
             <Toaster position="top-right" />
             <Routes>
@@ -285,7 +285,7 @@ function App() {
                     />
                 ) : null;
             })()}
-        </BrowserRouter >
+        </>
     );
 }
 

@@ -1362,8 +1362,9 @@ var validate = (schema) => {
       return next();
     } catch (error) {
       if (error instanceof ZodError) {
+        const errorMessage = error.errors.map((err) => err.message).join(", ");
         return res.status(400).json({
-          error: "Validation error",
+          error: errorMessage || "Validation error",
           details: error.errors.map((err) => ({
             path: err.path,
             message: err.message
@@ -3457,8 +3458,11 @@ app.use(
       "Authorization",
       "X-Requested-With",
       "Accept",
+      "Origin",
       "baggage",
-      "sentry-trace"
+      "sentry-trace",
+      "access-control-allow-headers"
+      // Sometimes needed
     ],
     optionsSuccessStatus: 204
   })

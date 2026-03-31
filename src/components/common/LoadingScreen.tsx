@@ -11,7 +11,7 @@ export const LoadingScreen: React.FC = () => {
             </div>
 
             <div className="relative flex flex-col items-center gap-6">
-                <Logo size="xl" variant="icon" className="scale-150" />
+                <Logo size="xl" variant="icon" className="scale-150" suppressLink={true} />
                 
                 <div className="flex flex-col items-center gap-2">
                     <h2 className="text-2xl font-display font-bold gradient-text animate-pulse">

@@ -133,7 +133,7 @@ export const Signup: React.FC = () => {
             <div className="w-full max-w-md">
                 {/* Logo and Title */}
                 <div className="flex flex-col items-center mb-10 animate-fade-in">
-                    <Logo size="xl" className="!gap-4 !pointer-events-none flex-col" />
+                    <Logo size="xl" className="!gap-4 !pointer-events-none flex-col" suppressLink={true} />
                     <p className="text-lg text-slate-600 dark:text-slate-400 mt-2">
                         Light & Clarity
                     </p>
@@ -248,7 +248,7 @@ export const Signup: React.FC = () => {
                                     Phone Number (WhatsApp)
                                 </label>
                                 <div className="relative">
-                                    <Logo variant="icon" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 opacity-40" />
+                                    <Logo variant="icon" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 opacity-40" suppressLink={true} />
                                     <Input
                                         {...register('phoneNumber')}
                                         type="tel"

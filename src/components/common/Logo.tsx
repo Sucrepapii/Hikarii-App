@@ -6,12 +6,14 @@ interface LogoProps {
     className?: string;
     variant?: 'full' | 'icon' | 'text';
     size?: 'sm' | 'md' | 'lg' | 'xl';
+    suppressLink?: boolean;
 }
 
 export const Logo: React.FC<LogoProps> = ({
     className,
     variant = 'full',
-    size = 'md'
+    size = 'md',
+    suppressLink = false
 }) => {
     const iconSizes = {
         sm: 'w-5 h-5',
@@ -117,25 +119,41 @@ export const Logo: React.FC<LogoProps> = ({
     );
 
     if (variant === 'icon') {
-        return (
+        const content = IconComponent;
+        return suppressLink ? (
+            <div className={className}>{content}</div>
+        ) : (
             <Link to="/" className={clsx("inline-flex hover:opacity-90 transition-opacity", className)}>
-                {IconComponent}
+                {content}
             </Link>
         );
     }
 
     if (variant === 'text') {
-        return (
+        const content = TextComponent;
+        return suppressLink ? (
+            <div className={className}>{content}</div>
+        ) : (
             <Link to="/" className={clsx("inline-flex hover:opacity-90 transition-opacity", className)}>
-                {TextComponent}
+                {content}
             </Link>
         );
     }
 
-    return (
-        <Link to="/" className={clsx("flex items-center gap-3 hover:opacity-90 transition-opacity group", className)}>
+    const content = (
+        <>
             {IconComponent}
             {TextComponent}
+        </>
+    );
+
+    return suppressLink ? (
+        <div className={clsx("flex items-center gap-3", className)}>
+            {content}
+        </div>
+    ) : (
+        <Link to="/" className={clsx("flex items-center gap-3 hover:opacity-90 transition-opacity group", className)}>
+            {content}
         </Link>
     );
 };
