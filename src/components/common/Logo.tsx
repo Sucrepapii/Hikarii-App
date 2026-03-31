@@ -32,69 +32,84 @@ export const Logo: React.FC<LogoProps> = ({
     const glowId = `hikari-bulb-glow`;
 
     const IconComponent = (
-        <svg
-            viewBox="0 0 100 100"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            className={clsx('transition-transform duration-300 hover:scale-105', iconSizes[size])}
-            aria-label="Hikari logo"
-        >
-            <defs>
-                <linearGradient id={`${gradId}-left`} x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#e9d5ff" />
-                    <stop offset="100%" stopColor="#c084fc" />
-                </linearGradient>
-                <linearGradient id={`${gradId}-right`} x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#a855f7" />
-                    <stop offset="100%" stopColor="#6b21a8" />
-                </linearGradient>
-                {/* Soft glow filter for premium effect */}
-                <filter id={`${glowId}-filter`} x="-20%" y="-20%" width="140%" height="140%">
-                    <feGaussianBlur stdDeviation="6" result="blur" />
-                    <feComposite in="SourceGraphic" in2="blur" operator="over" />
-                </filter>
-            </defs>
+        <div className="relative group/logo">
+            <svg
+                viewBox="0 0 100 100"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                className={clsx(
+                    'transition-all duration-500 hover:scale-110 animate-logo-float',
+                    iconSizes[size]
+                )}
+                aria-label="Hikari logo"
+            >
+                <defs>
+                    <linearGradient id={`${gradId}-left`} x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="#e9d5ff" />
+                        <stop offset="100%" stopColor="#c084fc" />
+                    </linearGradient>
+                    <linearGradient id={`${gradId}-right`} x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="#a855f7" />
+                        <stop offset="100%" stopColor="#6b21a8" />
+                    </linearGradient>
+                    {/* Soft glow filter for premium effect */}
+                    <filter id={`${glowId}-filter`} x="-20%" y="-20%" width="140%" height="140%">
+                        <feGaussianBlur stdDeviation="6" result="blur" />
+                        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                    </filter>
+                </defs>
 
-            {/* Background glow for depth */}
-            <path
-                d="M 40 15 Q 70 50 20 85"
-                stroke="#d8b4fe"
-                strokeWidth="16"
-                strokeLinecap="round"
-                opacity="0.3"
-                filter={`url(#${glowId}-filter)`}
-            />
-            <path
-                d="M 80 15 Q 30 50 60 85"
-                stroke="#a855f7"
-                strokeWidth="16"
-                strokeLinecap="round"
-                opacity="0.4"
-                filter={`url(#${glowId}-filter)`}
-            />
+                {/* Background glow for depth */}
+                <path
+                    d="M 40 15 Q 70 50 20 85"
+                    stroke="#d8b4fe"
+                    strokeWidth="16"
+                    strokeLinecap="round"
+                    opacity="0.3"
+                    filter={`url(#${glowId}-filter)`}
+                    className="animate-logo-draw"
+                />
+                <path
+                    d="M 80 15 Q 30 50 60 85"
+                    stroke="#a855f7"
+                    strokeWidth="16"
+                    strokeLinecap="round"
+                    opacity="0.4"
+                    filter={`url(#${glowId}-filter)`}
+                    className="animate-logo-draw"
+                    style={{ animationDelay: '0.2s' }}
+                />
 
-            {/* Main interlocking strokes */}
-            {/* Right purple stroke (background layer) */}
-            <path
-                d="M 80 15 Q 30 50 60 85"
-                stroke={`url(#${gradId}-right)`}
-                strokeWidth="16"
-                strokeLinecap="round"
-            />
+                {/* Main interlocking strokes */}
+                {/* Right purple stroke (background layer) */}
+                <path
+                    d="M 80 15 Q 30 50 60 85"
+                    stroke={`url(#${gradId}-right)`}
+                    strokeWidth="16"
+                    strokeLinecap="round"
+                    className="animate-logo-draw"
+                    style={{ animationDelay: '0.4s' }}
+                />
 
-            {/* Left white/blue stroke (foreground layer) */}
-            <path
-                d="M 40 15 Q 70 50 20 85"
-                stroke={`url(#${gradId}-left)`}
-                strokeWidth="16"
-                strokeLinecap="round"
-            />
-        </svg>
+                {/* Left white/blue stroke (foreground layer) */}
+                <path
+                    d="M 40 15 Q 70 50 20 85"
+                    stroke={`url(#${gradId}-left)`}
+                    strokeWidth="16"
+                    strokeLinecap="round"
+                    className="animate-logo-draw"
+                    style={{ animationDelay: '0.6s' }}
+                />
+            </svg>
+            
+            {/* Subtle radial glow on hover */}
+            <div className="absolute inset-0 bg-primary-400/20 blur-2xl rounded-full opacity-0 group-hover/logo:opacity-100 transition-opacity duration-700 -z-10" />
+        </div>
     );
 
     const TextComponent = (
         <span className={clsx(
-            'font-display font-bold gradient-text tracking-tight',
+            'font-display font-bold gradient-text tracking-tight animate-fade-in-up',
             textSizes[size]
         )}>
             Hikari

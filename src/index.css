@@ -451,6 +451,40 @@
   .backdrop-blur-md {
     backdrop-filter: blur(12px);
   }
+
+  /* Logo Animations */
+  @keyframes logo-draw {
+    0% {
+      stroke-dasharray: 0 100;
+      stroke-dashoffset: 0;
+      opacity: 0;
+    }
+    10% {
+      opacity: 1;
+    }
+    100% {
+      stroke-dasharray: 100 0;
+      stroke-dashoffset: 0;
+      opacity: 1;
+    }
+  }
+
+  @keyframes logo-float {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-8px);
+    }
+  }
+
+  .animate-logo-draw {
+    animation: logo-draw 2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  .animate-logo-float {
+    animation: logo-float 4s ease-in-out infinite;
+  }
 }
 
 @layer utilities {

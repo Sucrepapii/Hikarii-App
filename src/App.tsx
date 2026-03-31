@@ -31,6 +31,7 @@ import { useAuthStore } from './stores/authStore';
 import { useTaskStore } from './stores/taskStore';
 import { TaskSplitModal } from './components/tasks/TaskSplitModal';
 import { ScrollToTop } from './components/common/ScrollToTop';
+import { LoadingScreen } from './components/common/LoadingScreen';
 import { AdminDashboard } from './pages/AdminDashboard';
 import { AdminUserManagement } from './pages/AdminUserManagement';
 import { AdminReport } from './pages/AdminReport';
@@ -58,15 +59,21 @@ function AuthRoute({ children }: { children: JSX.Element }) {
 }
 
 function App() {
-    const isAuthenticated = useAuthStore((state) => !!state.token);
-    const logout = useAuthStore((state) => state.logout);
+    const { isAuthenticated, isLoading, logout } = useAuthStore((state) => ({
+        isAuthenticated: !!state.token,
+        isLoading: state.isLoading,
+        logout: state.logout
+    }));
     const { activeSplitTaskId, closeSplitModal, tasks } = useTaskStore();
-
     const checkAuth = useAuthStore((state) => state.checkAuth);
 
     useEffect(() => {
         checkAuth();
     }, [checkAuth]);
+
+    if (isLoading) {
+        return <LoadingScreen />;
+    }
 
     // Auto-logout after 20 minutes (20 * 60 * 1000 = 1200000ms)
     useInactivity(20 * 60 * 1000, () => {

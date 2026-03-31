@@ -1,14 +1,19 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuthStore } from '../../stores/authStore';
+import { LoadingScreen } from '../common/LoadingScreen';
 
 interface ProtectedRouteProps {
     children: React.ReactNode;
 }
 
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-    const { user, token } = useAuthStore();
+    const { user, token, isLoading } = useAuthStore();
     const isAuthenticated = !!token;
+
+    if (isLoading) {
+        return <LoadingScreen />;
+    }
 
     if (!isAuthenticated) {
         return <Navigate to="/" replace />;

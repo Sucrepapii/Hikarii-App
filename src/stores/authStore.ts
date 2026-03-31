@@ -172,20 +172,21 @@ export const useAuthStore = create<AuthState>((set) => ({
   checkAuth: async () => {
     const token = localStorage.getItem("auth-token");
     if (!token) {
-      set({ user: null, token: null });
+      set({ user: null, token: null, isLoading: false });
       return;
     }
 
     try {
+      set({ isLoading: true });
       const response = await apiClient.get("/auth/me");
       const { user } = response.data;
       localStorage.setItem("auth-user", JSON.stringify(user));
-      set({ user });
+      set({ user, isLoading: false });
     } catch (error) {
       // Token invalid, clear auth
       localStorage.removeItem("auth-token");
       localStorage.removeItem("auth-user");
-      set({ user: null, token: null });
+      set({ user: null, token: null, isLoading: false });
     }
   },
 }));
