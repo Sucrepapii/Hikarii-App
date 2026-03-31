@@ -71,10 +71,6 @@ function App() {
         checkAuth();
     }, [checkAuth]);
 
-    if (isLoading) {
-        return <LoadingScreen />;
-    }
-
     // Auto-logout after 20 minutes (20 * 60 * 1000 = 1200000ms)
     useInactivity(20 * 60 * 1000, () => {
         if (isAuthenticated) {
@@ -82,6 +78,10 @@ function App() {
             toast.error('Session timed out due to inactivity');
         }
     });
+
+    if (isLoading) {
+        return <LoadingScreen />;
+    }
 
     return (
         <>
