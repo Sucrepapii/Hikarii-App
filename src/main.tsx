@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
 import { BrowserRouter } from 'react-router-dom';
 import * as Sentry from "@sentry/react";
+import { ErrorBoundary } from './components/common/ErrorBoundary';
 
 Sentry.init({
     dsn: "https://3eaf89653d0ac96f89da4fa27eca0e5d@o4510954431709184.ingest.de.sentry.io/4510954434854992",
@@ -26,7 +27,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
         <GoogleOAuthProvider clientId={clientId}>
             <BrowserRouter>
-                <App />
+                <ErrorBoundary>
+                    <App />
+                </ErrorBoundary>
             </BrowserRouter>
         </GoogleOAuthProvider>
     </React.StrictMode>,

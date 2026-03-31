@@ -55,7 +55,7 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
 
                         {user ? (
                             <span className="font-display font-bold gradient-text text-xl md:text-2xl tracking-tight hidden sm:block">
-                                Hi, {user.name.split(' ')[0]}
+                                Hi, {user.name ? user.name.split(' ')[0] : 'User'}
                             </span>
                         ) : (
                             <span className="font-display font-bold gradient-text text-xl md:text-2xl tracking-tight hidden sm:block">
