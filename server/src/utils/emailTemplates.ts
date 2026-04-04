@@ -58,7 +58,7 @@ export const getBaseTemplate = (
           <!-- Colorful Header -->
           <div class="header" style="text-align: center;">
             <div style="display: inline-flex; align-items: center; justify-content: center; gap: 12px;">
-              <img src="\${process.env.CLIENT_URL || 'https://checkmate-production-7067.up.railway.app'}/logo.svg" width="45" height="45" alt="H" style="display: block; border: 0; outline: none; text-decoration: none;" />
+              <img src="${process.env.CLIENT_URL || 'https://www.hikarii.org'}/logo.png" width="45" height="45" alt="Hikari Logo" style="display: block; border: 0; outline: none; text-decoration: none;" />
               <div class="header-logo">HIKARI</div>
             </div>
             <div class="header-subtitle">Light & Clarity</div>
