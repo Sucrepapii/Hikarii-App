@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Task, TaskPriority, TaskStatus, TaskType } from '../../types/task.types';
 import { Card } from '../common/Card';
 import { Check, Clock, Trash2, Edit, Sparkles } from 'lucide-react';
@@ -28,6 +28,16 @@ export const TaskItem: React.FC<TaskItemProps> = ({
     onEdit,
     onDelete,
 }) => {
+    const [showSparkles, setShowSparkles] = useState(false);
+
+    const handleToggle = () => {
+        if (task.status !== TaskStatus.COMPLETED) {
+            setShowSparkles(true);
+            setTimeout(() => setShowSparkles(false), 800);
+        }
+        onToggle(task.id);
+    };
+
     const { expenses } = useBudgetStore();
     const linkedExpenses = expenses.filter(e => e.linkedTaskId === task.id);
     const totalLinkedSpent = linkedExpenses.reduce((sum, e) => sum + e.amount, 0);
@@ -64,10 +74,18 @@ export const TaskItem: React.FC<TaskItemProps> = ({
                 <div className="flex items-start justify-between gap-3 mb-3">
                     <div className="flex items-start gap-4">
                         <button
-                            onClick={() => onToggle(task.id)}
+                            onClick={handleToggle}
                             className="group/check relative flex items-center justify-center p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors shrink-0"
                             title="Mark as Completed"
                         >
+                            {/* Success Sparkles */}
+                            {showSparkles && (
+                                <>
+                                    <Sparkles className="sparkle-burst text-yellow-400 top-[-10px] left-[-10px]" size={16} />
+                                    <Sparkles className="sparkle-burst text-indigo-400 top-[-5px] right-[-5px]" size={12} style={{ animationDelay: '0.1s' }} />
+                                    <Sparkles className="sparkle-burst text-purple-400 bottom-[-8px] left-[5px]" size={14} style={{ animationDelay: '0.2s' }} />
+                                </>
+                            )}
                             <div className={clsx(
                                 "w-6 h-6 rounded-full border-2 transition-all",
                                 task.status === TaskStatus.COMPLETED

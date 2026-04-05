@@ -8,6 +8,7 @@
     --gradient-accent: linear-gradient(135deg, #a855f7 0%, #9333ea 100%);
     --gradient-success: linear-gradient(135deg, #10b981 0%, #059669 100%);
     --gradient-glass: rgba(255, 255, 255, 0.1);
+    --shine-glow: 0 0 20px rgba(99, 102, 241, 0.4);
   }
 
   .dark {
@@ -484,6 +485,57 @@
 
   .animate-logo-float {
     animation: logo-float 4s ease-in-out infinite;
+  }
+
+  /* Starfield Background Animation */
+  @keyframes starfield {
+    from { transform: translateY(0); }
+    to { transform: translateY(-1000px); }
+  }
+
+  .starfield-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 200%;
+    z-index: -1;
+    pointer-events: none;
+    background: radial-gradient(1px 1px at 25px 50px, #ffffff, rgba(0, 0, 0, 0)),
+                radial-gradient(1px 1px at 75px 150px, #ffffff, rgba(0, 0, 0, 0)),
+                radial-gradient(1px 1px at 150px 250px, #ffffff, rgba(0, 0, 0, 0)),
+                radial-gradient(2px 2px at 250px 350px, #ffffff, rgba(0, 0, 0, 0)),
+                radial-gradient(1.5px 1.5px at 350px 450px, #ffffff, rgba(0, 0, 0, 0));
+    background-size: 500px 500px;
+    opacity: 0.1;
+    animation: starfield 60s linear infinite;
+  }
+
+  /* Sparkle / Success Burst Animation */
+  @keyframes sparkle-burst {
+    0% { transform: scale(0) rotate(0deg); opacity: 0; }
+    50% { transform: scale(1.5) rotate(180deg); opacity: 1; }
+    100% { transform: scale(2) rotate(360deg); opacity: 0; }
+  }
+
+  .sparkle-burst {
+    position: absolute;
+    pointer-events: none;
+    animation: sparkle-burst 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  /* Vibrant Glassmorphism */
+  .glass-vibrant {
+    @apply glass shadow-lg;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.02) 100%);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  }
+
+  .dark .glass-vibrant {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(0, 0, 0, 0.2) 100%);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.05);
   }
 }
 

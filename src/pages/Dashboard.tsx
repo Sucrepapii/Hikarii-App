@@ -3,7 +3,7 @@ import { Card } from '../components/common/Card';
 import { Link } from 'react-router-dom';
 import { useTaskStore } from '../stores/taskStore';
 import { useBudgetStore } from '../stores/budgetStore';
-import { CheckSquare, Wallet, TrendingUp, Clock, AlertCircle, RefreshCw } from 'lucide-react'; import { formatCurrency } from '../utils/currencyFormatter';
+import { CheckSquare, Wallet, TrendingUp, Clock, AlertCircle, RefreshCw, Zap } from 'lucide-react'; import { formatCurrency } from '../utils/currencyFormatter';
 import { TaskStatus, Task } from '../types/task.types';
 import { TaskItem } from '../components/tasks/TaskItem';
 import { BudgetProgress } from '../components/budget/Charts/BudgetProgress';
@@ -19,6 +19,35 @@ import { UpgradeModal } from '../components/modals/UpgradeModal';
 import { useIntelligenceStore } from '../stores/intelligenceStore';
 import { useAuthStore } from '../stores/authStore';
 import { clsx } from 'clsx';
+import { DashboardGreeting } from '../components/dashboard/DashboardGreeting';
+
+const NumberCounter: React.FC<{ value: number; prefix?: string; duration?: number }> = ({ value, prefix = '', duration = 1000 }) => {
+    const [count, setCount] = useState(0);
+
+    useEffect(() => {
+        let start = 0;
+        const end = value;
+        if (start === end) {
+            setCount(end);
+            return;
+        }
+
+        const increment = end / (duration / 16); // 60fps
+        const timer = setInterval(() => {
+            start += increment;
+            if (start >= end) {
+                setCount(end);
+                clearInterval(timer);
+            } else {
+                setCount(Math.floor(start));
+            }
+        }, 16);
+
+        return () => clearInterval(timer);
+    }, [value, duration]);
+
+    return <span>{prefix}{count.toLocaleString()}</span>;
+};
 
 export const Dashboard: React.FC = () => {
     const { tasks, fetchTasks, toggleTaskStatus, updateTask, deleteTask, isLoading: tasksLoading, error: tasksError } = useTaskStore();
@@ -31,6 +60,8 @@ export const Dashboard: React.FC = () => {
 
     const [showUpgradeModal, setShowUpgradeModal] = useState(false);
     const [isRefreshingInsights, setIsRefreshingInsights] = useState(false);
+    const [isFocusMode, setIsFocusMode] = useState(false);
+
     const { refreshInsights } = useIntelligenceStore();
 
     // Hikari Wrapped State
@@ -134,8 +165,17 @@ export const Dashboard: React.FC = () => {
     }
 
     return (
-        <div className="animate-fade-in">
-            <div className="mb-4 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+        <div className={clsx("animate-fade-in relative", isFocusMode && "focus-active")}>
+            {/* Visual Depth: Starfield (Only in Dark Mode) */}
+            <div className="starfield-container" />
+            
+            <DashboardGreeting 
+                userName={user?.name} 
+                onFocusModeToggle={setIsFocusMode}
+            />
+
+            <div className={clsx("transition-all duration-700", isFocusMode ? "opacity-40 blur-sm pointer-events-none scale-95" : "opacity-100")}>
+                <div className="mb-4 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
                 <div>
                     <h1 className="text-3xl font-display font-bold gradient-text mb-2">
                         Dashboard
@@ -223,7 +263,9 @@ export const Dashboard: React.FC = () => {
                                 Total Tasks
                             </span>
                         </div>
-                        <p className="text-3xl font-bold gradient-text">{totalTasks}</p>
+                        <p className="text-3xl font-bold gradient-text">
+                            <NumberCounter value={totalTasks} />
+                        </p>
                     </div>
                 </Card>
 
@@ -238,7 +280,9 @@ export const Dashboard: React.FC = () => {
                                 Completed
                             </span>
                         </div>
-                        <p className="text-3xl font-bold gradient-text">{completedTasks}</p>
+                        <p className="text-3xl font-bold gradient-text">
+                            <NumberCounter value={completedTasks} />
+                        </p>
                     </div>
                 </Card>
 
@@ -253,7 +297,9 @@ export const Dashboard: React.FC = () => {
                                 Pending
                             </span>
                         </div>
-                        <p className="text-3xl font-bold gradient-text">{pendingTasks}</p>
+                        <p className="text-3xl font-bold gradient-text">
+                            <NumberCounter value={pendingTasks} />
+                        </p>
                     </div>
                 </Card>
 
@@ -275,11 +321,13 @@ export const Dashboard: React.FC = () => {
                 </Card>
             </div>
 
-            {/* Charts */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                <SpendingChart />
-                <BudgetProgress />
-            </div>
+            {/* Charts (Hidden in Focus Mode for extreme clarity) */}
+            {!isFocusMode && (
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                    <SpendingChart />
+                    <BudgetProgress />
+                </div>
+            )}
 
             {/* Recent Activity */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -379,6 +427,19 @@ export const Dashboard: React.FC = () => {
             {/* Fullscreen Hikari Wrapped Overlay */}
             {isWrappedOpen && (
                 <HikariWrapped onClose={() => setIsWrappedOpen(false)} />
+            )}
+
+            </div>
+
+            {/* Focus Mode Overlay Message */}
+            {isFocusMode && (
+                <div className="fixed inset-0 pointer-events-none z-50 flex items-center justify-center animate-fade-in">
+                    <div className="bg-indigo-600/10 backdrop-blur-xl border border-indigo-500/20 px-8 py-4 rounded-3xl shadow-2xl">
+                        <p className="text-indigo-600 dark:text-indigo-400 font-display font-bold text-xl flex items-center gap-3">
+                            <Zap className="w-6 h-6 animate-pulse" /> Focus Mode Active
+                        </p>
+                    </div>
+                </div>
             )}
         </div>
     );
