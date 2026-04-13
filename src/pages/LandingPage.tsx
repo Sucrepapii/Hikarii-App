@@ -270,26 +270,97 @@ export const LandingPage: React.FC = () => {
             </section>
 
             {/* FOUR SIMPLE STEPS TO GET STARTED */}
-            <section className="py-24 px-6 max-w-7xl mx-auto relative z-20">
-                <div className="text-center mb-16">
+            <section className="py-24 md:py-32 px-6 max-w-7xl mx-auto relative z-20">
+                {/* Background accent blobs */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] pointer-events-none">
+                    <div className="absolute top-0 left-0 w-[400px] h-[400px] bg-indigo-400/10 rounded-full blur-[120px]"></div>
+                    <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-purple-400/10 rounded-full blur-[120px]"></div>
+                </div>
+
+                <div className="text-center mb-20 relative z-10">
+                    <span className="inline-block px-4 py-1.5 rounded-full bg-indigo-50 dark:bg-white/5 border border-indigo-100 dark:border-white/10 text-indigo-600 dark:text-indigo-300 text-sm font-medium mb-6">How It Works</span>
                     <h2 className="text-3xl md:text-5xl font-display font-bold text-slate-900 dark:text-white mb-4">Four simple steps to get started</h2>
-                    <p className="text-lg text-slate-500 dark:text-slate-400">Join Hikari and take control of your tasks and finances in minutes.</p>
+                    <p className="text-lg text-slate-500 dark:text-slate-400 max-w-xl mx-auto">Join Hikari and take control of your tasks and finances in minutes.</p>
                 </div>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-10 gap-y-16 relative z-10">
                     {ONBOARDING_STEPS.map((step, idx) => {
+                        // Alternate subtle tilt for visual interest
+                        const tilt = idx % 2 === 0 ? 'hover:-rotate-1' : 'hover:rotate-1';
                         return (
-                            <div key={idx} className="flex flex-col text-left group cursor-default">
-                                <div className="w-full aspect-[4/3] rounded-[2rem] mb-6 flex items-center justify-center border border-slate-200/50 dark:border-white/5 overflow-hidden shadow-sm relative hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] transition-all duration-500 bg-slate-100 dark:bg-slate-800">
-                                    <img src={step.image} alt={step.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                                    <div className="absolute inset-0 ring-1 ring-inset ring-black/5 dark:ring-white/10 rounded-[2rem]"></div>
+                            <div key={idx} className="flex flex-col items-center text-center group cursor-default">
+                                {/* Step number badge */}
+                                <div className="mb-6 flex items-center gap-2">
+                                    <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white text-sm font-bold shadow-lg shadow-indigo-500/30">
+                                        {idx + 1}
+                                    </span>
                                 </div>
-                                <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2 tracking-tight">
-                                    {step.title}
-                                </h3>
-                                <p className="text-slate-500 dark:text-slate-400 leading-relaxed text-sm md:text-base">
-                                    {step.body}
-                                </p>
+
+                                {/* iPhone Mockup Frame */}
+                                <div className={`relative mx-auto w-[220px] md:w-[240px] transition-all duration-700 ease-out ${tilt} hover:scale-105`} style={{ perspective: '1000px' }}>
+                                    {/* Phone outer body */}
+                                    <div className="relative rounded-[2.5rem] bg-gradient-to-b from-[#2A2A2E] via-[#1C1C1E] to-[#1C1C1E] dark:from-[#3A3A3E] dark:via-[#2C2C2E] dark:to-[#1C1C1E] p-[10px] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.35),0_0_0_1px_rgba(255,255,255,0.05)] group-hover:shadow-[0_35px_60px_-12px_rgba(0,0,0,0.5),0_0_0_1px_rgba(255,255,255,0.1),0_0_80px_rgba(99,102,241,0.15)]  transition-shadow duration-700">
+                                        
+                                        {/* Side buttons - Volume Up */}
+                                        <div className="absolute -left-[2.5px] top-[100px] w-[3px] h-[30px] bg-[#3A3A3E] dark:bg-[#4A4A4E] rounded-l-sm"></div>
+                                        {/* Side buttons - Volume Down */}
+                                        <div className="absolute -left-[2.5px] top-[140px] w-[3px] h-[30px] bg-[#3A3A3E] dark:bg-[#4A4A4E] rounded-l-sm"></div>
+                                        {/* Side buttons - Power */}
+                                        <div className="absolute -right-[2.5px] top-[110px] w-[3px] h-[45px] bg-[#3A3A3E] dark:bg-[#4A4A4E] rounded-r-sm"></div>
+
+                                        {/* Inner screen bezel */}
+                                        <div className="relative rounded-[2rem] overflow-hidden bg-black aspect-[9/19.5]">
+                                            {/* Dynamic Island */}
+                                            <div className="absolute top-3 left-1/2 -translate-x-1/2 z-30 w-[80px] h-[22px] bg-black rounded-full flex items-center justify-center">
+                                                <div className="w-[8px] h-[8px] rounded-full bg-[#1a1a2e] border border-[#2a2a3e] mr-3"></div>
+                                            </div>
+
+                                            {/* Status Bar */}
+                                            <div className="absolute top-0 left-0 right-0 h-12 z-20 flex items-end justify-between px-6 pb-1">
+                                                <span className="text-[9px] font-semibold text-white/80">9:41</span>
+                                                <div className="flex items-center gap-1">
+                                                    <div className="flex gap-[2px]">
+                                                        <div className="w-[3px] h-[4px] bg-white/70 rounded-[0.5px]"></div>
+                                                        <div className="w-[3px] h-[6px] bg-white/70 rounded-[0.5px]"></div>
+                                                        <div className="w-[3px] h-[8px] bg-white/70 rounded-[0.5px]"></div>
+                                                        <div className="w-[3px] h-[10px] bg-white/30 rounded-[0.5px]"></div>
+                                                    </div>
+                                                    <div className="w-[14px] h-[7px] border border-white/70 rounded-[1.5px] ml-1 relative">
+                                                        <div className="absolute inset-[1px] bg-white/70 rounded-[0.5px] w-[60%]"></div>
+                                                        <div className="absolute -right-[2px] top-1/2 -translate-y-1/2 w-[1.5px] h-[4px] bg-white/70 rounded-r-[0.5px]"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* Screenshot content */}
+                                            <img 
+                                                src={step.image} 
+                                                alt={step.title} 
+                                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                                            />
+
+                                            {/* Screen glass reflection */}
+                                            <div className="absolute inset-0 bg-gradient-to-br from-white/[0.08] via-transparent to-transparent pointer-events-none z-10"></div>
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none z-10"></div>
+
+                                            {/* Bottom home indicator */}
+                                            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-[100px] h-[4px] bg-white/40 rounded-full z-20"></div>
+                                        </div>
+                                    </div>
+
+                                    {/* Phone reflection/shadow on surface */}
+                                    <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-[70%] h-6 bg-gradient-to-t from-indigo-500/10 to-transparent blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                                </div>
+
+                                {/* Step text below phone */}
+                                <div className="mt-8">
+                                    <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2 tracking-tight">
+                                        {step.title}
+                                    </h3>
+                                    <p className="text-slate-500 dark:text-slate-400 leading-relaxed text-sm md:text-base max-w-[240px] mx-auto">
+                                        {step.body}
+                                    </p>
+                                </div>
                             </div>
                         );
                     })}
