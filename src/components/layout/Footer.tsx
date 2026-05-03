@@ -58,6 +58,10 @@ export const Footer: React.FC = () => {
                         <ul className="space-y-4 text-sm text-slate-400">
                             <li><Link to="/about" className="hover:text-indigo-400 transition-colors">About Us</Link></li>
                             <li><Link to="/contact" className="hover:text-indigo-400 transition-colors">Contact</Link></li>
+                            <li className="pt-2">
+                                <span className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Support</span>
+                                <a href="tel:+2349024129891" className="text-indigo-400 hover:text-indigo-300 transition-colors">+234 902 412 9891</a>
+                            </li>
                         </ul>
                     </div>
 

@@ -140,6 +140,7 @@ export const LandingPage: React.FC = () => {
     const { token } = useAuthStore();
     const isAuthenticated = !!token;
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [currency, setCurrency] = useState<'USD' | 'NGN'>('NGN');
     const [testimonials, setTestimonials] = useState<any[]>(SEED_TESTIMONIALS);
 
     // Fetch real feedback from the API
@@ -267,7 +268,7 @@ export const LandingPage: React.FC = () => {
                             size="lg"
                             className="rounded-full px-8 h-[52px] text-base font-semibold bg-indigo-600 hover:bg-indigo-500 text-white border-0 shadow-xl shadow-indigo-500/30 transition-all hover:scale-105 hover:shadow-indigo-500/40"
                         >
-                            Start for Free <ArrowRight className="ml-2 w-4 h-4" />
+                            Create Free Account <ArrowRight className="ml-2 w-4 h-4" />
                         </Button>
                         <Link
                             to="/pricing"
@@ -403,7 +404,7 @@ export const LandingPage: React.FC = () => {
 
                         <div>
                             <Button onClick={() => navigate('/signup')} size="lg" className="rounded-full px-8 h-[52px] text-base font-semibold bg-indigo-600 hover:bg-indigo-500 text-white border-0 shadow-xl shadow-indigo-500/25 transition-all hover:scale-105">
-                                Start Your Journey <ArrowRight className="ml-2 w-4 h-4" />
+                                Create Free Account <ArrowRight className="ml-2 w-4 h-4" />
                             </Button>
                         </div>
                     </div>
@@ -630,6 +631,60 @@ export const LandingPage: React.FC = () => {
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* ── MEET THE TEAM ──────────────────────────────────────── */}
+            <section className="py-28 px-6 max-w-7xl mx-auto relative z-20">
+                <div className="text-center mb-20">
+                    <span className="inline-block px-4 py-1.5 rounded-full bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-100 dark:border-indigo-500/20 text-indigo-600 dark:text-indigo-300 text-sm font-semibold mb-5 tracking-wide">Behind Hikari</span>
+                    <h2 className="text-4xl md:text-5xl font-display font-bold text-slate-900 dark:text-white mb-4 tracking-tight">Meet the Founder</h2>
+                    <p className="text-lg text-slate-500 dark:text-slate-400 max-w-xl mx-auto">The human building the methodology for your radical clarity.</p>
+                </div>
+
+                <div className="max-w-md mx-auto">
+                    {[
+                        {
+                            name: "Samuel O. Akinboro",
+                            role: "Founder & Software Developer",
+                            image: "/samuel_akinboro_professional.png",
+                            bio: "Passionate about building high-performance systems that turn chaos into clarity. Samuel is the architect behind the Hikari Method, dedicated to helping individuals master their life and money through intentional design."
+                        }
+                    ].map((member, idx) => (
+                        <div key={idx} className="group relative text-center">
+                            <div className="relative aspect-square overflow-hidden rounded-[3rem] mb-8 shadow-2xl shadow-slate-200 dark:shadow-black/40 transition-transform duration-500 group-hover:-translate-y-2 max-w-sm mx-auto border-4 border-white dark:border-white/5">
+                                <img src={member.image} alt={member.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                            </div>
+                            <h3 className="text-3xl font-bold text-slate-900 dark:text-white mb-2 tracking-tight">{member.name}</h3>
+                            <p className="text-indigo-600 dark:text-indigo-400 font-bold text-lg mb-4">{member.role}</p>
+                            <p className="text-slate-500 dark:text-slate-400 text-base leading-relaxed">{member.bio}</p>
+                        </div>
+                    ))}
+                </div>
+            </section>
+
+            {/* ── CURRENCY SWITCHER ──────────────────────────────────── */}
+            <section className="py-12 border-y border-slate-200 dark:border-white/5 bg-white/30 dark:bg-black/20 backdrop-blur-sm">
+                <div className="max-w-4xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-8">
+                    <div className="text-center md:text-left">
+                        <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">Regional Pricing</h3>
+                        <p className="text-sm text-slate-500 dark:text-slate-400">View pricing in your local currency for better clarity.</p>
+                    </div>
+                    <div className="flex items-center gap-1 p-1 bg-slate-100 dark:bg-white/5 rounded-full border border-slate-200 dark:border-white/10">
+                        <button 
+                            onClick={() => setCurrency('NGN')}
+                            className={`px-6 py-2 rounded-full text-sm font-bold transition-all ${currency === 'NGN' ? 'bg-white dark:bg-indigo-600 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'}`}
+                        >
+                            ₦ NGN
+                        </button>
+                        <button 
+                            onClick={() => setCurrency('USD')}
+                            className={`px-6 py-2 rounded-full text-sm font-bold transition-all ${currency === 'USD' ? 'bg-white dark:bg-indigo-600 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'}`}
+                        >
+                            $ USD
+                        </button>
                     </div>
                 </div>
             </section>
