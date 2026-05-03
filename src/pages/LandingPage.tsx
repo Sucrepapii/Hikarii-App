@@ -156,7 +156,7 @@ export const LandingPage: React.FC = () => {
                             topic: (fb.topic || (fb.rating >= 4 ? "HIGHLY RATED" : "USER REVIEW")).toUpperCase(),
                             quote: fb.comment,
                             name: fb.name.toUpperCase(),
-                            location: new Date(fb.createdAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
+                            location: new Date(fb.createdAt).toLocaleDateString('en-US', { month: 'short' }),
                             rating: fb.rating,
                             initials: getInitials(fb.name),
                             color: GRADIENT_COLORS[idx % GRADIENT_COLORS.length]
