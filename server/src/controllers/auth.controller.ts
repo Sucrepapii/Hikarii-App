@@ -8,10 +8,9 @@ import {
   getPasswordResetTemplate,
 } from "../utils/emailTemplates";
 
-import crypto from "crypto";
-
-// Helper to generate 6-digit OTP using cryptographically secure random numbers
-const generateOTP = () => crypto.randomInt(100000, 999999).toString();
+// Helper to generate 6-digit OTP
+const generateOTP = () =>
+  Math.floor(100000 + Math.random() * 900000).toString();
 
 export const signup = async (
   req: AuthRequest,
@@ -544,4 +543,16 @@ export const changePassword = async (
   }
 };
 
-// Removed debugInfo endpoint for security
+export const debugInfo = async (_req: any, res: Response) => {
+  res.json({
+    env: {
+      NODE_ENV: process.env.NODE_ENV,
+      VERCEL: process.env.VERCEL,
+      HAS_DATABASE_URL: !!process.env.DATABASE_URL,
+      HAS_JWT_SECRET: !!process.env.JWT_SECRET,
+      HAS_RESEND_KEY: !!process.env.RESEND_API_KEY,
+      CLIENT_URL: process.env.CLIENT_URL,
+    },
+    dbStatus: "connected", // Prisma manages connection pool
+  });
+};

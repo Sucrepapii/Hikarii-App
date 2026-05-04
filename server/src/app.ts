@@ -38,26 +38,29 @@ const app = express();
 // 1. Security Headers (Helmet)
 app.use(helmet());
 
-// 2. Global Rate Limiting - Prevents DoS
-const globalLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per window
-  message: { error: "Too many requests from this IP, please try again later." },
-  standardHeaders: true,
-  legacyHeaders: false,
-});
-app.use("/api/", globalLimiter);
-
-// 3. HTTP Parameter Pollution protection
+// 2. HTTP Parameter Pollution protection
 app.use(hpp());
 
-// 4. Body Parser with Size Limits (Prevents large payload attacks)
+// 3. Body Parser with Size Limits (Prevents large payload attacks)
 app.use(express.json({ limit: "10kb" }));
+
+// 4. Request Logging for Debugging CORS/Preflight in Production
+app.use((req, res, next) => {
+  if (process.env.NODE_ENV === "production") {
+    console.log(
+      `[${new Date().toISOString()}] ${req.method} ${req.url} - Origin: ${req.headers.origin || "No Origin"}`,
+    );
+  }
+  next();
+});
 
 // CORS Configuration
 const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:5174",
+  "http://127.0.0.1:5173",
+  "http://127.0.0.1:5174",
+  "http://localhost:3000",
   "https://www.hikarii.org",
   "https://hikarii.org",
   "https://checkmate-production-7067.up.railway.app",
@@ -69,17 +72,16 @@ app.use(
       // Allow requests with no origin (like mobile apps or curl requests)
       if (!origin) return callback(null, true);
 
-      // Tighten Railway match to specific subdomains if possible, 
-      // otherwise only allow development origins if in dev mode.
       const isAllowed =
         allowedOrigins.indexOf(origin) !== -1 ||
-        (process.env.NODE_ENV === "development" && origin.startsWith("http://localhost"));
+        origin.endsWith(".railway.app") ||
+        process.env.NODE_ENV === "development";
 
       if (isAllowed) {
         callback(null, true);
       } else {
-        console.warn(`[SECURITY] CORS Blocked Origin: ${origin}`);
-        callback(new Error("Not allowed by CORS"));
+        console.warn(`[CORS Blocked] Origin: ${origin}`);
+        callback(null, false);
       }
     },
     credentials: true,
@@ -90,6 +92,10 @@ app.use(
       "X-Requested-With",
       "Accept",
       "Origin",
+      "baggage",
+      "sentry-trace",
+      "access-control-allow-headers",
+      "x-sentry-auth",
     ],
     optionsSuccessStatus: 204,
   }),

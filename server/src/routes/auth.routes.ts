@@ -10,6 +10,7 @@ import {
   resetPassword,
   updateProfile,
   changePassword,
+  debugInfo,
 } from "../controllers/auth.controller";
 import { authenticate } from "../middleware/auth.middleware";
 import { validate } from "../middleware/validate.middleware";
@@ -46,6 +47,6 @@ router.post("/reset-password", authRateLimiter, resetPassword);
 router.put("/profile", authenticate, updateProfile);
 router.post("/change-password", authenticate, changePassword);
 router.get("/me", authenticate, getMe);
-// router.get("/debug", debugInfo); // Disabled for security
+router.get("/debug", debugInfo);
 
 export default router;
