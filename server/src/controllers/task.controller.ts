@@ -91,12 +91,18 @@ export const updateTask = async (
       return;
     }
 
+    const { title, description, status, dueDate, priority, projectId, notes } = req.body;
+
     const task = await prisma.task.update({
       where: { id: req.params.id as string },
       data: {
-        ...req.body,
-        projectId:
-          req.body.projectId || (req.body.projectId === "" ? null : undefined),
+        title,
+        description,
+        status,
+        dueDate: dueDate ? new Date(dueDate) : undefined,
+        priority,
+        notes,
+        projectId: projectId || (projectId === "" ? null : undefined),
       },
     });
 

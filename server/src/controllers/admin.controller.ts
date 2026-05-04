@@ -202,7 +202,7 @@ export const updateUser = async (req: Request, res: Response) => {
       data: {
         name: (name as string) || undefined,
         email: (email as string) || undefined,
-        role: (role as any) || undefined,
+        // role: (role as any) || undefined, // DISABLED for security: Prevent privilege escalation
         subscriptionStatus: (subscriptionStatus as any) || undefined,
       },
     });
