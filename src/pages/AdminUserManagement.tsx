@@ -7,6 +7,7 @@ import { clsx } from 'clsx';
 import { useNavigate } from 'react-router-dom';
 import apiClient from '../api/client';
 import toast from 'react-hot-toast';
+import { ConfirmModal } from '../components/common/ConfirmModal';
 
 interface UserData {
     id: string;
@@ -39,6 +40,7 @@ export const AdminUserManagement: React.FC = () => {
 
     // Batch Operations State
     const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
+    const [batchActionToConfirm, setBatchActionToConfirm] = useState<'DELETE' | 'SUSPEND' | null>(null);
 
     // Suspension State
     const [suspensionReason, setSuspensionReason] = useState('');
@@ -168,14 +170,9 @@ export const AdminUserManagement: React.FC = () => {
         }
     };
 
-    const handleBatchAction = async (action: 'DELETE' | 'SUSPEND') => {
-        if (selectedUserIds.length === 0) return;
-
-        const confirmMsg = action === 'DELETE'
-            ? `Are you sure you want to delete ${selectedUserIds.length} users?`
-            : `Suspend ${selectedUserIds.length} users?`;
-
-        if (!window.confirm(confirmMsg)) return;
+    const handleBatchAction = async () => {
+        if (selectedUserIds.length === 0 || !batchActionToConfirm) return;
+        const action = batchActionToConfirm;
 
         setIsUpdating(true);
         try {
@@ -186,6 +183,7 @@ export const AdminUserManagement: React.FC = () => {
             });
             toast.success(`Batch ${action.toLowerCase()} successful`);
             setSelectedUserIds([]);
+            setBatchActionToConfirm(null);
             fetchAdminData();
         } catch (error) {
             toast.error('Batch operation failed');
@@ -246,13 +244,13 @@ export const AdminUserManagement: React.FC = () => {
                             <span className="text-sm font-bold text-primary-700 dark:text-primary-300 px-2">{selectedUserIds.length} Selected</span>
                             <div className="h-6 w-px bg-primary-200 dark:bg-primary-700 mx-1" />
                             <button
-                                onClick={() => handleBatchAction('SUSPEND')}
+                                onClick={() => setBatchActionToConfirm('SUSPEND')}
                                 className="px-3 py-1.5 bg-amber-500 text-white rounded-lg text-xs font-bold hover:bg-amber-600 transition-colors"
                             >
                                 Bulk Suspend
                             </button>
                             <button
-                                onClick={() => handleBatchAction('DELETE')}
+                                onClick={() => setBatchActionToConfirm('DELETE')}
                                 className="px-3 py-1.5 bg-red-600 text-white rounded-lg text-xs font-bold hover:bg-red-700 transition-colors"
                             >
                                 Bulk Delete
@@ -696,6 +694,18 @@ export const AdminUserManagement: React.FC = () => {
                     </Card>
                 </div>
             )}
+            <ConfirmModal
+                isOpen={!!batchActionToConfirm}
+                onClose={() => !isUpdating && setBatchActionToConfirm(null)}
+                onConfirm={handleBatchAction}
+                title={batchActionToConfirm === 'DELETE' ? 'Bulk Delete Users' : 'Bulk Suspend Users'}
+                message={batchActionToConfirm === 'DELETE' 
+                    ? `Are you sure you want to permanently delete ${selectedUserIds.length} selected users and all their associated data?`
+                    : `Are you sure you want to suspend ${selectedUserIds.length} selected users for 30 days?`}
+                confirmText={batchActionToConfirm === 'DELETE' ? 'Delete Users' : 'Suspend Users'}
+                variant={batchActionToConfirm === 'DELETE' ? 'danger' : 'warning'}
+                isLoading={isUpdating}
+            />
         </div>
     );
 };

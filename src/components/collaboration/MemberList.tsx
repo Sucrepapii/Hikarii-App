@@ -3,6 +3,7 @@ import { Trash2, ChevronDown } from 'lucide-react';
 import { ProjectMember, CollaborationRole } from '../../types/project.types';
 import { useCollaborationStore } from '../../stores/collaborationStore';
 import { Button } from '../common/Button';
+import { ConfirmModal } from '../common/ConfirmModal';
 import toast from 'react-hot-toast';
 
 interface MemberListProps {
@@ -33,6 +34,7 @@ function getInitials(name?: string, email?: string): string {
 export const MemberList: React.FC<MemberListProps> = ({ projectId, members, currentUserId, isOwner }) => {
   const { updateMemberRole, removeMember } = useCollaborationStore();
   const [loadingId, setLoadingId] = useState<string | null>(null);
+  const [memberToRemove, setMemberToRemove] = useState<{ id: string; email: string } | null>(null);
 
   const handleRoleChange = async (memberId: string, role: CollaborationRole) => {
     setLoadingId(memberId);
@@ -46,12 +48,14 @@ export const MemberList: React.FC<MemberListProps> = ({ projectId, members, curr
     }
   };
 
-  const handleRemove = async (memberId: string, email: string) => {
-    if (!confirm(`Remove ${email} from this project?`)) return;
-    setLoadingId(memberId);
+  const handleRemove = async () => {
+    if (!memberToRemove) return;
+    const { id, email } = memberToRemove;
+    setLoadingId(id);
     try {
-      await removeMember(projectId, memberId);
+      await removeMember(projectId, id);
       toast.success('Member removed');
+      setMemberToRemove(null);
     } catch {
       toast.error('Failed to remove member');
     } finally {
@@ -119,7 +123,7 @@ export const MemberList: React.FC<MemberListProps> = ({ projectId, members, curr
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => handleRemove(member.id, member.invitedEmail)}
+                onClick={() => setMemberToRemove({ id: member.id, email: member.invitedEmail })}
                 disabled={isLoading}
                 className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg"
               >
@@ -129,6 +133,17 @@ export const MemberList: React.FC<MemberListProps> = ({ projectId, members, curr
           </div>
         );
       })}
+
+      <ConfirmModal
+        isOpen={!!memberToRemove}
+        onClose={() => !loadingId && setMemberToRemove(null)}
+        onConfirm={handleRemove}
+        title="Remove Member"
+        message={`Are you sure you want to remove ${memberToRemove?.email} from this project? They will lose all access immediately.`}
+        confirmText="Remove Member"
+        variant="danger"
+        isLoading={!!loadingId}
+      />
     </div>
   );
 };
