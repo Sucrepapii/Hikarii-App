@@ -636,7 +636,7 @@ export const LandingPage: React.FC = () => {
             </section>
 
             {/* ── MEET THE TEAM ──────────────────────────────────────── */}
-            <section className="py-28 px-6 max-w-7xl mx-auto relative z-20">
+            {/* <section className="py-28 px-6 max-w-7xl mx-auto relative z-20">
                 <div className="text-center mb-20">
                     <span className="inline-block px-4 py-1.5 rounded-full bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-100 dark:border-indigo-500/20 text-indigo-600 dark:text-indigo-300 text-sm font-semibold mb-5 tracking-wide">Behind Hikari</span>
                     <h2 className="text-4xl md:text-5xl font-display font-bold text-slate-900 dark:text-white mb-4 tracking-tight">Meet the Founder</h2>
@@ -663,7 +663,7 @@ export const LandingPage: React.FC = () => {
                         </div>
                     ))}
                 </div>
-            </section>
+            </section> */}
 
             {/* ── CURRENCY SWITCHER ──────────────────────────────────── */}
             <section className="py-12 border-y border-slate-200 dark:border-white/5 bg-white/30 dark:bg-black/20 backdrop-blur-sm">
@@ -673,13 +673,13 @@ export const LandingPage: React.FC = () => {
                         <p className="text-sm text-slate-500 dark:text-slate-400">View pricing in your local currency for better clarity.</p>
                     </div>
                     <div className="flex items-center gap-1 p-1 bg-slate-100 dark:bg-white/5 rounded-full border border-slate-200 dark:border-white/10">
-                        <button 
+                        <button
                             onClick={() => setCurrency('NGN')}
                             className={`px-6 py-2 rounded-full text-sm font-bold transition-all ${currency === 'NGN' ? 'bg-white dark:bg-indigo-600 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'}`}
                         >
                             ₦ NGN
                         </button>
-                        <button 
+                        <button
                             onClick={() => setCurrency('USD')}
                             className={`px-6 py-2 rounded-full text-sm font-bold transition-all ${currency === 'USD' ? 'bg-white dark:bg-indigo-600 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'}`}
                         >
