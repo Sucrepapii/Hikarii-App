@@ -3788,6 +3788,9 @@ app.use("/api/collaboration", collaboration_routes_default);
 app.get("/health", (req, res) => {
   res.json({ status: "ok" });
 });
+app.get("/api/v", (req, res) => {
+  res.json({ v: "v1.0.1-fix-buffering" });
+});
 var clientBuildPath = path2.join(process.cwd(), "dist");
 if (fs2.existsSync(clientBuildPath)) {
   app.use(express5.static(clientBuildPath));
