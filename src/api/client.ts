@@ -1,7 +1,10 @@
 import axios, { AxiosInstance, InternalAxiosRequestConfig } from "axios";
 
 const API_BASE_URL =
-  import.meta.env.VITE_API_URL || "http://127.0.0.1:5005/api";
+  import.meta.env.VITE_API_URL || 
+  (typeof window !== 'undefined' && window.location.hostname === 'www.hikarii.org' 
+    ? "https://checkmate-production-7067.up.railway.app/api" 
+    : "http://127.0.0.1:5005/api");
 // "https://checkmate-production-7067.up.railway.app/api";
 
 // Create axios instance

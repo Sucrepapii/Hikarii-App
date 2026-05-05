@@ -118,7 +118,7 @@ var init_emailTemplates = __esm({
           <!-- Colorful Header -->
           <div class="header" style="text-align: center;">
             <div style="display: inline-flex; align-items: center; justify-content: center; gap: 12px;">
-              <img src="\${process.env.CLIENT_URL || 'https://checkmate-production-7067.up.railway.app'}/logo.svg" width="45" height="45" alt="H" style="display: block; border: 0; outline: none; text-decoration: none;" />
+              <img src="${process.env.CLIENT_URL || "https://www.hikarii.org"}/logo.png" width="45" height="45" alt="Hikari Logo" style="display: block; border: 0; outline: none; text-decoration: none;" />
               <div class="header-logo">HIKARI</div>
             </div>
             <div class="header-subtitle">Light & Clarity</div>
@@ -865,7 +865,7 @@ ${projectList}`
 import "dotenv/config";
 import * as Sentry from "@sentry/node";
 import { nodeProfilingIntegration } from "@sentry/profiling-node";
-import express4 from "express";
+import express5 from "express";
 import cors from "cors";
 import path2 from "path";
 import fs2 from "fs";
@@ -1452,10 +1452,37 @@ import { Router as Router2 } from "express";
 // server/src/controllers/task.controller.ts
 init_db();
 init_google_calendar_service();
+async function canAccessTask(taskId, userId, requireEdit = false) {
+  const task = await db_default.task.findUnique({
+    where: { id: taskId },
+    include: { project: true }
+  });
+  if (!task) return { task: null, allowed: false };
+  if (task.userId === userId) return { task, allowed: true };
+  if (task.projectId) {
+    const membership = await db_default.projectMember.findFirst({
+      where: { projectId: task.projectId, userId, status: "ACCEPTED" }
+    });
+    if (!membership) return { task, allowed: false };
+    if (requireEdit && membership.role === "VIEW_ONLY") return { task, allowed: false };
+    return { task, allowed: true };
+  }
+  return { task, allowed: false };
+}
 var getTasks = async (req, res) => {
   try {
+    const userId = req.userId;
+    const sharedProjectIds = await db_default.projectMember.findMany({
+      where: { userId, status: "ACCEPTED" },
+      select: { projectId: true }
+    }).then((memberships) => memberships.map((m) => m.projectId));
     const tasks = await db_default.task.findMany({
-      where: { userId: req.userId },
+      where: {
+        OR: [
+          { userId },
+          { projectId: { in: sharedProjectIds } }
+        ]
+      },
       orderBy: { createdAt: "desc" }
     });
     res.json(tasks);
@@ -1466,6 +1493,19 @@ var getTasks = async (req, res) => {
 var createTask = async (req, res) => {
   try {
     const { addToCalendar, ...rest } = req.body;
+    const userId = req.userId;
+    if (rest.projectId) {
+      const project = await db_default.project.findUnique({ where: { id: rest.projectId } });
+      if (project && project.userId !== userId) {
+        const membership = await db_default.projectMember.findFirst({
+          where: { projectId: rest.projectId, userId, status: "ACCEPTED" }
+        });
+        if (!membership || membership.role === "VIEW_ONLY") {
+          res.status(403).json({ error: "You don't have permission to add tasks to this project" });
+          return;
+        }
+      }
+    }
     const task = await db_default.task.create({
       data: {
         ...rest,
@@ -1487,13 +1527,8 @@ var createTask = async (req, res) => {
 };
 var getTaskById = async (req, res) => {
   try {
-    const task = await db_default.task.findFirst({
-      where: {
-        id: req.params.id,
-        userId: req.userId
-      }
-    });
-    if (!task) {
+    const { task, allowed } = await canAccessTask(req.params.id, req.userId);
+    if (!task || !allowed) {
       res.status(404).json({ error: "Task not found" });
       return;
     }
@@ -1504,11 +1539,9 @@ var getTaskById = async (req, res) => {
 };
 var updateTask = async (req, res) => {
   try {
-    const existingTask = await db_default.task.findFirst({
-      where: { id: req.params.id, userId: req.userId }
-    });
-    if (!existingTask) {
-      res.status(404).json({ error: "Task not found" });
+    const { task: existingTask, allowed } = await canAccessTask(req.params.id, req.userId, true);
+    if (!existingTask || !allowed) {
+      res.status(404).json({ error: "Task not found or access denied" });
       return;
     }
     const task = await db_default.task.update({
@@ -1525,11 +1558,9 @@ var updateTask = async (req, res) => {
 };
 var deleteTask = async (req, res) => {
   try {
-    const existingTask = await db_default.task.findFirst({
-      where: { id: req.params.id, userId: req.userId }
-    });
-    if (!existingTask) {
-      res.status(404).json({ error: "Task not found" });
+    const { task: existingTask, allowed } = await canAccessTask(req.params.id, req.userId, true);
+    if (!existingTask || !allowed) {
+      res.status(404).json({ error: "Task not found or access denied" });
       return;
     }
     await db_default.task.delete({
@@ -1542,14 +1573,9 @@ var deleteTask = async (req, res) => {
 };
 var toggleTaskStatus = async (req, res) => {
   try {
-    const task = await db_default.task.findFirst({
-      where: {
-        id: req.params.id,
-        userId: req.userId
-      }
-    });
-    if (!task) {
-      res.status(404).json({ error: "Task not found" });
+    const { task, allowed } = await canAccessTask(req.params.id, req.userId, true);
+    if (!task || !allowed) {
+      res.status(404).json({ error: "Task not found or access denied" });
       return;
     }
     const newStatus = task.status === "COMPLETED" /* COMPLETED */ ? "TODO" /* TODO */ : "COMPLETED" /* COMPLETED */;
@@ -1566,17 +1592,18 @@ var analyzeTaskSplit = async (req, res) => {
   try {
     const { id } = req.params;
     const { force } = req.body;
-    const task = await db_default.task.findFirst({
-      where: { id, userId: req.userId },
-      include: { blocks: true }
-    });
-    if (!task) {
-      res.status(404).json({ error: "Task not found" });
+    const { task, allowed } = await canAccessTask(id, req.userId, true);
+    if (!task || !allowed) {
+      res.status(404).json({ error: "Task not found or access denied" });
       return;
     }
-    if (task.blocks && task.blocks.length > 0) {
+    const taskWithBlocks = await db_default.task.findUnique({
+      where: { id: task.id },
+      include: { blocks: true }
+    });
+    if (taskWithBlocks.blocks && taskWithBlocks.blocks.length > 0) {
       if (!force) {
-        res.json({ blocks: task.blocks, message: "Blocks already exist" });
+        res.json({ blocks: taskWithBlocks.blocks, message: "Blocks already exist" });
         return;
       }
       await db_default.taskBlock.deleteMany({
@@ -1609,11 +1636,16 @@ var analyzeTaskSplit = async (req, res) => {
 var scheduleBlocks = async (req, res) => {
   try {
     const { id } = req.params;
-    const task = await db_default.task.findUnique({
-      where: { id, userId: req.userId },
+    const { task, allowed } = await canAccessTask(id, req.userId, true);
+    if (!task || !allowed) {
+      res.status(404).json({ error: "Task not found or access denied" });
+      return;
+    }
+    const taskWithBlocks = await db_default.task.findUnique({
+      where: { id: task.id },
       include: { blocks: true }
     });
-    if (!task || !task.blocks || task.blocks.length === 0) {
+    if (!taskWithBlocks || !taskWithBlocks.blocks || taskWithBlocks.blocks.length === 0) {
       res.status(404).json({ error: "Task or blocks not found" });
       return;
     }
@@ -1621,7 +1653,7 @@ var scheduleBlocks = async (req, res) => {
     const results = await syncTaskBlocks2(
       req.userId,
       id,
-      task.blocks
+      taskWithBlocks.blocks
     );
     if (!results) {
       res.status(400).json({ error: "Calendar sync failed. Is Google Calendar connected?" });
@@ -1665,47 +1697,54 @@ init_db();
 var createProject = async (req, res) => {
   try {
     const { title, description, startDate, endDate, budgetLimit } = req.body;
+    const userId = req.userId;
+    const parsedLimit = budgetLimit ? parseFloat(budgetLimit) : null;
+    console.log(`Creating project for user ${userId}:`, { title });
     const project = await db_default.project.create({
       data: {
         title,
         description,
         startDate: startDate ? new Date(startDate) : null,
         endDate: endDate ? new Date(endDate) : null,
-        budgetLimit: budgetLimit ? parseFloat(budgetLimit) : null,
-        userId: req.userId
+        budgetLimit: parsedLimit !== null && !isNaN(parsedLimit) ? parsedLimit : null,
+        userId
       }
     });
+    console.log(`Project created successfully: ${project.id}`);
     res.status(201).json(project);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error("Project creation error details:", error);
+    res.status(500).json({ error: error.message || "Unknown error during project creation" });
   }
 };
 var getProjects = async (req, res) => {
   try {
-    console.log("Fetching projects for user:", req.userId);
-    const projects = await db_default.project.findMany({
-      where: { userId: req.userId },
+    const userId = req.userId;
+    const ownedProjects = await db_default.project.findMany({
+      where: { userId },
       orderBy: { createdAt: "desc" },
+      include: { tasks: { select: { status: true } } }
+    });
+    const memberships = await db_default.projectMember.findMany({
+      where: { userId, status: "ACCEPTED" },
       include: {
-        tasks: {
-          select: { status: true }
+        project: {
+          include: { tasks: { select: { status: true } } }
         }
       }
     });
-    const projectsWithProgress = projects.map((project) => {
+    const ownedWithProgress = ownedProjects.map((project) => {
       const totalTasks = project.tasks.length;
-      const completedTasks = project.tasks.filter(
-        (t) => t.status === "COMPLETED"
-      ).length;
-      const progress = totalTasks > 0 ? completedTasks / totalTasks * 100 : 0;
-      return {
-        ...project,
-        progress: Math.round(progress)
-        // specific cleanup if we don't want to send all tasks back, though select: {status} is small
-      };
+      const completedTasks = project.tasks.filter((t) => t.status === "COMPLETED").length;
+      return { ...project, progress: Math.round(totalTasks > 0 ? completedTasks / totalTasks * 100 : 0), isShared: false, memberRole: null };
     });
-    console.log("Found projects:", projectsWithProgress.length);
-    res.json(projectsWithProgress);
+    const sharedWithProgress = memberships.map((m) => {
+      const project = m.project;
+      const totalTasks = project.tasks.length;
+      const completedTasks = project.tasks.filter((t) => t.status === "COMPLETED").length;
+      return { ...project, progress: Math.round(totalTasks > 0 ? completedTasks / totalTasks * 100 : 0), isShared: true, memberRole: m.role };
+    });
+    res.json([...ownedWithProgress, ...sharedWithProgress]);
   } catch (error) {
     console.error("Error fetching projects:", error);
     res.status(500).json({ error: error.message });
@@ -1714,7 +1753,7 @@ var getProjects = async (req, res) => {
 var getProject = async (req, res) => {
   try {
     const { id } = req.params;
-    const project = await db_default.project.findUnique({
+    const project = await db_default.project.findFirst({
       where: { id, userId: req.userId },
       include: {
         tasks: true,
@@ -1737,27 +1776,41 @@ var updateProject = async (req, res) => {
   try {
     const { id } = req.params;
     const { title, description, status, budgetLimit, startDate, endDate } = req.body;
+    const parsedLimit = budgetLimit ? parseFloat(budgetLimit) : null;
+    const existingProject = await db_default.project.findFirst({
+      where: { id, userId: req.userId }
+    });
+    if (!existingProject) {
+      return res.status(404).json({ error: "Project not found" });
+    }
     const project = await db_default.project.update({
-      where: { id, userId: req.userId },
+      where: { id },
       data: {
         title,
         description,
         status,
-        budgetLimit: budgetLimit ? parseFloat(budgetLimit) : void 0,
-        startDate: startDate ? new Date(startDate) : void 0,
-        endDate: endDate ? new Date(endDate) : void 0
+        startDate: startDate ? new Date(startDate) : null,
+        endDate: endDate ? new Date(endDate) : null,
+        budgetLimit: parsedLimit !== null && !isNaN(parsedLimit) ? parsedLimit : null
       }
     });
     res.json(project);
   } catch (error) {
+    console.error("Project update error:", error);
     res.status(500).json({ error: error.message });
   }
 };
 var deleteProject = async (req, res) => {
   try {
     const { id } = req.params;
-    await db_default.project.delete({
+    const project = await db_default.project.findFirst({
       where: { id, userId: req.userId }
+    });
+    if (!project) {
+      return res.status(404).json({ error: "Project not found" });
+    }
+    await db_default.project.delete({
+      where: { id }
     });
     res.json({ message: "Project deleted successfully" });
   } catch (error) {
@@ -1767,7 +1820,7 @@ var deleteProject = async (req, res) => {
 var getProjectSummary = async (req, res) => {
   try {
     const { id } = req.params;
-    const project = await db_default.project.findUnique({
+    const project = await db_default.project.findFirst({
       where: { id, userId: req.userId },
       include: {
         tasks: true,
@@ -1818,10 +1871,49 @@ import { Router as Router3 } from "express";
 // server/src/controllers/budget.controller.ts
 init_db();
 init_whatsapp_service();
+async function canAccessProject(projectId, userId, requireEdit = false) {
+  const project = await db_default.project.findUnique({
+    where: { id: projectId }
+  });
+  if (!project) return false;
+  if (project.userId === userId) return true;
+  const membership = await db_default.projectMember.findFirst({
+    where: { projectId, userId, status: "ACCEPTED" }
+  });
+  if (!membership) return false;
+  if (requireEdit && membership.role === "VIEW_ONLY") return false;
+  return true;
+}
+async function canAccessExpense(expenseId, userId, requireEdit = false) {
+  const expense = await db_default.expense.findUnique({
+    where: { id: expenseId }
+  });
+  if (!expense) return { expense: null, allowed: false };
+  if (expense.userId === userId) return { expense, allowed: true };
+  if (expense.projectId) {
+    const membership = await db_default.projectMember.findFirst({
+      where: { projectId: expense.projectId, userId, status: "ACCEPTED" }
+    });
+    if (!membership) return { expense, allowed: false };
+    if (requireEdit && membership.role === "VIEW_ONLY") return { expense, allowed: false };
+    return { expense, allowed: true };
+  }
+  return { expense, allowed: false };
+}
 var getBudgets = async (req, res) => {
   try {
+    const userId = req.userId;
+    const sharedProjectIds = await db_default.projectMember.findMany({
+      where: { userId, status: "ACCEPTED" },
+      select: { projectId: true }
+    }).then((memberships) => memberships.map((m) => m.projectId));
     const budgets = await db_default.budget.findMany({
-      where: { userId: req.userId }
+      where: {
+        OR: [
+          { userId },
+          { projectId: { in: sharedProjectIds } }
+        ]
+      }
     });
     res.json(budgets);
   } catch (error) {
@@ -1837,6 +1929,13 @@ var createBudget = async (req, res) => {
       }
     });
     const spent = expenses.reduce((sum, exp) => sum + exp.amount, 0);
+    if (req.body.projectId) {
+      const allowed = await canAccessProject(req.body.projectId, req.userId, true);
+      if (!allowed) {
+        res.status(403).json({ error: "Access denied to project" });
+        return;
+      }
+    }
     const existingBudget = await db_default.budget.findUnique({
       where: {
         userId_category: {
@@ -1887,8 +1986,18 @@ var deleteBudget = async (req, res) => {
 };
 var getExpenses = async (req, res) => {
   try {
+    const userId = req.userId;
+    const sharedProjectIds = await db_default.projectMember.findMany({
+      where: { userId, status: "ACCEPTED" },
+      select: { projectId: true }
+    }).then((memberships) => memberships.map((m) => m.projectId));
     const expenses = await db_default.expense.findMany({
-      where: { userId: req.userId },
+      where: {
+        OR: [
+          { userId },
+          { projectId: { in: sharedProjectIds } }
+        ]
+      },
       orderBy: { date: "desc" }
     });
     res.json(expenses);
@@ -1898,6 +2007,13 @@ var getExpenses = async (req, res) => {
 };
 var createExpense = async (req, res) => {
   try {
+    if (req.body.projectId) {
+      const allowed = await canAccessProject(req.body.projectId, req.userId, false);
+      if (!allowed) {
+        res.status(403).json({ error: "Access denied to project" });
+        return;
+      }
+    }
     const expense = await db_default.expense.create({
       data: {
         ...req.body,
@@ -1934,14 +2050,9 @@ var createExpense = async (req, res) => {
 };
 var updateExpense = async (req, res) => {
   try {
-    const existingExpense = await db_default.expense.findFirst({
-      where: {
-        id: req.params.id,
-        userId: req.userId
-      }
-    });
-    if (!existingExpense) {
-      res.status(404).json({ error: "Expense not found" });
+    const { expense: existingExpense, allowed } = await canAccessExpense(req.params.id, req.userId, true);
+    if (!existingExpense || !allowed) {
+      res.status(404).json({ error: "Expense not found or access denied" });
       return;
     }
     const updatedExpense = await db_default.expense.update({
@@ -1989,11 +2100,9 @@ var updateExpense = async (req, res) => {
 };
 var deleteExpense = async (req, res) => {
   try {
-    const existingExpense = await db_default.expense.findFirst({
-      where: { id: req.params.id, userId: req.userId }
-    });
-    if (!existingExpense) {
-      res.status(404).json({ error: "Expense not found" });
+    const { expense: existingExpense, allowed } = await canAccessExpense(req.params.id, req.userId, true);
+    if (!existingExpense || !allowed) {
+      res.status(404).json({ error: "Expense not found or access denied" });
       return;
     }
     const deletedExpense = await db_default.expense.delete({
@@ -3413,6 +3522,195 @@ router13.get("/", getFeedbacks);
 router13.post("/", authenticate, createFeedback);
 var feedback_routes_default = router13;
 
+// server/src/routes/collaboration.routes.ts
+import express4 from "express";
+
+// server/src/controllers/collaboration.controller.ts
+init_db();
+import { randomBytes } from "crypto";
+var FREE_COLLAB_LIMIT = 1;
+var isPro = (user) => user?.subscriptionStatus === "PRO" || user?.subscriptionStatus === "TRIAL";
+async function assertOwner(projectId, userId) {
+  const project = await db_default.project.findUnique({ where: { id: projectId } });
+  return project?.userId === userId;
+}
+async function getMemberRole(projectId, userId) {
+  const membership = await db_default.projectMember.findFirst({
+    where: { projectId, userId, status: "ACCEPTED" }
+  });
+  return membership?.role ?? null;
+}
+var inviteMember = async (req, res) => {
+  try {
+    const { id: projectId } = req.params;
+    const { email, role = "VIEW_ONLY" } = req.body;
+    if (!email) return res.status(400).json({ error: "Email is required" });
+    const isOwner = await assertOwner(projectId, req.userId);
+    if (!isOwner) return res.status(403).json({ error: "Only the project owner can invite members" });
+    const currentUser = await db_default.user.findUnique({ where: { id: req.userId } });
+    if (!isPro(currentUser)) {
+      const sharedProjectIds = await db_default.projectMember.findMany({
+        where: { invitedById: req.userId, status: { not: "DECLINED" } },
+        select: { projectId: true },
+        distinct: ["projectId"]
+      });
+      if (sharedProjectIds.length >= FREE_COLLAB_LIMIT && !sharedProjectIds.some((m) => m.projectId === projectId)) {
+        return res.status(403).json({
+          error: "Free plan allows sharing only 1 project. Upgrade to PRO for unlimited collaboration.",
+          code: "UPGRADE_REQUIRED"
+        });
+      }
+    }
+    if (email === currentUser?.email) {
+      return res.status(400).json({ error: "You cannot invite yourself" });
+    }
+    const existing = await db_default.projectMember.findFirst({
+      where: { projectId, invitedEmail: email }
+    });
+    if (existing) {
+      if (existing.status === "ACCEPTED")
+        return res.status(409).json({ error: "This user is already a member" });
+      if (existing.status === "PENDING")
+        return res.status(409).json({ error: "Invite already sent and pending" });
+    }
+    const token = randomBytes(32).toString("hex");
+    const invitedUser = await db_default.user.findUnique({ where: { email } });
+    const member = await db_default.projectMember.create({
+      data: {
+        projectId,
+        invitedEmail: email,
+        invitedById: req.userId,
+        userId: invitedUser?.id ?? null,
+        role,
+        status: "PENDING",
+        token
+      }
+    });
+    res.status(201).json({ message: "Invite sent successfully", member });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+var acceptInvite = async (req, res) => {
+  try {
+    const { token } = req.params;
+    const member = await db_default.projectMember.findUnique({ where: { token } });
+    if (!member) return res.status(404).json({ error: "Invalid or expired invite link" });
+    if (member.status !== "PENDING") return res.status(400).json({ error: "Invite already used" });
+    const updatedMember = await db_default.projectMember.update({
+      where: { token },
+      data: { status: "ACCEPTED", userId: req.userId, token: null }
+    });
+    res.json({ message: "Invite accepted", member: updatedMember });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+var getMembers = async (req, res) => {
+  try {
+    const { id: projectId } = req.params;
+    const isOwner = await assertOwner(projectId, req.userId);
+    const role = await getMemberRole(projectId, req.userId);
+    if (!isOwner && !role) return res.status(403).json({ error: "Access denied" });
+    const members = await db_default.projectMember.findMany({
+      where: { projectId },
+      include: { user: { select: { id: true, name: true, email: true } } },
+      orderBy: { createdAt: "asc" }
+    });
+    res.json(members);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+var updateMemberRole = async (req, res) => {
+  try {
+    const { id: projectId, memberId } = req.params;
+    const { role } = req.body;
+    const isOwner = await assertOwner(projectId, req.userId);
+    if (!isOwner) return res.status(403).json({ error: "Only the project owner can change roles" });
+    const updated = await db_default.projectMember.update({
+      where: { id: memberId },
+      data: { role }
+    });
+    res.json(updated);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+var removeMember = async (req, res) => {
+  try {
+    const { id: projectId, memberId } = req.params;
+    const isOwner = await assertOwner(projectId, req.userId);
+    if (!isOwner) return res.status(403).json({ error: "Only the project owner can remove members" });
+    await db_default.projectMember.delete({ where: { id: memberId } });
+    res.json({ message: "Member removed" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+var getComments = async (req, res) => {
+  try {
+    const { id: projectId } = req.params;
+    const isOwner = await assertOwner(projectId, req.userId);
+    const role = await getMemberRole(projectId, req.userId);
+    if (!isOwner && !role) return res.status(403).json({ error: "Access denied" });
+    const comments = await db_default.projectComment.findMany({
+      where: { projectId },
+      include: { user: { select: { id: true, name: true, email: true } } },
+      orderBy: { createdAt: "asc" }
+    });
+    res.json(comments);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+var postComment = async (req, res) => {
+  try {
+    const { id: projectId } = req.params;
+    const { content } = req.body;
+    if (!content?.trim()) return res.status(400).json({ error: "Comment cannot be empty" });
+    const isOwner = await assertOwner(projectId, req.userId);
+    const role = await getMemberRole(projectId, req.userId);
+    if (!isOwner && !role) return res.status(403).json({ error: "Access denied" });
+    const comment = await db_default.projectComment.create({
+      data: { content: content.trim(), projectId, userId: req.userId },
+      include: { user: { select: { id: true, name: true, email: true } } }
+    });
+    res.status(201).json(comment);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+var deleteComment = async (req, res) => {
+  try {
+    const { commentId } = req.params;
+    const comment = await db_default.projectComment.findUnique({
+      where: { id: commentId }
+    });
+    if (!comment) return res.status(404).json({ error: "Comment not found" });
+    if (comment.userId !== req.userId) {
+      return res.status(403).json({ error: "You can only delete your own comments" });
+    }
+    await db_default.projectComment.delete({ where: { id: commentId } });
+    res.json({ message: "Comment deleted" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// server/src/routes/collaboration.routes.ts
+var router14 = express4.Router();
+router14.use(authenticate);
+router14.post("/invites/:token/accept", acceptInvite);
+router14.get("/projects/:id/members", getMembers);
+router14.post("/projects/:id/members", inviteMember);
+router14.patch("/projects/:id/members/:memberId", updateMemberRole);
+router14.delete("/projects/:id/members/:memberId", removeMember);
+router14.get("/projects/:id/comments", getComments);
+router14.post("/projects/:id/comments", postComment);
+router14.delete("/projects/:id/comments/:commentId", deleteComment);
+var collaboration_routes_default = router14;
+
 // server/src/app.ts
 Sentry.init({
   dsn: process.env.SENTRY_DSN || process.env.VITE_SENTRY_DSN,
@@ -3420,10 +3718,10 @@ Sentry.init({
   tracesSampleRate: 1,
   profilesSampleRate: 1
 });
-var app = express4();
+var app = express5();
 app.use(helmet());
 app.use(hpp());
-app.use(express4.json({ limit: "10kb" }));
+app.use(express5.json({ limit: "10kb" }));
 app.use((req, res, next) => {
   if (process.env.NODE_ENV === "production") {
     console.log(
@@ -3434,6 +3732,9 @@ app.use((req, res, next) => {
 });
 var allowedOrigins = [
   "http://localhost:5173",
+  "http://localhost:5174",
+  "http://127.0.0.1:5173",
+  "http://127.0.0.1:5174",
   "http://localhost:3000",
   "https://www.hikarii.org",
   "https://hikarii.org",
@@ -3461,8 +3762,8 @@ app.use(
       "Origin",
       "baggage",
       "sentry-trace",
-      "access-control-allow-headers"
-      // Sometimes needed
+      "access-control-allow-headers",
+      "x-sentry-auth"
     ],
     optionsSuccessStatus: 204
   })
@@ -3483,12 +3784,13 @@ app.use("/api/stripe", stripe_routes_default);
 app.use("/api/google", google_routes_default);
 app.use("/api/leads", lead_routes_default);
 app.use("/api/feedback", feedback_routes_default);
+app.use("/api/collaboration", collaboration_routes_default);
 app.get("/health", (req, res) => {
   res.json({ status: "ok" });
 });
 var clientBuildPath = path2.join(process.cwd(), "dist");
 if (fs2.existsSync(clientBuildPath)) {
-  app.use(express4.static(clientBuildPath));
+  app.use(express5.static(clientBuildPath));
   app.get("*", (req, res) => {
     if (req.path.startsWith("/api")) {
       res.status(404).json({ error: "API Route not found" });
@@ -3503,9 +3805,9 @@ if (fs2.existsSync(clientBuildPath)) {
   );
 }
 Sentry.setupExpressErrorHandler(app);
-var PORT = process.env.PORT || 5e3;
-var PORT_NUM = Number(PORT) || 5e3;
-app.listen(PORT_NUM, "0.0.0.0", () => {
+var PORT = process.env.PORT || 5005;
+var PORT_NUM = Number(PORT) || 5005;
+app.listen(PORT_NUM, () => {
   if (process.env.NODE_ENV === "production" && !process.env.VERCEL) {
     Promise.resolve().then(() => (init_reminder_job(), reminder_job_exports)).then(({ startReminderJob: startReminderJob2 }) => {
       startReminderJob2();

@@ -127,6 +127,10 @@ app.get("/health", (req, res) => {
   res.json({ status: "ok" });
 });
 
+app.get("/api/v", (req, res) => {
+  res.json({ v: "v1.0.1-fix-buffering" });
+});
+
 // Serve static files from the React app
 const clientBuildPath = path.join(process.cwd(), "dist");
 
