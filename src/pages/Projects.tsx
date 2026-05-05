@@ -27,11 +27,7 @@ export const Projects: React.FC = () => {
     const [collabTab, setCollabTab] = useState<'members' | 'activity'>('members');
 
     useEffect(() => {
-        const load = async () => {
-            await checkAuth();
-            await fetchProjects();
-        };
-        load();
+        fetchProjects();
     }, []);
 
     // Fetch members when panel opens
