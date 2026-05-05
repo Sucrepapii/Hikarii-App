@@ -109,7 +109,7 @@ export const getTaskById = async (
   res: Response,
 ): Promise<void> => {
   try {
-    const { task, allowed } = await canAccessTask(req.params.id, req.userId!);
+    const { task, allowed } = await canAccessTask(req.params.id as string, req.userId!);
 
     if (!task || !allowed) {
       res.status(404).json({ error: "Task not found" });
@@ -127,7 +127,7 @@ export const updateTask = async (
   res: Response,
 ): Promise<void> => {
   try {
-    const { task: existingTask, allowed } = await canAccessTask(req.params.id, req.userId!, true);
+    const { task: existingTask, allowed } = await canAccessTask(req.params.id as string, req.userId!, true);
 
     if (!existingTask || !allowed) {
       res.status(404).json({ error: "Task not found or access denied" });
@@ -154,7 +154,7 @@ export const deleteTask = async (
   res: Response,
 ): Promise<void> => {
   try {
-    const { task: existingTask, allowed } = await canAccessTask(req.params.id, req.userId!, true);
+    const { task: existingTask, allowed } = await canAccessTask(req.params.id as string, req.userId!, true);
 
     if (!existingTask || !allowed) {
       res.status(404).json({ error: "Task not found or access denied" });
@@ -176,7 +176,7 @@ export const toggleTaskStatus = async (
   res: Response,
 ): Promise<void> => {
   try {
-    const { task, allowed } = await canAccessTask(req.params.id, req.userId!, true);
+    const { task, allowed } = await canAccessTask(req.params.id as string, req.userId!, true);
 
     if (!task || !allowed) {
       res.status(404).json({ error: "Task not found or access denied" });
@@ -292,7 +292,7 @@ export const scheduleBlocks = async (
     const results = await syncTaskBlocks(
       req.userId!,
       id as string,
-      task.blocks,
+      taskWithBlocks.blocks,
     );
 
     if (!results) {

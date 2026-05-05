@@ -153,10 +153,10 @@ if (fs.existsSync(clientBuildPath)) {
 // Ensure Sentry error handler is placed after all routes
 Sentry.setupExpressErrorHandler(app);
 
-const PORT = process.env.PORT || 5000;
-const PORT_NUM = Number(PORT) || 5000;
+const PORT = process.env.PORT || 5005;
+const PORT_NUM = Number(PORT) || 5005;
 
-app.listen(PORT_NUM, "0.0.0.0", () => {
+app.listen(PORT_NUM, () => {
   // Check if we need to start cron jobs
   if (process.env.NODE_ENV === "production" && !process.env.VERCEL) {
     import("./jobs/reminder.job.js")

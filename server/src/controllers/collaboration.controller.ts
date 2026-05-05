@@ -32,7 +32,7 @@ export const inviteMember = async (req: AuthRequest, res: Response) => {
 
     if (!email) return res.status(400).json({ error: "Email is required" });
 
-    const isOwner = await assertOwner(projectId, req.userId!);
+    const isOwner = await assertOwner(projectId as string, req.userId!);
     if (!isOwner) return res.status(403).json({ error: "Only the project owner can invite members" });
 
     // Subscription gating: free users can share only FREE_COLLAB_LIMIT project(s)
@@ -121,12 +121,12 @@ export const getMembers = async (req: AuthRequest, res: Response) => {
     const { id: projectId } = req.params;
 
     // Must be owner or member
-    const isOwner = await assertOwner(projectId, req.userId!);
-    const role = await getMemberRole(projectId, req.userId!);
+    const isOwner = await assertOwner(projectId as string, req.userId!);
+    const role = await getMemberRole(projectId as string, req.userId!);
     if (!isOwner && !role) return res.status(403).json({ error: "Access denied" });
 
     const members = await (prisma as any).projectMember.findMany({
-      where: { projectId },
+      where: { projectId: projectId as string },
       include: { user: { select: { id: true, name: true, email: true } } },
       orderBy: { createdAt: "asc" },
     });
@@ -144,7 +144,7 @@ export const updateMemberRole = async (req: AuthRequest, res: Response) => {
     const { id: projectId, memberId } = req.params;
     const { role } = req.body;
 
-    const isOwner = await assertOwner(projectId, req.userId!);
+    const isOwner = await assertOwner(projectId as string, req.userId!);
     if (!isOwner) return res.status(403).json({ error: "Only the project owner can change roles" });
 
     const updated = await (prisma as any).projectMember.update({
@@ -164,7 +164,7 @@ export const removeMember = async (req: AuthRequest, res: Response) => {
   try {
     const { id: projectId, memberId } = req.params;
 
-    const isOwner = await assertOwner(projectId, req.userId!);
+    const isOwner = await assertOwner(projectId as string, req.userId!);
     if (!isOwner) return res.status(403).json({ error: "Only the project owner can remove members" });
 
     await (prisma as any).projectMember.delete({ where: { id: memberId } });
@@ -181,7 +181,7 @@ export const getComments = async (req: AuthRequest, res: Response) => {
   try {
     const { id: projectId } = req.params;
 
-    const isOwner = await assertOwner(projectId, req.userId!);
+    const isOwner = await assertOwner(projectId as string, req.userId!);
     const role = await getMemberRole(projectId, req.userId!);
     if (!isOwner && !role) return res.status(403).json({ error: "Access denied" });
 
@@ -204,7 +204,7 @@ export const postComment = async (req: AuthRequest, res: Response) => {
 
     if (!content?.trim()) return res.status(400).json({ error: "Comment cannot be empty" });
 
-    const isOwner = await assertOwner(projectId, req.userId!);
+    const isOwner = await assertOwner(projectId as string, req.userId!);
     const role = await getMemberRole(projectId, req.userId!);
     if (!isOwner && !role) return res.status(403).json({ error: "Access denied" });
 
