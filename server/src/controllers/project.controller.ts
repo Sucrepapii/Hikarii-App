@@ -6,21 +6,27 @@ import { AuthRequest } from "../middleware/auth.middleware";
 export const createProject = async (req: AuthRequest, res: Response) => {
   try {
     const { title, description, startDate, endDate, budgetLimit } = req.body;
+    const userId = req.userId!;
 
+    const parsedLimit = budgetLimit ? parseFloat(budgetLimit) : null;
+
+    console.log(`Creating project for user ${userId}:`, { title });
     const project = await prisma.project.create({
       data: {
         title,
         description,
         startDate: startDate ? new Date(startDate) : null,
         endDate: endDate ? new Date(endDate) : null,
-        budgetLimit: budgetLimit ? parseFloat(budgetLimit) : null,
-        userId: req.userId!,
+        budgetLimit: (parsedLimit !== null && !isNaN(parsedLimit)) ? parsedLimit : null,
+        userId,
       },
     });
 
+    console.log(`Project created successfully: ${project.id}`);
     res.status(201).json(project);
   } catch (error: any) {
-    res.status(500).json({ error: error.message });
+    console.error("Project creation error details:", error);
+    res.status(500).json({ error: error.message || "Unknown error during project creation" });
   }
 };
 
@@ -37,7 +43,7 @@ export const getProjects = async (req: AuthRequest, res: Response) => {
     });
 
     // Get projects the user is an accepted member of (but doesn't own)
-    const memberships = await (prisma as any).projectMember.findMany({
+    const memberships = await prisma.projectMember.findMany({
       where: { userId, status: "ACCEPTED" },
       include: {
         project: {
@@ -70,7 +76,7 @@ export const getProjects = async (req: AuthRequest, res: Response) => {
 export const getProject = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
-    const project = await prisma.project.findUnique({
+    const project = await prisma.project.findFirst({
       where: { id: id as string, userId: req.userId! },
       include: {
         tasks: true,
@@ -99,20 +105,31 @@ export const updateProject = async (req: AuthRequest, res: Response) => {
     const { title, description, status, budgetLimit, startDate, endDate } =
       req.body;
 
-    const project = await prisma.project.update({
+    const parsedLimit = budgetLimit ? parseFloat(budgetLimit) : null;
+
+    const existingProject = await prisma.project.findFirst({
       where: { id: id as string, userId: req.userId! },
+    });
+
+    if (!existingProject) {
+      return res.status(404).json({ error: "Project not found" });
+    }
+
+    const project = await prisma.project.update({
+      where: { id: id as string },
       data: {
         title,
         description,
         status,
-        budgetLimit: budgetLimit ? parseFloat(budgetLimit) : undefined,
-        startDate: startDate ? new Date(startDate) : undefined,
-        endDate: endDate ? new Date(endDate) : undefined,
+        startDate: startDate ? new Date(startDate) : null,
+        endDate: endDate ? new Date(endDate) : null,
+        budgetLimit: (parsedLimit !== null && !isNaN(parsedLimit)) ? parsedLimit : null,
       },
     });
 
     res.json(project);
   } catch (error: any) {
+    console.error("Project update error:", error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -121,8 +138,16 @@ export const updateProject = async (req: AuthRequest, res: Response) => {
 export const deleteProject = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
-    await prisma.project.delete({
+    const project = await prisma.project.findFirst({
       where: { id: id as string, userId: req.userId! },
+    });
+
+    if (!project) {
+      return res.status(404).json({ error: "Project not found" });
+    }
+
+    await prisma.project.delete({
+      where: { id: id as string },
     });
     res.json({ message: "Project deleted successfully" });
   } catch (error: any) {
@@ -134,14 +159,14 @@ export const deleteProject = async (req: AuthRequest, res: Response) => {
 export const getProjectSummary = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
-    const project = (await prisma.project.findUnique({
+    const project = await prisma.project.findFirst({
       where: { id: id as string, userId: req.userId! },
       include: {
         tasks: true,
         budgets: true,
         expenses: true,
       },
-    })) as any; // Cast to any to bypass Prisma type inference issues temporarily
+    }) as any;
 
     if (!project) return res.status(404).json({ error: "Project not found" });
 
