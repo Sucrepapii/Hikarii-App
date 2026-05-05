@@ -6,13 +6,49 @@ import { createCalendarEvent } from "../services/google.calendar.service";
 
 import { taskSplitterService } from "../services/task.splitter.service";
 
+async function canAccessTask(taskId: string, userId: string, requireEdit = false) {
+  const task = await prisma.task.findUnique({
+    where: { id: taskId },
+    include: { project: true }
+  });
+
+  if (!task) return { task: null, allowed: false };
+  if (task.userId === userId) return { task, allowed: true };
+
+  if (task.projectId) {
+    const membership = await (prisma as any).projectMember.findFirst({
+      where: { projectId: task.projectId, userId, status: "ACCEPTED" },
+    });
+
+    if (!membership) return { task, allowed: false };
+    if (requireEdit && membership.role === "VIEW_ONLY") return { task, allowed: false };
+    
+    return { task, allowed: true };
+  }
+
+  return { task, allowed: false };
+}
+
 export const getTasks = async (
   req: AuthRequest,
   res: Response,
 ): Promise<void> => {
   try {
+    const userId = req.userId!;
+
+    // Find projects where the user is a member or owner
+    const sharedProjectIds = await (prisma as any).projectMember.findMany({
+      where: { userId, status: "ACCEPTED" },
+      select: { projectId: true },
+    }).then((memberships: any[]) => memberships.map(m => m.projectId));
+
     const tasks = await prisma.task.findMany({
-      where: { userId: req.userId },
+      where: {
+        OR: [
+          { userId },
+          { projectId: { in: sharedProjectIds } }
+        ]
+      },
       orderBy: { createdAt: "desc" },
     });
     res.json(tasks);
@@ -26,9 +62,24 @@ export const createTask = async (
   res: Response,
 ): Promise<void> => {
   try {
-    const { addToCalendar, ...rest } = req.body; // Extract flag
+    const { addToCalendar, ...rest } = req.body;
+    const userId = req.userId!;
 
-    // Sanitize projectId
+    // If projectId is provided, check permissions
+    if (rest.projectId) {
+      const project = await prisma.project.findUnique({ where: { id: rest.projectId } });
+      if (project && project.userId !== userId) {
+        // Not owner, check membership role
+        const membership = await (prisma as any).projectMember.findFirst({
+          where: { projectId: rest.projectId, userId, status: "ACCEPTED" },
+        });
+        if (!membership || membership.role === "VIEW_ONLY") {
+          res.status(403).json({ error: "You don't have permission to add tasks to this project" });
+          return;
+        }
+      }
+    }
+
     const task = await prisma.task.create({
       data: {
         ...rest,
@@ -58,14 +109,9 @@ export const getTaskById = async (
   res: Response,
 ): Promise<void> => {
   try {
-    const task = await prisma.task.findFirst({
-      where: {
-        id: req.params.id as string,
-        userId: req.userId,
-      },
-    });
+    const { task, allowed } = await canAccessTask(req.params.id, req.userId!);
 
-    if (!task) {
+    if (!task || !allowed) {
       res.status(404).json({ error: "Task not found" });
       return;
     }
@@ -81,13 +127,10 @@ export const updateTask = async (
   res: Response,
 ): Promise<void> => {
   try {
-    // First check existence to handle 404 cleanly, or let Prisma throw
-    const existingTask = await prisma.task.findFirst({
-      where: { id: req.params.id as string, userId: req.userId },
-    });
+    const { task: existingTask, allowed } = await canAccessTask(req.params.id, req.userId!, true);
 
-    if (!existingTask) {
-      res.status(404).json({ error: "Task not found" });
+    if (!existingTask || !allowed) {
+      res.status(404).json({ error: "Task not found or access denied" });
       return;
     }
 
@@ -100,8 +143,6 @@ export const updateTask = async (
       },
     });
 
-    /* Handled above */
-
     res.json(task);
   } catch (error: any) {
     res.status(500).json({ error: error.message });
@@ -113,21 +154,16 @@ export const deleteTask = async (
   res: Response,
 ): Promise<void> => {
   try {
-    // Verify ownership first
-    const existingTask = await prisma.task.findFirst({
-      where: { id: req.params.id as string, userId: req.userId },
-    });
+    const { task: existingTask, allowed } = await canAccessTask(req.params.id, req.userId!, true);
 
-    if (!existingTask) {
-      res.status(404).json({ error: "Task not found" });
+    if (!existingTask || !allowed) {
+      res.status(404).json({ error: "Task not found or access denied" });
       return;
     }
 
     await prisma.task.delete({
       where: { id: req.params.id as string },
     });
-
-    /* Handled above */
 
     res.json({ message: "Task deleted successfully" });
   } catch (error: any) {
@@ -140,15 +176,10 @@ export const toggleTaskStatus = async (
   res: Response,
 ): Promise<void> => {
   try {
-    const task = await prisma.task.findFirst({
-      where: {
-        id: req.params.id as string,
-        userId: req.userId,
-      },
-    });
+    const { task, allowed } = await canAccessTask(req.params.id, req.userId!, true);
 
-    if (!task) {
-      res.status(404).json({ error: "Task not found" });
+    if (!task || !allowed) {
+      res.status(404).json({ error: "Task not found or access denied" });
       return;
     }
 
@@ -177,20 +208,22 @@ export const analyzeTaskSplit = async (
     const { id } = req.params;
     const { force } = req.body;
 
-    const task = (await prisma.task.findFirst({
-      where: { id: id as string, userId: req.userId },
-      include: { blocks: true },
-    })) as any;
+    const { task, allowed } = await canAccessTask(id as string, req.userId!, true);
 
-    if (!task) {
-      res.status(404).json({ error: "Task not found" });
+    if (!task || !allowed) {
+      res.status(404).json({ error: "Task not found or access denied" });
       return;
     }
 
     // Check if blocks already exist
-    if (task.blocks && task.blocks.length > 0) {
+    const taskWithBlocks = await prisma.task.findUnique({
+      where: { id: task.id },
+      include: { blocks: true }
+    }) as any;
+
+    if (taskWithBlocks.blocks && taskWithBlocks.blocks.length > 0) {
       if (!force) {
-        res.json({ blocks: task.blocks, message: "Blocks already exist" });
+        res.json({ blocks: taskWithBlocks.blocks, message: "Blocks already exist" });
         return;
       }
 
@@ -237,12 +270,19 @@ export const scheduleBlocks = async (
 ): Promise<void> => {
   try {
     const { id } = req.params;
-    const task = (await prisma.task.findUnique({
-      where: { id: id as string, userId: req.userId },
-      include: { blocks: true },
-    })) as any;
+    const { task, allowed } = await canAccessTask(id as string, req.userId!, true);
 
-    if (!task || !task.blocks || task.blocks.length === 0) {
+    if (!task || !allowed) {
+      res.status(404).json({ error: "Task not found or access denied" });
+      return;
+    }
+
+    const taskWithBlocks = await prisma.task.findUnique({
+      where: { id: task.id },
+      include: { blocks: true }
+    }) as any;
+
+    if (!taskWithBlocks || !taskWithBlocks.blocks || taskWithBlocks.blocks.length === 0) {
       res.status(404).json({ error: "Task or blocks not found" });
       return;
     }

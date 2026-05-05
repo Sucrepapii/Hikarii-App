@@ -38,6 +38,7 @@ import { AdminReport } from './pages/AdminReport';
 import { AdminAuditLogs } from './pages/AdminAuditLogs';
 import { Pricing } from './pages/Pricing';
 import ForcedPasswordChange from './pages/ForcedPasswordChange';
+import { AcceptInvite } from './pages/AcceptInvite';
 import './index.css';
 
 import { useInactivity } from './hooks/useInactivity';
@@ -232,6 +233,16 @@ function App() {
                 <Route path="/faq" element={<FAQ />} />
                 <Route path="/feedback" element={<Feedback />} />
                 <Route path="/pricing" element={<Pricing />} />
+                <Route
+                    path="/invites/:token"
+                    element={
+                        <ProtectedRoute>
+                            <DashboardLayout>
+                                <AcceptInvite />
+                            </DashboardLayout>
+                        </ProtectedRoute>
+                    }
+                />
                 {/* Admin Routes */}
                 <Route
                     path="/admin"

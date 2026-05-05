@@ -24,36 +24,42 @@ export const createProject = async (req: AuthRequest, res: Response) => {
   }
 };
 
-// Get All Projects for User
+// Get All Projects for User (owned + shared)
 export const getProjects = async (req: AuthRequest, res: Response) => {
   try {
-    console.log("Fetching projects for user:", req.userId);
-    const projects = await prisma.project.findMany({
-      where: { userId: req.userId! },
+    const userId = req.userId!;
+
+    // Get owned projects
+    const ownedProjects = await prisma.project.findMany({
+      where: { userId },
       orderBy: { createdAt: "desc" },
+      include: { tasks: { select: { status: true } } },
+    });
+
+    // Get projects the user is an accepted member of (but doesn't own)
+    const memberships = await (prisma as any).projectMember.findMany({
+      where: { userId, status: "ACCEPTED" },
       include: {
-        tasks: {
-          select: { status: true },
+        project: {
+          include: { tasks: { select: { status: true } } },
         },
       },
     });
 
-    const projectsWithProgress = projects.map((project: any) => {
+    const ownedWithProgress = ownedProjects.map((project: any) => {
       const totalTasks = project.tasks.length;
-      const completedTasks = project.tasks.filter(
-        (t: any) => t.status === "COMPLETED",
-      ).length;
-      const progress = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
-
-      return {
-        ...project,
-        progress: Math.round(progress),
-        // specific cleanup if we don't want to send all tasks back, though select: {status} is small
-      };
+      const completedTasks = project.tasks.filter((t: any) => t.status === "COMPLETED").length;
+      return { ...project, progress: Math.round(totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0), isShared: false, memberRole: null };
     });
 
-    console.log("Found projects:", projectsWithProgress.length);
-    res.json(projectsWithProgress);
+    const sharedWithProgress = memberships.map((m: any) => {
+      const project = m.project;
+      const totalTasks = project.tasks.length;
+      const completedTasks = project.tasks.filter((t: any) => t.status === "COMPLETED").length;
+      return { ...project, progress: Math.round(totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0), isShared: true, memberRole: m.role };
+    });
+
+    res.json([...ownedWithProgress, ...sharedWithProgress]);
   } catch (error: any) {
     console.error("Error fetching projects:", error);
     res.status(500).json({ error: error.message });

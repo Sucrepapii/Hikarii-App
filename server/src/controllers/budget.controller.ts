@@ -3,14 +3,66 @@ import prisma from "../config/db";
 import { AuthRequest } from "../middleware/auth.middleware";
 import { sendWhatsAppMessage } from "../services/whatsapp.service";
 
+async function canAccessProject(projectId: string, userId: string, requireEdit = false) {
+  const project = await prisma.project.findUnique({
+    where: { id: projectId },
+  });
+
+  if (!project) return false;
+  if (project.userId === userId) return true;
+
+  const membership = await (prisma as any).projectMember.findFirst({
+    where: { projectId, userId, status: "ACCEPTED" },
+  });
+
+  if (!membership) return false;
+  if (requireEdit && membership.role === "VIEW_ONLY") return false;
+
+  return true;
+}
+
+async function canAccessExpense(expenseId: string, userId: string, requireEdit = false) {
+  const expense = await prisma.expense.findUnique({
+    where: { id: expenseId },
+  });
+
+  if (!expense) return { expense: null, allowed: false };
+  if (expense.userId === userId) return { expense, allowed: true };
+
+  if (expense.projectId) {
+    const membership = await (prisma as any).projectMember.findFirst({
+      where: { projectId: expense.projectId, userId, status: "ACCEPTED" },
+    });
+
+    if (!membership) return { expense, allowed: false };
+    if (requireEdit && membership.role === "VIEW_ONLY") return { expense, allowed: false };
+    
+    return { expense, allowed: true };
+  }
+
+  return { expense, allowed: false };
+}
+
 // Budget Controllers
 export const getBudgets = async (
   req: AuthRequest,
   res: Response,
 ): Promise<void> => {
   try {
+    const userId = req.userId!;
+
+    const sharedProjectIds = await (prisma as any).projectMember.findMany({
+      where: { userId, status: "ACCEPTED" },
+      select: { projectId: true },
+    }).then((memberships: any[]) => memberships.map(m => m.projectId));
+
     const budgets = await prisma.budget.findMany({
-      where: { userId: req.userId },
+      where: {
+        OR: [
+          { userId },
+          { projectId: { in: sharedProjectIds } }
+        ]
+      },
     });
     res.json(budgets);
   } catch (error: any) {
@@ -33,6 +85,15 @@ export const createBudget = async (
     });
 
     const spent = expenses.reduce((sum, exp) => sum + exp.amount, 0);
+
+    // If projectId is provided, check permissions
+    if (req.body.projectId) {
+      const allowed = await canAccessProject(req.body.projectId, req.userId!, true);
+      if (!allowed) {
+        res.status(403).json({ error: "Access denied to project" });
+        return;
+      }
+    }
 
     // Upsert logic
     const existingBudget = await prisma.budget.findUnique({
@@ -104,8 +165,20 @@ export const getExpenses = async (
   res: Response,
 ): Promise<void> => {
   try {
+    const userId = req.userId!;
+
+    const sharedProjectIds = await (prisma as any).projectMember.findMany({
+      where: { userId, status: "ACCEPTED" },
+      select: { projectId: true },
+    }).then((memberships: any[]) => memberships.map(m => m.projectId));
+
     const expenses = await prisma.expense.findMany({
-      where: { userId: req.userId },
+      where: {
+        OR: [
+          { userId },
+          { projectId: { in: sharedProjectIds } }
+        ]
+      },
       orderBy: { date: "desc" },
     });
     res.json(expenses);
@@ -119,6 +192,14 @@ export const createExpense = async (
   res: Response,
 ): Promise<void> => {
   try {
+    if (req.body.projectId) {
+      const allowed = await canAccessProject(req.body.projectId, req.userId!, false); // Members can add expenses
+      if (!allowed) {
+        res.status(403).json({ error: "Access denied to project" });
+        return;
+      }
+    }
+
     const expense = await prisma.expense.create({
       data: {
         ...req.body,
@@ -170,15 +251,10 @@ export const updateExpense = async (
   res: Response,
 ): Promise<void> => {
   try {
-    const existingExpense = await prisma.expense.findFirst({
-      where: {
-        id: req.params.id as string,
-        userId: req.userId,
-      },
-    });
+    const { expense: existingExpense, allowed } = await canAccessExpense(req.params.id, req.userId!, true);
 
-    if (!existingExpense) {
-      res.status(404).json({ error: "Expense not found" });
+    if (!existingExpense || !allowed) {
+      res.status(404).json({ error: "Expense not found or access denied" });
       return;
     }
 
@@ -243,12 +319,10 @@ export const deleteExpense = async (
   res: Response,
 ): Promise<void> => {
   try {
-    const existingExpense = await prisma.expense.findFirst({
-      where: { id: req.params.id as string, userId: req.userId },
-    });
+    const { expense: existingExpense, allowed } = await canAccessExpense(req.params.id, req.userId!, true);
 
-    if (!existingExpense) {
-      res.status(404).json({ error: "Expense not found" });
+    if (!existingExpense || !allowed) {
+      res.status(404).json({ error: "Expense not found or access denied" });
       return;
     }
 

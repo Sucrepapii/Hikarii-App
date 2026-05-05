@@ -32,6 +32,7 @@ import contactRoutes from "./routes/contact.routes";
 import adminRoutes from "./routes/admin.routes";
 import leadRoutes from "./routes/lead.routes";
 import feedbackRoutes from "./routes/feedback.routes";
+import collaborationRoutes from "./routes/collaboration.routes";
 
 const app = express();
 
@@ -119,6 +120,7 @@ app.use("/api/stripe", stripeRoutes);
 app.use("/api/google", googleRoutes);
 app.use("/api/leads", leadRoutes);
 app.use("/api/feedback", feedbackRoutes);
+app.use("/api/collaboration", collaborationRoutes);
 
 // Health check
 app.get("/health", (req, res) => {

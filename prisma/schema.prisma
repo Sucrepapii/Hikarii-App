@@ -23,11 +23,12 @@ model User {
   expenses          Expense[]
   recurringExpenses RecurringExpense[]
 
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  
   projects Project[]
+
+  // Collaboration
+  projectMemberships ProjectMember[] @relation("ProjectMembers")
+  sentInvites        ProjectMember[] @relation("SentInvites")
+  projectComments    ProjectComment[] @relation("ProjectComments")
 
   // Stripe Subscription Fields
   stripeCustomerId       String?
@@ -57,6 +58,9 @@ model User {
   waProjectsEnabled      Boolean   @default(false)
 
   auditLogs              AuditLog[] @relation("AdminActions")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Lead {
@@ -110,10 +114,62 @@ model Project {
   budgets     Budget[] // Budget allocations specific to this project
   expenses    Expense[]
 
+  // Collaboration
+  members     ProjectMember[]
+  comments    ProjectComment[]
+
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   @@index([userId])
+}
+
+// ── COLLABORATION MODELS ─────────────────────────────────────────────────────
+
+model ProjectMember {
+  id          String             @id @default(uuid())
+  projectId   String
+  project     Project            @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  userId      String?            // null until invite is accepted by a registered user
+  user        User?              @relation("ProjectMembers", fields: [userId], references: [id], onDelete: SetNull)
+  invitedById String
+  invitedBy   User               @relation("SentInvites", fields: [invitedById], references: [id], onDelete: Cascade)
+  invitedEmail String            // Email used for the invite
+  role        CollaborationRole  @default(VIEW_ONLY)
+  status      InviteStatus       @default(PENDING)
+  token       String?            @unique // invite token for email link
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+
+  @@unique([projectId, invitedEmail])
+  @@index([projectId])
+  @@index([userId])
+  @@index([token])
+}
+
+model ProjectComment {
+  id        String   @id @default(uuid())
+  content   String
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation("ProjectComments", fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([projectId])
+}
+
+enum CollaborationRole {
+  VIEW_ONLY
+  CAN_ADD_EXPENSES
+  CAN_EDIT
+}
+
+enum InviteStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
 }
 
 model Task {
