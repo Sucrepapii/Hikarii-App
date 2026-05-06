@@ -251,7 +251,7 @@ export const LandingPage: React.FC = () => {
                         <span className="text-sm font-semibold text-indigo-700 dark:text-indigo-300 tracking-wide">Clarity. Focus. Control.</span>
                     </div>
 
-                    <h1 className="text-6xl md:text-[84px] font-display font-extrabold tracking-tight mb-6 leading-[1.05] animate-fade-in-up delay-100 text-slate-900 dark:text-white">
+                    <h1 className="text-4xl sm:text-5xl md:text-[84px] font-display font-extrabold tracking-tight mb-6 leading-[1.05] animate-fade-in-up delay-100 text-slate-900 dark:text-white px-2">
                         Master Your <br />
                         <span className="bg-gradient-to-r from-indigo-600 via-purple-500 to-pink-500 bg-clip-text text-transparent">
                             Life & Money
@@ -308,10 +308,10 @@ export const LandingPage: React.FC = () => {
                     <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-purple-400/8 rounded-full blur-[120px]" />
                 </div>
 
-                <div className="text-center mb-20 relative z-10">
+                <div className="text-center mb-12 md:mb-20 relative z-10">
                     <span className="inline-block px-4 py-1.5 rounded-full bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-100 dark:border-indigo-500/20 text-indigo-600 dark:text-indigo-300 text-sm font-semibold mb-5 tracking-wide">How It Works</span>
-                    <h2 className="text-4xl md:text-5xl font-display font-bold text-slate-900 dark:text-white mb-4 tracking-tight">Four simple steps to get started</h2>
-                    <p className="text-lg text-slate-500 dark:text-slate-400 max-w-xl mx-auto">Join Hikari and take control of your tasks and finances in minutes.</p>
+                    <h2 className="text-3xl md:text-5xl font-display font-bold text-slate-900 dark:text-white mb-4 tracking-tight">Four simple steps to get started</h2>
+                    <p className="text-base md:text-lg text-slate-500 dark:text-slate-400 max-w-xl mx-auto px-4">Join Hikari and take control of your tasks and finances in minutes.</p>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-16 relative z-10">
@@ -381,8 +381,8 @@ export const LandingPage: React.FC = () => {
                     <div className="space-y-10">
                         <div>
                             <span className="inline-block px-4 py-1.5 rounded-full bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-100 dark:border-indigo-500/20 text-indigo-600 dark:text-indigo-300 text-sm font-semibold mb-6 tracking-wide">The Philosophy</span>
-                            <h2 className="text-4xl md:text-5xl font-display font-bold text-slate-900 dark:text-white mb-5 leading-tight">The Hikari Method</h2>
-                            <p className="text-lg text-slate-500 dark:text-slate-400 leading-relaxed">
+                            <h2 className="text-3xl md:text-5xl font-display font-bold text-slate-900 dark:text-white mb-5 leading-tight">The Hikari Method</h2>
+                            <p className="text-base md:text-lg text-slate-500 dark:text-slate-400 leading-relaxed">
                                 92% of Hikari users feel more in control of their time and money within the first week. Our method is built on clarity and intentionality.
                             </p>
                         </div>
@@ -453,10 +453,10 @@ export const LandingPage: React.FC = () => {
                 <div className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-slate-200 dark:via-white/10 to-transparent" />
 
                 <div className="max-w-7xl mx-auto px-6 relative z-10">
-                    <div className="text-center mb-14">
+                    <div className="text-center mb-10 md:mb-14">
                         <span className="inline-block px-4 py-1.5 rounded-full bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-100 dark:border-indigo-500/20 text-indigo-600 dark:text-indigo-300 text-sm font-semibold mb-5 tracking-wide">Reviews</span>
-                        <h2 className="text-4xl md:text-5xl font-display font-bold text-slate-900 dark:text-white tracking-tight">Customer Testimonials</h2>
-                        <p className="text-lg text-slate-500 dark:text-slate-400 mt-4">See how others are taking back control of their time and money.</p>
+                        <h2 className="text-3xl md:text-5xl font-display font-bold text-slate-900 dark:text-white tracking-tight">Customer Testimonials</h2>
+                        <p className="text-base md:text-lg text-slate-500 dark:text-slate-400 mt-4">See how others are taking back control of their time and money.</p>
                     </div>
                 </div>
 
@@ -507,10 +507,10 @@ export const LandingPage: React.FC = () => {
                         style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
 
                     <div className="relative z-10">
-                        <div className="text-center mb-14">
+                        <div className="text-center mb-10 md:mb-14">
                             <span className="inline-block px-4 py-1.5 rounded-full bg-white/[0.08] border border-white/[0.12] text-indigo-200 text-sm font-semibold mb-5 tracking-wide">Premium Features</span>
-                            <h2 className="text-4xl md:text-5xl font-display font-bold mb-4 text-white tracking-tight">Everything You Need</h2>
-                            <p className="text-indigo-200/70 text-lg max-w-2xl mx-auto">Unlock the full potential of your productivity with our suite of powerful tools.</p>
+                            <h2 className="text-3xl md:text-5xl font-display font-bold mb-4 text-white tracking-tight">Everything You Need</h2>
+                            <p className="text-indigo-200/70 text-base md:text-lg max-w-2xl mx-auto">Unlock the full potential of your productivity with our suite of powerful tools.</p>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
@@ -702,8 +702,8 @@ export const LandingPage: React.FC = () => {
                     </div>
                     <div className="space-y-8 order-1 lg:order-2">
                         <span className="inline-block px-4 py-1.5 rounded-full bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-100 dark:border-emerald-500/20 text-emerald-600 dark:text-emerald-300 text-sm font-semibold tracking-wide">Better Together</span>
-                        <h2 className="text-4xl md:text-5xl font-display font-bold text-slate-900 dark:text-white leading-tight">Collaborate with radical clarity</h2>
-                        <p className="text-lg text-slate-500 dark:text-slate-400 leading-relaxed">
+                        <h2 className="text-3xl md:text-5xl font-display font-bold text-slate-900 dark:text-white leading-tight">Collaborate with radical clarity</h2>
+                        <p className="text-base md:text-lg text-slate-500 dark:text-slate-400 leading-relaxed">
                             Managing projects with others shouldn't be chaotic. Hikari brings your team together with shared visibility and real-time synchronization.
                         </p>
                         <div className="pt-4">
@@ -779,15 +779,15 @@ export const LandingPage: React.FC = () => {
                         <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse" />
                         Support
                     </div>
-                    <h2 className="text-4xl md:text-5xl font-display font-bold text-white mb-5 tracking-tight">
+                    <h2 className="text-3xl md:text-5xl font-display font-bold text-white mb-5 tracking-tight px-4">
                         Got Questions?
                     </h2>
-                    <p className="text-lg text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed">
+                    <p className="text-base md:text-lg text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed px-4">
                         Everything you need to know about Hikari and how it can organize your life.
                     </p>
                     <Link
                         to="/faq"
-                        className="inline-flex items-center gap-3 px-8 py-4 rounded-2xl bg-white/[0.06] border border-white/[0.12] text-white font-semibold hover:bg-white/[0.12] hover:border-white/20 transition-all duration-300 hover:scale-105 text-base backdrop-blur-sm shadow-xl shadow-black/20"
+                        className="inline-flex items-center gap-3 px-6 md:px-8 py-4 rounded-2xl bg-white/[0.06] border border-white/[0.12] text-white font-semibold hover:bg-white/[0.12] hover:border-white/20 transition-all duration-300 hover:scale-105 text-sm md:text-base backdrop-blur-sm shadow-xl shadow-black/20 mx-4"
                     >
                         <span>Have a different question? We're here to help — Just ask!</span>
                         <ChevronDown className="w-5 h-5 -rotate-90 shrink-0 text-indigo-400" />

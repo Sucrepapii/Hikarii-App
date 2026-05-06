@@ -96,31 +96,31 @@ export const ExpenseList: React.FC<ExpenseListProps> = ({
                             </div>
 
                             {/* Amount */}
-                            <div className="text-right">
-                                <p className="text-xs sm:text-sm md:text-lg font-bold gradient-text break-all">
+                            <div className="text-right min-w-[80px]">
+                                <p className="text-sm sm:text-base md:text-lg font-bold gradient-text break-all">
                                     {formatCurrency(useBudgetStore.getState().getConvertedAmount(expense.amount, currency), currency)}
                                 </p>
                             </div>
 
                             {/* Actions */}
-                            <div className="flex gap-2">
+                            <div className="flex flex-col sm:flex-row gap-1 sm:gap-2">
                                 <Button
                                     variant="ghost"
                                     size="sm"
                                     onClick={() => onEdit(expense)}
-                                    className="p-2.5 bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 dark:text-blue-400 rounded-xl transition-smooth flex items-center gap-2"
+                                    className="p-2 sm:p-2.5 bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 dark:text-blue-400 rounded-lg sm:rounded-xl transition-smooth flex items-center justify-center gap-2"
                                 >
-                                    <Edit className="w-5 h-5" />
-                                    <span className="hidden md:inline font-medium">Edit</span>
+                                    <Edit className="w-4 h-4 sm:w-5 sm:h-5" />
+                                    <span className="hidden lg:inline font-medium">Edit</span>
                                 </Button>
                                 <Button
                                     variant="ghost"
                                     size="sm"
                                     onClick={() => onDelete(expense.id)}
-                                    className="p-2.5 bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 rounded-xl transition-smooth flex items-center gap-2"
+                                    className="p-2 sm:p-2.5 bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 rounded-lg sm:rounded-xl transition-smooth flex items-center justify-center gap-2"
                                 >
-                                    <Trash2 className="w-5 h-5" />
-                                    <span className="hidden md:inline font-medium">Delete</span>
+                                    <Trash2 className="w-4 h-4 sm:w-5 sm:h-5" />
+                                    <span className="hidden lg:inline font-medium">Delete</span>
                                 </Button>
                             </div>
                         </div>

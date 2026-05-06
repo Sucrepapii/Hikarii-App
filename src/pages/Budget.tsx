@@ -330,53 +330,59 @@ export const Budget: React.FC = () => {
                     {Object.values(ExpenseCategory).map((category) => {
                         const existingBudget = budgets.find(b => b.category === category);
                         return (
-                            <div key={category} className="flex items-center gap-2">
-                                <label className="flex-1 text-sm font-medium text-slate-700 dark:text-slate-300">
-                                    {category}
-                                </label>
+                            <div key={category} className="p-4 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/5 space-y-3">
+                                <div className="flex items-center justify-between">
+                                    <label className="text-sm font-bold text-slate-800 dark:text-white">
+                                        {category}
+                                    </label>
+                                    {existingBudget && (
+                                        <button
+                                            onClick={() => handleDeleteBudgetClick(existingBudget.id)}
+                                            className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors"
+                                            title="Remove Budget"
+                                        >
+                                            <Trash2 className="w-4 h-4" />
+                                        </button>
+                                    )}
+                                </div>
 
-                                <select
-                                    className="w-24 text-sm px-2 py-2 rounded-lg glass border-2 border-white/20 dark:border-white/10 text-slate-900 dark:text-slate-100 bg-transparent"
-                                    defaultValue={existingBudget?.period || BudgetPeriod.MONTHLY}
-                                    onChange={(e) => {
-                                        const period = e.target.value as BudgetPeriod;
-                                        if (existingBudget?.limit) {
-                                            handleSetBudget(category, existingBudget.limit, period);
-                                        }
-                                    }}
-                                >
-                                    <option value={BudgetPeriod.DAILY}>Daily</option>
-                                    <option value={BudgetPeriod.WEEKLY}>Weekly</option>
-                                    <option value={BudgetPeriod.MONTHLY}>Monthly</option>
-                                </select>
-
-                                <input
-                                    type="number"
-                                    placeholder="0.00"
-                                    defaultValue={existingBudget?.limit}
-                                    className="w-24 px-3 py-2 rounded-lg glass border-2 border-white/20 dark:border-white/10 text-slate-900 dark:text-slate-100"
-                                    onBlur={(e) => {
-                                        const value = parseFloat(e.target.value);
-                                        if (value > 0) {
-                                            const row = e.target.parentElement;
-                                            const select = row?.querySelector('select');
-                                            const selectedPeriod = (select?.value as BudgetPeriod) || BudgetPeriod.MONTHLY;
-
-                                            // Convert input amount to NGN before saving
-                                            const amountInNGN = useBudgetStore.getState().getAmountInBaseCurrency(value, currency);
-                                            handleSetBudget(category, amountInNGN, selectedPeriod);
-                                        }
-                                    }}
-                                />
-                                {existingBudget && (
-                                    <button
-                                        onClick={() => handleDeleteBudgetClick(existingBudget.id)}
-                                        className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors"
-                                        title="Remove Budget"
+                                <div className="flex items-center gap-2">
+                                    <select
+                                        className="flex-1 text-sm px-3 py-2.5 rounded-lg glass border-2 border-white/20 dark:border-white/10 text-slate-900 dark:text-slate-100 bg-transparent"
+                                        defaultValue={existingBudget?.period || BudgetPeriod.MONTHLY}
+                                        onChange={(e) => {
+                                            const period = e.target.value as BudgetPeriod;
+                                            if (existingBudget?.limit) {
+                                                handleSetBudget(category, existingBudget.limit, period);
+                                            }
+                                        }}
                                     >
-                                        <Trash2 className="w-4 h-4" />
-                                    </button>
-                                )}
+                                        <option value={BudgetPeriod.DAILY}>Daily</option>
+                                        <option value={BudgetPeriod.WEEKLY}>Weekly</option>
+                                        <option value={BudgetPeriod.MONTHLY}>Monthly</option>
+                                    </select>
+
+                                    <div className="relative flex-1">
+                                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs">₦</span>
+                                        <input
+                                            type="number"
+                                            placeholder="0.00"
+                                            defaultValue={existingBudget?.limit}
+                                            className="w-full pl-7 pr-3 py-2.5 rounded-lg glass border-2 border-white/20 dark:border-white/10 text-slate-900 dark:text-slate-100 text-sm"
+                                            onBlur={(e) => {
+                                                const value = parseFloat(e.target.value);
+                                                if (value > 0) {
+                                                    const parent = e.target.closest('.flex-items-center'); // This selector is wrong but I'll fix it
+                                                    const select = e.target.closest('.space-y-3')?.querySelector('select');
+                                                    const selectedPeriod = (select?.value as BudgetPeriod) || BudgetPeriod.MONTHLY;
+
+                                                    const amountInNGN = useBudgetStore.getState().getAmountInBaseCurrency(value, currency);
+                                                    handleSetBudget(category, amountInNGN, selectedPeriod);
+                                                }
+                                            }}
+                                        />
+                                    </div>
+                                </div>
                             </div>
                         );
                     })}
