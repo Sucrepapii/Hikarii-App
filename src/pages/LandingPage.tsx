@@ -572,28 +572,50 @@ export const LandingPage: React.FC = () => {
                             </div>
 
                             {/* New: Real-time Collaboration */}
-                            <div className="md:col-span-1 bg-gradient-to-br from-indigo-900/30 to-purple-900/10 border border-indigo-500/20 rounded-2xl p-7 flex flex-col justify-between hover:border-indigo-500/40 transition-all duration-300 backdrop-blur-md group relative overflow-hidden min-h-[340px]">
-                                <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
+                            <div className="md:col-span-1 bg-gradient-to-br from-indigo-900/30 to-purple-900/10 border border-indigo-500/20 rounded-2xl p-7 flex flex-col justify-between hover:border-indigo-500/40 transition-all duration-500 backdrop-blur-md group relative overflow-hidden min-h-[340px]">
+                                {/* Animated background elements */}
+                                <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-30 transition-all duration-700 group-hover:scale-110 group-hover:rotate-12">
                                     <Users className="w-24 h-24 text-indigo-400" />
                                 </div>
+                                <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-indigo-500/10 rounded-full blur-[50px] group-hover:bg-indigo-500/20 transition-colors duration-700" />
+
                                 <div className="relative z-10">
-                                    <div className="w-12 h-12 bg-indigo-500/15 rounded-xl flex items-center justify-center mb-6 text-indigo-400 border border-indigo-500/20">
-                                        <Users className="w-6 h-6" />
+                                    <div className="flex items-center justify-between mb-5">
+                                        <div className="w-11 h-11 bg-indigo-500/15 rounded-xl flex items-center justify-center text-indigo-400 border border-indigo-500/20 group-hover:scale-110 transition-transform duration-500 shadow-lg shadow-indigo-500/10">
+                                            <Users className="w-5 h-5" />
+                                        </div>
+                                        <div className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 shadow-lg shadow-emerald-500/5">
+                                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                            <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-wider">Live Now</span>
+                                        </div>
                                     </div>
-                                    <h3 className="text-2xl font-bold mb-3 text-white tracking-tight">Real-time Collaboration</h3>
-                                    <p className="text-indigo-100/70 leading-relaxed text-sm max-w-md">Invite partners or teammates to your projects. Track shared budgets, assign roles, and discuss progress with live activity logs.</p>
+                                    <h3 className="text-xl font-bold text-white mb-2 group-hover:text-indigo-200 transition-colors">Real-time Collaboration</h3>
+                                    <p className="text-sm text-indigo-200/60 leading-relaxed">
+                                        Invite partners or teammates to your projects. Track shared budgets and see live updates as tasks are completed.
+                                    </p>
                                 </div>
-                                <div className="mt-8 flex gap-3 relative z-10">
-                                    <div className="flex -space-x-3">
-                                        {[1, 2, 3].map((i) => (
-                                            <div key={i} className="w-10 h-10 rounded-full border-2 border-[#111530] bg-slate-800 flex items-center justify-center text-xs font-bold text-white shadow-lg">
-                                                {String.fromCharCode(64 + i)}
-                                            </div>
-                                        ))}
-                                    </div>
-                                    <div className="bg-white/5 border border-white/10 rounded-full px-4 py-2 flex items-center gap-2">
-                                        <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                                        <span className="text-[10px] font-bold text-indigo-200 uppercase tracking-wider">3 Collaborators Active</span>
+
+                                {/* Animated Avatars Mockup */}
+                                <div className="mt-8 flex items-center -space-x-3 relative z-10 group-hover:translate-x-2 transition-transform duration-500">
+                                    {[
+                                        { color: "bg-indigo-500", label: "A" },
+                                        { color: "bg-purple-500", label: "B" },
+                                        { color: "bg-pink-500", label: "C" }
+                                    ].map((avatar, i) => (
+                                        <div 
+                                            key={i} 
+                                            className={clsx(
+                                                "w-10 h-10 rounded-full border-2 border-[#111530] flex items-center justify-center text-[10px] font-bold text-white shadow-xl transition-all duration-300",
+                                                avatar.color,
+                                                "group-hover:scale-110 group-hover:-translate-y-1"
+                                            )}
+                                            style={{ transitionDelay: `${i * 100}ms` }}
+                                        >
+                                            {avatar.label}
+                                        </div>
+                                    ))}
+                                    <div className="w-10 h-10 rounded-full border-2 border-[#111530] bg-slate-800 flex items-center justify-center text-[10px] font-bold text-slate-400 shadow-xl group-hover:translate-x-1 transition-transform">
+                                        +5
                                     </div>
                                 </div>
                             </div>
