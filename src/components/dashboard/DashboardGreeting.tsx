@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Sun, CloudSun, Moon, Zap, zapOff } from 'lucide-react';
 import { clsx } from 'clsx';
+import { useUIStore } from '../../stores/uiStore';
 
 interface DashboardGreetingProps {
     userName?: string;
@@ -13,7 +14,6 @@ export const DashboardGreeting: React.FC<DashboardGreetingProps> = ({
 }) => {
     const [greeting, setGreeting] = useState('');
     const [Icon, setIcon] = useState<React.ElementType>(Sun);
-    const [isFocusMode, setIsFocusMode] = useState(false);
 
     useEffect(() => {
         const hour = new Date().getHours();
@@ -29,11 +29,7 @@ export const DashboardGreeting: React.FC<DashboardGreetingProps> = ({
         }
     }, []);
 
-    const toggleFocusMode = () => {
-        const newMode = !isFocusMode;
-        setIsFocusMode(newMode);
-        onFocusModeToggle?.(newMode);
-    };
+    const { isFocusMode, toggleFocusMode } = useUIStore();
 
     const messages = [
         "Ready to make some progress?",

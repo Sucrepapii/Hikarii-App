@@ -19,6 +19,7 @@ import { UpgradeModal } from '../components/modals/UpgradeModal';
 import { useIntelligenceStore } from '../stores/intelligenceStore';
 import { useAuthStore } from '../stores/authStore';
 import { clsx } from 'clsx';
+import { useUIStore } from '../../stores/uiStore';
 import { DashboardGreeting } from '../components/dashboard/DashboardGreeting';
 
 const NumberCounter: React.FC<{ value: number; prefix?: string; duration?: number }> = ({ value, prefix = '', duration = 1000 }) => {
@@ -60,7 +61,7 @@ export const Dashboard: React.FC = () => {
 
     const [showUpgradeModal, setShowUpgradeModal] = useState(false);
     const [isRefreshingInsights, setIsRefreshingInsights] = useState(false);
-    const [isFocusMode, setIsFocusMode] = useState(false);
+    const { isFocusMode, toggleFocusMode } = useUIStore();
 
     const { refreshInsights } = useIntelligenceStore();
 
@@ -165,17 +166,27 @@ export const Dashboard: React.FC = () => {
     }
 
     return (
-        <div className={clsx("animate-fade-in relative", isFocusMode && "focus-active")}>
+        <div className={clsx(
+            "min-h-screen transition-all duration-1000 ease-in-out -m-4 md:-m-6 p-4 md:p-6",
+            isFocusMode
+                ? "bg-gradient-to-br from-slate-50 to-indigo-50/50 dark:from-[#080910] dark:to-indigo-950/20"
+                : "animate-fade-in"
+        )}>
             {/* Visual Depth: Starfield (Only in Dark Mode) */}
-            <div className="starfield-container" />
+            {!isFocusMode && <div className="starfield-container" />}
             
             <DashboardGreeting 
                 userName={user?.name} 
-                onFocusModeToggle={setIsFocusMode}
             />
 
-            <div className={clsx("transition-all duration-700", isFocusMode ? "opacity-40 blur-sm pointer-events-none scale-95" : "opacity-100")}>
-                <div className="mb-4 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+            <div className={clsx(
+                "transition-all duration-700",
+                isFocusMode ? "opacity-100" : "opacity-100"
+            )}>
+                <div className={clsx(
+                    "mb-4 flex flex-col sm:flex-row sm:items-end justify-between gap-4 transition-all duration-700",
+                    isFocusMode && "opacity-40 blur-[1px] pointer-events-none scale-95"
+                )}>
                 <div>
                     <h1 className="text-3xl font-display font-bold gradient-text mb-2">
                         Dashboard
@@ -251,7 +262,10 @@ export const Dashboard: React.FC = () => {
             )}
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div className={clsx(
+                "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 transition-all duration-700",
+                isFocusMode && "opacity-40 grayscale blur-[0.5px] pointer-events-none scale-95"
+            )}>
                 <Card className="relative overflow-hidden">
                     <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-primary-500/20 to-transparent rounded-full blur-2xl" />
                     <div className="relative">
@@ -336,15 +350,19 @@ export const Dashboard: React.FC = () => {
                     {recentTasks.length > 0 ? (
                         <div className="space-y-3">
                             {/* Standard View for Top 3 */}
-                            {recentTasks.slice(0, 3).map((task) => (
-                                <TaskItem
-                                    key={task.id}
-                                    task={task}
-                                    onToggle={toggleTaskStatus}
-                                    onEdit={handleEditTask}
-                                    onDelete={handleDeleteClick}
-                                />
-                            ))}
+                                {recentTasks.slice(0, 3).map((task) => (
+                                    <div key={task.id} className={clsx(
+                                        "transition-all duration-500",
+                                        isFocusMode && task.priority !== TaskPriority.HIGH && task.priority !== TaskPriority.URGENT ? "opacity-30 blur-[0.5px] grayscale pointer-events-none" : "opacity-100"
+                                    )}>
+                                        <TaskItem
+                                            task={task}
+                                            onToggle={toggleTaskStatus}
+                                            onEdit={handleEditTask}
+                                            onDelete={handleDeleteClick}
+                                        />
+                                    </div>
+                                ))}
 
                             {/* View All Link */}
                             {recentTasks.length > 3 && (
@@ -363,7 +381,10 @@ export const Dashboard: React.FC = () => {
                     )}
                 </Card>
 
-                <Card>
+                <Card className={clsx(
+                    "transition-all duration-700",
+                    isFocusMode && "opacity-40 grayscale blur-[0.5px] pointer-events-none scale-95"
+                )}>
                     <h2 className="text-xl font-semibold mb-4">Recent Expenses</h2>
                     {recentExpenses.length > 0 ? (
                         <div className="space-y-3">

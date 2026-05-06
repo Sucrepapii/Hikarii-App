@@ -10,6 +10,7 @@ import { clsx } from "clsx";
 import { useAuthStore } from "../../stores/authStore";
 import { useBudgetStore } from "../../stores/budgetStore";
 import { formatCurrency } from "../../utils/currencyFormatter";
+import { useUIStore } from "../../stores/uiStore";
 
 const insightIcons = {
     [InsightType.TASK_RECOMMENDATION]: Lightbulb,
@@ -53,6 +54,7 @@ export const NotificationBell: React.FC = () => {
     const { currency, getConvertedAmount } = useBudgetStore();
     const { pendingInvites, fetchPendingInvites, acceptInvite, recentActivity, fetchRecentActivity, markActivityAsRead } = useCollaborationStore();
     const { fetchProjects } = useProjectStore();
+    const { isFocusMode } = useUIStore();
     const navigate = useNavigate();
     const isPro = user?.subscriptionStatus === 'PRO';
     const isAdmin = user?.role === 'ADMIN';
@@ -153,9 +155,9 @@ export const NotificationBell: React.FC = () => {
 
 
     // Use filtered insights for counts
-    const unreadCount = visibleInsights.length + activeRecommendations.length + pendingInvites.length + recentActivity.length;
-    const criticalCount = visibleInsights.filter((i) => i.priority === InsightPriority.CRITICAL).length +
-        activeRecommendations.filter((r) => r.urgencyScore >= 80).length + pendingInvites.length;
+    const unreadCount = isFocusMode ? 0 : (visibleInsights.length + activeRecommendations.length + pendingInvites.length + recentActivity.length);
+    const criticalCount = isFocusMode ? 0 : (visibleInsights.filter((i) => i.priority === InsightPriority.CRITICAL).length +
+        activeRecommendations.filter((r) => r.urgencyScore >= 80).length + pendingInvites.length);
 
     return (
         <div className="relative" ref={dropdownRef}>
@@ -214,7 +216,17 @@ export const NotificationBell: React.FC = () => {
 
                     {/* Notifications List */}
                     <div className="p-2 space-y-2">
-                        {unreadCount > 0 ? (
+                        {isFocusMode ? (
+                            <div className="text-center py-12">
+                                <Shield className="w-12 h-12 mx-auto mb-3 text-indigo-400 opacity-50" />
+                                <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                                    Quiet Mode Active
+                                </h3>
+                                <p className="text-xs text-slate-500 dark:text-slate-400">
+                                    Notifications are muted during Focus Mode.
+                                </p>
+                            </div>
+                        ) : unreadCount > 0 ? (
                             <>
                                 {/* Pending Invites */}
                                 {pendingInvites.map((invite) => (
