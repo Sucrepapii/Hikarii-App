@@ -60,4 +60,8 @@ export const collaborationService = {
     const res = await apiClient.get(`${BASE}/recent-activity`);
     return res.data;
   },
+
+  markActivityAsRead: async (projectId: string): Promise<void> => {
+    await apiClient.patch(`${BASE}/projects/${projectId}/mark-activity-read`);
+  },
 };

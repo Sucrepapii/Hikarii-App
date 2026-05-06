@@ -297,34 +297,87 @@ export const getRecentActivity = async (req: AuthRequest, res: Response) => {
     // Find all projects where user is owner or member
     const memberships = await (prisma as any).projectMember.findMany({
       where: { userId, status: "ACCEPTED" },
-      select: { projectId: true }
+      select: { projectId: true, lastViewedActivityAt: true }
     });
     const sharedProjectIds = memberships.map((m: any) => m.projectId);
 
     const ownedProjects = await prisma.project.findMany({
       where: { userId },
-      select: { id: true }
+      select: { id: true, lastViewedActivityAt: true }
     });
     const ownedProjectIds = ownedProjects.map((p) => p.id);
 
-    const allProjectIds = [...new Set([...sharedProjectIds, ...ownedProjectIds])];
+    // Get unread comments for members
+    const memberUnreadPromises = memberships.map((m: any) => 
+      (prisma as any).projectComment.findMany({
+        where: {
+          projectId: m.projectId,
+          userId: { not: userId },
+          createdAt: { gt: m.lastViewedActivityAt }
+        },
+        include: { project: { select: { title: true } } },
+        orderBy: { createdAt: "desc" }
+      })
+    );
 
-    // Get recent comments from these projects, excluding user's own comments
-    const recentComments = await (prisma as any).projectComment.findMany({
-      where: {
-        projectId: { in: allProjectIds },
-        userId: { not: userId },
-        createdAt: { gte: new Date(Date.now() - 24 * 60 * 60 * 1000) } // Last 24 hours
-      },
-      include: {
-        user: { select: { name: true } },
-        project: { select: { title: true } }
-      },
-      orderBy: { createdAt: "desc" },
-      take: 10
+    // Get unread comments for owners
+    const ownerUnreadPromises = ownedProjects.map((p: any) => 
+      (prisma as any).projectComment.findMany({
+        where: {
+          projectId: p.id,
+          userId: { not: userId },
+          createdAt: { gt: p.lastViewedActivityAt }
+        },
+        include: { project: { select: { title: true } } },
+        orderBy: { createdAt: "desc" }
+      })
+    );
+
+    const allComments = (await Promise.all([...memberUnreadPromises, ...ownerUnreadPromises])).flat();
+
+    // Group by project
+    const grouped = allComments.reduce((acc: any, comment: any) => {
+      if (!acc[comment.projectId]) {
+        acc[comment.projectId] = {
+          projectId: comment.projectId,
+          projectTitle: comment.project.title,
+          count: 0,
+          lastComment: comment.content,
+          lastCommentAt: comment.createdAt
+        };
+      }
+      acc[comment.projectId].count++;
+      if (new Date(comment.createdAt) > new Date(acc[comment.projectId].lastCommentAt)) {
+        acc[comment.projectId].lastComment = comment.content;
+        acc[comment.projectId].lastCommentAt = comment.createdAt;
+      }
+      return acc;
+    }, {});
+
+    res.json(Object.values(grouped));
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const markActivityAsRead = async (req: AuthRequest, res: Response) => {
+  try {
+    const { id: projectId } = req.params;
+    const userId = req.userId!;
+
+    // Update ProjectMember if exists
+    await (prisma as any).projectMember.updateMany({
+      where: { projectId, userId },
+      data: { lastViewedActivityAt: new Date() }
     });
 
-    res.json(recentComments);
+    // Update Project if owner
+    await prisma.project.updateMany({
+      where: { id: projectId, userId },
+      data: { lastViewedActivityAt: new Date() }
+    });
+
+    res.json({ success: true });
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }

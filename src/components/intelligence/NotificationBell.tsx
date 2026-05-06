@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 import { useIntelligenceStore } from "../../stores/intelligenceStore";
 import { useCollaborationStore } from "../../stores/collaborationStore";
 import { Bell, X, AlertTriangle, Lightbulb, TrendingUp, CreditCard, Calendar, DollarSign, Shield, Users, CheckCircle2, MessageSquare } from "lucide-react";
@@ -49,7 +50,8 @@ export const NotificationBell: React.FC = () => {
     const { insights, recommendations, dismissInsight, clearAllInsights, refreshInsights } = useIntelligenceStore();
     const { user } = useAuthStore();
     const { currency, getConvertedAmount } = useBudgetStore();
-    const { pendingInvites, fetchPendingInvites, acceptInvite, recentActivity, fetchRecentActivity } = useCollaborationStore();
+    const { pendingInvites, fetchPendingInvites, acceptInvite, recentActivity, fetchRecentActivity, markActivityAsRead } = useCollaborationStore();
+    const navigate = useNavigate();
     const isPro = user?.subscriptionStatus === 'PRO';
     const isAdmin = user?.role === 'ADMIN';
     const [isAccepting, setIsAccepting] = useState<string | null>(null);
@@ -132,6 +134,16 @@ export const NotificationBell: React.FC = () => {
             toast.error("Failed to accept invitation");
         } finally {
             setIsAccepting(null);
+        }
+    };
+
+    const handleActivityClick = async (projectId: string) => {
+        try {
+            await markActivityAsRead(projectId);
+            setIsOpen(false);
+            navigate(`/projects?id=${projectId}`); // Redirect to projects page with specific project ID
+        } catch {
+            console.error("Failed to mark activity as read");
         }
     };
 
@@ -238,8 +250,9 @@ export const NotificationBell: React.FC = () => {
                                 {/* Recent Activity / Comments */}
                                 {recentActivity.map((activity) => (
                                     <div
-                                        key={activity.id}
-                                        className="p-3 rounded-xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800/50 transition-all hover:scale-[1.02]"
+                                        key={activity.projectId}
+                                        onClick={() => handleActivityClick(activity.projectId)}
+                                        className="p-3 rounded-xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800/50 transition-all hover:scale-[1.02] cursor-pointer"
                                     >
                                         <div className="flex items-start gap-3">
                                             <div className="p-2 rounded-lg bg-primary-500/10 text-primary-600 dark:text-primary-400">
@@ -247,13 +260,13 @@ export const NotificationBell: React.FC = () => {
                                             </div>
                                             <div className="flex-1 min-w-0">
                                                 <h4 className="font-semibold text-xs mb-1 text-slate-900 dark:text-slate-100">
-                                                    New Comment in {activity.project?.title}
+                                                    New comments in {activity.projectTitle}
                                                 </h4>
                                                 <p className="text-[11px] leading-relaxed text-slate-600 dark:text-slate-400">
-                                                    <strong>{activity.user?.name}</strong>: "{activity.content}"
+                                                    {activity.count} new message{activity.count > 1 ? 's' : ''}. Last: "{activity.lastComment}"
                                                 </p>
                                                 <p className="text-[10px] mt-1.5 text-slate-400">
-                                                    {new Date(activity.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                    {new Date(activity.lastCommentAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                                 </p>
                                             </div>
                                         </div>

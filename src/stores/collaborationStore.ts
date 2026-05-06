@@ -20,6 +20,7 @@ interface CollaborationState {
 
   recentActivity: any[];
   fetchRecentActivity: () => Promise<void>;
+  markActivityAsRead: (projectId: string) => Promise<void>;
 
   fetchComments: (projectId: string) => Promise<void>;
   postComment: (projectId: string, content: string) => Promise<void>;
@@ -138,6 +139,17 @@ export const useCollaborationStore = create<CollaborationState>((set) => ({
       set({ recentActivity: activity });
     } catch (error: any) {
       console.error("Failed to fetch recent activity", error);
+    }
+  },
+
+  markActivityAsRead: async (projectId) => {
+    try {
+      await collaborationService.markActivityAsRead(projectId);
+      set((state) => ({
+        recentActivity: state.recentActivity.filter((a) => a.projectId !== projectId),
+      }));
+    } catch (error: any) {
+      console.error("Failed to mark activity as read", error);
     }
   },
 

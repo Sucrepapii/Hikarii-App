@@ -24,17 +24,19 @@ function timeAgo(dateStr: string): string {
 }
 
 export const ActivityLog: React.FC<ActivityLogProps> = ({ projectId, currentUserId }) => {
-  const { comments, isCommentsLoading, fetchComments, postComment, deleteComment } = useCollaborationStore();
+  const { comments, isCommentsLoading, fetchComments, postComment, deleteComment, markActivityAsRead } = useCollaborationStore();
   const [newComment, setNewComment] = useState('');
   const [isPosting, setIsPosting] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     fetchComments(projectId);
+    markActivityAsRead(projectId); // Mark as read when opening
 
     // Polling for "real-time" feel without WebSockets
     const interval = setInterval(() => {
       fetchComments(projectId);
+      markActivityAsRead(projectId); // Also mark as read during polling if it's open
     }, 3000); // 3 seconds
 
     return () => clearInterval(interval);
