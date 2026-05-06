@@ -3,6 +3,7 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { useIntelligenceStore } from "../../stores/intelligenceStore";
 import { useCollaborationStore } from "../../stores/collaborationStore";
+import { useProjectStore } from "../../stores/projectStore";
 import { Bell, X, AlertTriangle, Lightbulb, TrendingUp, CreditCard, Calendar, DollarSign, Shield, Users, CheckCircle2, MessageSquare } from "lucide-react";
 import { InsightType, InsightPriority } from "../../types/intelligence.types";
 import { clsx } from "clsx";
@@ -51,6 +52,7 @@ export const NotificationBell: React.FC = () => {
     const { user } = useAuthStore();
     const { currency, getConvertedAmount } = useBudgetStore();
     const { pendingInvites, fetchPendingInvites, acceptInvite, recentActivity, fetchRecentActivity, markActivityAsRead } = useCollaborationStore();
+    const { fetchProjects } = useProjectStore();
     const navigate = useNavigate();
     const isPro = user?.subscriptionStatus === 'PRO';
     const isAdmin = user?.role === 'ADMIN';
@@ -130,6 +132,7 @@ export const NotificationBell: React.FC = () => {
         try {
             await acceptInvite(token);
             toast.success("Project invitation accepted!");
+            fetchProjects(); // Refresh the projects list to show the newly joined project
         } catch {
             toast.error("Failed to accept invitation");
         } finally {

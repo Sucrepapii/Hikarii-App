@@ -4,7 +4,7 @@ import { useCollaborationStore } from '../stores/collaborationStore';
 import { useAuthStore } from '../stores/authStore';
 import { Card } from '../components/common/Card';
 import { Plus, Briefcase, Calendar, Edit2, Trash2, CheckCircle2, Users, MessageSquare, X } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Button } from '../components/common/Button';
 import toast from 'react-hot-toast';
 import { UpgradeModal } from '../components/modals/UpgradeModal';
@@ -17,6 +17,7 @@ export const Projects: React.FC = () => {
     const { projects, isLoading, fetchProjects, toggleProjectStatus, deleteProject } = useProjectStore();
     const { members, fetchMembers, reset } = useCollaborationStore();
     const { user, checkAuth } = useAuthStore();
+    const location = useLocation();
     const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
     const [deleteId, setDeleteId] = useState<string | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
@@ -28,7 +29,29 @@ export const Projects: React.FC = () => {
 
     useEffect(() => {
         fetchProjects();
+
+        // Polling for project list updates (e.g. if someone adds you to a project)
+        const interval = setInterval(() => {
+            fetchProjects();
+        }, 30000); // 30 seconds
+
+        return () => clearInterval(interval);
     }, []);
+
+    // Handle deep linking to a specific project (e.g. from notification)
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        const projectId = params.get('id');
+        if (projectId && projects.length > 0) {
+            const project = projects.find(p => p.id === projectId);
+            if (project) {
+                setCollabPanelProject({ id: project.id, title: project.title });
+                setCollabTab('activity');
+                // Clear the query param so it doesn't reopen on every navigation
+                window.history.replaceState({}, '', window.location.pathname);
+            }
+        }
+    }, [location.search, projects]);
 
     // Fetch members when panel opens
     useEffect(() => {
