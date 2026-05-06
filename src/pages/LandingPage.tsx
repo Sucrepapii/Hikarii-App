@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Check, Zap, Link2, FileText, Split, ArrowRight, Menu, X, ChevronDown, Star, Calendar } from 'lucide-react';
+import { Check, Zap, Link2, FileText, Split, ArrowRight, Menu, X, ChevronDown, Star, Calendar, Users, MessageSquare, Bell, Shield } from 'lucide-react';
 import { Button } from '../components/common/Button';
 import { Logo } from '../components/common/Logo';
 import { Footer } from '../components/layout/Footer';
@@ -558,6 +558,33 @@ export const LandingPage: React.FC = () => {
                                 </div>
                             </div>
 
+                            {/* New: Real-time Collaboration */}
+                            <div className="col-span-1 md:col-span-2 bg-gradient-to-br from-indigo-900/30 to-purple-900/10 border border-indigo-500/20 rounded-2xl p-8 flex flex-col justify-between hover:border-indigo-500/40 transition-all duration-300 backdrop-blur-md group relative overflow-hidden">
+                                <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
+                                    <Users className="w-24 h-24 text-indigo-400" />
+                                </div>
+                                <div className="relative z-10">
+                                    <div className="w-12 h-12 bg-indigo-500/15 rounded-xl flex items-center justify-center mb-6 text-indigo-400 border border-indigo-500/20">
+                                        <Users className="w-6 h-6" />
+                                    </div>
+                                    <h3 className="text-2xl font-bold mb-3 text-white tracking-tight">Real-time Collaboration</h3>
+                                    <p className="text-indigo-100/70 leading-relaxed text-sm max-w-md">Invite partners or teammates to your projects. Track shared budgets, assign roles, and discuss progress with live activity logs.</p>
+                                </div>
+                                <div className="mt-8 flex gap-3 relative z-10">
+                                    <div className="flex -space-x-3">
+                                        {[1, 2, 3].map((i) => (
+                                            <div key={i} className="w-10 h-10 rounded-full border-2 border-[#111530] bg-slate-800 flex items-center justify-center text-xs font-bold text-white shadow-lg">
+                                                {String.fromCharCode(64 + i)}
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <div className="bg-white/5 border border-white/10 rounded-full px-4 py-2 flex items-center gap-2">
+                                        <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                                        <span className="text-[10px] font-bold text-indigo-200 uppercase tracking-wider">3 Collaborators Active</span>
+                                    </div>
+                                </div>
+                            </div>
+
                             {/* Tall: Smart Split */}
                             <div className="col-span-1 row-span-2 bg-gradient-to-b from-emerald-900/30 to-emerald-900/5 border border-emerald-500/15 rounded-2xl p-7 flex flex-col hover:border-emerald-500/30 transition-all duration-300 backdrop-blur-md hover:-translate-y-1 group">
                                 <div className="mb-auto">
@@ -630,6 +657,59 @@ export const LandingPage: React.FC = () => {
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* ── TEAMWORK SECTION ───────────────────────────────────── */}
+            <section className="py-28 px-6 max-w-7xl mx-auto relative z-20 overflow-hidden">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                    <div className="relative order-2 lg:order-1">
+                        <div className="absolute -inset-10 bg-indigo-500/10 rounded-full blur-[100px] opacity-50" />
+                        <div className="relative space-y-6">
+                            {[
+                                {
+                                    title: "Real-time Discussion",
+                                    desc: "Chat with your team directly inside the project. Keep your discussions and tasks in one place.",
+                                    icon: <MessageSquare className="w-5 h-5" />,
+                                    color: "bg-blue-500"
+                                },
+                                {
+                                    title: "Instant Notifications",
+                                    desc: "Never miss an update. Get alerted immediately when someone comments or joins a project.",
+                                    icon: <Bell className="w-5 h-5" />,
+                                    color: "bg-indigo-500"
+                                },
+                                {
+                                    title: "Granular Permissions",
+                                    desc: "Control who can edit, view, or manage expenses with flexible member roles.",
+                                    icon: <Shield className="w-5 h-5" />,
+                                    color: "bg-purple-500"
+                                }
+                            ].map((item, i) => (
+                                <div key={i} className="flex gap-4 p-6 bg-white dark:bg-white/[0.03] border border-slate-200 dark:border-white/10 rounded-2xl shadow-sm hover:shadow-md transition-all">
+                                    <div className={`w-10 h-10 rounded-xl ${item.color} flex items-center justify-center text-white shrink-0 shadow-lg`}>
+                                        {item.icon}
+                                    </div>
+                                    <div>
+                                        <h4 className="font-bold text-slate-900 dark:text-white mb-1">{item.title}</h4>
+                                        <p className="text-sm text-slate-500 dark:text-slate-400">{item.desc}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                    <div className="space-y-8 order-1 lg:order-2">
+                        <span className="inline-block px-4 py-1.5 rounded-full bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-100 dark:border-emerald-500/20 text-emerald-600 dark:text-emerald-300 text-sm font-semibold tracking-wide">Better Together</span>
+                        <h2 className="text-4xl md:text-5xl font-display font-bold text-slate-900 dark:text-white leading-tight">Collaborate with radical clarity</h2>
+                        <p className="text-lg text-slate-500 dark:text-slate-400 leading-relaxed">
+                            Managing projects with others shouldn't be chaotic. Hikari brings your team together with shared visibility and real-time synchronization.
+                        </p>
+                        <div className="pt-4">
+                            <Button onClick={() => navigate('/signup')} size="lg" className="rounded-full px-8 h-[52px] text-base font-semibold bg-indigo-600 hover:bg-indigo-500 text-white border-0 shadow-xl shadow-indigo-500/25">
+                                Try Collaboration for Free
+                            </Button>
                         </div>
                     </div>
                 </div>
