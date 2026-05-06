@@ -125,6 +125,19 @@ const HIKARI_METHOD_RULES = [
             border: "hover:border-emerald-500/50",
             shadow: "hover:shadow-emerald-500/10"
         }
+    },
+    {
+        rule: "Rule 5",
+        title: "Scale with Collaboration",
+        description: "Success is better when shared. Invite teammates to projects, discuss tasks in real-time, and manage permissions with absolute precision.",
+        icon: <Users className="w-6 h-6" />,
+        color: "blue",
+        styles: {
+            bg: "bg-blue-500/10",
+            text: "text-blue-500 dark:text-blue-400",
+            border: "hover:border-blue-500/50",
+            shadow: "hover:shadow-blue-500/10"
+        }
     }
 ];
 
@@ -662,58 +675,6 @@ export const LandingPage: React.FC = () => {
                 </div>
             </section>
 
-            {/* ── TEAMWORK SECTION ───────────────────────────────────── */}
-            <section className="py-20 px-6 max-w-7xl mx-auto relative z-20 overflow-hidden">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-                    <div className="relative order-2 lg:order-1">
-                        <div className="absolute -inset-10 bg-indigo-500/10 rounded-full blur-[100px] opacity-50" />
-                        <div className="relative space-y-6">
-                            {[
-                                {
-                                    title: "Real-time Discussion",
-                                    desc: "Chat with your team directly inside the project. Keep your discussions and tasks in one place.",
-                                    icon: <MessageSquare className="w-5 h-5" />,
-                                    color: "bg-blue-500"
-                                },
-                                {
-                                    title: "Instant Notifications",
-                                    desc: "Never miss an update. Get alerted immediately when someone comments or joins a project.",
-                                    icon: <Bell className="w-5 h-5" />,
-                                    color: "bg-indigo-500"
-                                },
-                                {
-                                    title: "Granular Permissions",
-                                    desc: "Control who can edit, view, or manage expenses with flexible member roles.",
-                                    icon: <Shield className="w-5 h-5" />,
-                                    color: "bg-purple-500"
-                                }
-                            ].map((item, i) => (
-                                <div key={i} className="flex gap-4 p-6 bg-white dark:bg-white/[0.03] border border-slate-200 dark:border-white/10 rounded-2xl shadow-sm hover:shadow-md transition-all">
-                                    <div className={`w-10 h-10 rounded-xl ${item.color} flex items-center justify-center text-white shrink-0 shadow-lg`}>
-                                        {item.icon}
-                                    </div>
-                                    <div>
-                                        <h4 className="font-bold text-slate-900 dark:text-white mb-1">{item.title}</h4>
-                                        <p className="text-sm text-slate-500 dark:text-slate-400">{item.desc}</p>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                    <div className="space-y-8 order-1 lg:order-2">
-                        <span className="inline-block px-4 py-1.5 rounded-full bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-100 dark:border-emerald-500/20 text-emerald-600 dark:text-emerald-300 text-sm font-semibold tracking-wide">Better Together</span>
-                        <h2 className="text-3xl md:text-5xl font-display font-bold text-slate-900 dark:text-white leading-tight">Collaborate with radical clarity</h2>
-                        <p className="text-base md:text-lg text-slate-500 dark:text-slate-400 leading-relaxed">
-                            Managing projects with others shouldn't be chaotic. Hikari brings your team together with shared visibility and real-time synchronization.
-                        </p>
-                        <div className="pt-4">
-                            <Button onClick={() => navigate('/signup')} size="lg" className="rounded-full px-8 h-[52px] text-base font-semibold bg-indigo-600 hover:bg-indigo-500 text-white border-0 shadow-xl shadow-indigo-500/25">
-                                Try Collaboration for Free
-                            </Button>
-                        </div>
-                    </div>
-                </div>
-            </section>
 
             {/* ── MEET THE TEAM ──────────────────────────────────────── */}
             {/* <section className="py-28 px-6 max-w-7xl mx-auto relative z-20">
