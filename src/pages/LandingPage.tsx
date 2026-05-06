@@ -6,6 +6,7 @@ import { Button } from '../components/common/Button';
 import { Logo } from '../components/common/Logo';
 import { Footer } from '../components/layout/Footer';
 import { useAuthStore } from '../stores/authStore';
+import { clsx } from 'clsx';
 
 const ONBOARDING_STEPS = [
     {
