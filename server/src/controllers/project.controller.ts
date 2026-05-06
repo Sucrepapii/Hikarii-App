@@ -2,6 +2,26 @@ import { Response } from "express";
 import prisma from "../config/db";
 import { AuthRequest } from "../middleware/auth.middleware";
 
+// Helper to check access
+async function canAccessProject(projectId: string, userId: string, requireEdit = false) {
+  const project = await prisma.project.findUnique({
+    where: { id: projectId },
+    include: { members: true }
+  });
+
+  if (!project) return { project: null, allowed: false, role: null };
+  if (project.userId === userId) return { project, allowed: true, role: "OWNER" };
+
+  const membership = await (prisma as any).projectMember.findFirst({
+    where: { projectId, userId, status: "ACCEPTED" },
+  });
+
+  if (!membership) return { project, allowed: false, role: null };
+  if (requireEdit && membership.role === "VIEW_ONLY") return { project, allowed: false, role: membership.role };
+  
+  return { project, allowed: true, role: membership.role };
+}
+
 // Create Project
 export const createProject = async (req: AuthRequest, res: Response) => {
   try {
@@ -55,7 +75,7 @@ export const getProjects = async (req: AuthRequest, res: Response) => {
     const ownedWithProgress = ownedProjects.map((project: any) => {
       const totalTasks = project.tasks.length;
       const completedTasks = project.tasks.filter((t: any) => t.status === "COMPLETED").length;
-      return { ...project, progress: Math.round(totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0), isShared: false, memberRole: null };
+      return { ...project, progress: Math.round(totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0), isShared: false, memberRole: "OWNER" };
     });
 
     const sharedWithProgress = memberships.map((m: any) => {
@@ -76,8 +96,14 @@ export const getProjects = async (req: AuthRequest, res: Response) => {
 export const getProject = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
-    const project = await prisma.project.findFirst({
-      where: { id: id as string, userId: req.userId! },
+    const { project, allowed, role } = await canAccessProject(id, req.userId!);
+
+    if (!project || !allowed) {
+      return res.status(404).json({ error: "Project not found or access denied" });
+    }
+
+    const fullProject = await prisma.project.findUnique({
+      where: { id: id as string },
       include: {
         tasks: true,
         budgets: true,
@@ -88,11 +114,7 @@ export const getProject = async (req: AuthRequest, res: Response) => {
       },
     });
 
-    if (!project) {
-      return res.status(404).json({ error: "Project not found" });
-    }
-
-    res.json(project);
+    res.json({ ...fullProject, memberRole: role });
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
@@ -105,15 +127,13 @@ export const updateProject = async (req: AuthRequest, res: Response) => {
     const { title, description, status, budgetLimit, startDate, endDate } =
       req.body;
 
-    const parsedLimit = budgetLimit ? parseFloat(budgetLimit) : null;
+    const { project: existingProject, allowed } = await canAccessProject(id, req.userId!, true);
 
-    const existingProject = await prisma.project.findFirst({
-      where: { id: id as string, userId: req.userId! },
-    });
-
-    if (!existingProject) {
-      return res.status(404).json({ error: "Project not found" });
+    if (!existingProject || !allowed) {
+      return res.status(404).json({ error: "Project not found or access denied" });
     }
+
+    const parsedLimit = budgetLimit ? parseFloat(budgetLimit) : null;
 
     const project = await prisma.project.update({
       where: { id: id as string },
@@ -138,12 +158,14 @@ export const updateProject = async (req: AuthRequest, res: Response) => {
 export const deleteProject = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
+    
+    // Only owner can delete project
     const project = await prisma.project.findFirst({
       where: { id: id as string, userId: req.userId! },
     });
 
     if (!project) {
-      return res.status(404).json({ error: "Project not found" });
+      return res.status(404).json({ error: "Project not found or you don't have permission to delete it" });
     }
 
     await prisma.project.delete({
@@ -159,16 +181,20 @@ export const deleteProject = async (req: AuthRequest, res: Response) => {
 export const getProjectSummary = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
-    const project = await prisma.project.findFirst({
-      where: { id: id as string, userId: req.userId! },
+    const { project, allowed } = await canAccessProject(id, req.userId!);
+
+    if (!project || !allowed) {
+      return res.status(404).json({ error: "Project not found or access denied" });
+    }
+
+    const fullProject = await prisma.project.findUnique({
+      where: { id: id as string },
       include: {
         tasks: true,
         budgets: true,
         expenses: true,
       },
     }) as any;
-
-    if (!project) return res.status(404).json({ error: "Project not found" });
 
     // Calculate generic health stats
     const totalTasks = project.tasks.length;

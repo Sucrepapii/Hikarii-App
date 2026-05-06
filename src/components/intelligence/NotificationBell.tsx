@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
+import toast from "react-hot-toast";
 import { useIntelligenceStore } from "../../stores/intelligenceStore";
-import { Bell, X, AlertTriangle, Lightbulb, TrendingUp, CreditCard, Calendar, DollarSign, Shield } from "lucide-react";
+import { useCollaborationStore } from "../../stores/collaborationStore";
+import { Bell, X, AlertTriangle, Lightbulb, TrendingUp, CreditCard, Calendar, DollarSign, Shield, Users, CheckCircle2 } from "lucide-react";
 import { InsightType, InsightPriority } from "../../types/intelligence.types";
 import { clsx } from "clsx";
 import { useAuthStore } from "../../stores/authStore";
@@ -47,8 +49,10 @@ export const NotificationBell: React.FC = () => {
     const { insights, recommendations, dismissInsight, clearAllInsights, refreshInsights } = useIntelligenceStore();
     const { user } = useAuthStore();
     const { currency, getConvertedAmount } = useBudgetStore();
+    const { pendingInvites, fetchPendingInvites, acceptInvite } = useCollaborationStore();
     const isPro = user?.subscriptionStatus === 'PRO';
     const isAdmin = user?.role === 'ADMIN';
+    const [isAccepting, setIsAccepting] = useState<string | null>(null);
 
     const formatInsightMessage = (message: string) => {
         // Regex to find "NGN 1,000" or similar
@@ -105,19 +109,36 @@ export const NotificationBell: React.FC = () => {
         };
     }, [isOpen]);
 
-    // Refresh insights periodically
+    // Refresh insights and invites periodically
     useEffect(() => {
         refreshInsights();
-        const interval = setInterval(refreshInsights, 60000); // Refresh every minute
+        fetchPendingInvites();
+        const interval = setInterval(() => {
+            refreshInsights();
+            fetchPendingInvites();
+        }, 60000); // Refresh every minute
         return () => clearInterval(interval);
-    }, [refreshInsights]);
+    }, [refreshInsights, fetchPendingInvites]);
+
+    const handleAcceptInvite = async (token: string, e: React.MouseEvent) => {
+        e.stopPropagation();
+        setIsAccepting(token);
+        try {
+            await acceptInvite(token);
+            toast.success("Project invitation accepted!");
+        } catch {
+            toast.error("Failed to accept invitation");
+        } finally {
+            setIsAccepting(null);
+        }
+    };
 
 
 
     // Use filtered insights for counts
-    const unreadCount = visibleInsights.length + activeRecommendations.length;
+    const unreadCount = visibleInsights.length + activeRecommendations.length + pendingInvites.length;
     const criticalCount = visibleInsights.filter((i) => i.priority === InsightPriority.CRITICAL).length +
-        activeRecommendations.filter((r) => r.urgencyScore >= 80).length;
+        activeRecommendations.filter((r) => r.urgencyScore >= 80).length + pendingInvites.length;
 
     return (
         <div className="relative" ref={dropdownRef}>
@@ -178,6 +199,40 @@ export const NotificationBell: React.FC = () => {
                     <div className="p-2 space-y-2">
                         {unreadCount > 0 ? (
                             <>
+                                {/* Pending Invites */}
+                                {pendingInvites.map((invite) => (
+                                    <div
+                                        key={invite.id}
+                                        className="p-3 rounded-xl border-2 border-indigo-500/30 bg-indigo-500/10 dark:bg-indigo-500/20 transition-all hover:scale-[1.02]"
+                                    >
+                                        <div className="flex items-start gap-3">
+                                            <Users className="w-5 h-5 mt-0.5 flex-shrink-0 text-indigo-600 dark:text-indigo-400" />
+                                            <div className="flex-1 min-w-0">
+                                                <h4 className="font-semibold text-sm mb-1 text-indigo-700 dark:text-indigo-300">
+                                                    New Invitation
+                                                </h4>
+                                                <p className="text-xs leading-relaxed text-slate-700 dark:text-slate-300">
+                                                    <strong>{(invite as any).invitedBy?.name || 'Someone'}</strong> invited you to collaborate on <strong>{(invite as any).project?.title}</strong>
+                                                </p>
+                                                <div className="mt-3">
+                                                    <button
+                                                        onClick={(e) => handleAcceptInvite(invite.token!, e)}
+                                                        disabled={isAccepting === invite.token}
+                                                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-600 text-white text-[10px] font-bold hover:bg-indigo-700 transition-colors disabled:opacity-50"
+                                                    >
+                                                        {isAccepting === invite.token ? 'Accepting...' : (
+                                                            <>
+                                                                <CheckCircle2 className="w-3 h-3" />
+                                                                Accept Invite
+                                                            </>
+                                                        )}
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+
                                 {/* Recommendations */}
                                 {activeRecommendations.map((rec) => (
                                     <div

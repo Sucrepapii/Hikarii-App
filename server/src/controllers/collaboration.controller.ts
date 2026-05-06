@@ -255,3 +255,35 @@ export const deleteComment = async (req: AuthRequest, res: Response) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+// ── PENDING INVITES (for notifications) ─────────────────────────────────────
+
+export const getPendingInvites = async (req: AuthRequest, res: Response) => {
+  try {
+    const userId = req.userId!;
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    
+    const invites = await (prisma as any).projectMember.findMany({
+      where: {
+        OR: [
+          { userId },
+          { invitedEmail: user?.email }
+        ],
+        status: "PENDING"
+      },
+      include: {
+        project: {
+          select: { title: true }
+        },
+        invitedBy: {
+          select: { name: true }
+        }
+      },
+      orderBy: { createdAt: "desc" }
+    });
+
+    res.json(invites);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+};

@@ -134,7 +134,7 @@ export const Projects: React.FC = () => {
                                     </div>
                                     <div className="flex items-center gap-1">
                                         {/* Share / Collab button */}
-                                        {project.userId === user?.id && (
+                                        {(project.userId === user?.id || project.memberRole === 'CAN_EDIT') && (
                                             <Button
                                                 variant="ghost"
                                                 size="sm"
@@ -158,16 +158,18 @@ export const Projects: React.FC = () => {
                                         >
                                             <MessageSquare className="w-4 h-4" />
                                         </Button>
-                                        {project.userId === user?.id && (
+                                        {(project.userId === user?.id || project.memberRole === 'CAN_EDIT') && (
                                             <>
                                                 <Link to={`/projects/edit/${project.id}`}>
                                                     <Button variant="ghost" size="sm" className="p-2 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 rounded-lg transition-smooth">
                                                         <Edit2 className="w-4 h-4" />
                                                     </Button>
                                                 </Link>
-                                                <Button variant="ghost" size="sm" onClick={() => handleDeleteClick(project.id)} className="p-2 bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 rounded-lg transition-smooth">
-                                                    <Trash2 className="w-4 h-4" />
-                                                </Button>
+                                                {project.userId === user?.id && (
+                                                    <Button variant="ghost" size="sm" onClick={() => handleDeleteClick(project.id)} className="p-2 bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 rounded-lg transition-smooth">
+                                                        <Trash2 className="w-4 h-4" />
+                                                    </Button>
+                                                )}
                                             </>
                                         )}
                                     </div>
@@ -236,7 +238,7 @@ export const Projects: React.FC = () => {
                                         currentUserId={user?.id || ''}
                                         isOwner={projects.find(p => p.id === collabPanelProject.id)?.userId === user?.id}
                                     />
-                                    {projects.find(p => p.id === collabPanelProject.id)?.userId === user?.id && (
+                                    {(projects.find(p => p.id === collabPanelProject.id)?.userId === user?.id || projects.find(p => p.id === collabPanelProject.id)?.memberRole === 'CAN_EDIT') && (
                                         <Button
                                             variant="secondary"
                                             className="mt-4 gap-2 w-full"

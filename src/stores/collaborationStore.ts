@@ -14,6 +14,9 @@ interface CollaborationState {
   updateMemberRole: (projectId: string, memberId: string, role: CollaborationRole) => Promise<void>;
   removeMember: (projectId: string, memberId: string) => Promise<void>;
 
+  fetchPendingInvites: () => Promise<void>;
+  acceptInvite: (token: string) => Promise<void>;
+
   fetchComments: (projectId: string) => Promise<void>;
   postComment: (projectId: string, content: string) => Promise<void>;
   deleteComment: (projectId: string, commentId: string) => Promise<void>;
@@ -24,6 +27,7 @@ interface CollaborationState {
 export const useCollaborationStore = create<CollaborationState>((set) => ({
   members: [],
   comments: [],
+  pendingInvites: [],
   isMembersLoading: false,
   isCommentsLoading: false,
   error: null,
@@ -102,5 +106,26 @@ export const useCollaborationStore = create<CollaborationState>((set) => ({
     }
   },
 
-  reset: () => set({ members: [], comments: [], error: null }),
+  fetchPendingInvites: async () => {
+    try {
+      const invites = await collaborationService.getPendingInvites();
+      set({ pendingInvites: invites });
+    } catch (error: any) {
+      console.error("Failed to fetch pending invites", error);
+    }
+  },
+
+  acceptInvite: async (token) => {
+    try {
+      await collaborationService.acceptInvite(token);
+      set((state) => ({
+        pendingInvites: state.pendingInvites.filter((i) => i.token !== token),
+      }));
+    } catch (error: any) {
+      set({ error: error.message });
+      throw error;
+    }
+  },
+
+  reset: () => set({ members: [], comments: [], pendingInvites: [], error: null }),
 }));

@@ -50,4 +50,9 @@ export const collaborationService = {
   deleteComment: async (projectId: string, commentId: string): Promise<void> => {
     await apiClient.delete(`${BASE}/projects/${projectId}/comments/${commentId}`);
   },
+
+  getPendingInvites: async (): Promise<ProjectMember[]> => {
+    const res = await apiClient.get(`${BASE}/pending-invites`);
+    return res.data;
+  },
 };
