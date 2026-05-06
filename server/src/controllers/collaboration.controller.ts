@@ -91,7 +91,7 @@ export const inviteMember = async (req: AuthRequest, res: Response) => {
 
     // Send email invite
     const clientUrl = process.env.CLIENT_URL || "https://www.hikarii.org";
-    const inviteLink = `${clientUrl}/accept-invite/${token}`;
+    const inviteLink = `${clientUrl}/invites/${token}`;
 
     try {
       await sendEmail(

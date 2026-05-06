@@ -16,7 +16,8 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
     }
 
     if (!isAuthenticated) {
-        return <Navigate to="/" replace />;
+        const currentPath = window.location.pathname + window.location.search;
+        return <Navigate to={`/login?redirect=${encodeURIComponent(currentPath)}`} replace />;
     }
 
     if (user?.requiresPasswordChange && window.location.pathname !== '/change-password') {

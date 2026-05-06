@@ -275,7 +275,7 @@ export const Login: React.FC = () => {
                         <p className="text-sm text-slate-600 dark:text-slate-400">
                             Don't have an account?{' '}
                             <Link
-                                to="/signup"
+                                to={`/signup${window.location.search}`}
                                 className="font-semibold text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 transition-colors"
                             >
                                 Sign up

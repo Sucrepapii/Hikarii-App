@@ -72,10 +72,14 @@ export const Signup: React.FC = () => {
 
             // If verification is required, switch mode
             if (response && response.requiresVerification) {
+                toast.success('Registration successful! Please check your email for a verification code.');
                 setEmailToVerify(signupData.email);
                 setVerificationMode(true);
             } else {
-                navigate('/dashboard');
+                toast.success('Welcome to Hikari!');
+                const searchParams = new URLSearchParams(window.location.search);
+                const redirectTo = searchParams.get('redirect');
+                navigate(redirectTo || '/dashboard');
             }
         } catch (err: any) {
             const msg = err.message || 'Signup failed';
@@ -91,8 +95,11 @@ export const Signup: React.FC = () => {
         setError('');
         try {
             await verifyEmail(emailToVerify, otp);
-
-            navigate('/dashboard');
+            toast.success('Email verified successfully! Welcome to Hikari.');
+            
+            const searchParams = new URLSearchParams(window.location.search);
+            const redirectTo = searchParams.get('redirect');
+            navigate(redirectTo || '/dashboard');
         } catch (err: any) {
             const msg = err.message || 'Verification failed';
             setError(msg);
@@ -367,7 +374,7 @@ export const Signup: React.FC = () => {
                         <p className="text-sm text-slate-600 dark:text-slate-400">
                             Already have an account?{' '}
                             <Link
-                                to="/login"
+                                to={`/login${window.location.search}`}
                                 className="font-semibold text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 transition-colors"
                             >
                                 Log in
