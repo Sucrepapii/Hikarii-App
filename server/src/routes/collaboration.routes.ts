@@ -10,14 +10,16 @@ import {
   postComment,
   deleteComment,
   getPendingInvites,
+  getRecentActivity,
 } from "../controllers/collaboration.controller";
 
 const router = express.Router();
 
 router.use(authenticate);
 
-// Global notifications / invites
+// Global notifications / invites / activity
 router.get("/pending-invites", getPendingInvites);
+router.get("/recent-activity", getRecentActivity);
 
 // Invite accept (by token — public-ish but still needs auth to know who is accepting)
 router.post("/invites/:token/accept", acceptInvite);

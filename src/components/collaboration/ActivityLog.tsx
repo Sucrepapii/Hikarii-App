@@ -31,11 +31,19 @@ export const ActivityLog: React.FC<ActivityLogProps> = ({ projectId, currentUser
 
   useEffect(() => {
     fetchComments(projectId);
+
+    // Polling for "real-time" feel without WebSockets
+    const interval = setInterval(() => {
+      fetchComments(projectId);
+    }, 3000); // 3 seconds
+
+    return () => clearInterval(interval);
   }, [projectId]);
 
   useEffect(() => {
+    // Only scroll if we were already at the bottom or if it's the initial load
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [comments]);
+  }, [comments.length]); // Use length to avoid scrolling on every poll if content is same
 
   const handlePost = async (e: React.FormEvent) => {
     e.preventDefault();

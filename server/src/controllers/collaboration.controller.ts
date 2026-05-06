@@ -287,3 +287,45 @@ export const getPendingInvites = async (req: AuthRequest, res: Response) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+// ── RECENT ACTIVITY (for notifications) ─────────────────────────────────────
+
+export const getRecentActivity = async (req: AuthRequest, res: Response) => {
+  try {
+    const userId = req.userId!;
+
+    // Find all projects where user is owner or member
+    const memberships = await (prisma as any).projectMember.findMany({
+      where: { userId, status: "ACCEPTED" },
+      select: { projectId: true }
+    });
+    const sharedProjectIds = memberships.map((m: any) => m.projectId);
+
+    const ownedProjects = await prisma.project.findMany({
+      where: { userId },
+      select: { id: true }
+    });
+    const ownedProjectIds = ownedProjects.map((p) => p.id);
+
+    const allProjectIds = [...new Set([...sharedProjectIds, ...ownedProjectIds])];
+
+    // Get recent comments from these projects, excluding user's own comments
+    const recentComments = await (prisma as any).projectComment.findMany({
+      where: {
+        projectId: { in: allProjectIds },
+        userId: { not: userId },
+        createdAt: { gte: new Date(Date.now() - 24 * 60 * 60 * 1000) } // Last 24 hours
+      },
+      include: {
+        user: { select: { name: true } },
+        project: { select: { title: true } }
+      },
+      orderBy: { createdAt: "desc" },
+      take: 10
+    });
+
+    res.json(recentComments);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+};

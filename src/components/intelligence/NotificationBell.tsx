@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import toast from "react-hot-toast";
 import { useIntelligenceStore } from "../../stores/intelligenceStore";
 import { useCollaborationStore } from "../../stores/collaborationStore";
-import { Bell, X, AlertTriangle, Lightbulb, TrendingUp, CreditCard, Calendar, DollarSign, Shield, Users, CheckCircle2 } from "lucide-react";
+import { Bell, X, AlertTriangle, Lightbulb, TrendingUp, CreditCard, Calendar, DollarSign, Shield, Users, CheckCircle2, MessageSquare } from "lucide-react";
 import { InsightType, InsightPriority } from "../../types/intelligence.types";
 import { clsx } from "clsx";
 import { useAuthStore } from "../../stores/authStore";
@@ -49,7 +49,7 @@ export const NotificationBell: React.FC = () => {
     const { insights, recommendations, dismissInsight, clearAllInsights, refreshInsights } = useIntelligenceStore();
     const { user } = useAuthStore();
     const { currency, getConvertedAmount } = useBudgetStore();
-    const { pendingInvites, fetchPendingInvites, acceptInvite } = useCollaborationStore();
+    const { pendingInvites, fetchPendingInvites, acceptInvite, recentActivity, fetchRecentActivity } = useCollaborationStore();
     const isPro = user?.subscriptionStatus === 'PRO';
     const isAdmin = user?.role === 'ADMIN';
     const [isAccepting, setIsAccepting] = useState<string | null>(null);
@@ -109,16 +109,18 @@ export const NotificationBell: React.FC = () => {
         };
     }, [isOpen]);
 
-    // Refresh insights and invites periodically
+    // Refresh insights, invites and activity periodically
     useEffect(() => {
         refreshInsights();
         fetchPendingInvites();
+        fetchRecentActivity();
         const interval = setInterval(() => {
             refreshInsights();
             fetchPendingInvites();
+            fetchRecentActivity();
         }, 60000); // Refresh every minute
         return () => clearInterval(interval);
-    }, [refreshInsights, fetchPendingInvites]);
+    }, [refreshInsights, fetchPendingInvites, fetchRecentActivity]);
 
     const handleAcceptInvite = async (token: string, e: React.MouseEvent) => {
         e.stopPropagation();
@@ -136,7 +138,7 @@ export const NotificationBell: React.FC = () => {
 
 
     // Use filtered insights for counts
-    const unreadCount = visibleInsights.length + activeRecommendations.length + pendingInvites.length;
+    const unreadCount = visibleInsights.length + activeRecommendations.length + pendingInvites.length + recentActivity.length;
     const criticalCount = visibleInsights.filter((i) => i.priority === InsightPriority.CRITICAL).length +
         activeRecommendations.filter((r) => r.urgencyScore >= 80).length + pendingInvites.length;
 
@@ -228,6 +230,31 @@ export const NotificationBell: React.FC = () => {
                                                         )}
                                                     </button>
                                                 </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+
+                                {/* Recent Activity / Comments */}
+                                {recentActivity.map((activity) => (
+                                    <div
+                                        key={activity.id}
+                                        className="p-3 rounded-xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800/50 transition-all hover:scale-[1.02]"
+                                    >
+                                        <div className="flex items-start gap-3">
+                                            <div className="p-2 rounded-lg bg-primary-500/10 text-primary-600 dark:text-primary-400">
+                                                <MessageSquare className="w-4 h-4" />
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <h4 className="font-semibold text-xs mb-1 text-slate-900 dark:text-slate-100">
+                                                    New Comment in {activity.project?.title}
+                                                </h4>
+                                                <p className="text-[11px] leading-relaxed text-slate-600 dark:text-slate-400">
+                                                    <strong>{activity.user?.name}</strong>: "{activity.content}"
+                                                </p>
+                                                <p className="text-[10px] mt-1.5 text-slate-400">
+                                                    {new Date(activity.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                </p>
                                             </div>
                                         </div>
                                     </div>

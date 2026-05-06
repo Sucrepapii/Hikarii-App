@@ -14,8 +14,12 @@ interface CollaborationState {
   updateMemberRole: (projectId: string, memberId: string, role: CollaborationRole) => Promise<void>;
   removeMember: (projectId: string, memberId: string) => Promise<void>;
 
+  pendingInvites: ProjectMember[];
   fetchPendingInvites: () => Promise<void>;
   acceptInvite: (token: string) => Promise<void>;
+
+  recentActivity: any[];
+  fetchRecentActivity: () => Promise<void>;
 
   fetchComments: (projectId: string) => Promise<void>;
   postComment: (projectId: string, content: string) => Promise<void>;
@@ -28,6 +32,7 @@ export const useCollaborationStore = create<CollaborationState>((set) => ({
   members: [],
   comments: [],
   pendingInvites: [],
+  recentActivity: [],
   isMembersLoading: false,
   isCommentsLoading: false,
   error: null,
@@ -127,5 +132,14 @@ export const useCollaborationStore = create<CollaborationState>((set) => ({
     }
   },
 
-  reset: () => set({ members: [], comments: [], pendingInvites: [], error: null }),
+  fetchRecentActivity: async () => {
+    try {
+      const activity = await collaborationService.getRecentActivity();
+      set({ recentActivity: activity });
+    } catch (error: any) {
+      console.error("Failed to fetch recent activity", error);
+    }
+  },
+
+  reset: () => set({ members: [], comments: [], pendingInvites: [], recentActivity: [], error: null }),
 }));

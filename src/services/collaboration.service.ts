@@ -55,4 +55,9 @@ export const collaborationService = {
     const res = await apiClient.get(`${BASE}/pending-invites`);
     return res.data;
   },
+
+  getRecentActivity: async (): Promise<any[]> => {
+    const res = await apiClient.get(`${BASE}/recent-activity`);
+    return res.data;
+  },
 };
