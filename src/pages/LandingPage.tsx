@@ -302,7 +302,7 @@ export const LandingPage: React.FC = () => {
             </div>
 
             {/* ── FOUR STEPS ─────────────────────────────────────────── */}
-            <section className="py-28 px-6 max-w-7xl mx-auto relative z-20">
+            <section className="py-20 px-6 max-w-7xl mx-auto relative z-20">
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[500px] pointer-events-none">
                     <div className="absolute top-0 left-0 w-[400px] h-[400px] bg-indigo-400/8 rounded-full blur-[120px]" />
                     <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-purple-400/8 rounded-full blur-[120px]" />
@@ -372,7 +372,7 @@ export const LandingPage: React.FC = () => {
             </section>
 
             {/* ── HIKARI METHOD ──────────────────────────────────────── */}
-            <section className="py-28 px-6 max-w-7xl mx-auto relative z-20">
+            <section className="py-20 px-6 max-w-7xl mx-auto relative z-20">
                 {/* Subtle section divider */}
                 <div className="absolute top-0 inset-x-6 h-px bg-gradient-to-r from-transparent via-slate-200 dark:via-white/10 to-transparent" />
 
@@ -447,7 +447,7 @@ export const LandingPage: React.FC = () => {
             </section>
 
             {/* ── TESTIMONIALS ───────────────────────────────────────── */}
-            <section className="py-28 relative z-20 w-full overflow-hidden">
+            <section className="py-20 relative z-20 w-full overflow-hidden">
                 <div className="absolute inset-0 bg-slate-50 dark:bg-[#0D0F1A] pointer-events-none" />
                 <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-slate-200 dark:via-white/10 to-transparent" />
                 <div className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-slate-200 dark:via-white/10 to-transparent" />
@@ -497,8 +497,8 @@ export const LandingPage: React.FC = () => {
             </section>
 
             {/* ── BENTO FEATURES ─────────────────────────────────────── */}
-            <section id="features" className="py-12 px-6 max-w-7xl mx-auto">
-                <div className="bg-gradient-to-br from-[#0E1021] via-[#111530] to-[#0A0C1B] rounded-[2.5rem] p-10 md:p-16 relative overflow-hidden shadow-[0_40px_100px_-20px_rgba(0,0,0,0.5)]">
+            <section id="features" className="py-20 px-6 max-w-7xl mx-auto">
+                <div className="bg-gradient-to-br from-[#0E1021] via-[#111530] to-[#0A0C1B] rounded-[2.5rem] p-8 md:p-12 relative overflow-hidden shadow-[0_40px_100px_-20px_rgba(0,0,0,0.5)]">
                     {/* Background glows */}
                     <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-600/15 rounded-full blur-[120px] mix-blend-screen animate-pulse-slow" />
                     <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-violet-600/10 rounded-full blur-[120px] mix-blend-screen animate-pulse-slow delay-700" />
@@ -513,9 +513,9 @@ export const LandingPage: React.FC = () => {
                             <p className="text-indigo-200/70 text-lg max-w-2xl mx-auto">Unlock the full potential of your productivity with our suite of powerful tools.</p>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-4 grid-rows-2 gap-5 h-auto md:h-[580px]">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                             {/* Large: Task-Expense Linking */}
-                            <div className="col-span-1 md:col-span-2 row-span-2 bg-white/[0.04] border border-white/[0.08] rounded-2xl p-8 flex flex-col justify-between hover:bg-white/[0.07] transition-all duration-300 group backdrop-blur-md hover:border-white/[0.14]">
+                            <div className="md:col-span-2 bg-white/[0.04] border border-white/[0.08] rounded-2xl p-8 flex flex-col justify-between hover:bg-white/[0.07] transition-all duration-300 group backdrop-blur-md hover:border-white/[0.14] min-h-[340px]">
                                 <div>
                                     <div className="w-13 h-13 w-12 h-12 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-xl flex items-center justify-center mb-6 text-white shadow-lg shadow-indigo-500/30">
                                         <Link2 className="w-6 h-6" />
@@ -559,7 +559,7 @@ export const LandingPage: React.FC = () => {
                             </div>
 
                             {/* New: Real-time Collaboration */}
-                            <div className="col-span-1 md:col-span-2 bg-gradient-to-br from-indigo-900/30 to-purple-900/10 border border-indigo-500/20 rounded-2xl p-8 flex flex-col justify-between hover:border-indigo-500/40 transition-all duration-300 backdrop-blur-md group relative overflow-hidden">
+                            <div className="md:col-span-1 bg-gradient-to-br from-indigo-900/30 to-purple-900/10 border border-indigo-500/20 rounded-2xl p-7 flex flex-col justify-between hover:border-indigo-500/40 transition-all duration-300 backdrop-blur-md group relative overflow-hidden min-h-[340px]">
                                 <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
                                     <Users className="w-24 h-24 text-indigo-400" />
                                 </div>
@@ -586,7 +586,7 @@ export const LandingPage: React.FC = () => {
                             </div>
 
                             {/* Tall: Smart Split */}
-                            <div className="col-span-1 row-span-2 bg-gradient-to-b from-emerald-900/30 to-emerald-900/5 border border-emerald-500/15 rounded-2xl p-7 flex flex-col hover:border-emerald-500/30 transition-all duration-300 backdrop-blur-md hover:-translate-y-1 group">
+                            <div className="md:col-span-1 bg-gradient-to-b from-emerald-900/30 to-emerald-900/5 border border-emerald-500/15 rounded-2xl p-7 flex flex-col hover:border-emerald-500/30 transition-all duration-300 backdrop-blur-md hover:-translate-y-1 group min-h-[340px]">
                                 <div className="mb-auto">
                                     <div className="w-11 h-11 bg-emerald-500/15 rounded-xl flex items-center justify-center mb-5 text-emerald-400 border border-emerald-500/20">
                                         <Split className="w-5 h-5" />
@@ -663,7 +663,7 @@ export const LandingPage: React.FC = () => {
             </section>
 
             {/* ── TEAMWORK SECTION ───────────────────────────────────── */}
-            <section className="py-28 px-6 max-w-7xl mx-auto relative z-20 overflow-hidden">
+            <section className="py-20 px-6 max-w-7xl mx-auto relative z-20 overflow-hidden">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                     <div className="relative order-2 lg:order-1">
                         <div className="absolute -inset-10 bg-indigo-500/10 rounded-full blur-[100px] opacity-50" />
@@ -770,7 +770,7 @@ export const LandingPage: React.FC = () => {
             </section>
 
             {/* ── FAQ / CTA ──────────────────────────────────────────── */}
-            <section className="py-28 relative overflow-hidden">
+            <section className="py-20 relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-[#0E1022] to-slate-900 pointer-events-none" />
                 {/* Accent glow */}
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-indigo-600/10 rounded-full blur-[120px] pointer-events-none" />
