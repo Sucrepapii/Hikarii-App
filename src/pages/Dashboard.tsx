@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { useTaskStore } from '../stores/taskStore';
 import { useBudgetStore } from '../stores/budgetStore';
 import { CheckSquare, Wallet, TrendingUp, Clock, AlertCircle, RefreshCw, Zap } from 'lucide-react'; import { formatCurrency } from '../utils/currencyFormatter';
-import { TaskStatus, Task } from '../types/task.types';
+import { TaskStatus, Task, TaskPriority } from '../types/task.types';
 import { TaskItem } from '../components/tasks/TaskItem';
 import { BudgetProgress } from '../components/budget/Charts/BudgetProgress';
 import { SpendingChart } from '../components/budget/Charts/SpendingChart';
