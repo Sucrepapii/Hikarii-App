@@ -338,3 +338,33 @@ export const getLeadMagnetTemplate = (email: string) => {
     "You received this because you requested the Hikari Method magnet on our website.",
   );
 };
+
+/**
+ * Template for project collaboration invitations.
+ */
+export const getInviteTemplate = (
+  inviterName: string,
+  projectTitle: string,
+  inviteLink: string,
+) => {
+  const content = `
+    <p>Hello,</p>
+    <p><strong>${inviterName}</strong> has invited you to collaborate on the project <strong>"${projectTitle}"</strong> on Hikari.</p>
+    
+    <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 24px; border-radius: 16px; margin: 24px 0;">
+      <p style="margin: 0; text-align: center; color: #64748b; font-size: 14px;">
+        Collaborating on Hikari allows you to co-manage tasks, track shared budgets, and stay in sync in real-time.
+      </p>
+    </div>
+    
+    <p style="text-align: center; font-size: 14px; color: #64748b;">Click the button below to accept the invitation and join the project.</p>
+  `;
+
+  return getBaseTemplate(
+    "You've been invited to collaborate",
+    content,
+    "Accept Invitation",
+    inviteLink,
+    "You received this because someone invited you to a project on Hikari.",
+  );
+};

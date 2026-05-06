@@ -2,6 +2,8 @@ import { Response } from "express";
 import { randomBytes } from "crypto";
 import prisma from "../config/db";
 import { AuthRequest } from "../middleware/auth.middleware";
+import { sendEmail } from "../services/email.service";
+import { getInviteTemplate } from "../utils/emailTemplates";
 
 // ── HELPERS ──────────────────────────────────────────────────────────────────
 
@@ -10,9 +12,10 @@ const isPro = (user: any) =>
   user?.subscriptionStatus === "PRO" || user?.subscriptionStatus === "TRIAL";
 
 /** Check that current user is the owner of the project */
-async function assertOwner(projectId: string, userId: string): Promise<boolean> {
+async function assertOwner(projectId: string, userId: string) {
   const project = await prisma.project.findUnique({ where: { id: projectId } });
-  return project?.userId === userId;
+  if (project?.userId !== userId) return null;
+  return project;
 }
 
 /** Check that current user has at least a given role in a shared project */
@@ -32,8 +35,10 @@ export const inviteMember = async (req: AuthRequest, res: Response) => {
 
     if (!email) return res.status(400).json({ error: "Email is required" });
 
-    const isOwner = await assertOwner(projectId as string, req.userId!);
-    if (!isOwner) return res.status(403).json({ error: "Only the project owner can invite members" });
+    const project = await assertOwner(projectId as string, req.userId!);
+    if (!project || project.userId !== req.userId!) {
+      return res.status(403).json({ error: "Only the project owner can invite members" });
+    }
 
     // Subscription gating: free users can share only FREE_COLLAB_LIMIT project(s)
     const currentUser = await prisma.user.findUnique({ where: { id: req.userId! } });
@@ -84,8 +89,21 @@ export const inviteMember = async (req: AuthRequest, res: Response) => {
       },
     });
 
-    // TODO: Send email invite via Resend
-    // await sendInviteEmail({ to: email, token, inviterName: currentUser.name, projectTitle });
+    // Send email invite
+    const clientUrl = process.env.CLIENT_URL || "https://www.hikarii.org";
+    const inviteLink = `${clientUrl}/accept-invite/${token}`;
+
+    try {
+      await sendEmail(
+        email,
+        `Invitation to collaborate on "${project.title}"`,
+        getInviteTemplate(currentUser!.name, project.title, inviteLink),
+        { fromName: "Hikari Collaboration" }
+      );
+    } catch (emailErr) {
+      console.error("Failed to send invite email:", emailErr);
+      // We still return 201 because the database record is created
+    }
 
     res.status(201).json({ message: "Invite sent successfully", member });
   } catch (error: any) {
