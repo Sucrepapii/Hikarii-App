@@ -19,7 +19,7 @@ import { UpgradeModal } from '../components/modals/UpgradeModal';
 import { useIntelligenceStore } from '../stores/intelligenceStore';
 import { useAuthStore } from '../stores/authStore';
 import { clsx } from 'clsx';
-import { useUIStore } from '../../stores/uiStore';
+import { useUIStore } from '../stores/uiStore';
 import { DashboardGreeting } from '../components/dashboard/DashboardGreeting';
 
 const NumberCounter: React.FC<{ value: number; prefix?: string; duration?: number }> = ({ value, prefix = '', duration = 1000 }) => {
