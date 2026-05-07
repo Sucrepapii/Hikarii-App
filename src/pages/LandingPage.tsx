@@ -6,6 +6,7 @@ import { Button } from '../components/common/Button';
 import { Logo } from '../components/common/Logo';
 import { Footer } from '../components/layout/Footer';
 import { useAuthStore } from '../stores/authStore';
+import { Helmet } from 'react-helmet-async';
 import { clsx } from 'clsx';
 
 const ONBOARDING_STEPS = [
@@ -187,6 +188,25 @@ export const LandingPage: React.FC = () => {
 
     return (
         <div className="min-h-screen bg-slate-50 dark:bg-[#080910] font-sans text-slate-900 dark:text-slate-100 overflow-x-hidden selection:bg-purple-500/30">
+            <Helmet>
+                <title>Hikari | Radical Clarity in Tasks & Budgeting</title>
+                <meta name="description" content="Master the Hikari Method: A revolutionary approach to linking your tasks with your budget for ultimate financial and professional clarity." />
+                <meta name="keywords" content="productivity, budgeting, task management, financial clarity, team collaboration, focus mode" />
+                
+                {/* Open Graph / Facebook */}
+                <meta property="og:type" content="website" />
+                <meta property="og:url" content="https://www.hikarii.org/" />
+                <meta property="og:title" content="Hikari | Radical Clarity in Tasks & Budgeting" />
+                <meta property="og:description" content="Master the Hikari Method: Link your tasks to your budget for ultimate clarity." />
+                <meta property="og:image" content="https://www.hikarii.org/marketing/hikari_chaos_to_clarity_1778160537687.png" />
+
+                {/* Twitter */}
+                <meta property="twitter:card" content="summary_large_image" />
+                <meta property="twitter:url" content="https://www.hikarii.org/" />
+                <meta property="twitter:title" content="Hikari | Radical Clarity in Tasks & Budgeting" />
+                <meta property="twitter:description" content="Master the Hikari Method: Link your tasks to your budget for ultimate clarity." />
+                <meta property="twitter:image" content="https://www.hikarii.org/marketing/hikari_chaos_to_clarity_1778160537687.png" />
+            </Helmet>
 
             {/* ── NAVBAR ─────────────────────────────────────────────── */}
             <nav className="fixed top-0 w-full z-50 bg-white/70 dark:bg-[#080910]/80 backdrop-blur-xl border-b border-slate-200/60 dark:border-white/[0.06]">
