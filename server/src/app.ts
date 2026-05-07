@@ -33,6 +33,7 @@ import adminRoutes from "./routes/admin.routes";
 import leadRoutes from "./routes/lead.routes";
 import feedbackRoutes from "./routes/feedback.routes";
 import collaborationRoutes from "./routes/collaboration.routes";
+import articleFeedbackRoutes from "./routes/articleFeedback.routes";
 
 const app = express();
 
@@ -121,6 +122,7 @@ app.use("/api/google", googleRoutes);
 app.use("/api/leads", leadRoutes);
 app.use("/api/feedback", feedbackRoutes);
 app.use("/api/collaboration", collaborationRoutes);
+app.use("/api/article-feedback", articleFeedbackRoutes);
 
 // Health check
 app.get("/health", (req, res) => {

@@ -336,3 +336,11 @@ model Feedback {
   topic     String?
   createdAt DateTime @default(now())
 }
+model ArticleFeedback {
+  id          String   @id @default(uuid())
+  articleSlug String
+  isHelpful   Boolean
+  createdAt   DateTime @default(now())
+
+  @@index([articleSlug])
+}

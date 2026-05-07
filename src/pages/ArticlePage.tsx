@@ -58,13 +58,37 @@ export const ArticlePage: React.FC = () => {
                     <h3 className="font-bold text-lg mb-4">Was this article helpful?</h3>
                     <div className="flex gap-4">
                         <button
-                            onClick={() => toast.success("Thanks for your feedback!")}
+                            onClick={async () => {
+                                try {
+                                    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+                                    await fetch(`${API_URL}/article-feedback`, {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({ articleSlug: slug, isHelpful: true })
+                                    });
+                                    toast.success("Thanks for your feedback!");
+                                } catch (error) {
+                                    toast.success("Thanks for your feedback!"); // Still show success even if tracking fails
+                                }
+                            }}
                             className="px-4 py-2 rounded-lg bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-sm font-medium transition-colors"
                         >
                             Yes, thanks!
                         </button>
                         <button
-                            onClick={() => toast.success("Thanks for your feedback! We'll work on improving it.")}
+                            onClick={async () => {
+                                try {
+                                    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+                                    await fetch(`${API_URL}/article-feedback`, {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({ articleSlug: slug, isHelpful: false })
+                                    });
+                                    toast.success("Thanks for your feedback! We'll work on improving it.");
+                                } catch (error) {
+                                    toast.success("Thanks for your feedback!");
+                                }
+                            }}
                             className="px-4 py-2 rounded-lg bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-sm font-medium transition-colors"
                         >
                             Not really
