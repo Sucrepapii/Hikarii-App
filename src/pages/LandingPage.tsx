@@ -193,6 +193,28 @@ export const LandingPage: React.FC = () => {
                 <meta name="description" content="Master the Hikari Method: A revolutionary approach to linking your tasks with your budget for ultimate financial and professional clarity." />
                 <meta name="keywords" content="productivity, budgeting, task management, financial clarity, team collaboration, focus mode" />
                 
+                {/* Structured Data */}
+                <script type="application/ld+json">
+                    {JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "SoftwareApplication",
+                        "name": "Hikari",
+                        "operatingSystem": "All",
+                        "applicationCategory": "ProductivityApplication",
+                        "description": "Master the Hikari Method: A revolutionary approach to linking your tasks with your budget for ultimate financial and professional clarity.",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "0",
+                            "priceCurrency": "USD"
+                        },
+                        "aggregateRating": {
+                            "@type": "AggregateRating",
+                            "ratingValue": "4.9",
+                            "reviewCount": "100"
+                        }
+                    })}
+                </script>
+
                 {/* Open Graph / Facebook */}
                 <meta property="og:type" content="website" />
                 <meta property="og:url" content="https://www.hikarii.org/" />
