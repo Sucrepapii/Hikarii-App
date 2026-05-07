@@ -247,6 +247,9 @@ export const LandingPage: React.FC = () => {
                         <Link to="/about" className="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
                             Who is Hikari For?
                         </Link>
+                        <Link to="/help/article/ultimate-guide-hikari-method" className="text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 transition-colors">
+                            The Ultimate Guide
+                        </Link>
                         {!isAuthenticated && (
                             <Link to="/login" className="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">Login</Link>
                         )}
@@ -439,7 +442,7 @@ export const LandingPage: React.FC = () => {
                             <span className="inline-block px-4 py-1.5 rounded-full bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-100 dark:border-indigo-500/20 text-indigo-600 dark:text-indigo-300 text-sm font-semibold mb-6 tracking-wide">The Philosophy</span>
                             <h2 className="text-3xl md:text-5xl font-display font-bold text-slate-900 dark:text-white mb-5 leading-tight">The Hikari Method</h2>
                             <p className="text-base md:text-lg text-slate-500 dark:text-slate-400 leading-relaxed">
-                                92% of Hikari users feel more in control of their time and money within the first week. Our method is built on clarity and intentionality.
+                                92% of Hikari users feel more in control of their time and money within the first week. Our method is built on clarity and intentionality. <Link to="/help/article/ultimate-guide-hikari-method" className="text-indigo-600 dark:text-indigo-400 font-semibold hover:underline">Read the Ultimate Guide &rarr;</Link>
                             </p>
                         </div>
 

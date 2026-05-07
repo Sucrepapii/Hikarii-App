@@ -41,10 +41,10 @@ export const Footer: React.FC = () => {
                         </ul>
                     </div>
 
-                    {/* Resources Column */}
                     <div>
                         <h4 className="font-bold text-white mb-6">Resources</h4>
                         <ul className="space-y-4 text-sm text-slate-400">
+                            <li><Link to="/help/article/ultimate-guide-hikari-method" className="text-indigo-400 font-semibold hover:text-indigo-300 transition-colors">The Ultimate Guide</Link></li>
                             <li><a href="https://www.linkedin.com/company/hikari-world/" target="_blank" rel="noopener noreferrer" className="hover:text-indigo-400 transition-colors">Blog</a></li>
                             <li><Link to="/help" className="hover:text-indigo-400 transition-colors">Help Center</Link></li>
                             <li><Link to="/faq" className="hover:text-indigo-400 transition-colors">FAQ</Link></li>
