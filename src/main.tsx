@@ -4,6 +4,7 @@ import App from './App.tsx'
 import { BrowserRouter } from 'react-router-dom';
 import * as Sentry from "@sentry/react";
 import { ErrorBoundary } from './components/common/ErrorBoundary';
+import { HelmetProvider } from 'react-helmet-async';
 
 Sentry.init({
     dsn: "https://3eaf89653d0ac96f89da4fa27eca0e5d@o4510954431709184.ingest.de.sentry.io/4510954434854992",
@@ -27,9 +28,11 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
         <GoogleOAuthProvider clientId={clientId}>
             <BrowserRouter>
-                <ErrorBoundary>
-                    <App />
-                </ErrorBoundary>
+                <HelmetProvider>
+                    <ErrorBoundary>
+                        <App />
+                    </ErrorBoundary>
+                </HelmetProvider>
             </BrowserRouter>
         </GoogleOAuthProvider>
     </React.StrictMode>,
