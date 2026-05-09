@@ -147,7 +147,7 @@ export const getOverdueReminderTemplate = (name: string, tasksHtml: string) => {
 
   const clientUrl =
     process.env.CLIENT_URL ||
-    "https://checkmate-production-7067.up.railway.app/";
+    "https://www.hikarii.org/";
 
   return getBaseTemplate(
     "Action Required: Overdue Tasks",
@@ -263,7 +263,7 @@ export const getReactivationTemplate = (name: string) => {
     content,
     "Go to Dashboard",
     process.env.CLIENT_URL ||
-      "https://checkmate-production-7067.up.railway.app/",
+    "https://www.hikarii.org/",
     "Welcome back to Hikari!",
   );
 };
@@ -277,7 +277,7 @@ export const getAdminOnboardingTemplate = (
 ) => {
   const loginUrl =
     process.env.CLIENT_URL ||
-    "https://checkmate-production-7067.up.railway.app/";
+    "https://www.hikarii.org/";
 
   const content = `
     <p>Hello <strong>${name}</strong>,</p>
@@ -327,7 +327,7 @@ export const getLeadMagnetTemplate = (email: string) => {
 
   const leadMagnetUrl =
     (process.env.CLIENT_URL ||
-      "https://checkmate-production-7067.up.railway.app") +
+      "https://www.hikarii.org") +
     "/resources/HIKARI_METHOD_GUIDE.pdf";
 
   return getBaseTemplate(
