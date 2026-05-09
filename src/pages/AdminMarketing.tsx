@@ -182,40 +182,6 @@ export const AdminMarketing: React.FC = () => {
                 </Card>
             </div>
 
-            {/* Live Feedback Feed */}
-            <Card className="p-6">
-                <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-lg font-bold text-slate-800 dark:text-white">Live Sentiment Stream</h3>
-                    <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                        <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">Real-time Feed</span>
-                    </div>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {data?.recentFeedback?.map((fb, idx) => (
-                        <div key={idx} className="flex items-start gap-3 p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-white/5">
-                            <div className={`mt-1 p-1.5 rounded-full ${fb.isHelpful ? 'bg-emerald-100 text-emerald-600' : 'bg-rose-100 text-rose-600'}`}>
-                                {fb.isHelpful ? <CheckCircle className="w-3.5 h-3.5" /> : <XCircle className="w-3.5 h-3.5" />}
-                            </div>
-                            <div className="min-w-0 flex-1">
-                                <p className="text-xs font-bold text-slate-900 dark:text-white truncate capitalize">
-                                    {fb.articleSlug.replace(/-/g, ' ')}
-                                </p>
-                                <p className="text-[10px] text-slate-500 mt-0.5">
-                                    {new Date(fb.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} • 
-                                    {fb.isHelpful ? ' Helpful' : ' Not helpful'}
-                                </p>
-                            </div>
-                        </div>
-                    ))}
-                    {(!data?.recentFeedback || data.recentFeedback.length === 0) && (
-                        <div className="col-span-full py-12 text-center">
-                            <Clock className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-                            <p className="text-slate-500 italic">No feedback received yet. Your stream will start once users begin rating articles.</p>
-                        </div>
-                    )}
-                </div>
-            </Card>
         </div>
     );
 };
