@@ -192,6 +192,7 @@ export const LandingPage: React.FC = () => {
                 <title>Hikari | Radical Clarity in Tasks & Budgeting</title>
                 <meta name="description" content="Master the Hikari Method: A revolutionary approach to linking your tasks with your budget for ultimate financial and professional clarity." />
                 <meta name="keywords" content="productivity, budgeting, task management, financial clarity, team collaboration, focus mode" />
+                <meta name="thumbnail" content="https://www.hikarii.org/marketing/hikari_chaos_to_clarity_1778160537687.png" />
                 
                 {/* Structured Data */}
                 <script type="application/ld+json">
