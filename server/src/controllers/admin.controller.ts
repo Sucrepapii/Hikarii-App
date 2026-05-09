@@ -492,3 +492,51 @@ export const handleBatchOperations = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Batch operation failed" });
   }
 };
+
+export const getMarketingStats = async (req: Request, res: Response) => {
+  try {
+    const adminId = (req as any).userId;
+    const requestor = await prisma.user.findUnique({
+      where: { id: adminId },
+      select: { role: true },
+    });
+
+    if (!requestor || requestor.role !== "ADMIN") {
+      return res.status(403).json({ message: "Access Denied" });
+    }
+
+    // 1. Leads Stats
+    const totalLeads = await prisma.lead.count();
+    const recentLeads = await prisma.lead.count({
+      where: { createdAt: { gte: subDays(new Date(), 7) } },
+    });
+
+    // 2. Article Feedback
+    const articleStats = await prisma.articleFeedback.groupBy({
+      by: ["articleSlug", "isHelpful"],
+      _count: {
+        id: true,
+      },
+    });
+
+    // 3. Lead Sources
+    const leadSources = await prisma.lead.groupBy({
+      by: ["source"],
+      _count: {
+        id: true,
+      },
+    });
+
+    res.json({
+      leads: {
+        total: totalLeads,
+        last7Days: recentLeads,
+        sources: leadSources,
+      },
+      contentPerformance: articleStats,
+    });
+  } catch (error) {
+    console.error("Marketing Stats Error:", error);
+    res.status(500).json({ message: "Failed to fetch marketing stats" });
+  }
+};

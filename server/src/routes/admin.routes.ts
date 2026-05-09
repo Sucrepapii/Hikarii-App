@@ -9,6 +9,7 @@ import {
   getAuditLogs,
   handleBatchOperations,
   createAdmin,
+  getMarketingStats,
 } from "../controllers/admin.controller";
 
 const router = Router();
@@ -22,5 +23,6 @@ router.post("/users/:id/suspend", authenticate, suspendUser);
 router.post("/users/:id/reactivate", authenticate, reactivateUser);
 router.delete("/users/:id", authenticate, deleteUser);
 router.post("/batch", authenticate, handleBatchOperations);
+router.get("/marketing-stats", authenticate, getMarketingStats);
 
 export default router;

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAuthStore } from '../stores/authStore';
 import { Card } from '../components/common/Card';
-import { Users, Activity, Crown, Shield, Wallet, ListTodo, Split, Zap } from 'lucide-react';
+import { Users, Activity, Crown, Shield, Wallet, ListTodo, Split, Zap, TrendingUp } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import apiClient from '../api/client';
@@ -241,6 +241,42 @@ export const AdminDashboard: React.FC = () => {
 
                 {/* Quick Actions Panel */}
                 <div className="space-y-6">
+                    <Card className="p-6">
+                        <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-4">Quick Actions</h3>
+                        <div className="grid grid-cols-1 gap-3">
+                            <button 
+                                onClick={() => navigate('/admin/users')}
+                                className="w-full flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-900/50 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 text-slate-700 dark:text-slate-200 transition-colors group"
+                            >
+                                <div className="flex items-center gap-3">
+                                    <Users className="w-4 h-4 text-indigo-500" />
+                                    <span className="text-sm font-medium">Manage Users</span>
+                                </div>
+                                <Zap className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+                            </button>
+                            <button 
+                                onClick={() => navigate('/admin/marketing')}
+                                className="w-full flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-900/50 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 text-slate-700 dark:text-slate-200 transition-colors group"
+                            >
+                                <div className="flex items-center gap-3">
+                                    <TrendingUp className="w-4 h-4 text-purple-500" />
+                                    <span className="text-sm font-medium">Marketing Insights</span>
+                                </div>
+                                <Zap className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+                            </button>
+                            <button 
+                                onClick={() => navigate('/admin/audit')}
+                                className="w-full flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-900/50 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 text-slate-700 dark:text-slate-200 transition-colors group"
+                            >
+                                <div className="flex items-center gap-3">
+                                    <Shield className="w-4 h-4 text-emerald-500" />
+                                    <span className="text-sm font-medium">Security Logs</span>
+                                </div>
+                                <Zap className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+                            </button>
+                        </div>
+                    </Card>
+
                     <Card className="p-6">
                         <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-4">System Alerts</h3>
                         <div className="p-4 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-100 dark:border-emerald-800/30">

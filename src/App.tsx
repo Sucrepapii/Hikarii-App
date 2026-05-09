@@ -36,6 +36,7 @@ import { AdminDashboard } from './pages/AdminDashboard';
 import { AdminUserManagement } from './pages/AdminUserManagement';
 import { AdminReport } from './pages/AdminReport';
 import { AdminAuditLogs } from './pages/AdminAuditLogs';
+import { AdminMarketing } from './pages/AdminMarketing';
 import { Pricing } from './pages/Pricing';
 import ForcedPasswordChange from './pages/ForcedPasswordChange';
 import { AcceptInvite } from './pages/AcceptInvite';
@@ -280,6 +281,16 @@ function App() {
                         <ProtectedRoute>
                             <DashboardLayout>
                                 <AdminAuditLogs />
+                            </DashboardLayout>
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/admin/marketing"
+                    element={
+                        <ProtectedRoute>
+                            <DashboardLayout>
+                                <AdminMarketing />
                             </DashboardLayout>
                         </ProtectedRoute>
                     }
