@@ -527,6 +527,12 @@ export const getMarketingStats = async (req: Request, res: Response) => {
       },
     });
 
+    // 4. Recent Feedback Feed
+    const recentFeedback = await prisma.articleFeedback.findMany({
+      orderBy: { createdAt: "desc" },
+      take: 10,
+    });
+
     res.json({
       leads: {
         total: totalLeads,
@@ -534,6 +540,7 @@ export const getMarketingStats = async (req: Request, res: Response) => {
         sources: leadSources,
       },
       contentPerformance: articleStats,
+      recentFeedback,
     });
   } catch (error) {
     console.error("Marketing Stats Error:", error);
