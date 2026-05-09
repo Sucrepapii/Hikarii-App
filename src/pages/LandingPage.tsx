@@ -212,7 +212,12 @@ export const LandingPage: React.FC = () => {
                             "@type": "AggregateRating",
                             "ratingValue": "4.9",
                             "reviewCount": "100"
-                        }
+                        },
+                        "sameAs": [
+                            "https://www.instagram.com/hikariiapp",
+                            "https://x.com/hikariiapp",
+                            "https://www.linkedin.com/company/hikari-world/"
+                        ]
                     })}
                 </script>
 
