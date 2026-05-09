@@ -256,30 +256,66 @@ export const helpArticles: Article[] = [
     category: "The Hikari Method",
     excerpt: "Master the philosophy of linking your tasks to your budget for radical clarity and intentional productivity.",
     content: `
-        <h2>The Core Philosophy: Why Tasks and Budgets Belong Together</h2>
-        <p>For decades, we’ve been taught to manage our lives in two separate silos: our <strong>To-Do List</strong> and our <strong>Budget</strong>. We plan our day in one app and track our spending in another. The result? A constant sense of disconnect. You feel productive because you checked off 10 tasks, but stressed because you don't know if you can afford the project you just planned.</p>
-        
-        <p>The <strong>Hikari Method</strong> is the bridge between these two worlds. It is built on the principle of <strong>Radical Clarity</strong>: the idea that every hour of your time has a cost, and every dollar of your money has a purpose.</p>
+        <div class="mb-12 rounded-3xl overflow-hidden shadow-2xl border border-slate-200 dark:border-white/10">
+            <img src="/marketing/hikari_method_philosophy_v2_1778356186586.png" alt="Hikari Method Philosophy" class="w-full h-auto" />
+        </div>
 
-        <h3>1. Give Every Task a Job (The Foundation)</h3>
-        <p>In traditional budgeting, we "give every dollar a job." In the Hikari Method, we take this further: <strong>Give every task a budget.</strong></p>
-        <p>When you create a task, whether it's "Fix the kitchen sink" or "Launch a marketing campaign", you must immediately ask: <em>What is the financial cost of this action?</em> By linking a budget limit to a task, you transform it from a vague intention into a funded commitment. You no longer just "do" things; you execute investments in your own life.</p>
+        <div class="prose prose-slate dark:prose-invert max-w-none">
+            <h2 class="text-3xl font-bold bg-gradient-to-r from-indigo-500 to-purple-600 bg-clip-text text-transparent mb-6">The Core Philosophy: Bridging the Gap</h2>
+            <p class="text-lg leading-relaxed text-slate-600 dark:text-slate-300 mb-8">
+                For decades, we’ve been taught to manage our lives in two separate silos: our <strong>To-Do List</strong> and our <strong>Budget</strong>. The result? A constant sense of disconnect. You feel productive because you checked off 10 tasks, but stressed because you don't know if you can afford the project you just planned.
+            </p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 my-12">
+                <div class="p-8 rounded-3xl bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-500/20">
+                    <div class="w-12 h-12 bg-indigo-500 rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg shadow-indigo-500/20">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">1. Give Every Task a Job</h3>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                        Every hour has a cost, and every dollar has a purpose. By linking a budget limit to a task, you transform it from a vague intention into a funded commitment.
+                    </p>
+                </div>
 
-        <h3>2. The Power of Real-Time Syncing</h3>
-        <p>One of the biggest pitfalls of productivity is the "invisible cost." We agree to a new project without realizing it will drain our discretionary spending for the month. Hikari solves this with <strong>Real-Time Syncing</strong>.</p>
-        <p>As you log expenses against a task, your overall project budget updates instantly. This creates a feedback loop that forces intentionality. If a task is costing more than expected, you see it immediately, not at the end of the month when the credit card bill arrives.</p>
+                <div class="p-8 rounded-3xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-100 dark:border-emerald-500/20">
+                    <div class="w-12 h-12 bg-emerald-500 rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg shadow-emerald-500/20">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">2. Real-Time Syncing</h3>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                        As you log expenses, your project budget updates instantly. No more surprises at the end of the month—only intentional execution.
+                    </p>
+                </div>
 
-        <h3>3. Rule 5: Scale with Collaboration</h3>
-        <p>Clarity isn't just for individuals. Teams often suffer from "Shadow Work", which are tasks that happen without budget approval, or spending that happens without a clear task attached. By using <strong>Rule 5: Scale with Collaboration</strong>, you bring your entire team into the Hikari ecosystem.</p>
-        <p>When a teammate completes a task, the associated budget is marked as "Executed." When they log an expense, the whole team sees the impact on the project's health. This transparency builds trust and eliminates the need for constant "status update" meetings.</p>
+                <div class="p-8 rounded-3xl bg-purple-50 dark:bg-purple-900/20 border border-purple-100 dark:border-purple-500/20">
+                    <div class="w-12 h-12 bg-purple-500 rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg shadow-purple-500/20">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">3. Scale with Collaboration</h3>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                        Rule 5 brings your team into the ecosystem. Transparency eliminates the need for constant "status update" meetings.
+                    </p>
+                </div>
 
-        <h3>4. Focus Mode: Protecting Your Deep Work</h3>
-        <p>True productivity requires more than just organization; it requires <strong>Focus</strong>. Our "Zen Aesthetics" in Focus Mode aren't just for looks. They are designed to dim the noise of lower-priority tasks and mute notifications, allowing you to enter a state of flow with your most important, high-budget milestones.</p>
+                <div class="p-8 rounded-3xl bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-500/20">
+                    <div class="w-12 h-12 bg-amber-500 rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg shadow-amber-500/20">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">4. Zen Focus Mode</h3>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                        Mute the noise. Dim the lower priorities. Enter a state of flow with your most important milestones using our Zen aesthetics.
+                    </p>
+                </div>
+            </div>
 
-        <h3>Conclusion: The Path to Radical Clarity</h3>
-        <p>The Hikari Method isn't just a software feature, it's a lifestyle shift. It’s about moving away from reactive stress and toward proactive control. By mastering these four rules (and our new fifth rule), you aren't just managing tasks; you're mastering your future.</p>
-        
-        <p>Ready to start? Head over to your <a href="/dashboard">Dashboard</a> and create your first task-budget link today.</p>
+            <div class="bg-slate-900 rounded-3xl p-10 text-center text-white shadow-xl">
+                <h2 class="text-2xl font-bold mb-4">Ready to achieve Radical Clarity?</h2>
+                <p class="text-slate-400 mb-8 max-w-lg mx-auto">Mastering the Hikari Method is about moving from reactive stress toward proactive control.</p>
+                <a href="/dashboard" class="inline-flex items-center px-8 py-4 rounded-2xl bg-indigo-500 hover:bg-indigo-400 text-white font-bold transition-all shadow-lg shadow-indigo-500/20">
+                    Get Started Now
+                </a>
+            </div>
+        </div>
     `,
   },
 ];

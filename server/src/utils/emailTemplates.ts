@@ -326,9 +326,8 @@ export const getLeadMagnetTemplate = (email: string) => {
   `;
 
   const leadMagnetUrl =
-    (process.env.CLIENT_URL ||
-      "https://www.hikarii.org") +
-    "/resources/HIKARI_METHOD_GUIDE.pdf";
+    (process.env.CLIENT_URL || "https://www.hikarii.org") +
+    "/help/article/ultimate-guide-hikari-method";
 
   return getBaseTemplate(
     "Your Hikari Method Guide Inside!",
