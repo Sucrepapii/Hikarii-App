@@ -42,16 +42,16 @@ export const AdminMarketing: React.FC = () => {
     }
 
     // Process Sources for Pie Chart
-    const sourceData = data.leads.sources.map(s => ({
+    const sourceData = data?.leads?.sources?.map(s => ({
         name: s.source || 'Direct',
         value: s._count.id
-    }));
+    })) || [];
 
     const COLORS = ['#6366f1', '#a855f7', '#ec4899', '#f59e0b', '#10b981'];
 
     // Process Content Feedback
     const articleGroups: Record<string, { helpful: number; unhelpful: number }> = {};
-    data.contentPerformance.forEach(item => {
+    data?.contentPerformance?.forEach(item => {
         if (!articleGroups[item.articleSlug]) {
             articleGroups[item.articleSlug] = { helpful: 0, unhelpful: 0 };
         }
@@ -84,7 +84,7 @@ export const AdminMarketing: React.FC = () => {
                     <div className="flex items-center justify-between">
                         <div>
                             <p className="text-sm font-medium text-slate-500">Total Leads</p>
-                            <h3 className="text-3xl font-bold mt-1 text-slate-900 dark:text-white">{data.leads.total}</h3>
+                            <h3 className="text-3xl font-bold mt-1 text-slate-900 dark:text-white">{data?.leads?.total || 0}</h3>
                             <p className="text-xs text-emerald-500 mt-1 flex items-center gap-1">
                                 <TrendingUp className="w-3 h-3" />
                                 Lifetime capture
@@ -100,7 +100,7 @@ export const AdminMarketing: React.FC = () => {
                     <div className="flex items-center justify-between">
                         <div>
                             <p className="text-sm font-medium text-slate-500">Recent Growth</p>
-                            <h3 className="text-3xl font-bold mt-1 text-slate-900 dark:text-white">+{data.leads.last7Days}</h3>
+                            <h3 className="text-3xl font-bold mt-1 text-slate-900 dark:text-white">+{data?.leads?.last7Days || 0}</h3>
                             <p className="text-xs text-slate-400 mt-1">New leads this week</p>
                         </div>
                         <div className="p-3 bg-purple-50 dark:bg-purple-900/30 rounded-xl text-purple-600">
@@ -157,7 +157,7 @@ export const AdminMarketing: React.FC = () => {
                         <FileText className="text-slate-400 w-5 h-5" />
                     </div>
                     <div className="space-y-4 overflow-y-auto max-h-[300px] pr-2">
-                        {performanceData.map((item, idx) => (
+                        {performanceData?.map((item, idx) => (
                             <div key={idx} className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-100 dark:border-white/5">
                                 <div className="min-w-0 flex-1 mr-4">
                                     <p className="text-sm font-semibold text-slate-900 dark:text-white truncate capitalize">{item.slug}</p>
@@ -192,7 +192,7 @@ export const AdminMarketing: React.FC = () => {
                     </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {data.recentFeedback.map((fb, idx) => (
+                    {data?.recentFeedback?.map((fb, idx) => (
                         <div key={idx} className="flex items-start gap-3 p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-white/5">
                             <div className={`mt-1 p-1.5 rounded-full ${fb.isHelpful ? 'bg-emerald-100 text-emerald-600' : 'bg-rose-100 text-rose-600'}`}>
                                 {fb.isHelpful ? <CheckCircle className="w-3.5 h-3.5" /> : <XCircle className="w-3.5 h-3.5" />}
@@ -208,7 +208,7 @@ export const AdminMarketing: React.FC = () => {
                             </div>
                         </div>
                     ))}
-                    {data.recentFeedback.length === 0 && (
+                    {(!data?.recentFeedback || data.recentFeedback.length === 0) && (
                         <div className="col-span-full py-12 text-center">
                             <Clock className="w-12 h-12 text-slate-300 mx-auto mb-3" />
                             <p className="text-slate-500 italic">No feedback received yet. Your stream will start once users begin rating articles.</p>
