@@ -189,9 +189,10 @@ export const LandingPage: React.FC = () => {
     return (
         <div className="min-h-screen bg-slate-50 dark:bg-[#080910] font-sans text-slate-900 dark:text-slate-100 overflow-x-hidden selection:bg-purple-500/30">
             <Helmet>
+                <link rel="canonical" href="https://www.hikarii.org/" />
                 <title>Hikari | Radical Clarity in Tasks & Budgeting</title>
                 <meta name="description" content="Master the Hikari Method: A revolutionary approach to linking your tasks with your budget for ultimate financial and professional clarity." />
-                <meta name="keywords" content="productivity, budgeting, task management, financial clarity, team collaboration, focus mode" />
+                <meta name="keywords" content="productivity app Nigeria, AI task manager, project budget tracker, financial clarity Lagos, Hikari method, task budget linking, best task app West Africa" />
                 <meta name="thumbnail" content="https://www.hikarii.org/marketing/hikari_chaos_to_clarity_1778160537687.png" />
                 
                 {/* Structured Data */}
@@ -416,7 +417,7 @@ export const LandingPage: React.FC = () => {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <img src={step.image} alt={step.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                                            <img src={step.image} alt={step.title} loading="lazy" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                                             <div className="absolute inset-0 bg-gradient-to-br from-white/[0.06] via-transparent to-transparent pointer-events-none z-10" />
                                             <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none z-10" />
                                             <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-[100px] h-[4px] bg-white/40 rounded-full z-20" />
@@ -479,7 +480,7 @@ export const LandingPage: React.FC = () => {
                         <div className="absolute -inset-8 bg-gradient-to-r from-indigo-500/8 via-purple-500/8 to-pink-500/8 rounded-3xl blur-[80px] opacity-60 group-hover:opacity-100 transition-opacity duration-1000" />
                         <div className="relative w-full aspect-[16/10] bg-white dark:bg-[#0F111A] rounded-2xl overflow-hidden border border-slate-200 dark:border-white/[0.08] shadow-[0_40px_80px_-20px_rgba(0,0,0,0.2)] dark:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.5)] transform perspective-[2000px] rotate-y-[-5deg] rotate-x-[2deg] group-hover:rotate-y-0 group-hover:rotate-x-0 transition-all duration-700 ease-out">
                             <div className="h-full bg-slate-100 dark:bg-[#0B0C15]">
-                                <img src="/hikari_hero_desk.png" alt="Hikari Desktop Dashboard showing task-budget integration" className="w-full h-full object-cover" />
+                                <img src="/hikari_hero_desk.png" alt="Hikari Desktop Dashboard showing task-budget integration" loading="lazy" className="w-full h-full object-cover" />
                             </div>
                         </div>
 
@@ -488,7 +489,7 @@ export const LandingPage: React.FC = () => {
                             <div className="relative rounded-[2.5rem] bg-[#1C1C1E] p-[8px] shadow-2xl border border-white/10">
                                 <div className="absolute top-4 left-1/2 -translate-x-1/2 z-30 w-[60px] h-[16px] bg-black rounded-full" />
                                 <div className="relative rounded-[2rem] overflow-hidden bg-black aspect-[9/19.5]">
-                                    <img src="/step4_realistic_1774274876575.png" alt="Hikari Mobile App" className="w-full h-full object-cover" />
+                                    <img src="/step4_realistic_1774274876575.png" alt="Hikari Mobile App" loading="lazy" className="w-full h-full object-cover" />
                                     <div className="absolute inset-0 bg-gradient-to-tr from-white/[0.04] via-transparent to-transparent pointer-events-none" />
                                 </div>
                             </div>
