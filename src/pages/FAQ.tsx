@@ -3,6 +3,7 @@ import { ChevronDown, HelpCircle, MessageSquare, ArrowLeft } from 'lucide-react'
 import { Link } from 'react-router-dom';
 import { Footer } from '../components/layout/Footer';
 import { Logo } from '../components/common/Logo';
+import { Helmet } from 'react-helmet-async';
 
 export const FAQ: React.FC = () => {
     // Scroll to top on mount
@@ -47,6 +48,12 @@ export const FAQ: React.FC = () => {
 
     return (
         <div className="min-h-screen bg-slate-900 selection:bg-primary-500/30">
+            <Helmet>
+                <title>FAQ | Hikari Support & Help Center</title>
+                <meta name="description" content="Find answers to frequently asked questions about Hikari. Learn about AI Smart Split, WhatsApp notifications, and how to master your budget." />
+                <meta name="keywords" content="hikari faq, hikariiapp support, help center, AI task manager help, budget app nigeria, whatsapp notifications" />
+                <link rel="canonical" href="https://www.hikarii.org/faq" />
+            </Helmet>
             {/* Header/Nav */}
             <nav className="sticky top-0 z-50 bg-slate-900/80 backdrop-blur-md border-b border-white/10 px-6 py-4">
                 <div className="max-w-7xl mx-auto flex items-center justify-between">

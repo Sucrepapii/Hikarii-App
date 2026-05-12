@@ -192,7 +192,7 @@ export const LandingPage: React.FC = () => {
                 <link rel="canonical" href="https://www.hikarii.org/" />
                 <title>Hikari | Radical Clarity in Tasks & Budgeting</title>
                 <meta name="description" content="Master the Hikari Method: A revolutionary approach to linking your tasks with your budget for ultimate financial and professional clarity." />
-                <meta name="keywords" content="productivity app Nigeria, AI task manager, project budget tracker, financial clarity Lagos, Hikari method, task budget linking, best task app West Africa" />
+                <meta name="keywords" content="hikari, hikariiapp, tasks, budget, AI, collaboration, productivity app Nigeria, AI task manager, project budget tracker, financial clarity Lagos, Hikari method, task budget linking, best task app West Africa" />
                 <meta name="thumbnail" content="https://www.hikarii.org/marketing/hikari_chaos_to_clarity_1778160537687.png" />
                 
                 {/* Structured Data */}

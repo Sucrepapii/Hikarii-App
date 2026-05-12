@@ -7,6 +7,7 @@ import { useAuthStore } from '../stores/authStore';
 import { loadStripe } from '@stripe/stripe-js';
 import { STRIPE_CONFIG } from '../config/stripe';
 import { useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import apiClient from '../api/client';
 
 // Initialize Stripe
@@ -71,6 +72,12 @@ export const Pricing: React.FC = () => {
 
     return (
         <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
+            <Helmet>
+                <title>Pricing | Hikari - Radical Clarity in Tasks & Budgeting</title>
+                <meta name="description" content="Choose the perfect plan for your productivity journey. Start for free or upgrade to Hikari Pro for AI insights and unlimited projects." />
+                <meta name="keywords" content="hikari pricing, hikariiapp, tasks, budget, AI, collaboration" />
+                <link rel="canonical" href="https://www.hikarii.org/pricing" />
+            </Helmet>
             {/* Header with Back Button */}
             <div className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 sticky top-0 z-10">
                 <div className="container mx-auto px-4 py-4">

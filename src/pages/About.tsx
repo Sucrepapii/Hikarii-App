@@ -4,12 +4,19 @@ import { useNavigate } from 'react-router-dom';
 import { Logo } from '../components/common/Logo';
 import { Button } from '../components/common/Button';
 import { Lightbulb, Target, Users, Heart } from 'lucide-react';
+import { Helmet } from 'react-helmet-async';
 
 export const About: React.FC = () => {
     const navigate = useNavigate();
 
     return (
         <div className="min-h-screen bg-white dark:bg-[#0B0C15] font-sans text-slate-900 dark:text-slate-100 flex flex-col">
+            <Helmet>
+                <title>About Us | Hikari - Radical Clarity in Tasks & Budgeting</title>
+                <meta name="description" content="Discover the Hikari Method. We build tools for the Focused Few to bring radical clarity to the intersection of life's work and costs." />
+                <meta name="keywords" content="hikari mission, hikariiapp, tasks, budget, AI, collaboration, focused few" />
+                <link rel="canonical" href="https://www.hikarii.org/about" />
+            </Helmet>
             {/* Minimal Header */}
             <nav className="fixed top-0 w-full z-50 bg-white/80 dark:bg-[#0B0C15]/80 backdrop-blur-md border-b border-slate-200 dark:border-white/5">
                 <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
