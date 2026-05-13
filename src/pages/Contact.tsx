@@ -3,7 +3,8 @@ import { Footer } from '../components/layout/Footer';
 import { useNavigate } from 'react-router-dom';
 import { Logo } from '../components/common/Logo';
 import { Button } from '../components/common/Button';
-import { Mail, MessageSquare, Send } from 'lucide-react';
+import { Mail, MessageSquare, Send, Globe, Shield } from 'lucide-react';
+import { Navbar } from '../components/layout/Navbar';
 import toast from 'react-hot-toast';
 
 export const Contact: React.FC = () => {
@@ -44,44 +45,40 @@ export const Contact: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen bg-white dark:bg-[#0B0C15] font-sans text-slate-900 dark:text-slate-100 flex flex-col">
-            <nav className="fixed top-0 w-full z-50 bg-white/80 dark:bg-[#0B0C15]/80 backdrop-blur-md border-b border-slate-200 dark:border-white/5">
-                <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-                    <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/')}>
-                        <Logo variant="full" size="md" suppressLink={true} />
-                    </div>
-                    <div className="flex items-center gap-4">
-                        <Button onClick={() => navigate('/')} variant="ghost" size="sm">Back to Home</Button>
-                    </div>
-                </div>
-            </nav>
+        <div className="min-h-screen bg-[#080910] font-sans text-slate-100 flex flex-col selection:bg-purple-500/30 overflow-x-hidden">
+            <Navbar />
 
             <main className="flex-grow pt-32 pb-20 px-6 w-full max-w-7xl mx-auto">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
                     {/* Left Column: Info */}
-                    <div>
-                        <h1 className="text-4xl md:text-6xl font-display font-bold mb-8">Get in touch</h1>
-                        <p className="text-xl text-slate-600 dark:text-slate-300 mb-12 leading-relaxed">
+                    <div className="relative">
+                        <div className="absolute top-0 left-0 w-64 h-64 bg-indigo-600/10 rounded-full blur-[100px] -z-10" />
+                        <h1 className="text-4xl md:text-7xl font-display font-bold mb-8 tracking-tight">Get in touch</h1>
+                        <p className="text-xl text-slate-400 mb-12 leading-relaxed max-w-lg">
                             Have a question about the platform? Interested in enterprise plans?
                             Just want to say hello? We're listening.
                         </p>
 
-                        <div className="space-y-8 mb-12">
-                            <div className="flex items-start gap-4 p-6 rounded-2xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 hover:border-indigo-500/30 transition-colors">
-                                <Mail className="w-6 h-6 text-indigo-500 mt-1" />
+                        <div className="space-y-6 mb-12">
+                            <div className="flex items-start gap-5 p-8 rounded-[2rem] bg-[#0D0F1A] border border-white/[0.06] hover:border-indigo-500/30 transition-all duration-300 group">
+                                <div className="w-12 h-12 bg-indigo-500/10 rounded-2xl flex items-center justify-center text-indigo-400 border border-indigo-500/20 shadow-lg shadow-indigo-500/10 group-hover:scale-110 transition-transform">
+                                    <Mail className="w-6 h-6" />
+                                </div>
                                 <div>
-                                    <h3 className="font-bold text-lg mb-1">Email Support</h3>
-                                    <p className="text-slate-500 dark:text-slate-400 mb-2">For general inquiries and technical help.</p>
-                                    <a href="mailto:support@hikarii.org" className="text-indigo-600 dark:text-indigo-400 font-medium hover:underline">support@hikarii.org</a>
+                                    <h3 className="font-bold text-lg mb-1 text-white">Email Support</h3>
+                                    <p className="text-slate-500 text-sm mb-3 leading-relaxed">For general inquiries and technical help.</p>
+                                    <a href="mailto:support@hikarii.org" className="text-indigo-400 font-black tracking-widest text-[10px] uppercase hover:text-white transition-colors">support@hikarii.org</a>
                                 </div>
                             </div>
 
-                            <div className="flex items-start gap-4 p-6 rounded-2xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 hover:border-purple-500/30 transition-colors">
-                                <MessageSquare className="w-6 h-6 text-purple-500 mt-1" />
+                            <div className="flex items-start gap-5 p-8 rounded-[2rem] bg-[#0D0F1A] border border-white/[0.06] hover:border-purple-500/30 transition-all duration-300 group">
+                                <div className="w-12 h-12 bg-purple-500/10 rounded-2xl flex items-center justify-center text-purple-400 border border-purple-500/20 shadow-lg shadow-purple-500/10 group-hover:scale-110 transition-transform">
+                                    <MessageSquare className="w-6 h-6" />
+                                </div>
                                 <div>
-                                    <h3 className="font-bold text-lg mb-1">Sales & Enterprise</h3>
-                                    <p className="text-slate-500 dark:text-slate-400 mb-2">For teams larger than 20 people.</p>
-                                    <a href="mailto:support@hikarii.org" className="text-indigo-600 dark:text-indigo-400 font-medium hover:underline">support@hikarii.org</a>
+                                    <h3 className="font-bold text-lg mb-1 text-white">Sales & Enterprise</h3>
+                                    <p className="text-slate-500 text-sm mb-3 leading-relaxed">For teams larger than 20 people.</p>
+                                    <a href="mailto:support@hikarii.org" className="text-purple-400 font-black tracking-widest text-[10px] uppercase hover:text-white transition-colors">support@hikarii.org</a>
                                 </div>
                             </div>
 
@@ -89,71 +86,70 @@ export const Contact: React.FC = () => {
                     </div>
 
                     {/* Right Column: Interactive Form */}
-                    <div className="bg-white dark:bg-[#0F111A] p-8 md:p-10 rounded-3xl border border-slate-200 dark:border-white/10 shadow-2xl relative overflow-hidden group">
-                        {/* Decorative dark mode glow */}
-                        <div className="absolute -top-24 -right-24 w-48 h-48 bg-indigo-500/10 rounded-full blur-3xl opacity-0 dark:group-hover:opacity-100 transition-opacity"></div>
+                    <div className="bg-[#0D0F1A] p-8 md:p-12 rounded-[2.5rem] border border-white/[0.06] shadow-[0_20px_50px_rgba(0,0,0,0.3)] relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 w-80 h-80 bg-indigo-600/5 rounded-full blur-[100px] -z-10" />
 
-                        <h2 className="text-2xl font-bold mb-6 relative z-10">Send us a message</h2>
+                        <h2 className="text-2xl font-bold mb-8 relative z-10 tracking-tight text-white">Send us a message</h2>
                         <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                 <div>
-                                    <label className="block text-sm font-semibold text-slate-700 dark:text-slate-200 mb-2">First Name</label>
+                                    <label className="block text-xs font-black tracking-widest text-slate-500 uppercase mb-3">First Name</label>
                                     <input
                                         name="firstName"
                                         required
                                         type="text"
-                                        className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-indigo-500 dark:focus:border-indigo-400 outline-none transition-all shadow-sm"
+                                        className="w-full px-5 py-4 rounded-xl bg-white/[0.03] border border-white/10 text-white placeholder:text-slate-700 focus:border-indigo-500/50 outline-none transition-all"
                                         placeholder="Jane"
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-semibold text-slate-700 dark:text-slate-200 mb-2">Last Name</label>
+                                    <label className="block text-xs font-black tracking-widest text-slate-500 uppercase mb-3">Last Name</label>
                                     <input
                                         name="lastName"
                                         required
                                         type="text"
-                                        className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-indigo-500 dark:focus:border-indigo-400 outline-none transition-all shadow-sm"
+                                        className="w-full px-5 py-4 rounded-xl bg-white/[0.03] border border-white/10 text-white placeholder:text-slate-700 focus:border-indigo-500/50 outline-none transition-all"
                                         placeholder="Doe"
                                     />
                                 </div>
                             </div>
 
                             <div>
-                                <label className="block text-sm font-semibold text-slate-700 dark:text-slate-200 mb-2">Email Address</label>
+                                <label className="block text-xs font-black tracking-widest text-slate-500 uppercase mb-3">Email Address</label>
                                 <input
                                     name="email"
                                     required
                                     type="email"
-                                    className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-indigo-500 dark:focus:border-indigo-400 outline-none transition-all shadow-sm"
+                                    className="w-full px-5 py-4 rounded-xl bg-white/[0.03] border border-white/10 text-white placeholder:text-slate-700 focus:border-indigo-500/50 outline-none transition-all"
                                     placeholder="jane@company.com"
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-sm font-semibold text-slate-700 dark:text-slate-200 mb-2">Subject</label>
+                                <label className="block text-xs font-black tracking-widest text-slate-500 uppercase mb-3">Subject</label>
                                 <div className="relative">
                                     <select
                                         name="subject"
-                                        className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white focus:border-indigo-500 dark:focus:border-indigo-400 outline-none transition-all appearance-none cursor-pointer shadow-sm"
+                                        className="w-full px-5 py-4 rounded-xl bg-white/[0.03] border border-white/10 text-white focus:border-indigo-500/50 outline-none transition-all appearance-none cursor-pointer"
                                     >
-                                        <option value="General Support" className="dark:bg-[#0F111A] text-slate-900 dark:text-white">General Support</option>
-                                        <option value="Billing Question" className="dark:bg-[#0F111A] text-slate-900 dark:text-white">Billing Question</option>
-                                        <option value="Feature Request" className="dark:bg-[#0F111A] text-slate-900 dark:text-white">Feature Request</option>
-                                        <option value="Enterprise Sales" className="dark:bg-[#0F111A] text-slate-900 dark:text-white">Enterprise Sales</option>
+                                        <option value="General Support" className="bg-[#0F111A] text-white">General Support</option>
+                                        <option value="Billing Question" className="bg-[#0F111A] text-white">Billing Question</option>
+                                        <option value="Feature Request" className="bg-[#0F111A] text-white">Feature Request</option>
+                                        <option value="Enterprise Sales" className="bg-[#0F111A] text-white">Enterprise Sales</option>
                                     </select>
-                                    <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none opacity-50">
-                                        <svg className="w-4 h-4 text-slate-500 dark:text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                                    <div className="absolute inset-y-0 right-5 flex items-center pointer-events-none opacity-30">
+                                        <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
                                     </div>
                                 </div>
                             </div>
 
                             <div>
-                                <label className="block text-sm font-semibold text-slate-700 dark:text-slate-200 mb-2">Message</label>
+                                <label className="block text-xs font-black tracking-widest text-slate-500 uppercase mb-3">Message</label>
                                 <textarea
                                     name="message"
                                     required
                                     rows={4}
-                                    className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-indigo-500 dark:focus:border-indigo-400 outline-none transition-all shadow-sm resize-none"
+                                    className="w-full px-5 py-4 rounded-xl bg-white/[0.03] border border-white/10 text-white placeholder:text-slate-700 focus:border-indigo-500/50 outline-none transition-all resize-none"
                                     placeholder="How can we help you?"
                                 ></textarea>
                             </div>
@@ -161,7 +157,7 @@ export const Contact: React.FC = () => {
                             <Button
                                 type="submit"
                                 disabled={isSubmitting}
-                                className="w-full py-4 text-base font-bold rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white shadow-xl shadow-indigo-500/20 flex items-center justify-center gap-2 transition-all hover:scale-[1.01] active:scale-[0.99]"
+                                className="w-full py-5 text-xs font-black tracking-widest uppercase rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white shadow-xl shadow-indigo-500/25 flex items-center justify-center gap-3 transition-all hover:scale-[1.02] active:scale-[0.98] border-0"
                             >
                                 {isSubmitting ? 'Sending...' : (
                                     <>

@@ -334,6 +334,8 @@ model Feedback {
   rating    Int
   comment   String
   topic     String?
+  country   String?
+  flag      String?
   createdAt DateTime @default(now())
 }
 model ArticleFeedback {

@@ -1,10 +1,11 @@
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Check, Zap, Link2, FileText, Split, ArrowRight, Menu, X, ChevronDown, Star, Calendar, Users, MessageSquare, Bell, Shield } from 'lucide-react';
 import { Button } from '../components/common/Button';
 import { Logo } from '../components/common/Logo';
 import { Footer } from '../components/layout/Footer';
+import { Navbar } from '../components/layout/Navbar';
 import { useAuthStore } from '../stores/authStore';
 import { Helmet } from 'react-helmet-async';
 import { clsx } from 'clsx';
@@ -37,28 +38,61 @@ const SEED_TESTIMONIALS = [
         topic: "FINANCIAL GOALS",
         quote: "Hikari helped me save my first ₦500,000 in 3 months. Having my tasks and budget perfectly synchronized changed the way I work.",
         name: "OLUWASEUN ADEYEMI",
-        location: "Lagos",
+        location: "Lagos, Nigeria",
+        flag: "🇳🇬",
         rating: 5,
-        initials: "OA",
+        image: "/diverse_professional_woman_laptop_1778667210443.png",
         color: "from-indigo-500 to-purple-500"
     },
     {
         topic: "AI SPLIT",
         quote: "I used to be paralyzed by my own ambitions. The AI smart split broke down my entire product launch into daily 15-minute blocks. Unbelievable.",
         name: "MARCUS THORNE",
-        location: "Abuja",
+        location: "Singapore",
+        flag: "🇸🇬",
         rating: 5,
-        initials: "MT",
+        image: "/asian_man_smartphone_urban_1778667228092.png",
         color: "from-fuchsia-500 to-purple-500"
+    },
+    {
+        topic: "SCALABILITY",
+        quote: "We scaled our agency from 2 to 15 people using Hikari. The ability to link every project task to a specific budget line is the secret to our growth.",
+        name: "JAMES WILSON",
+        location: "London, UK",
+        flag: "🇬🇧",
+        rating: 5,
+        image: "/european_professional_woman_office_1778667268916.png",
+        color: "from-pink-500 to-rose-500"
     },
     {
         topic: "SUBSCRIPTION TRACKING",
         quote: "Finally, a tool that respects my time. Finding out I was losing $200/mo on dead subscriptions while organizing my daily tasks was a wake-up call.",
         name: "ELENA RODRIGUEZ",
-        location: "Nairobi",
+        location: "Nairobi, Kenya",
+        flag: "🇰🇪",
         rating: 5,
         initials: "ER",
         color: "from-orange-500 to-rose-500"
+    },
+    {
+        topic: "PRODUCTIVITY",
+        quote: "Managing a remote team across three time zones is a nightmare. Hikari's unified view of costs and progress keeps us all aligned and profitable.",
+        name: "DAVID CHEN",
+        location: "Singapore",
+        flag: "🇸🇬",
+        rating: 5,
+        initials: "DC",
+        color: "from-teal-500 to-emerald-500"
+    },
+    {
+        topic: "CREATIVE FLOW",
+        quote: "As a designer, I hate spreadsheets. Hikari gives me the financial overview I need without the headache. It feels like a premium tool, not work.",
+        name: "SOPHIE MULLER",
+        location: "Berlin, Germany",
+        flag: "🇩🇪",
+        rating: 5,
+        initials: "SM",
+        color: "from-sky-500 to-blue-500"
     }
 ];
 
@@ -72,6 +106,7 @@ const GRADIENT_COLORS = [
 ];
 
 function getInitials(name: string): string {
+    if (!name) return '??';
     return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
 }
 
@@ -154,9 +189,10 @@ export const LandingPage: React.FC = () => {
     const navigate = useNavigate();
     const { token } = useAuthStore();
     const isAuthenticated = !!token;
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [currency, setCurrency] = useState<'USD' | 'NGN'>('NGN');
     const [testimonials, setTestimonials] = useState<any[]>(SEED_TESTIMONIALS);
+    const [isHovered, setIsHovered] = useState(false);
+    const testimonialRef = React.useRef<HTMLDivElement>(null);
 
     // Fetch real feedback from the API
     useEffect(() => {
@@ -171,7 +207,8 @@ export const LandingPage: React.FC = () => {
                             topic: (fb.topic || (fb.rating >= 4 ? "HIGHLY RATED" : "USER REVIEW")).toUpperCase(),
                             quote: fb.comment,
                             name: fb.name.toUpperCase(),
-                            location: new Date(fb.createdAt).toLocaleDateString('en-US', { month: 'short' }),
+                            location: fb.country || new Date(fb.createdAt).toLocaleDateString('en-US', { month: 'short' }),
+                            flag: fb.flag || null,
                             rating: fb.rating,
                             initials: getInitials(fb.name),
                             color: GRADIENT_COLORS[idx % GRADIENT_COLORS.length]
@@ -186,15 +223,32 @@ export const LandingPage: React.FC = () => {
         fetchFeedback();
     }, []);
 
+    // Auto-scroll testimonials
+    useEffect(() => {
+        if (isHovered) return;
+
+        const interval = setInterval(() => {
+            if (testimonialRef.current) {
+                const { scrollLeft, scrollWidth, clientWidth } = testimonialRef.current;
+                if (scrollLeft + clientWidth >= scrollWidth - 10) {
+                    testimonialRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+                } else {
+                    testimonialRef.current.scrollBy({ left: 400, behavior: 'smooth' });
+                }
+            }
+        }, 5000);
+        return () => clearInterval(interval);
+    }, [isHovered]);
+
     return (
-        <div className="min-h-screen bg-slate-50 dark:bg-[#080910] font-sans text-slate-900 dark:text-slate-100 overflow-x-hidden selection:bg-purple-500/30">
+        <div className="min-h-screen bg-[#080910] font-sans text-slate-100 overflow-x-hidden selection:bg-purple-500/30">
             <Helmet>
                 <link rel="canonical" href="https://www.hikarii.org/" />
                 <title>Hikari | Radical Clarity in Tasks & Budgeting</title>
                 <meta name="description" content="Master the Hikari Method: A revolutionary approach to linking your tasks with your budget for ultimate financial and professional clarity." />
                 <meta name="keywords" content="hikari, hikariiapp, tasks, budget, AI, collaboration, productivity app Nigeria, AI task manager, project budget tracker, financial clarity Lagos, Hikari method, task budget linking, best task app West Africa" />
                 <meta name="thumbnail" content="https://www.hikarii.org/marketing/hikari_chaos_to_clarity_1778160537687.png" />
-                
+
                 {/* Structured Data */}
                 <script type="application/ld+json">
                     {JSON.stringify({
@@ -238,93 +292,35 @@ export const LandingPage: React.FC = () => {
             </Helmet>
 
             {/* ── NAVBAR ─────────────────────────────────────────────── */}
-            <nav className="fixed top-0 w-full z-50 bg-white/70 dark:bg-[#080910]/80 backdrop-blur-xl border-b border-slate-200/60 dark:border-white/[0.06]">
-                <div className="max-w-7xl mx-auto px-6 h-[68px] flex items-center justify-between">
-                    <div className="flex items-center gap-2 group">
-                        <Logo variant="full" size="md" />
-                        <span className="text-sm font-medium bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-500 bg-clip-text text-transparent bg-[length:200%_auto] animate-shimmer overflow-hidden whitespace-nowrap opacity-0 max-w-0 group-hover:opacity-100 group-hover:max-w-xs transition-all duration-700 ease-out pl-2 border-l border-slate-200 dark:border-white/10 hidden md:block">
-                            Clarity. Focus. Control.
-                        </span>
-                    </div>
-
-                    <div className="hidden md:flex items-center gap-8">
-                        <Link to="/pricing" className="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
-                            Pricing
-                        </Link>
-                        <Link to="/about" className="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
-                            Who is Hikari For?
-                        </Link>
-                        <Link to="/help/article/ultimate-guide-hikari-method" className="text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 transition-colors">
-                            The Ultimate Guide
-                        </Link>
-                        {!isAuthenticated && (
-                            <Link to="/login" className="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">Login</Link>
-                        )}
-                        <Button
-                            onClick={() => navigate(isAuthenticated ? '/dashboard' : '/signup')}
-                            className="bg-indigo-600 text-white hover:bg-indigo-500 rounded-full px-5 h-9 text-sm font-semibold border-0 shadow-md shadow-indigo-500/20 transition-all hover:scale-105"
-                        >
-                            {isAuthenticated ? 'Dashboard' : 'Get Started'}
-                        </Button>
-                    </div>
-
-                    <div className="md:hidden flex items-center gap-4">
-                        <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="text-slate-600 dark:text-slate-300 focus:outline-none">
-                            {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-                        </button>
-                    </div>
-                </div>
-
-                {isMenuOpen && (
-                    <div className="md:hidden absolute top-[68px] left-0 w-full bg-white dark:bg-[#0D0F1A] border-b border-slate-200 dark:border-white/5 py-4 px-6 flex flex-col gap-4 shadow-2xl animate-fade-in-up">
-                        <Link to="/pricing" className="text-lg font-medium text-slate-600 dark:text-slate-300 py-2 border-b border-slate-100 dark:border-white/5" onClick={() => setIsMenuOpen(false)}>
-                            Pricing
-                        </Link>
-                        <Link to="/about" className="text-lg font-medium text-slate-600 dark:text-slate-300 py-2 border-b border-slate-100 dark:border-white/5" onClick={() => setIsMenuOpen(false)}>
-                            Who is Hikari For?
-                        </Link>
-                        <Link to="/login" className="text-lg font-medium text-slate-600 dark:text-slate-300 py-2 border-b border-slate-100 dark:border-white/5" onClick={() => setIsMenuOpen(false)}>
-                            Login
-                        </Link>
-                        <Button
-                            onClick={() => {
-                                navigate(isAuthenticated ? '/dashboard' : '/signup');
-                                setIsMenuOpen(false);
-                            }}
-                            className="w-full bg-indigo-600 text-white hover:bg-indigo-700 rounded-full h-12 mt-2 border-0"
-                        >
-                            {isAuthenticated ? 'Dashboard' : 'Get Started'}
-                        </Button>
-                    </div>
-                )}
-            </nav>
+            {/* Navbar */}
+            <Navbar />
 
             {/* ── HERO ───────────────────────────────────────────────── */}
             <section className="relative min-h-[88vh] flex flex-col items-center justify-center text-center px-6 pt-[68px] pb-16 overflow-hidden">
                 {/* Layered background */}
-                <div className="absolute inset-0 bg-gradient-to-br from-indigo-50 via-white to-purple-50/60 dark:from-[#080910] dark:via-[#0D0F1C] dark:to-[#0A0B16] pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-br from-[#080910] via-[#0D0F1C] to-[#0A0B16] pointer-events-none" />
                 {/* Animated orbs */}
-                <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[700px] h-[700px] bg-indigo-400/10 dark:bg-indigo-600/15 rounded-full blur-[120px] pointer-events-none animate-pulse-slow" />
-                <div className="absolute top-1/3 left-1/3 w-[400px] h-[400px] bg-purple-400/10 dark:bg-purple-600/10 rounded-full blur-[100px] pointer-events-none" />
+                <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[700px] h-[700px] bg-indigo-600/15 rounded-full blur-[120px] pointer-events-none animate-pulse-slow" />
+                <div className="absolute top-1/3 left-1/3 w-[400px] h-[400px] bg-purple-600/10 rounded-full blur-[100px] pointer-events-none" />
                 {/* Subtle dot-grid */}
-                <div className="absolute inset-0 pointer-events-none opacity-[0.025] dark:opacity-[0.04]"
+                <div className="absolute inset-0 pointer-events-none opacity-[0.04]"
                     style={{ backgroundImage: 'radial-gradient(circle, #6366f1 1px, transparent 1px)', backgroundSize: '32px 32px' }} />
 
                 <div className="relative z-10 max-w-4xl mx-auto">
                     {/* Badge */}
-                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-indigo-200 dark:border-indigo-500/30 bg-indigo-50 dark:bg-indigo-500/10 mb-8 animate-fade-in-up shadow-sm">
+                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-indigo-500/30 bg-indigo-500/10 mb-8 animate-fade-in-up shadow-sm">
                         <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
-                        <span className="text-sm font-semibold text-indigo-700 dark:text-indigo-300 tracking-wide">Clarity. Focus. Control.</span>
+                        <span className="text-sm font-semibold text-indigo-300 tracking-wide">Clarity. Focus. Control.</span>
                     </div>
 
-                    <h1 className="text-4xl sm:text-5xl md:text-[84px] font-display font-extrabold tracking-tight mb-6 leading-[1.05] animate-fade-in-up delay-100 text-slate-900 dark:text-white px-2">
+                    <h1 className="text-4xl sm:text-5xl md:text-[84px] font-display font-extrabold tracking-tight mb-6 leading-[1.05] animate-fade-in-up delay-100 text-white px-2">
                         Master Your <br />
                         <span className="bg-gradient-to-r from-indigo-600 via-purple-500 to-pink-500 bg-clip-text text-transparent">
                             Life & Money
                         </span>
                     </h1>
 
-                    <p className="text-xl text-slate-500 dark:text-slate-400 max-w-2xl mx-auto mb-10 animate-fade-in-up delay-200 leading-relaxed">
+                    <p className="text-xl text-slate-400 max-w-2xl mx-auto mb-10 animate-fade-in-up delay-200 leading-relaxed">
                         The all-in-one workspace for task management and financial tracking. Organize your projects, track expenses, and reach your goals.
                     </p>
 
@@ -338,7 +334,7 @@ export const LandingPage: React.FC = () => {
                         </Button>
                         <Link
                             to="/pricing"
-                            className="inline-flex items-center gap-1.5 h-[52px] px-8 rounded-full border border-slate-200 dark:border-white/10 text-sm font-semibold text-slate-700 dark:text-slate-300 hover:border-indigo-400 dark:hover:border-indigo-500/50 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all bg-white/60 dark:bg-white/[0.04] backdrop-blur-sm"
+                            className="inline-flex items-center gap-1.5 h-[52px] px-8 rounded-full border border-white/10 text-sm font-semibold text-slate-300 hover:border-indigo-500/50 hover:text-indigo-400 transition-all bg-white/[0.04] backdrop-blur-sm"
                         >
                             View Pricing
                         </Link>
@@ -347,7 +343,7 @@ export const LandingPage: React.FC = () => {
                     {/* Floating social-proof pills */}
                     <div className="flex flex-wrap items-center justify-center gap-3 animate-fade-in-up delay-300">
                         {["⭐ 4.9 rating", "🔒 Bank-grade security", "⚡ Free to start"].map((pill) => (
-                            <span key={pill} className="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-semibold text-slate-600 dark:text-slate-400 bg-white/80 dark:bg-white/5 border border-slate-200/80 dark:border-white/[0.07] backdrop-blur-sm shadow-sm">
+                            <span key={pill} className="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-semibold text-slate-400 bg-white/5 border border-white/[0.07] backdrop-blur-sm shadow-sm">
                                 {pill}
                             </span>
                         ))}
@@ -356,12 +352,12 @@ export const LandingPage: React.FC = () => {
             </section>
 
             {/* ── STATS STRIP ────────────────────────────────────────── */}
-            <div className="border-y border-slate-200 dark:border-white/[0.06] bg-white dark:bg-[#0D0F1A] py-10">
+            <div className="border-y border-white/[0.06] bg-[#0D0F1A] py-10">
                 <div className="max-w-5xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8">
                     {STATS.map((s) => (
                         <div key={s.label} className="text-center">
-                            <div className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-1">{s.value}</div>
-                            <div className="text-sm text-slate-500 dark:text-slate-400 font-medium">{s.label}</div>
+                            <div className="text-3xl font-extrabold text-white tracking-tight mb-1">{s.value}</div>
+                            <div className="text-sm text-slate-400 font-medium">{s.label}</div>
                         </div>
                     ))}
                 </div>
@@ -375,9 +371,9 @@ export const LandingPage: React.FC = () => {
                 </div>
 
                 <div className="text-center mb-12 md:mb-20 relative z-10">
-                    <span className="inline-block px-4 py-1.5 rounded-full bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-100 dark:border-indigo-500/20 text-indigo-600 dark:text-indigo-300 text-sm font-semibold mb-5 tracking-wide">How It Works</span>
-                    <h2 className="text-3xl md:text-5xl font-display font-bold text-slate-900 dark:text-white mb-4 tracking-tight">Four simple steps to get started</h2>
-                    <p className="text-base md:text-lg text-slate-500 dark:text-slate-400 max-w-xl mx-auto px-4">Join Hikari and take control of your tasks and finances in minutes.</p>
+                    <span className="inline-block px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-sm font-semibold mb-5 tracking-wide">How It Works</span>
+                    <h2 className="text-3xl md:text-5xl font-display font-bold text-white mb-4 tracking-tight">Four simple steps to get started</h2>
+                    <p className="text-base md:text-lg text-slate-400 max-w-xl mx-auto px-4">Join Hikari and take control of your tasks and finances in minutes.</p>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-16 relative z-10">
@@ -428,8 +424,8 @@ export const LandingPage: React.FC = () => {
                                 </div>
 
                                 <div className="mt-8">
-                                    <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2 tracking-tight">{step.title}</h3>
-                                    <p className="text-slate-500 dark:text-slate-400 leading-relaxed text-sm max-w-[220px] mx-auto">{step.body}</p>
+                                    <h3 className="text-lg font-bold text-white mb-2 tracking-tight">{step.title}</h3>
+                                    <p className="text-slate-400 leading-relaxed text-sm max-w-[220px] mx-auto">{step.body}</p>
                                 </div>
                             </div>
                         );
@@ -437,32 +433,94 @@ export const LandingPage: React.FC = () => {
                 </div>
             </section>
 
+            {/* ── GLOBAL COMMUNITY ──────────────────────────────────── */}
+            <section className="py-24 relative overflow-hidden bg-[#0A0B14]">
+                <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
+                    style={{ backgroundImage: 'radial-gradient(circle, #6366f1 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
+
+                <div className="max-w-7xl mx-auto px-6 relative z-10">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                        <div>
+                            <span className="inline-block px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-semibold mb-6 tracking-wide">Global Impact</span>
+                            <h2 className="text-4xl md:text-6xl font-display font-bold text-white mb-6 leading-tight tracking-tight">
+                                Built for the <span className="text-indigo-400">Global</span> Professional
+                            </h2>
+                            <p className="text-xl text-slate-400 leading-relaxed mb-10">
+                                From Lagos to London, Nairobi to New York. Hikari empowers individuals and teams across the globe to synchronize their productivity with their financial goals.
+                            </p>
+
+                            <div className="grid grid-cols-2 gap-8">
+                                <div>
+                                    <div className="text-3xl font-bold text-white mb-1">20+</div>
+                                    <div className="text-sm text-slate-500 font-medium">Countries Represented</div>
+                                </div>
+                                <div>
+                                    <div className="text-3xl font-bold text-white mb-1">3K+</div>
+                                    <div className="text-sm text-slate-500 font-medium">Tasks Synchronized</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4 md:gap-6">
+                            <div className="space-y-4 md:space-y-6">
+                                <div className="relative group overflow-hidden rounded-[2rem] aspect-[4/5] shadow-2xl transition-transform duration-700 hover:-translate-y-2">
+                                    <img src="/diverse_professional_woman_laptop_1778667210443.png" alt="Professional in Lagos" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6">
+                                        <div className="text-white text-sm font-bold">Lagos, Nigeria</div>
+                                    </div>
+                                </div>
+                                <div className="relative group overflow-hidden rounded-[2rem] aspect-square shadow-2xl transition-transform duration-700 hover:-translate-y-2">
+                                    <img src="/asian_man_smartphone_urban_1778667228092.png" alt="Professional in Tokyo" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6">
+                                        <div className="text-white text-sm font-bold">Singapore</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="space-y-4 md:space-y-6 pt-12">
+                                <div className="relative group overflow-hidden rounded-[2rem] aspect-square shadow-2xl transition-transform duration-700 hover:-translate-y-2">
+                                    <img src="/european_professional_woman_office_1778667268916.png" alt="Professional in London" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6">
+                                        <div className="text-white text-sm font-bold">London, UK</div>
+                                    </div>
+                                </div>
+                                <div className="relative group overflow-hidden rounded-[2rem] aspect-[4/5] shadow-2xl transition-transform duration-700 hover:-translate-y-2">
+                                    <img src="/diverse_team_meeting_1778667244641.png" alt="Global Team Collaboration" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6">
+                                        <div className="text-white text-sm font-bold">Global Teams</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             {/* ── HIKARI METHOD ──────────────────────────────────────── */}
             <section className="py-20 px-6 max-w-7xl mx-auto relative z-20">
                 {/* Subtle section divider */}
-                <div className="absolute top-0 inset-x-6 h-px bg-gradient-to-r from-transparent via-slate-200 dark:via-white/10 to-transparent" />
+                <div className="absolute top-0 inset-x-6 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
                 <div className="grid grid-cols-1 md:grid-cols-[420px,1fr] lg:grid-cols-[480px,1fr] gap-16 lg:gap-24 items-center">
                     {/* Left: text */}
                     <div className="space-y-10">
                         <div>
-                            <span className="inline-block px-4 py-1.5 rounded-full bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-100 dark:border-indigo-500/20 text-indigo-600 dark:text-indigo-300 text-sm font-semibold mb-6 tracking-wide">The Philosophy</span>
-                            <h2 className="text-3xl md:text-5xl font-display font-bold text-slate-900 dark:text-white mb-5 leading-tight">The Hikari Method</h2>
-                            <p className="text-base md:text-lg text-slate-500 dark:text-slate-400 leading-relaxed">
-                                92% of Hikari users feel more in control of their time and money within the first week. Our method is built on clarity and intentionality. <Link to="/help/article/ultimate-guide-hikari-method" className="text-indigo-600 dark:text-indigo-400 font-semibold hover:underline">Read the Ultimate Guide &rarr;</Link>
+                            <span className="inline-block px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-sm font-semibold mb-6 tracking-wide">The Philosophy</span>
+                            <h2 className="text-3xl md:text-5xl font-display font-bold text-white mb-5 leading-tight">The Hikari Method</h2>
+                            <p className="text-base md:text-lg text-slate-400 leading-relaxed">
+                                92% of Hikari users feel more in control of their time and money within the first week. Our method is built on clarity and intentionality. <Link to="/help/article/ultimate-guide-hikari-method" className="text-indigo-400 font-semibold hover:underline">Read the Ultimate Guide &rarr;</Link>
                             </p>
                         </div>
 
                         <div className="space-y-6">
                             {HIKARI_METHOD_RULES.map((rule, idx) => (
-                                <div key={idx} className={`group flex gap-5 p-5 rounded-2xl border border-transparent hover:border-slate-200 dark:hover:border-white/10 hover:bg-white dark:hover:bg-white/[0.03] transition-all duration-300 cursor-default`}>
+                                <div key={idx} className={`group flex gap-5 p-5 rounded-2xl border border-transparent hover:border-white/10 hover:bg-white/[0.03] transition-all duration-300 cursor-default`}>
                                     <div className={`shrink-0 w-12 h-12 rounded-xl ${rule.styles.bg} flex items-center justify-center ${rule.styles.text} group-hover:scale-110 transition-transform duration-400`}>
                                         {rule.icon}
                                     </div>
                                     <div>
-                                        <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-slate-400 dark:text-slate-500 mb-1">{rule.rule}</div>
-                                        <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1.5 tracking-tight">{rule.title}</h3>
-                                        <p className="text-slate-500 dark:text-slate-400 leading-relaxed text-sm">{rule.description}</p>
+                                        <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500 mb-1">{rule.rule}</div>
+                                        <h3 className="text-lg font-bold text-white mb-1.5 tracking-tight">{rule.title}</h3>
+                                        <p className="text-slate-400 leading-relaxed text-sm">{rule.description}</p>
                                     </div>
                                 </div>
                             ))}
@@ -478,8 +536,8 @@ export const LandingPage: React.FC = () => {
                     {/* Right: mockup */}
                     <div className="relative group pb-16">
                         <div className="absolute -inset-8 bg-gradient-to-r from-indigo-500/8 via-purple-500/8 to-pink-500/8 rounded-3xl blur-[80px] opacity-60 group-hover:opacity-100 transition-opacity duration-1000" />
-                        <div className="relative w-full aspect-[16/10] bg-white dark:bg-[#0F111A] rounded-2xl overflow-hidden border border-slate-200 dark:border-white/[0.08] shadow-[0_40px_80px_-20px_rgba(0,0,0,0.2)] dark:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.5)] transform perspective-[2000px] rotate-y-[-5deg] rotate-x-[2deg] group-hover:rotate-y-0 group-hover:rotate-x-0 transition-all duration-700 ease-out">
-                            <div className="h-full bg-slate-100 dark:bg-[#0B0C15]">
+                        <div className="relative w-full aspect-[16/10] bg-[#0F111A] rounded-2xl overflow-hidden border border-white/[0.08] shadow-[0_40px_80px_-20px_rgba(0,0,0,0.5)] transform perspective-[2000px] rotate-y-[-5deg] rotate-x-[2deg] group-hover:rotate-y-0 group-hover:rotate-x-0 transition-all duration-700 ease-out">
+                            <div className="h-full bg-[#0B0C15]">
                                 <img src="/hikari_hero_desk.png" alt="Hikari Desktop Dashboard showing task-budget integration" loading="lazy" className="w-full h-full object-cover" />
                             </div>
                         </div>
@@ -495,17 +553,17 @@ export const LandingPage: React.FC = () => {
                             </div>
 
                             {/* Floating detail card */}
-                            <div className="absolute -left-16 top-1/2 -translate-y-1/2 w-44 p-4 bg-white dark:bg-[#1A1C30] backdrop-blur-xl rounded-2xl border border-slate-100 dark:border-white/10 shadow-2xl animate-float z-40 hidden md:block">
+                            <div className="absolute -left-16 top-1/2 -translate-y-1/2 w-44 p-4 bg-[#1A1C30] backdrop-blur-xl rounded-2xl border border-white/10 shadow-2xl animate-float z-40 hidden md:block">
                                 <div className="flex items-center gap-3 mb-3">
                                     <div className="w-8 h-8 rounded-lg bg-emerald-500/15 flex items-center justify-center text-emerald-500 border border-emerald-500/20">
                                         <Check className="w-4 h-4" />
                                     </div>
-                                    <div className="text-xs font-bold text-slate-900 dark:text-white">Task Linked!</div>
+                                    <div className="text-xs font-bold text-white">Task Linked!</div>
                                 </div>
-                                <div className="h-1.5 w-full bg-slate-100 dark:bg-white/10 rounded-full overflow-hidden">
+                                <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
                                     <div className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 w-[75%] rounded-full" />
                                 </div>
-                                <div className="mt-2 text-[10px] text-slate-500 dark:text-slate-400 font-medium">$250.00 / $300.00</div>
+                                <div className="mt-2 text-[10px] text-slate-400 font-medium">$250.00 / $300.00</div>
                             </div>
                         </div>
                     </div>
@@ -514,25 +572,31 @@ export const LandingPage: React.FC = () => {
 
             {/* ── TESTIMONIALS ───────────────────────────────────────── */}
             <section className="py-20 relative z-20 w-full overflow-hidden">
-                <div className="absolute inset-0 bg-slate-50 dark:bg-[#0D0F1A] pointer-events-none" />
-                <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-slate-200 dark:via-white/10 to-transparent" />
-                <div className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-slate-200 dark:via-white/10 to-transparent" />
+                <div className="absolute inset-0 bg-[#0D0F1A] pointer-events-none" />
+                <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+                <div className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
                 <div className="max-w-7xl mx-auto px-6 relative z-10">
                     <div className="text-center mb-10 md:mb-14">
-                        <span className="inline-block px-4 py-1.5 rounded-full bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-100 dark:border-indigo-500/20 text-indigo-600 dark:text-indigo-300 text-sm font-semibold mb-5 tracking-wide">Reviews</span>
-                        <h2 className="text-3xl md:text-5xl font-display font-bold text-slate-900 dark:text-white tracking-tight">Customer Testimonials</h2>
-                        <p className="text-base md:text-lg text-slate-500 dark:text-slate-400 mt-4">See how others are taking back control of their time and money.</p>
+                        <span className="inline-block px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-sm font-semibold mb-5 tracking-wide">Reviews</span>
+                        <h2 className="text-3xl md:text-5xl font-display font-bold text-white tracking-tight">Customer Testimonials</h2>
+                        <p className="text-base md:text-lg text-slate-400 mt-4">See how others are taking back control of their time and money.</p>
                     </div>
                 </div>
 
                 <div className="relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw]">
-                    <div className="flex overflow-x-auto gap-6 pb-6 snap-x px-6 md:px-[calc((100vw-1280px)/2)]" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                    <div 
+                        ref={testimonialRef} 
+                        onMouseEnter={() => setIsHovered(true)}
+                        onMouseLeave={() => setIsHovered(false)}
+                        className="flex overflow-x-auto gap-6 pb-6 snap-x px-6 md:px-[calc((100vw-1280px)/2)]" 
+                        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                    >
                         {testimonials.map((testimonial, idx) => (
-                            <div key={idx} className="min-w-[340px] md:min-w-[420px] snap-center bg-white dark:bg-[#13151F] p-8 rounded-[1.75rem] shadow-[0_4px_24px_rgba(0,0,0,0.06)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.2)] hover:shadow-[0_16px_40px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_16px_40px_rgba(0,0,0,0.35)] transition-all duration-400 border border-slate-100 dark:border-white/[0.06] hover:-translate-y-1 flex flex-col justify-between group">
+                            <div key={idx} className="min-w-[340px] md:min-w-[420px] snap-center bg-[#13151F] p-8 rounded-[1.75rem] shadow-[0_4px_24px_rgba(0,0,0,0.2)] hover:shadow-[0_16px_40px_rgba(0,0,0,0.35)] transition-all duration-400 border border-white/[0.06] hover:-translate-y-1 flex flex-col justify-between group">
                                 <div>
                                     <div className="flex justify-between items-start mb-6">
-                                        <div className="px-3 py-1 bg-slate-100 dark:bg-white/5 rounded-full text-[11px] font-bold tracking-widest text-slate-500 dark:text-slate-400 uppercase">
+                                        <div className="px-3 py-1 bg-white/5 rounded-full text-[11px] font-bold tracking-widest text-slate-400 uppercase">
                                             {testimonial.topic}
                                         </div>
                                         <div className="flex items-center gap-1">
@@ -542,18 +606,27 @@ export const LandingPage: React.FC = () => {
                                         </div>
                                     </div>
                                     {/* Decorative quote mark */}
-                                    <div className="text-5xl font-serif text-indigo-200 dark:text-indigo-800/60 leading-none mb-2 select-none">"</div>
-                                    <p className="text-base md:text-lg text-slate-700 dark:text-slate-200 leading-relaxed mb-8">
+                                    <div className="text-5xl font-serif text-indigo-800/60 leading-none mb-2 select-none">"</div>
+                                    <p className="text-base md:text-lg text-slate-200 leading-relaxed mb-8">
                                         {testimonial.quote}
                                     </p>
                                 </div>
-                                <div className="pt-5 border-t border-slate-100 dark:border-white/[0.07] flex items-center gap-4">
-                                    <div className={`w-11 h-11 rounded-full bg-gradient-to-tr ${testimonial.color} flex items-center justify-center text-white text-sm font-bold shadow-md`}>
-                                        {testimonial.initials}
-                                    </div>
+                                <div className="pt-5 border-t border-white/[0.07] flex items-center gap-4">
+                                    {testimonial.image ? (
+                                        <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-white/10 shadow-lg group-hover:border-indigo-500/50 transition-colors">
+                                            <img src={testimonial.image} alt={testimonial.name} className="w-full h-full object-cover" />
+                                        </div>
+                                    ) : (
+                                        <div className={`w-12 h-12 rounded-full bg-gradient-to-tr ${testimonial.color} flex items-center justify-center text-white text-xs font-black shadow-md border-2 border-white/5`}>
+                                            {testimonial.initials || getInitials(testimonial.name)}
+                                        </div>
+                                    )}
                                     <div>
-                                        <div className="font-bold text-sm text-slate-900 dark:text-white">{testimonial.name}</div>
-                                        <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{testimonial.location}</div>
+                                        <div className="font-bold text-sm text-white flex items-center gap-2">
+                                            {testimonial.name}
+                                            {testimonial.flag && <span className="text-base leading-none" title={testimonial.location}>{testimonial.flag}</span>}
+                                        </div>
+                                        <div className="text-xs text-slate-400 mt-0.5">{testimonial.location}</div>
                                     </div>
                                 </div>
                             </div>
@@ -599,7 +672,7 @@ export const LandingPage: React.FC = () => {
                                         <div className="bg-white/[0.08] p-3.5 rounded-xl border border-white/5 flex-1">
                                             <div className="text-[10px] text-white/50 mb-1 font-medium uppercase tracking-wider">Spent / Remaining</div>
                                             <div className="font-semibold text-white text-sm">
-                                                <span className="text-emerald-400">$2,400</span> <span className="text-slate-600 font-normal">/</span> <span className="text-slate-300">$600</span>
+                                                <span className="text-emerald-400">$2,400</span> <span className="text-slate-500 font-normal">/</span> <span className="text-slate-400 font-normal">$600</span>
                                             </div>
                                         </div>
                                     </div>
@@ -607,7 +680,7 @@ export const LandingPage: React.FC = () => {
                                         <div className="bg-white/[0.08] p-3.5 rounded-xl border border-white/5 flex-1 w-1/2">
                                             <div className="text-[10px] text-white/50 mb-1 font-medium uppercase tracking-wider">Task</div>
                                             <div className="font-semibold text-white flex items-center gap-2 text-sm">
-                                                <Check className="w-3.5 h-3.5 text-emerald-400" /> <span className="line-through text-slate-500 truncate">Book Venue</span>
+                                                <Check className="w-3.5 h-3.5 text-emerald-400" /> <span className="line-through text-slate-500/70 truncate">Book Venue</span>
                                             </div>
                                         </div>
                                         <ArrowRight className="text-white/30 w-4 h-4 shrink-0" />
@@ -655,8 +728,8 @@ export const LandingPage: React.FC = () => {
                                         { color: "bg-purple-500", label: "B" },
                                         { color: "bg-pink-500", label: "C" }
                                     ].map((avatar, i) => (
-                                        <div 
-                                            key={i} 
+                                        <div
+                                            key={i}
                                             className={clsx(
                                                 "w-10 h-10 rounded-full border-2 border-[#111530] flex items-center justify-center text-[10px] font-bold text-white shadow-xl transition-all duration-300",
                                                 avatar.color,
@@ -667,7 +740,7 @@ export const LandingPage: React.FC = () => {
                                             {avatar.label}
                                         </div>
                                     ))}
-                                    <div className="w-10 h-10 rounded-full border-2 border-[#111530] bg-slate-800 flex items-center justify-center text-[10px] font-bold text-slate-400 shadow-xl group-hover:translate-x-1 transition-transform">
+                                    <div className="w-10 h-10 rounded-full border-2 border-[#111530] bg-white/10 flex items-center justify-center text-[10px] font-bold text-slate-300 shadow-xl group-hover:translate-x-1 transition-transform">
                                         +5
                                     </div>
                                 </div>
@@ -782,22 +855,22 @@ export const LandingPage: React.FC = () => {
             </section> */}
 
             {/* ── CURRENCY SWITCHER ──────────────────────────────────── */}
-            <section className="py-12 border-y border-slate-200 dark:border-white/5 bg-white/30 dark:bg-black/20 backdrop-blur-sm">
+            <section className="py-12 border-y border-white/5 bg-black/20 backdrop-blur-sm">
                 <div className="max-w-4xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-8">
                     <div className="text-center md:text-left">
-                        <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">Regional Pricing</h3>
-                        <p className="text-sm text-slate-500 dark:text-slate-400">View pricing in your local currency for better clarity.</p>
+                        <h3 className="text-lg font-bold text-white mb-1">Regional Pricing</h3>
+                        <p className="text-sm text-slate-400">View pricing in your local currency for better clarity.</p>
                     </div>
-                    <div className="flex items-center gap-1 p-1 bg-slate-100 dark:bg-white/5 rounded-full border border-slate-200 dark:border-white/10">
+                    <div className="flex items-center gap-1 p-1 bg-white/5 rounded-full border border-white/10">
                         <button
                             onClick={() => setCurrency('NGN')}
-                            className={`px-6 py-2 rounded-full text-sm font-bold transition-all ${currency === 'NGN' ? 'bg-white dark:bg-indigo-600 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'}`}
+                            className={`px-6 py-2 rounded-full text-sm font-bold transition-all ${currency === 'NGN' ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-500 hover:text-white'}`}
                         >
                             ₦ NGN
                         </button>
                         <button
                             onClick={() => setCurrency('USD')}
-                            className={`px-6 py-2 rounded-full text-sm font-bold transition-all ${currency === 'USD' ? 'bg-white dark:bg-indigo-600 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'}`}
+                            className={`px-6 py-2 rounded-full text-sm font-bold transition-all ${currency === 'USD' ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-500 hover:text-white'}`}
                         >
                             $ USD
                         </button>

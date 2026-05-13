@@ -1,204 +1,120 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
+import { Navbar } from '../components/layout/Navbar';
+import { Footer } from '../components/layout/Footer';
 
 export const PrivacyPolicy: React.FC = () => {
     return (
-        <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
-            {/* Header */}
-            <div className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 sticky top-0 z-10">
-                <div className="container mx-auto px-4 py-4">
-                    <Link to="/" className="flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
-                        <ArrowLeft className="w-5 h-5" />
-                        <span className="font-medium">Back to Home</span>
-                    </Link>
-                </div>
-            </div>
+        <div className="min-h-screen bg-[#080910] text-slate-100 selection:bg-purple-500/30 overflow-x-hidden flex flex-col">
+            <Navbar />
 
             {/* Content */}
-            <div className="container mx-auto px-4 py-12 max-w-4xl">
-                <h1 className="text-4xl font-display font-bold text-slate-900 dark:text-white mb-4">
+            <div className="container mx-auto px-6 py-20 max-w-5xl relative">
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-indigo-600/5 rounded-full blur-[150px] pointer-events-none -z-10" />
+
+                <h1 className="text-5xl md:text-7xl font-display font-bold text-white mb-6 tracking-tight">
                     Privacy Policy
                 </h1>
-                <p className="text-slate-600 dark:text-slate-400 mb-8">
-                    Last Updated: {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                <p className="text-xs font-black tracking-[0.4em] uppercase text-slate-500 mb-20 border-b border-white/[0.06] pb-10">
+                    Date Modified: {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
                 </p>
 
-                <div className="prose prose-slate dark:prose-invert max-w-none space-y-8">
-                    <section>
-                        <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">1. Introduction</h2>
-                        <p className="text-slate-700 dark:text-slate-300">
-                            Hikari ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our task management and budget tracking service.
+                <div className="space-y-12">
+                    <section className="bg-[#0D0F1A] p-10 md:p-16 rounded-[3rem] border border-white/[0.06] shadow-2xl relative overflow-hidden group">
+                        <div className="absolute top-0 left-0 w-2 h-full bg-indigo-500/50 group-hover:bg-indigo-500 transition-colors" />
+                        <h2 className="text-3xl font-bold text-white mb-8 tracking-tight">1. Scope of Data Processing</h2>
+                        <p className="text-slate-400 leading-relaxed text-lg mb-6">
+                            This Privacy Policy describes the policies and procedures of Hikari World Ltd ("Company," "we," "us," or "our") on the collection, use, and disclosure of your information when you use the Service and tells you about your privacy rights and how the law protects you.
+                        </p>
+                        <p className="text-slate-400 leading-relaxed text-lg">
+                            We use your Personal Data to provide and improve the Service. By using the Service, you agree to the collection and use of information in accordance with this Privacy Policy. This document is drafted to comply with the General Data Protection Regulation (GDPR) and the California Consumer Privacy Act (CCPA).
                         </p>
                     </section>
 
-                    <section>
-                        <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">2. Information We Collect</h2>
-                        <div className="space-y-4 text-slate-700 dark:text-slate-300">
-                            <div>
-                                <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">Personal Information</h3>
-                                <p>When you register for an account, we collect:</p>
-                                <ul className="list-disc pl-6 space-y-2 mt-2">
-                                    <li>Name</li>
-                                    <li>Email address</li>
-                                    <li>Password (encrypted)</li>
-                                    <li>Payment information (processed securely through Stripe)</li>
+                    <section className="bg-[#0D0F1A] p-10 md:p-16 rounded-[3rem] border border-white/[0.06] shadow-2xl relative overflow-hidden group">
+                        <div className="absolute top-0 left-0 w-2 h-full bg-purple-500/50 group-hover:bg-purple-500 transition-colors" />
+                        <h2 className="text-3xl font-bold text-white mb-8 tracking-tight">2. Information Collection and Categorization</h2>
+                        <div className="space-y-10">
+                            <div className="p-8 rounded-2xl bg-white/5 border border-white/5">
+                                <h3 className="text-xl font-bold text-white mb-4">Personal Identifiable Information (PII)</h3>
+                                <p className="text-slate-400 mb-6">Under Art. 6(1)(b) of the GDPR, we process the following for contract fulfillment:</p>
+                                <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {['Legal Name', 'Email Address', 'Hashed Credentials', 'Billing Telemetry'].map((item) => (
+                                        <li key={item} className="flex items-center gap-3 text-slate-300">
+                                            <div className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
+                                            {item}
+                                        </li>
+                                    ))}
                                 </ul>
                             </div>
-
-                            <div>
-                                <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">Usage Data</h3>
-                                <p>We automatically collect certain information when you use the Service:</p>
-                                <ul className="list-disc pl-6 space-y-2 mt-2">
-                                    <li>Tasks, projects, and budget entries you create</li>
-                                    <li>Device information (browser type, operating system)</li>
-                                    <li>IP address and general location data</li>
-                                    <li>Usage patterns and preferences</li>
+                            <div className="p-8 rounded-2xl bg-white/5 border border-white/5">
+                                <h3 className="text-xl font-bold text-white mb-4">Device and Network Telemetry</h3>
+                                <p className="text-slate-400 mb-6">Processed under legitimate interest (Art. 6(1)(f) GDPR) for security and performance optimization:</p>
+                                <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {['IP Addresses', 'Browser Fingerprints', 'Session Logs', 'Geographical Metadata'].map((item) => (
+                                        <li key={item} className="flex items-center gap-3 text-slate-300">
+                                            <div className="w-1.5 h-1.5 rounded-full bg-purple-500" />
+                                            {item}
+                                        </li>
+                                    ))}
                                 </ul>
                             </div>
                         </div>
                     </section>
 
-                    <section>
-                        <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">3. How We Use Your Information</h2>
-                        <div className="space-y-4 text-slate-700 dark:text-slate-300">
-                            <p>We use the information we collect to:</p>
-                            <ul className="list-disc pl-6 space-y-2">
-                                <li>Provide, operate, and maintain the Service</li>
-                                <li>Process your transactions and manage your subscription</li>
-                                <li>Send you technical notices, updates, and support messages</li>
-                                <li>Respond to your comments and questions</li>
-                                <li>Provide AI-powered insights and analytics (Pro users)</li>
-                                <li>Monitor and analyze usage trends to improve the Service</li>
-                                <li>Detect, prevent, and address technical issues and security threats</li>
-                            </ul>
-                        </div>
-                    </section>
-
-                    <section>
-                        <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">4. Data Storage and Security</h2>
-                        <div className="space-y-4 text-slate-700 dark:text-slate-300">
-                            <p>We implement industry-standard security measures to protect your personal information:</p>
-                            <ul className="list-disc pl-6 space-y-2">
-                                <li>Encryption of data in transit using SSL/TLS</li>
-                                <li>Encrypted storage of sensitive information</li>
-                                <li>Regular security audits and updates</li>
-                                <li>Secure authentication mechanisms</li>
-                                <li>Limited employee access to personal data</li>
-                            </ul>
-                            <p className="mt-4">
-                                Your data is stored on secure servers hosted by reputable cloud service providers. We retain your data for as long as your account is active or as needed to provide you services.
-                            </p>
-                        </div>
-                    </section>
-
-                    <section>
-                        <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">5. Information Sharing and Disclosure</h2>
-                        <div className="space-y-4 text-slate-700 dark:text-slate-300">
-                            <p>We do not sell your personal information. We may share your information only in the following circumstances:</p>
-                            <ul className="list-disc pl-6 space-y-2">
-                                <li><strong>Service Providers:</strong> With third-party vendors who perform services on our behalf (e.g., payment processing via Stripe, email delivery)</li>
-                                <li><strong>Legal Requirements:</strong> When required by law or to protect our rights and safety</li>
-                                <li><strong>Business Transfers:</strong> In connection with a merger, acquisition, or sale of assets</li>
-                                <li><strong>With Your Consent:</strong> When you explicitly authorize us to share your information</li>
-                            </ul>
-                        </div>
-                    </section>
-
-                    <section>
-                        <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">6. Your Data Rights</h2>
-                        <div className="space-y-4 text-slate-700 dark:text-slate-300">
-                            <p>You have the right to:</p>
-                            <ul className="list-disc pl-6 space-y-2">
-                                <li><strong>Access:</strong> Request a copy of the personal information we hold about you</li>
-                                <li><strong>Correction:</strong> Update or correct inaccurate information</li>
-                                <li><strong>Deletion:</strong> Request deletion of your personal data</li>
-                                <li><strong>Data Portability:</strong> Receive your data in a structured, commonly used format</li>
-                                <li><strong>Opt-Out:</strong> Unsubscribe from marketing communications</li>
-                                <li><strong>Account Closure:</strong> Delete your account at any time from settings</li>
-                            </ul>
-                            <p className="mt-4">
-                                To exercise these rights, please contact us at{' '}
-                                <a href="mailto:[EMAIL_ADDRESS]" className="text-primary-600 hover:text-primary-700 dark:text-primary-400">
-                                    support@hikarii.org
-                                </a>
-                            </p>
-                        </div>
-                    </section>
-
-                    <section>
-                        <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">7. Cookies and Tracking</h2>
-                        <div className="space-y-4 text-slate-700 dark:text-slate-300">
-                            <p>We use cookies and similar tracking technologies to:</p>
-                            <ul className="list-disc pl-6 space-y-2">
-                                <li>Maintain your session and keep you logged in</li>
-                                <li>Remember your preferences and settings</li>
-                                <li>Analyze how you use the Service</li>
-                                <li>Improve user experience</li>
-                            </ul>
-                            <p className="mt-4">
-                                You can control cookies through your browser settings. However, disabling cookies may limit your ability to use certain features of the Service.
-                            </p>
-                        </div>
-                    </section>
-
-                    <section>
-                        <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">8. Children's Privacy</h2>
-                        <p className="text-slate-700 dark:text-slate-300">
-                            The Service is not intended for users under the age of 13. We do not knowingly collect personal information from children under 13. If we become aware that we have collected such information, we will take steps to delete it promptly.
+                    <section className="bg-[#0D0F1A] p-10 md:p-16 rounded-[3rem] border border-white/[0.06] shadow-2xl relative overflow-hidden group">
+                        <div className="absolute top-0 left-0 w-2 h-full bg-emerald-500/50 group-hover:bg-emerald-500 transition-colors" />
+                        <h2 className="text-3xl font-bold text-white mb-8 tracking-tight">3. Data Subject Rights (GDPR/CCPA)</h2>
+                        <p className="text-slate-400 leading-relaxed text-lg mb-10">
+                            Regardless of your residency, Hikari extends enterprise-grade privacy rights to all users globally:
                         </p>
-                    </section>
-
-                    <section>
-                        <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">9. International Data Transfers</h2>
-                        <p className="text-slate-700 dark:text-slate-300">
-                            Your information may be transferred to and maintained on servers located outside of your state, province, country, or other governmental jurisdiction where data protection laws may differ. By using the Service, you consent to such transfers.
-                        </p>
-                    </section>
-
-                    <section>
-                        <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">10. Third-Party Services</h2>
-                        <div className="space-y-4 text-slate-700 dark:text-slate-300">
-                            <p>Our Service uses third-party services that may collect information:</p>
-                            <ul className="list-disc pl-6 space-y-2">
-                                <li><strong>Stripe:</strong> Payment processing (view their privacy policy at stripe.com/privacy)</li>
-                                <li><strong>Email Service Providers:</strong> For transactional emails</li>
-                            </ul>
-                            <p className="mt-4">
-                                We are not responsible for the privacy practices of these third parties. We encourage you to review their privacy policies.
-                            </p>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            {[
+                                { title: 'Right to Access', desc: 'Request full disclosure of all data points we hold.' },
+                                { title: 'Right to Rectification', desc: 'Update or correct any inaccurate personal data.' },
+                                { title: 'Right to Erasure', desc: 'The "Right to be Forgotten" - complete data deletion.' },
+                                { title: 'Data Portability', desc: 'Export your data in a machine-readable format.' },
+                                { title: 'Opt-Out Rights', desc: 'Object to processing or withdraw consent at any time.' },
+                                { title: 'Non-Discrimination', desc: 'Equal service quality even if privacy rights are exercised.' }
+                            ].map((right, i) => (
+                                <div key={i} className="p-6 rounded-2xl bg-white/5 border border-white/5 hover:border-emerald-500/30 transition-all">
+                                    <h4 className="text-white font-bold mb-2">{right.title}</h4>
+                                    <p className="text-slate-500 text-sm leading-relaxed">{right.desc}</p>
+                                </div>
+                            ))}
                         </div>
                     </section>
 
-                    <section>
-                        <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">11. Changes to This Privacy Policy</h2>
-                        <p className="text-slate-700 dark:text-slate-300">
-                            We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Last Updated" date. You are advised to review this Privacy Policy periodically for any changes.
+                    <section className="bg-[#0D0F1A] p-10 md:p-16 rounded-[3rem] border border-white/[0.06] shadow-2xl relative overflow-hidden group">
+                        <div className="absolute top-0 left-0 w-2 h-full bg-blue-500/50 group-hover:bg-blue-500 transition-colors" />
+                        <h2 className="text-3xl font-bold text-white mb-8 tracking-tight">4. International Transfers and Security</h2>
+                        <p className="text-slate-400 leading-relaxed text-lg mb-8">
+                            Your information may be transferred to, and maintained on, computers located outside of your state, province, or country. We utilize <strong>Standard Contractual Clauses (SCCs)</strong> approved by the European Commission to ensure a high level of data protection.
                         </p>
-                    </section>
-
-                    <section>
-                        <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">12. Contact Us</h2>
-                        <div className="text-slate-700 dark:text-slate-300">
-                            <p>If you have any questions about this Privacy Policy, please contact us:</p>
-                            <ul className="list-none space-y-2 mt-4">
-                                <li>
-                                    <strong>Email:</strong>{' '}
-                                    <a href="mailto:support@hikarii.org" className="text-primary-600 hover:text-primary-700 dark:text-primary-400">
-                                        support@hikarii.org
-                                    </a>
-                                </li>
-                                <li>
-                                    <strong>Support:</strong>{' '}
-                                    <a href="mailto:support@hikarii.org" className="text-primary-600 hover:text-primary-700 dark:text-primary-400">
-                                        support@hikarii.org
-                                    </a>
-                                </li>
-                            </ul>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div className="p-8 rounded-3xl bg-white/5 border border-white/5">
+                                <h4 className="text-white font-bold mb-4">Encryption Standards</h4>
+                                <p className="text-slate-500 text-sm leading-relaxed">All data is encrypted in transit via TLS 1.3 and at rest using FIPS 140-2 validated AES-256 cryptographic modules.</p>
+                            </div>
+                            <div className="p-8 rounded-3xl bg-white/5 border border-white/5">
+                                <h4 className="text-white font-bold mb-4">Data Retention</h4>
+                                <p className="text-slate-500 text-sm leading-relaxed">We retain personal data only for as long as necessary to fulfill the purposes outlined in this policy or as required by statutory retention periods.</p>
+                            </div>
                         </div>
                     </section>
+
+                    <div className="bg-white/5 p-12 rounded-[3rem] border border-white/10 text-center relative overflow-hidden">
+                        <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-transparent to-indigo-500/10" />
+                        <h2 className="text-3xl font-bold text-white mb-6 tracking-tight relative">Data Protection Officer</h2>
+                        <p className="text-slate-400 mb-10 max-w-2xl mx-auto relative text-lg">For all inquiries regarding data processing, cross-border transfers, or to exercise your statutory rights, please contact our DPO.</p>
+                        <a href="mailto:privacy@hikarii.org" className="relative inline-flex items-center justify-center px-12 py-5 rounded-2xl bg-white text-black font-black tracking-[0.2em] uppercase text-xs hover:bg-slate-200 transition-all shadow-xl shadow-white/5">
+                            Contact DPO
+                        </a>
+                    </div>
                 </div>
             </div>
+            <Footer />
         </div>
     );
 };

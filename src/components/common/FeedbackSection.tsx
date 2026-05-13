@@ -25,6 +25,25 @@ const FEATURE_TOPICS = [
     'Other'
 ];
 
+const COUNTRIES = [
+    { name: 'Nigeria', flag: '🇳🇬' },
+    { name: 'Singapore', flag: '🇸🇬' },
+    { name: 'United Kingdom', flag: '🇬🇧' },
+    { name: 'United States', flag: '🇺🇸' },
+    { name: 'Kenya', flag: '🇰🇪' },
+    { name: 'Ghana', flag: '🇬🇭' },
+    { name: 'Germany', flag: '🇩🇪' },
+    { name: 'Canada', flag: '🇨🇦' },
+    { name: 'Australia', flag: '🇦🇺' },
+    { name: 'South Africa', flag: '🇿🇦' },
+    { name: 'United Arab Emirates', flag: '🇦🇪' },
+    { name: 'Japan', flag: '🇯🇵' },
+    { name: 'China', flag: '🇨🇳' },
+    { name: 'India', flag: '🇮🇳' },
+    { name: 'Brazil', flag: '🇧🇷' },
+    { name: 'France', flag: '🇫🇷' },
+];
+
 export const FeedbackSection: React.FC = () => {
     const { token, user } = useAuthStore();
     const isAuthenticated = !!token;
@@ -34,10 +53,12 @@ export const FeedbackSection: React.FC = () => {
     const [comment, setComment] = useState('');
     const [name, setName] = useState('');
     const [topic, setTopic] = useState('General');
+    const [country, setCountry] = useState(COUNTRIES[0].name);
+    const [flag, setFlag] = useState(COUNTRIES[0].flag);
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     
-    const [feedbacks, setFeedbacks] = useState<FeedbackItem[]>([]);
+    const [feedbacks, setFeedbacks] = useState<any[]>([]);
 
     // Auto-populate name from user profile
     useEffect(() => {
@@ -86,7 +107,9 @@ export const FeedbackSection: React.FC = () => {
                     name: name.trim() || 'Anonymous',
                     rating,
                     comment,
-                    topic
+                    topic,
+                    country,
+                    flag
                 })
             });
 
@@ -196,19 +219,42 @@ export const FeedbackSection: React.FC = () => {
                             </div>
 
                             {/* Feature Topic Dropdown */}
-                            <div className="space-y-2">
-                                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-widest">
-                                    What feature are you reviewing?
-                                </label>
-                                <select
-                                    value={topic}
-                                    onChange={(e) => setTopic(e.target.value)}
-                                    className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all shadow-sm text-sm appearance-none cursor-pointer"
-                                >
-                                    {FEATURE_TOPICS.map((t) => (
-                                        <option key={t} value={t}>{t}</option>
-                                    ))}
-                                </select>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-widest">
+                                        Feature Reviewing
+                                    </label>
+                                    <select
+                                        value={topic}
+                                        onChange={(e) => setTopic(e.target.value)}
+                                        className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all shadow-sm text-sm appearance-none cursor-pointer"
+                                    >
+                                        {FEATURE_TOPICS.map((t) => (
+                                            <option key={t} value={t}>{t}</option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-widest">
+                                        Your Country
+                                    </label>
+                                    <select
+                                        value={country}
+                                        onChange={(e) => {
+                                            const selected = COUNTRIES.find(c => c.name === e.target.value);
+                                            if (selected) {
+                                                setCountry(selected.name);
+                                                setFlag(selected.flag);
+                                            }
+                                        }}
+                                        className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all shadow-sm text-sm appearance-none cursor-pointer"
+                                    >
+                                        {COUNTRIES.map((c) => (
+                                            <option key={c.name} value={c.name}>{c.flag} {c.name}</option>
+                                        ))}
+                                    </select>
+                                </div>
                             </div>
 
                             {/* Input Fields */}
@@ -278,8 +324,11 @@ export const FeedbackSection: React.FC = () => {
                                                 <User className="w-5 h-5" />
                                             </div>
                                             <div>
-                                                <h4 className="font-semibold text-slate-900 dark:text-white text-sm">{fb.name}</h4>
-                                                <span className="text-xs text-slate-500 dark:text-slate-400">{fb.date}</span>
+                                                <h4 className="font-semibold text-slate-900 dark:text-white text-sm flex items-center gap-2">
+                                                    {fb.name}
+                                                    {fb.flag && <span className="text-base">{fb.flag}</span>}
+                                                </h4>
+                                                <span className="text-xs text-slate-500 dark:text-slate-400">{fb.country || fb.date}</span>
                                             </div>
                                         </div>
                                         <div className="flex gap-0.5 bg-slate-100 dark:bg-black/20 px-2 py-1 rounded-full border border-slate-200/50 dark:border-white/5">

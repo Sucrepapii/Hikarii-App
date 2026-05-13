@@ -112,41 +112,44 @@ export const Login: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center p-6 bg-slate-50 dark:bg-slate-900">
+        <div className="min-h-screen flex items-center justify-center p-6 bg-[#080910] text-slate-100 selection:bg-purple-500/30 overflow-x-hidden relative">
+            <div className="absolute top-0 left-1/4 w-96 h-96 bg-indigo-600/10 rounded-full blur-[120px] pointer-events-none" />
+            <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-[120px] pointer-events-none" />
             {/* Back Button */}
             <Link
                 to="/"
-                className="absolute top-6 left-6 flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+                className="absolute top-8 left-8 flex items-center gap-2 text-slate-400 hover:text-white transition-all font-bold group"
             >
-                <ArrowLeft className="w-5 h-5" />
-                <span className="font-medium">Back to Home</span>
+                <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+                <span className="text-sm tracking-widest uppercase">Back to Home</span>
             </Link>
 
             <div className="w-full max-w-md">
                 {/* Logo and Title */}
-                <div className="flex flex-col items-center mb-10 animate-fade-in">
-                    <Logo size="xl" className="!gap-4 !pointer-events-none flex-col" suppressLink={true} />
-                    <p className="text-lg text-slate-600 dark:text-slate-400 mt-2">
+                <div className="flex flex-col items-center mb-12 animate-fade-in">
+                    <Logo size="xl" className="!gap-6 !pointer-events-none flex-col" suppressLink={true} />
+                    <p className="text-xs font-black tracking-[0.3em] text-slate-500 uppercase mt-4">
                         Light & Clarity
                     </p>
                 </div>
 
                 {/* Login / Verification Form */}
-                <div className="glass-card p-10 animate-slide-up">
-                    <h2 className="text-3xl font-display font-semibold mb-8 text-slate-900 dark:text-white">
+                <div className="bg-[#0D0F1A] p-10 rounded-[2.5rem] border border-white/[0.06] shadow-2xl relative overflow-hidden group animate-slide-up">
+                    <div className="absolute top-0 right-0 w-48 h-48 bg-indigo-500/5 rounded-full blur-[60px] -z-10" />
+                    <h2 className="text-3xl font-display font-bold mb-10 text-white tracking-tight">
                         {verificationMode ? 'Check your email' : 'Welcome Back'}
                     </h2>
 
                     {verificationMode ? (
                         /* Verification Form */
                         <form onSubmit={handleVerify} className="space-y-6">
-                            <p className="text-slate-600 dark:text-slate-400 text-sm">
-                                We sent a 6-digit code to <strong>{emailToVerify}</strong>.
+                            <p className="text-slate-400 text-sm leading-relaxed mb-8">
+                                We sent a 6-digit code to <strong className="text-white">{emailToVerify}</strong>.
                                 Enter it below to verify your account.
                             </p>
 
                             <div>
-                                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2.5">
+                                <label className="block text-xs font-black tracking-widest text-slate-500 uppercase mb-3">
                                     Verification Code
                                 </label>
                                 <Input
@@ -155,7 +158,7 @@ export const Login: React.FC = () => {
                                     type="text"
                                     placeholder="123456"
                                     maxLength={6}
-                                    className="text-center text-2xl tracking-widest"
+                                    className="text-center text-3xl tracking-[0.5em] bg-white/[0.03] border-white/10 text-white h-16 rounded-xl focus:border-indigo-500/50"
                                     autoFocus
                                 />
                             </div>
@@ -169,8 +172,7 @@ export const Login: React.FC = () => {
                             <Button
                                 type="submit"
                                 variant="primary"
-                                size="lg"
-                                className="w-full mt-4"
+                                className="w-full h-14 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-black tracking-widest uppercase text-xs border-0 shadow-lg shadow-indigo-500/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
                             >
                                 Verify Email
                             </Button>
@@ -181,10 +183,10 @@ export const Login: React.FC = () => {
                                     onClick={handleResend}
                                     disabled={resendTimer > 0}
                                     className={clsx(
-                                        "text-sm font-medium transition-colors",
+                                        "text-xs font-black tracking-widest uppercase transition-all",
                                         resendTimer > 0
-                                            ? "text-slate-400 cursor-not-allowed"
-                                            : "text-primary-600 hover:text-primary-700 dark:text-primary-400"
+                                            ? "text-slate-600 cursor-not-allowed"
+                                            : "text-indigo-400 hover:text-white"
                                     )}
                                 >
                                     {resendTimer > 0 ? `Resend Code (${resendTimer}s)` : 'Resend Code'}
@@ -196,16 +198,16 @@ export const Login: React.FC = () => {
                         <form onSubmit={handleSubmit(onSubmit, handleFormError)} className="space-y-6">
                             {/* Email Field */}
                             <div>
-                                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2.5">
+                                <label className="block text-xs font-black tracking-widest text-slate-500 uppercase mb-3">
                                     Email
                                 </label>
                                 <div className="relative">
-                                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                                    <Mail className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600" />
                                     <Input
                                         {...register('email')}
                                         type="email"
                                         placeholder="you@example.com"
-                                        className="pl-12"
+                                        className="pl-14 h-14 bg-white/[0.03] border-white/10 text-white rounded-xl focus:border-indigo-500/50"
                                         autoComplete="email"
                                     />
                                 </div>
@@ -216,22 +218,22 @@ export const Login: React.FC = () => {
 
                             {/* Password Field */}
                             <div>
-                                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2.5">
+                                <label className="block text-xs font-black tracking-widest text-slate-500 uppercase mb-3">
                                     Password
                                 </label>
                                 <div className="relative">
-                                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                                    <Lock className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600" />
                                     <Input
                                         {...register('password')}
                                         type={showPassword ? 'text' : 'password'}
                                         placeholder="••••••••"
-                                        className="pl-12 pr-12"
+                                        className="pl-14 pr-14 h-14 bg-white/[0.03] border-white/10 text-white rounded-xl focus:border-indigo-500/50"
                                         autoComplete="current-password"
                                     />
                                     <button
                                         type="button"
                                         onClick={() => setShowPassword(!showPassword)}
-                                        className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
+                                        className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-600 hover:text-white transition-colors"
                                     >
                                         {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                                     </button>
@@ -239,10 +241,10 @@ export const Login: React.FC = () => {
                                 {errors.password && (
                                     <p className="mt-2 text-sm text-danger-500">{errors.password.message}</p>
                                 )}
-                                <div className="mt-2 text-right">
+                                <div className="mt-4 text-right">
                                     <Link
                                         to="/forgot-password"
-                                        className="text-sm text-primary-600 hover:text-primary-700 dark:text-primary-400 font-medium"
+                                        className="text-xs font-black tracking-widest uppercase text-indigo-400 hover:text-white transition-colors"
                                     >
                                         Forgot Password?
                                     </Link>
@@ -260,23 +262,22 @@ export const Login: React.FC = () => {
                             <Button
                                 type="submit"
                                 variant="primary"
-                                size="lg"
-                                className="w-full mt-8"
+                                className="w-full h-14 mt-6 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-black tracking-widest uppercase text-xs border-0 shadow-lg shadow-indigo-500/25 transition-all hover:scale-[1.02] active:scale-[0.98]"
                                 disabled={isSubmitting}
                             >
-                                <LogIn className="w-5 h-5 mr-2" />
+                                <LogIn className="w-4 h-4 mr-3" />
                                 {isSubmitting ? 'Logging in...' : 'Log In'}
                             </Button>
                         </form>
                     )}
 
                     {/* Signup Link */}
-                    <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-700 text-center">
-                        <p className="text-sm text-slate-600 dark:text-slate-400">
+                    <div className="mt-10 pt-8 border-t border-white/[0.06] text-center">
+                        <p className="text-sm text-slate-500">
                             Don't have an account?{' '}
                             <Link
                                 to={`/signup${window.location.search}`}
-                                className="font-semibold text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 transition-colors"
+                                className="font-bold text-indigo-400 hover:text-white transition-colors"
                             >
                                 Sign up
                             </Link>
