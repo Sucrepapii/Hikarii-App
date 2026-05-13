@@ -33,69 +33,6 @@ const ONBOARDING_STEPS = [
     }
 ];
 
-const SEED_TESTIMONIALS = [
-    {
-        topic: "FINANCIAL GOALS",
-        quote: "Hikari helped me save my first ₦500,000 in 3 months. Having my tasks and budget perfectly synchronized changed the way I work.",
-        name: "OLUWASEUN ADEYEMI",
-        location: "Lagos, Nigeria",
-        flag: "🇳🇬",
-        rating: 5,
-        image: "/diverse_professional_woman_laptop_1778667210443.png",
-        color: "from-indigo-500 to-purple-500"
-    },
-    {
-        topic: "AI SPLIT",
-        quote: "I used to be paralyzed by my own ambitions. The AI smart split broke down my entire product launch into daily 15-minute blocks. Unbelievable.",
-        name: "MARCUS THORNE",
-        location: "Singapore",
-        flag: "🇸🇬",
-        rating: 5,
-        image: "/asian_man_smartphone_urban_1778667228092.png",
-        color: "from-fuchsia-500 to-purple-500"
-    },
-    {
-        topic: "SCALABILITY",
-        quote: "We scaled our agency from 2 to 15 people using Hikari. The ability to link every project task to a specific budget line is the secret to our growth.",
-        name: "JAMES WILSON",
-        location: "London, UK",
-        flag: "🇬🇧",
-        rating: 5,
-        image: "/european_professional_woman_office_1778667268916.png",
-        color: "from-pink-500 to-rose-500"
-    },
-    {
-        topic: "SUBSCRIPTION TRACKING",
-        quote: "Finally, a tool that respects my time. Finding out I was losing $200/mo on dead subscriptions while organizing my daily tasks was a wake-up call.",
-        name: "ELENA RODRIGUEZ",
-        location: "Nairobi, Kenya",
-        flag: "🇰🇪",
-        rating: 5,
-        initials: "ER",
-        color: "from-orange-500 to-rose-500"
-    },
-    {
-        topic: "PRODUCTIVITY",
-        quote: "Managing a remote team across three time zones is a nightmare. Hikari's unified view of costs and progress keeps us all aligned and profitable.",
-        name: "DAVID CHEN",
-        location: "Singapore",
-        flag: "🇸🇬",
-        rating: 5,
-        initials: "DC",
-        color: "from-teal-500 to-emerald-500"
-    },
-    {
-        topic: "CREATIVE FLOW",
-        quote: "As a designer, I hate spreadsheets. Hikari gives me the financial overview I need without the headache. It feels like a premium tool, not work.",
-        name: "SOPHIE MULLER",
-        location: "Berlin, Germany",
-        flag: "🇩🇪",
-        rating: 5,
-        initials: "SM",
-        color: "from-sky-500 to-blue-500"
-    }
-];
-
 const GRADIENT_COLORS = [
     "from-indigo-500 to-purple-500",
     "from-fuchsia-500 to-purple-500",
@@ -190,7 +127,7 @@ export const LandingPage: React.FC = () => {
     const { token } = useAuthStore();
     const isAuthenticated = !!token;
     const [currency, setCurrency] = useState<'USD' | 'NGN'>('NGN');
-    const [testimonials, setTestimonials] = useState<any[]>(SEED_TESTIMONIALS);
+    const [testimonials, setTestimonials] = useState<any[]>([]);
     const [isHovered, setIsHovered] = useState(false);
     const testimonialRef = React.useRef<HTMLDivElement>(null);
 
@@ -214,10 +151,12 @@ export const LandingPage: React.FC = () => {
                             color: GRADIENT_COLORS[idx % GRADIENT_COLORS.length]
                         }));
                         setTestimonials(mapped);
+                    } else {
+                        setTestimonials([]); // Ensure empty if no feedback
                     }
                 }
             } catch {
-                // Keep seed testimonials on error
+                setTestimonials([]);
             }
         };
         fetchFeedback();
@@ -571,69 +510,71 @@ export const LandingPage: React.FC = () => {
             </section>
 
             {/* ── TESTIMONIALS ───────────────────────────────────────── */}
-            <section className="py-20 relative z-20 w-full overflow-hidden">
-                <div className="absolute inset-0 bg-[#0D0F1A] pointer-events-none" />
-                <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-                <div className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+            {testimonials.length > 0 && (
+                <section className="py-20 relative z-20 w-full overflow-hidden">
+                    <div className="absolute inset-0 bg-[#0D0F1A] pointer-events-none" />
+                    <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+                    <div className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
-                <div className="max-w-7xl mx-auto px-6 relative z-10">
-                    <div className="text-center mb-10 md:mb-14">
-                        <span className="inline-block px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-sm font-semibold mb-5 tracking-wide">Reviews</span>
-                        <h2 className="text-3xl md:text-5xl font-display font-bold text-white tracking-tight">Customer Testimonials</h2>
-                        <p className="text-base md:text-lg text-slate-400 mt-4">See how others are taking back control of their time and money.</p>
+                    <div className="max-w-7xl mx-auto px-6 relative z-10">
+                        <div className="text-center mb-10 md:mb-14">
+                            <span className="inline-block px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-sm font-semibold mb-5 tracking-wide">Reviews</span>
+                            <h2 className="text-3xl md:text-5xl font-display font-bold text-white tracking-tight">Customer Testimonials</h2>
+                            <p className="text-base md:text-lg text-slate-400 mt-4">See how others are taking back control of their time and money.</p>
+                        </div>
                     </div>
-                </div>
 
-                <div className="relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw]">
-                    <div 
-                        ref={testimonialRef} 
-                        onMouseEnter={() => setIsHovered(true)}
-                        onMouseLeave={() => setIsHovered(false)}
-                        className="flex overflow-x-auto gap-6 pb-6 snap-x px-6 md:px-[calc((100vw-1280px)/2)]" 
-                        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-                    >
-                        {testimonials.map((testimonial, idx) => (
-                            <div key={idx} className="min-w-[340px] md:min-w-[420px] snap-center bg-[#13151F] p-8 rounded-[1.75rem] shadow-[0_4px_24px_rgba(0,0,0,0.2)] hover:shadow-[0_16px_40px_rgba(0,0,0,0.35)] transition-all duration-400 border border-white/[0.06] hover:-translate-y-1 flex flex-col justify-between group">
-                                <div>
-                                    <div className="flex justify-between items-start mb-6">
-                                        <div className="px-3 py-1 bg-white/5 rounded-full text-[11px] font-bold tracking-widest text-slate-400 uppercase">
-                                            {testimonial.topic}
-                                        </div>
-                                        <div className="flex items-center gap-1">
-                                            {Array.from({ length: testimonial.rating }).map((_, i) => (
-                                                <Star key={i} className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
-                                            ))}
-                                        </div>
-                                    </div>
-                                    {/* Decorative quote mark */}
-                                    <div className="text-5xl font-serif text-indigo-800/60 leading-none mb-2 select-none">"</div>
-                                    <p className="text-base md:text-lg text-slate-200 leading-relaxed mb-8">
-                                        {testimonial.quote}
-                                    </p>
-                                </div>
-                                <div className="pt-5 border-t border-white/[0.07] flex items-center gap-4">
-                                    {testimonial.image ? (
-                                        <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-white/10 shadow-lg group-hover:border-indigo-500/50 transition-colors">
-                                            <img src={testimonial.image} alt={testimonial.name} className="w-full h-full object-cover" />
-                                        </div>
-                                    ) : (
-                                        <div className={`w-12 h-12 rounded-full bg-gradient-to-tr ${testimonial.color} flex items-center justify-center text-white text-xs font-black shadow-md border-2 border-white/5`}>
-                                            {testimonial.initials || getInitials(testimonial.name)}
-                                        </div>
-                                    )}
+                    <div className="relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw]">
+                        <div 
+                            ref={testimonialRef} 
+                            onMouseEnter={() => setIsHovered(true)}
+                            onMouseLeave={() => setIsHovered(false)}
+                            className="flex overflow-x-auto gap-6 pb-6 snap-x px-6 md:px-[calc((100vw-1280px)/2)]" 
+                            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                        >
+                            {testimonials.map((testimonial, idx) => (
+                                <div key={idx} className="min-w-[340px] md:min-w-[420px] snap-center bg-[#13151F] p-8 rounded-[1.75rem] shadow-[0_4px_24px_rgba(0,0,0,0.2)] hover:shadow-[0_16px_40px_rgba(0,0,0,0.35)] transition-all duration-400 border border-white/[0.06] hover:-translate-y-1 flex flex-col justify-between group">
                                     <div>
-                                        <div className="font-bold text-sm text-white flex items-center gap-2">
-                                            {testimonial.name}
-                                            {testimonial.flag && <span className="text-base leading-none" title={testimonial.location}>{testimonial.flag}</span>}
+                                        <div className="flex justify-between items-start mb-6">
+                                            <div className="px-3 py-1 bg-white/5 rounded-full text-[11px] font-bold tracking-widest text-slate-400 uppercase">
+                                                {testimonial.topic}
+                                            </div>
+                                            <div className="flex items-center gap-1">
+                                                {Array.from({ length: testimonial.rating }).map((_, i) => (
+                                                    <Star key={i} className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
+                                                ))}
+                                            </div>
                                         </div>
-                                        <div className="text-xs text-slate-400 mt-0.5">{testimonial.location}</div>
+                                        {/* Decorative quote mark */}
+                                        <div className="text-5xl font-serif text-indigo-800/60 leading-none mb-2 select-none">"</div>
+                                        <p className="text-base md:text-lg text-slate-200 leading-relaxed mb-8">
+                                            {testimonial.quote}
+                                        </p>
+                                    </div>
+                                    <div className="pt-5 border-t border-white/[0.07] flex items-center gap-4">
+                                        {testimonial.image ? (
+                                            <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-white/10 shadow-lg group-hover:border-indigo-500/50 transition-colors">
+                                                <img src={testimonial.image} alt={testimonial.name} className="w-full h-full object-cover" />
+                                            </div>
+                                        ) : (
+                                            <div className={`w-12 h-12 rounded-full bg-gradient-to-tr ${testimonial.color} flex items-center justify-center text-white text-xs font-black shadow-md border-2 border-white/5`}>
+                                                {testimonial.initials || getInitials(testimonial.name)}
+                                            </div>
+                                        )}
+                                        <div>
+                                            <div className="font-bold text-sm text-white flex items-center gap-2">
+                                                {testimonial.name}
+                                                {testimonial.flag && <span className="text-base leading-none" title={testimonial.location}>{testimonial.flag}</span>}
+                                            </div>
+                                            <div className="text-xs text-slate-400 mt-0.5">{testimonial.location}</div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        ))}
+                            ))}
+                        </div>
                     </div>
-                </div>
-            </section>
+                </section>
+            )}
 
             {/* ── BENTO FEATURES ─────────────────────────────────────── */}
             <section id="features" className="py-20 px-6 max-w-7xl mx-auto">

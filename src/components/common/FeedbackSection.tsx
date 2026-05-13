@@ -25,24 +25,7 @@ const FEATURE_TOPICS = [
     'Other'
 ];
 
-const COUNTRIES = [
-    { name: 'Nigeria', flag: '🇳🇬' },
-    { name: 'Singapore', flag: '🇸🇬' },
-    { name: 'United Kingdom', flag: '🇬🇧' },
-    { name: 'United States', flag: '🇺🇸' },
-    { name: 'Kenya', flag: '🇰🇪' },
-    { name: 'Ghana', flag: '🇬🇭' },
-    { name: 'Germany', flag: '🇩🇪' },
-    { name: 'Canada', flag: '🇨🇦' },
-    { name: 'Australia', flag: '🇦🇺' },
-    { name: 'South Africa', flag: '🇿🇦' },
-    { name: 'United Arab Emirates', flag: '🇦🇪' },
-    { name: 'Japan', flag: '🇯🇵' },
-    { name: 'China', flag: '🇨🇳' },
-    { name: 'India', flag: '🇮🇳' },
-    { name: 'Brazil', flag: '🇧🇷' },
-    { name: 'France', flag: '🇫🇷' },
-];
+
 
 export const FeedbackSection: React.FC = () => {
     const { token, user } = useAuthStore();
@@ -53,8 +36,9 @@ export const FeedbackSection: React.FC = () => {
     const [comment, setComment] = useState('');
     const [name, setName] = useState('');
     const [topic, setTopic] = useState('General');
-    const [country, setCountry] = useState(COUNTRIES[0].name);
-    const [flag, setFlag] = useState(COUNTRIES[0].flag);
+    const [countries, setCountries] = useState<{name: string, flag: string}[]>([]);
+    const [country, setCountry] = useState('');
+    const [flag, setFlag] = useState('');
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     
@@ -66,6 +50,31 @@ export const FeedbackSection: React.FC = () => {
             setName(user.name);
         }
     }, [user]);
+
+    useEffect(() => {
+        const fetchCountries = async () => {
+            try {
+                const res = await fetch('https://restcountries.com/v3.1/all?fields=name,flag');
+                if (res.ok) {
+                    const data = await res.json();
+                    const sorted = data.map((c: any) => ({
+                        name: c.name.common,
+                        flag: c.flag
+                    })).sort((a: any, b: any) => a.name.localeCompare(b.name));
+                    setCountries(sorted);
+                    // Set default to Nigeria or first in list
+                    const defaultCountry = sorted.find((c: any) => c.name === 'Nigeria') || sorted[0];
+                    if (defaultCountry) {
+                        setCountry(defaultCountry.name);
+                        setFlag(defaultCountry.flag);
+                    }
+                }
+            } catch (err) {
+                console.error("Error fetching countries:", err);
+            }
+        };
+        fetchCountries();
+    }, []);
 
     useEffect(() => {
         const fetchFeedbacks = async () => {
@@ -80,6 +89,9 @@ export const FeedbackSection: React.FC = () => {
                             name: fb.name,
                             rating: fb.rating,
                             comment: fb.comment,
+                            topic: fb.topic,
+                            country: fb.country,
+                            flag: fb.flag,
                             date: new Date(fb.createdAt).toLocaleDateString()
                         })));
                     }
@@ -242,7 +254,7 @@ export const FeedbackSection: React.FC = () => {
                                     <select
                                         value={country}
                                         onChange={(e) => {
-                                            const selected = COUNTRIES.find(c => c.name === e.target.value);
+                                            const selected = countries.find(c => c.name === e.target.value);
                                             if (selected) {
                                                 setCountry(selected.name);
                                                 setFlag(selected.flag);
@@ -250,7 +262,8 @@ export const FeedbackSection: React.FC = () => {
                                         }}
                                         className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all shadow-sm text-sm appearance-none cursor-pointer"
                                     >
-                                        {COUNTRIES.map((c) => (
+                                        <option value="" disabled>Select your country</option>
+                                        {countries.map((c) => (
                                             <option key={c.name} value={c.name}>{c.flag} {c.name}</option>
                                         ))}
                                     </select>
