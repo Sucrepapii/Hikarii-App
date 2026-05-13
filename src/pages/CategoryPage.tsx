@@ -25,7 +25,7 @@ export const CategoryPage: React.FC = () => {
 
     if (articles.length === 0) {
         return (
-            <div className="min-h-screen flex flex-col items-center justify-center bg-white dark:bg-[#0B0C15] text-slate-900 dark:text-white">
+            <div className="min-h-screen flex flex-col items-center justify-center bg-[#080910] text-white">
                 <h1 className="text-2xl font-bold mb-4">Category not found</h1>
                 <Button onClick={() => navigate('/help')}>Return to Help Center</Button>
             </div>
@@ -33,8 +33,8 @@ export const CategoryPage: React.FC = () => {
     }
 
     return (
-        <div className="min-h-screen bg-white dark:bg-[#0B0C15] font-sans text-slate-900 dark:text-slate-100 flex flex-col">
-            <nav className="fixed top-0 w-full z-50 bg-white/80 dark:bg-[#0B0C15]/80 backdrop-blur-md border-b border-slate-200 dark:border-white/5">
+        <div className="min-h-screen bg-[#080910] font-sans text-slate-100 flex flex-col">
+            <nav className="fixed top-0 w-full z-50 bg-[#080910]/80 backdrop-blur-md border-b border-white/5">
                 <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
                     <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/')}>
                         <Logo variant="full" size="md" suppressLink={true} />
@@ -49,21 +49,21 @@ export const CategoryPage: React.FC = () => {
 
             <main className="flex-grow pt-32 px-6 max-w-4xl mx-auto w-full pb-20">
                 <div className="text-center mb-16">
-                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 mb-6 shadow-lg">
+                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-white/5 border border-white/10 mb-6 shadow-lg shadow-black/20">
                         {getIcon(decodedCategory)}
                     </div>
-                    <h1 className="text-4xl font-display font-bold mb-4">{decodedCategory}</h1>
-                    <p className="text-slate-500 dark:text-slate-400 text-lg">Browse all articles in this category</p>
+                    <h1 className="text-4xl font-display font-bold mb-4 text-white">{decodedCategory}</h1>
+                    <p className="text-slate-400 text-lg">Browse all articles in this category</p>
                 </div>
 
                 <div className="grid gap-4">
                     {articles.map((article) => (
-                        <Link key={article.id} to={`/help/article/${article.slug}`} className="p-6 rounded-2xl bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 hover:border-indigo-500/30 hover:bg-slate-50 dark:hover:bg-white/10 transition-all cursor-pointer flex items-center justify-between group shadow-sm hover:shadow-md">
+                        <Link key={article.id} to={`/help/article/${article.slug}`} className="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-indigo-500/30 hover:bg-white/10 transition-all cursor-pointer flex items-center justify-between group shadow-sm hover:shadow-md">
                             <div>
-                                <h3 className="text-xl font-bold mb-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{article.title}</h3>
-                                <p className="text-slate-500 dark:text-slate-400">{article.excerpt}</p>
+                                <h3 className="text-xl font-bold mb-2 group-hover:text-indigo-400 transition-colors text-white">{article.title}</h3>
+                                <p className="text-slate-400">{article.excerpt}</p>
                             </div>
-                            <ArrowRight className="w-5 h-5 text-slate-400 group-hover:translate-x-1 transition-transform" />
+                            <ArrowRight className="w-5 h-5 text-slate-500 group-hover:translate-x-1 transition-transform" />
                         </Link>
                     ))}
                 </div>

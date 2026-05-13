@@ -267,51 +267,51 @@ export const helpArticles: Article[] = [
             </p>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 my-12">
-                <div class="p-8 rounded-3xl bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-500/20">
-                    <div class="w-12 h-12 bg-indigo-500 rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg shadow-indigo-500/20">
+                <div class="p-8 rounded-3xl bg-white/[0.03] border border-white/[0.08] hover:border-indigo-500/30 transition-all group">
+                    <div class="w-12 h-12 bg-indigo-500/20 text-indigo-400 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-indigo-500/10 ring-1 ring-indigo-500/20">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                     </div>
-                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">1. Give Every Task a Job</h3>
-                    <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                    <h3 class="text-xl font-bold text-white mb-3">1. Give Every Task a Job</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
                         Every hour has a cost, and every dollar has a purpose. By linking a budget limit to a task, you transform it from a vague intention into a funded commitment.
                     </p>
                 </div>
 
-                <div class="p-8 rounded-3xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-100 dark:border-emerald-500/20">
-                    <div class="w-12 h-12 bg-emerald-500 rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg shadow-emerald-500/20">
+                <div class="p-8 rounded-3xl bg-white/[0.03] border border-white/[0.08] hover:border-emerald-500/30 transition-all group">
+                    <div class="w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-emerald-500/10 ring-1 ring-emerald-500/20">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
                     </div>
-                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">2. Real-Time Syncing</h3>
-                    <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                    <h3 class="text-xl font-bold text-white mb-3">2. Real-Time Syncing</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
                         As you log expenses, your project budget updates instantly. No more surprises at the end of the month—only intentional execution.
                     </p>
                 </div>
 
-                <div class="p-8 rounded-3xl bg-purple-50 dark:bg-purple-900/20 border border-purple-100 dark:border-purple-500/20">
-                    <div class="w-12 h-12 bg-purple-500 rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg shadow-purple-500/20">
+                <div class="p-8 rounded-3xl bg-white/[0.03] border border-white/[0.08] hover:border-purple-500/30 transition-all group">
+                    <div class="w-12 h-12 bg-purple-500/20 text-purple-400 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-purple-500/10 ring-1 ring-purple-500/20">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                     </div>
-                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">3. Scale with Collaboration</h3>
-                    <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                    <h3 class="text-xl font-bold text-white mb-3">3. Scale with Collaboration</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
                         Rule 5 brings your team into the ecosystem. Transparency eliminates the need for constant "status update" meetings.
                     </p>
                 </div>
 
-                <div class="p-8 rounded-3xl bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-500/20">
-                    <div class="w-12 h-12 bg-amber-500 rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg shadow-amber-500/20">
+                <div class="p-8 rounded-3xl bg-white/[0.03] border border-white/[0.08] hover:border-amber-500/30 transition-all group">
+                    <div class="w-12 h-12 bg-amber-500/20 text-amber-400 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-amber-500/10 ring-1 ring-amber-500/20">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                     </div>
-                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">4. Zen Focus Mode</h3>
-                    <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                    <h3 class="text-xl font-bold text-white mb-3">4. Zen Focus Mode</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
                         Mute the noise. Dim the lower priorities. Enter a state of flow with your most important milestones using our Zen aesthetics.
                     </p>
                 </div>
             </div>
 
-            <div class="bg-slate-900 rounded-3xl p-10 text-center text-white shadow-xl">
+            <div class="bg-indigo-600/10 border border-indigo-500/20 rounded-3xl p-10 text-center text-white shadow-xl">
                 <h2 class="text-2xl font-bold mb-4">Ready to achieve Radical Clarity?</h2>
                 <p class="text-slate-400 mb-8 max-w-lg mx-auto">Mastering the Hikari Method is about moving from reactive stress toward proactive control.</p>
-                <a href="/dashboard" class="inline-flex items-center px-8 py-4 rounded-2xl bg-indigo-500 hover:bg-indigo-400 text-white font-bold transition-all shadow-lg shadow-indigo-500/20">
+                <a href="/dashboard" class="inline-flex items-center px-8 py-4 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold transition-all shadow-lg shadow-indigo-600/20">
                     Get Started Now
                 </a>
             </div>

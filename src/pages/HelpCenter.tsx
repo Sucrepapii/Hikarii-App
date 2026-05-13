@@ -57,46 +57,46 @@ export const HelpCenter: React.FC = () => {
 
                 {searchQuery.length > 0 ? (
                     <div className="max-w-3xl mx-auto">
-                        <h2 className="text-xl font-bold mb-6 text-slate-900 dark:text-white">
-                            {searchResults.length} {searchResults.length === 1 ? 'Result' : 'Results'} for "{searchQuery}"
-                        </h2>
+                    <h2 className="text-xl font-bold mb-6 text-white">
+                        {searchResults.length} {searchResults.length === 1 ? 'Result' : 'Results'} for "{searchQuery}"
+                    </h2>
                         {searchResults.length > 0 ? (
                             <div className="grid gap-4">
                                 {searchResults.map((article) => (
-                                    <Link key={article.id} to={`/help/article/${article.slug}`} className="p-6 rounded-2xl bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 hover:border-indigo-500/30 hover:bg-slate-50 dark:hover:bg-white/10 transition-all cursor-pointer flex items-center justify-between group shadow-sm hover:shadow-md">
-                                        <div>
-                                            <div className="flex items-center gap-2 mb-2">
-                                                <span className="text-xs font-medium px-2 py-1 rounded bg-slate-100 dark:bg-white/10 text-slate-500 dark:text-slate-400">{article.category}</span>
-                                            </div>
-                                            <h3 className="text-xl font-bold mb-1 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{article.title}</h3>
-                                            <p className="text-slate-500 dark:text-slate-400">{article.excerpt}</p>
+                                <Link key={article.id} to={`/help/article/${article.slug}`} className="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-indigo-500/30 hover:bg-white/10 transition-all cursor-pointer flex items-center justify-between group shadow-sm hover:shadow-md">
+                                    <div>
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <span className="text-xs font-medium px-2 py-1 rounded bg-white/10 text-slate-400">{article.category}</span>
                                         </div>
-                                        <ArrowRight className="w-5 h-5 text-slate-400 group-hover:translate-x-1 transition-transform" />
-                                    </Link>
+                                        <h3 className="text-xl font-bold mb-1 group-hover:text-indigo-400 transition-colors">{article.title}</h3>
+                                        <p className="text-slate-400">{article.excerpt}</p>
+                                    </div>
+                                    <ArrowRight className="w-5 h-5 text-slate-500 group-hover:translate-x-1 transition-transform" />
+                                </Link>
                                 ))}
                             </div>
                         ) : (
-                            <div className="text-center py-20 bg-slate-50 dark:bg-white/5 rounded-3xl border border-dashed border-slate-200 dark:border-white/10">
-                                <HelpCircle className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-                                <h3 className="text-lg font-bold mb-2">No results found</h3>
-                                <p className="text-slate-500 dark:text-slate-400">Try adjusting your search terms or browse by category.</p>
-                            </div>
+                        <div className="text-center py-20 bg-white/5 rounded-3xl border border-dashed border-white/10">
+                            <HelpCircle className="w-12 h-12 text-slate-600 mx-auto mb-4" />
+                            <h3 className="text-lg font-bold mb-2 text-white">No results found</h3>
+                            <p className="text-slate-500">Try adjusting your search terms or browse by category.</p>
+                        </div>
                         )}
                     </div>
                 ) : (
                     <>
                         {/* Popular Articles */}
-                        <div className="mb-20">
-                            <h2 className="text-xl font-bold mb-6 text-slate-900 dark:text-white">Popular Articles</h2>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                {popularArticles.map((article) => (
-                                    <Link key={article.id} to={`/help/article/${article.slug}`} className="p-4 rounded-xl bg-white dark:bg-white/5 border border-slate-100 dark:border-white/5 hover:border-indigo-500/30 hover:bg-slate-50 dark:hover:bg-white/10 transition-colors cursor-pointer flex items-center justify-between group">
-                                        <span className="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-indigo-600 dark:group-hover:text-indigo-400">{article.title}</span>
-                                        <ArrowRight className="w-4 h-4 text-slate-400 group-hover:translate-x-1 transition-transform" />
-                                    </Link>
-                                ))}
-                            </div>
+                    <div className="mb-20">
+                        <h2 className="text-xl font-bold mb-6 text-white">Popular Articles</h2>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            {popularArticles.map((article) => (
+                                <Link key={article.id} to={`/help/article/${article.slug}`} className="p-4 rounded-xl bg-white/5 border border-white/5 hover:border-indigo-500/30 hover:bg-white/10 transition-colors cursor-pointer flex items-center justify-between group">
+                                    <span className="text-sm font-medium text-slate-300 group-hover:text-indigo-400">{article.title}</span>
+                                    <ArrowRight className="w-4 h-4 text-slate-500 group-hover:translate-x-1 transition-transform" />
+                                </Link>
+                            ))}
                         </div>
+                    </div>
 
                         {/* Categories */}
                         <h2 className="text-3xl font-bold mb-12 text-center tracking-tight">Browse by Category</h2>
