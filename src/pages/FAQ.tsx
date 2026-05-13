@@ -48,7 +48,7 @@ export const FAQ: React.FC = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-[#080910] text-slate-100 selection:bg-purple-500/30 overflow-x-hidden">
+        <div className="min-h-screen bg-[#080910] text-slate-100 selection:bg-purple-500/30 overflow-x-hidden deep-dark">
             <Helmet>
                 <title>FAQ | Hikari Support & Help Center</title>
                 <meta name="description" content="Find answers to frequently asked questions about Hikari. Learn about AI Smart Split, WhatsApp notifications, and how to master your budget." />

@@ -33,7 +33,7 @@ export const CategoryPage: React.FC = () => {
     }
 
     return (
-        <div className="min-h-screen bg-[#080910] font-sans text-slate-100 flex flex-col">
+        <div className="min-h-screen bg-[#080910] font-sans text-slate-100 flex flex-col deep-dark">
             <nav className="fixed top-0 w-full z-50 bg-[#080910]/80 backdrop-blur-md border-b border-white/5">
                 <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
                     <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/')}>

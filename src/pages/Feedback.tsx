@@ -5,7 +5,7 @@ import { Navbar } from '../components/layout/Navbar';
 
 export const Feedback = () => {
     return (
-        <div className="min-h-screen bg-[#080910] font-sans text-slate-100 flex flex-col selection:bg-purple-500/30 overflow-x-hidden">
+        <div className="min-h-screen bg-[#080910] font-sans text-slate-100 flex flex-col selection:bg-purple-500/30 overflow-x-hidden deep-dark">
             <Navbar />
 
             <div className="flex-grow pt-32 pb-20 relative">

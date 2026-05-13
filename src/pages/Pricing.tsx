@@ -81,7 +81,7 @@ export const Pricing: React.FC = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-[#080910] text-slate-100 selection:bg-purple-500/30 overflow-x-hidden flex flex-col">
+        <div className="min-h-screen bg-[#080910] text-slate-100 selection:bg-purple-500/30 overflow-x-hidden flex flex-col deep-dark">
             <Helmet>
                 <title>Pricing | Hikari</title>
                 <meta name="description" content="Choose the plan that fits your growth. Affordable, institutional-grade tools for personal and professional clarity." />

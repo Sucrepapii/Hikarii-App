@@ -180,7 +180,7 @@ export const LandingPage: React.FC = () => {
     }, [isHovered]);
 
     return (
-        <div className="min-h-screen bg-[#080910] font-sans text-slate-100 overflow-x-hidden selection:bg-purple-500/30">
+        <div className="min-h-screen bg-[#080910] font-sans text-slate-100 overflow-x-hidden selection:bg-purple-500/30 deep-dark">
             <Helmet>
                 <link rel="canonical" href="https://www.hikarii.org/" />
                 <title>Hikari | Radical Clarity in Tasks & Budgeting</title>

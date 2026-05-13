@@ -11,7 +11,7 @@ export const About: React.FC = () => {
     const navigate = useNavigate();
 
     return (
-        <div className="min-h-screen bg-[#080910] font-sans text-slate-100 flex flex-col selection:bg-purple-500/30 overflow-x-hidden">
+        <div className="min-h-screen bg-[#080910] font-sans text-slate-100 flex flex-col selection:bg-purple-500/30 overflow-x-hidden deep-dark">
             <Helmet>
                 <title>About Us | Hikari - Radical Clarity in Tasks & Budgeting</title>
                 <meta name="description" content="Discover the Hikari Method. We build tools for the Focused Few to bring radical clarity to the intersection of life's work and costs." />

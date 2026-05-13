@@ -29,7 +29,7 @@ export const HelpCenter: React.FC = () => {
         : [];
 
     return (
-        <div className="min-h-screen bg-[#080910] font-sans text-slate-100 flex flex-col selection:bg-purple-500/30 overflow-x-hidden">
+        <div className="min-h-screen bg-[#080910] font-sans text-slate-100 flex flex-col selection:bg-purple-500/30 overflow-x-hidden deep-dark">
             <Navbar />
 
             <main className="flex-grow pt-32 px-6 max-w-6xl mx-auto w-full pb-20">

@@ -7,9 +7,8 @@
     --gradient-primary: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
     --gradient-accent: linear-gradient(135deg, #a855f7 0%, #9333ea 100%);
     --gradient-success: linear-gradient(135deg, #10b981 0%, #059669 100%);
-    --gradient-glass: rgba(0, 0, 0, 0.4);
+    --gradient-glass: rgba(255, 255, 255, 0.9);
     --shine-glow: 0 0 25px rgba(99, 102, 241, 0.5);
-    color-scheme: dark;
   }
 
   .dark {
@@ -24,12 +23,19 @@
   }
 
   body {
-    @apply bg-[#080910] text-slate-100 font-sans;
+    @apply bg-slate-50 text-slate-900 dark:bg-[#0B0C15] dark:text-slate-100 font-sans;
     margin: 0;
     padding: 0;
     width: 100%;
     min-height: 100vh;
     overflow-x: hidden;
+  }
+
+  /* Deep Dark Theme for Public Pages */
+  .deep-dark {
+    --gradient-glass: rgba(0, 0, 0, 0.4);
+    @apply bg-[#080910] text-slate-100;
+    color-scheme: dark;
   }
 
   html, #root {
@@ -51,6 +57,10 @@
   /* Enhanced 3D Glassmorphism */
   .glass {
     @apply bg-white/95 dark:bg-black/30 backdrop-blur-2xl border border-slate-200/80 dark:border-white/20;
+  }
+
+  .deep-dark .glass {
+    @apply bg-black/30 border-white/20;
   }
 
   /* Premium 3D Card Effect */
