@@ -96,6 +96,10 @@ export const Dashboard: React.FC = () => {
 
     const recentExpenses = expenses.slice(-3).reverse();
 
+    // MOMENTUM CALCULATION (The "One-Click Profit" Insight)
+    const netMomentum = tasks.reduce((sum, t) => sum + (t.financials?.cashFlowImpact || 0), 0) - totalSpent;
+    const isPositiveMomentum = netMomentum >= 0;
+
     const handleEditTask = (task: Task) => {
         setEditingTask(task);
         setIsEditModalOpen(true);
@@ -337,9 +341,44 @@ export const Dashboard: React.FC = () => {
 
             {/* Charts (Hidden in Focus Mode for extreme clarity) */}
             {!isFocusMode && (
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                    {/* Financial Momentum Card */}
+                    <Card className="relative overflow-hidden group border-white/10 bg-gradient-to-br from-[#0D0F1A] to-[#161927]">
+                        <div className={clsx(
+                            "absolute top-0 right-0 w-32 h-32 blur-[60px] -mr-16 -mt-16 transition-colors duration-700",
+                            isPositiveMomentum ? "bg-emerald-500/20" : "bg-rose-500/10"
+                        )} />
+                        <div className="relative z-10">
+                            <div className="flex items-center justify-between mb-4">
+                                <div className={clsx(
+                                    "p-3 rounded-xl",
+                                    isPositiveMomentum ? "bg-emerald-500/10 text-emerald-500" : "bg-rose-500/10 text-rose-500"
+                                )}>
+                                    <TrendingUp className="w-6 h-6" />
+                                </div>
+                                <span className={clsx(
+                                    "text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-md",
+                                    isPositiveMomentum ? "bg-emerald-500/10 text-emerald-400" : "bg-rose-500/10 text-rose-400"
+                                )}>
+                                    Net Clarity
+                                </span>
+                            </div>
+                            <div className="text-3xl md:text-4xl font-black text-white mb-1">
+                                <NumberCounter 
+                                    value={Math.abs(netMomentum)} 
+                                    prefix={netMomentum < 0 ? `-${currency === 'NGN' ? '₦' : '$'}` : (currency === 'NGN' ? '₦' : '$')} 
+                                />
+                            </div>
+                            <p className="text-xs text-slate-500 font-medium tracking-tight">
+                                {isPositiveMomentum ? "Positive financial trajectory" : "Attention required on costs"}
+                            </p>
+                        </div>
+                    </Card>
+
+                    <Card className="bg-[#0D0F1A] border-white/5">
+                        <BudgetProgress />
+                    </Card>
                     <SpendingChart />
-                    <BudgetProgress />
                 </div>
             )}
 

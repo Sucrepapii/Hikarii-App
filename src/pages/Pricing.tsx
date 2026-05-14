@@ -55,8 +55,8 @@ export const Pricing: React.FC = () => {
             features: [
                 "Unlimited Tasks & Notes",
                 "Basic Budget Tracking",
-                "Single Device Sync",
-                "Community Support"
+                "Limited to 1 project",
+                "Email Support"
             ],
             cta: "Current Plan",
             highlight: false,
@@ -71,8 +71,7 @@ export const Pricing: React.FC = () => {
                 "Advanced Financial Analytics",
                 "Unlimited Projects & Teams",
                 "Priority Support",
-                "Cross-device Synchronization",
-                "Custom Themes & Branding"
+                "Cross-device Synchronization"
             ],
             cta: "Upgrade to Pro",
             highlight: true,

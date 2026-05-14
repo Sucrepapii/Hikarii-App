@@ -127,7 +127,35 @@ export const LandingPage: React.FC = () => {
     const { token } = useAuthStore();
     const isAuthenticated = !!token;
     const [currency, setCurrency] = useState<'USD' | 'NGN'>('NGN');
-    const [testimonials, setTestimonials] = useState<any[]>([]);
+    const [testimonials, setTestimonials] = useState<any[]>([
+        {
+            topic: "FREELANCE GROWTH",
+            quote: "Hikari changed how I view my billable hours. I finally see exactly where my time turns into profit.",
+            name: "Sarah Chen",
+            location: "Singapore",
+            flag: "🇸🇬",
+            rating: 5,
+            color: "from-indigo-500 to-purple-500"
+        },
+        {
+            topic: "HOME RENO",
+            quote: "I used to fear my contractor invoices. Now I map them to tasks and see the impact in real-time.",
+            name: "James Wilson",
+            location: "London, UK",
+            flag: "🇬🇧",
+            rating: 5,
+            color: "from-emerald-500 to-teal-500"
+        },
+        {
+            topic: "STARTUP OPS",
+            quote: "The AI task splitting is pure magic. It takes my chaotic ideas and turns them into a financial roadmap.",
+            name: "Amara Okoro",
+            location: "Lagos, Nigeria",
+            flag: "🇳🇬",
+            rating: 5,
+            color: "from-orange-500 to-rose-500"
+        }
+    ]);
     const [isHovered, setIsHovered] = useState(false);
     const testimonialRef = React.useRef<HTMLDivElement>(null);
 
@@ -151,12 +179,10 @@ export const LandingPage: React.FC = () => {
                             color: GRADIENT_COLORS[idx % GRADIENT_COLORS.length]
                         }));
                         setTestimonials(mapped);
-                    } else {
-                        setTestimonials([]); // Ensure empty if no feedback
                     }
                 }
             } catch {
-                setTestimonials([]);
+                // Keep fallbacks on error
             }
         };
         fetchFeedback();
@@ -302,8 +328,161 @@ export const LandingPage: React.FC = () => {
                 </div>
             </div>
 
+            {/* ── HIKARI METHOD ──────────────────────────────────────── */}
+            <section className="py-16 px-6 max-w-7xl mx-auto relative z-20">
+                <div className="grid grid-cols-1 md:grid-cols-[420px,1fr] lg:grid-cols-[480px,1fr] gap-16 lg:gap-24 items-center">
+                    {/* Left: text */}
+                    <div className="space-y-10">
+                        <div>
+                            <span className="inline-block px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-sm font-semibold mb-6 tracking-wide">The Philosophy</span>
+                            <h2 className="text-3xl md:text-5xl font-display font-bold text-white mb-5 leading-tight tracking-tight">The Hikari Method</h2>
+                            <p className="text-base md:text-lg text-slate-400 leading-relaxed">
+                                92% of Hikari users feel more in control of their time and money within the first week. Our method is built on clarity and intentionality. <Link to="/help/article/ultimate-guide-hikari-method" className="text-indigo-400 font-semibold hover:underline">Read the Guide &rarr;</Link>
+                            </p>
+                        </div>
+
+                        <div className="space-y-6">
+                            {HIKARI_METHOD_RULES.map((rule, idx) => (
+                                <div key={idx} className={`group flex gap-5 p-5 rounded-2xl border border-transparent hover:border-white/10 hover:bg-white/[0.03] transition-all duration-300 cursor-default`}>
+                                    <div className={`shrink-0 w-12 h-12 rounded-xl ${rule.styles.bg} flex items-center justify-center ${rule.styles.text} group-hover:scale-110 transition-transform duration-400`}>
+                                        {rule.icon}
+                                    </div>
+                                    <div>
+                                        <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500 mb-1">{rule.rule}</div>
+                                        <h3 className="text-lg font-bold text-white mb-1.5 tracking-tight">{rule.title}</h3>
+                                        <p className="text-slate-400 leading-relaxed text-sm">{rule.description}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Right: mockup */}
+                    <div className="relative group pb-16">
+                        <div className="absolute -inset-8 bg-gradient-to-r from-indigo-500/8 via-purple-500/8 to-pink-500/8 rounded-3xl blur-[80px] opacity-60 group-hover:opacity-100 transition-opacity duration-1000" />
+                        <div className="relative w-full aspect-[16/10] bg-[#0F111A] rounded-2xl overflow-hidden border border-white/[0.08] shadow-[0_40px_80px_-20px_rgba(0,0,0,0.5)] transform perspective-[2000px] rotate-y-[-5deg] rotate-x-[2deg] group-hover:rotate-y-0 group-hover:rotate-x-0 transition-all duration-700 ease-out">
+                            <div className="h-full bg-[#0B0C15]">
+                                <img src="/hikari_hero_desk.png" alt="Hikari Desktop Dashboard" loading="lazy" className="w-full h-full object-cover" />
+                            </div>
+                        </div>
+
+                        {/* Floating iPhone */}
+                        <div className="absolute -bottom-12 -right-6 md:-right-10 w-[170px] md:w-[200px] z-30 transform perspective-[2000px] rotate-y-[5deg] rotate-x-[-2deg] group-hover:rotate-y-0 group-hover:rotate-x-0 transition-all duration-700 ease-out group-hover:translate-x-3 group-hover:-translate-y-4">
+                            <div className="relative rounded-[2.5rem] bg-[#1C1C1E] p-[8px] shadow-2xl border border-white/10">
+                                <div className="absolute top-4 left-1/2 -translate-x-1/2 z-30 w-[60px] h-[16px] bg-black rounded-full" />
+                                <div className="relative rounded-[2rem] overflow-hidden bg-black aspect-[9/19.5]">
+                                    <img src="/step4_realistic_1774274876575.png" alt="Hikari Mobile App" loading="lazy" className="w-full h-full object-cover" />
+                                    <div className="absolute inset-0 bg-gradient-to-tr from-white/[0.04] via-transparent to-transparent pointer-events-none" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* Subtle Divider */}
+            <div className="max-w-4xl mx-auto h-px bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-50" />
+
+            {/* ── GLOBAL CLARITY (Combined) ─────────────────────────── */}
+            <section className="py-16 px-6 max-w-7xl mx-auto relative overflow-hidden">
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-indigo-600/5 rounded-full blur-[160px] pointer-events-none -z-10" />
+                
+                <div className="text-center mb-20">
+                    <span className="inline-block px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-black tracking-widest uppercase mb-6">A Global Movement</span>
+                    <h2 className="text-4xl md:text-7xl font-display font-bold text-white mb-6 tracking-tight">Radical Clarity is a <span className="text-indigo-400">Choice.</span></h2>
+                    <p className="text-lg md:text-2xl text-slate-400 max-w-3xl mx-auto leading-relaxed">
+                        Built for the <span className="text-white font-bold">Global Professional</span>. From Lagos to London, Nairobi to New York—Hikari empowers you to architect your growth with institutional precision.
+                    </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-24">
+                    {/* Before Card */}
+                    <div className="p-8 md:p-12 rounded-[2.5rem] bg-[#0D0F1A] border border-white/5 relative group overflow-hidden">
+                        <div className="absolute inset-0 bg-red-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                        <div className="relative z-10">
+                            <h3 className="text-xl font-bold text-rose-400 mb-8 flex items-center gap-3">
+                                <div className="w-8 h-8 rounded-lg bg-rose-500/10 flex items-center justify-center text-rose-500">
+                                    <X className="w-5 h-5" />
+                                </div>
+                                Before Hikari
+                            </h3>
+                            <ul className="space-y-6">
+                                {["Tasks in Todoist, money in Mint, stress everywhere.", "Ambiguous upcoming costs causing financial anxiety.", "Asking 'Where did the week go?' with zero ROI insight.", "Fragmented focus across 5 disconnected productivity apps."].map((item, i) => (
+                                    <li key={i} className="flex gap-4 text-slate-500">
+                                        <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-slate-700 shrink-0" />
+                                        <span className="text-sm leading-relaxed">{item}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    </div>
+
+                    {/* After Card */}
+                    <div className="p-8 md:p-12 rounded-[2.5rem] bg-indigo-600/5 border border-indigo-500/20 relative group overflow-hidden shadow-2xl shadow-indigo-500/10">
+                        <div className="absolute inset-0 bg-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                        <div className="relative z-10">
+                            <h3 className="text-xl font-bold text-indigo-400 mb-8 flex items-center gap-3">
+                                <div className="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center text-indigo-500">
+                                    <Check className="w-5 h-5" />
+                                </div>
+                                After Hikari
+                            </h3>
+                            <ul className="space-y-6">
+                                {["One unified institutional workspace for everything.", "Precise financial forecasting for every single task.", "Radical focus on the few things that move the needle.", "Deep peace of mind with AI-automated planning."].map((item, i) => (
+                                    <li key={i} className="flex gap-4 text-white">
+                                        <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-indigo-500 shrink-0 shadow-[0_0_8px_rgba(99,102,241,0.8)]" />
+                                        <span className="text-sm font-medium leading-relaxed">{item}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="space-y-16">
+                    {/* Stats & Quote */}
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center bg-white/[0.02] border border-white/5 p-8 md:p-12 rounded-[2.5rem]">
+                        <div className="flex gap-12">
+                            <div>
+                                <div className="text-4xl font-black text-white mb-1 tracking-tighter">20+</div>
+                                <div className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Countries</div>
+                            </div>
+                            <div>
+                                <div className="text-4xl font-black text-white mb-1 tracking-tighter">3K+</div>
+                                <div className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Global Users</div>
+                            </div>
+                        </div>
+                        <div className="lg:col-span-2">
+                            <p className="text-lg md:text-xl text-slate-400 leading-relaxed italic relative pl-8 border-l border-indigo-500/30">
+                                "Hikari is the first tool that understands the complex interplay between my time in London and my business in Nairobi."
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* Images in a straight line */}
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        {[
+                            { src: "/diverse_professional_woman_laptop_1778667210443.png", label: "Lagos, Nigeria" },
+                            { src: "/asian_man_smartphone_urban_1778667228092.png", label: "Singapore" },
+                            { src: "/european_professional_woman_office_1778667268916.png", label: "London, UK" },
+                            { src: "/diverse_team_meeting_1778667244641.png", label: "Global Teams" }
+                        ].map((img, i) => (
+                            <div key={i} className="relative group overflow-hidden rounded-2xl aspect-[4/5] shadow-2xl transition-all duration-700 hover:-translate-y-2">
+                                <img src={img.src} alt={img.label} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-4">
+                                    <div className="text-white text-[10px] font-bold uppercase tracking-wider">{img.label}</div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* Subtle Divider */}
+            <div className="max-w-4xl mx-auto h-px bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-50" />
+
             {/* ── FOUR STEPS ─────────────────────────────────────────── */}
-            <section className="py-20 px-6 max-w-7xl mx-auto relative z-20">
+            <section className="py-16 px-6 max-w-7xl mx-auto relative z-20">
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[500px] pointer-events-none">
                     <div className="absolute top-0 left-0 w-[400px] h-[400px] bg-indigo-400/8 rounded-full blur-[120px]" />
                     <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-purple-400/8 rounded-full blur-[120px]" />
@@ -372,146 +551,12 @@ export const LandingPage: React.FC = () => {
                 </div>
             </section>
 
-            {/* ── GLOBAL COMMUNITY ──────────────────────────────────── */}
-            <section className="py-24 relative overflow-hidden bg-[#0A0B14]">
-                <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
-                    style={{ backgroundImage: 'radial-gradient(circle, #6366f1 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
-
-                <div className="max-w-7xl mx-auto px-6 relative z-10">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-                        <div>
-                            <span className="inline-block px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-semibold mb-6 tracking-wide">Global Impact</span>
-                            <h2 className="text-4xl md:text-6xl font-display font-bold text-white mb-6 leading-tight tracking-tight">
-                                Built for the <span className="text-indigo-400">Global</span> Professional
-                            </h2>
-                            <p className="text-xl text-slate-400 leading-relaxed mb-10">
-                                From Lagos to London, Nairobi to New York. Hikari empowers individuals and teams across the globe to synchronize their productivity with their financial goals.
-                            </p>
-
-                            <div className="grid grid-cols-2 gap-8">
-                                <div>
-                                    <div className="text-3xl font-bold text-white mb-1">20+</div>
-                                    <div className="text-sm text-slate-500 font-medium">Countries Represented</div>
-                                </div>
-                                <div>
-                                    <div className="text-3xl font-bold text-white mb-1">3K+</div>
-                                    <div className="text-sm text-slate-500 font-medium">Tasks Synchronized</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-4 md:gap-6">
-                            <div className="space-y-4 md:space-y-6">
-                                <div className="relative group overflow-hidden rounded-[2rem] aspect-[4/5] shadow-2xl transition-transform duration-700 hover:-translate-y-2">
-                                    <img src="/diverse_professional_woman_laptop_1778667210443.png" alt="Professional in Lagos" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6">
-                                        <div className="text-white text-sm font-bold">Lagos, Nigeria</div>
-                                    </div>
-                                </div>
-                                <div className="relative group overflow-hidden rounded-[2rem] aspect-square shadow-2xl transition-transform duration-700 hover:-translate-y-2">
-                                    <img src="/asian_man_smartphone_urban_1778667228092.png" alt="Professional in Tokyo" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6">
-                                        <div className="text-white text-sm font-bold">Singapore</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="space-y-4 md:space-y-6 pt-12">
-                                <div className="relative group overflow-hidden rounded-[2rem] aspect-square shadow-2xl transition-transform duration-700 hover:-translate-y-2">
-                                    <img src="/european_professional_woman_office_1778667268916.png" alt="Professional in London" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6">
-                                        <div className="text-white text-sm font-bold">London, UK</div>
-                                    </div>
-                                </div>
-                                <div className="relative group overflow-hidden rounded-[2rem] aspect-[4/5] shadow-2xl transition-transform duration-700 hover:-translate-y-2">
-                                    <img src="/diverse_team_meeting_1778667244641.png" alt="Global Team Collaboration" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6">
-                                        <div className="text-white text-sm font-bold">Global Teams</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* ── HIKARI METHOD ──────────────────────────────────────── */}
-            <section className="py-20 px-6 max-w-7xl mx-auto relative z-20">
-                {/* Subtle section divider */}
-                <div className="absolute top-0 inset-x-6 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-
-                <div className="grid grid-cols-1 md:grid-cols-[420px,1fr] lg:grid-cols-[480px,1fr] gap-16 lg:gap-24 items-center">
-                    {/* Left: text */}
-                    <div className="space-y-10">
-                        <div>
-                            <span className="inline-block px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-sm font-semibold mb-6 tracking-wide">The Philosophy</span>
-                            <h2 className="text-3xl md:text-5xl font-display font-bold text-white mb-5 leading-tight">The Hikari Method</h2>
-                            <p className="text-base md:text-lg text-slate-400 leading-relaxed">
-                                92% of Hikari users feel more in control of their time and money within the first week. Our method is built on clarity and intentionality. <Link to="/help/article/ultimate-guide-hikari-method" className="text-indigo-400 font-semibold hover:underline">Read the Ultimate Guide &rarr;</Link>
-                            </p>
-                        </div>
-
-                        <div className="space-y-6">
-                            {HIKARI_METHOD_RULES.map((rule, idx) => (
-                                <div key={idx} className={`group flex gap-5 p-5 rounded-2xl border border-transparent hover:border-white/10 hover:bg-white/[0.03] transition-all duration-300 cursor-default`}>
-                                    <div className={`shrink-0 w-12 h-12 rounded-xl ${rule.styles.bg} flex items-center justify-center ${rule.styles.text} group-hover:scale-110 transition-transform duration-400`}>
-                                        {rule.icon}
-                                    </div>
-                                    <div>
-                                        <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500 mb-1">{rule.rule}</div>
-                                        <h3 className="text-lg font-bold text-white mb-1.5 tracking-tight">{rule.title}</h3>
-                                        <p className="text-slate-400 leading-relaxed text-sm">{rule.description}</p>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-
-                        <div>
-                            <Button onClick={() => navigate('/signup')} size="lg" className="rounded-full px-8 h-[52px] text-base font-semibold bg-indigo-600 hover:bg-indigo-500 text-white border-0 shadow-xl shadow-indigo-500/25 transition-all hover:scale-105">
-                                Create Free Account <ArrowRight className="ml-2 w-4 h-4" />
-                            </Button>
-                        </div>
-                    </div>
-
-                    {/* Right: mockup */}
-                    <div className="relative group pb-16">
-                        <div className="absolute -inset-8 bg-gradient-to-r from-indigo-500/8 via-purple-500/8 to-pink-500/8 rounded-3xl blur-[80px] opacity-60 group-hover:opacity-100 transition-opacity duration-1000" />
-                        <div className="relative w-full aspect-[16/10] bg-[#0F111A] rounded-2xl overflow-hidden border border-white/[0.08] shadow-[0_40px_80px_-20px_rgba(0,0,0,0.5)] transform perspective-[2000px] rotate-y-[-5deg] rotate-x-[2deg] group-hover:rotate-y-0 group-hover:rotate-x-0 transition-all duration-700 ease-out">
-                            <div className="h-full bg-[#0B0C15]">
-                                <img src="/hikari_hero_desk.png" alt="Hikari Desktop Dashboard showing task-budget integration" loading="lazy" className="w-full h-full object-cover" />
-                            </div>
-                        </div>
-
-                        {/* Floating iPhone */}
-                        <div className="absolute -bottom-12 -right-6 md:-right-10 w-[170px] md:w-[200px] z-30 transform perspective-[2000px] rotate-y-[5deg] rotate-x-[-2deg] group-hover:rotate-y-0 group-hover:rotate-x-0 transition-all duration-700 ease-out group-hover:translate-x-3 group-hover:-translate-y-4">
-                            <div className="relative rounded-[2.5rem] bg-[#1C1C1E] p-[8px] shadow-2xl border border-white/10">
-                                <div className="absolute top-4 left-1/2 -translate-x-1/2 z-30 w-[60px] h-[16px] bg-black rounded-full" />
-                                <div className="relative rounded-[2rem] overflow-hidden bg-black aspect-[9/19.5]">
-                                    <img src="/step4_realistic_1774274876575.png" alt="Hikari Mobile App" loading="lazy" className="w-full h-full object-cover" />
-                                    <div className="absolute inset-0 bg-gradient-to-tr from-white/[0.04] via-transparent to-transparent pointer-events-none" />
-                                </div>
-                            </div>
-
-                            {/* Floating detail card */}
-                            <div className="absolute -left-16 top-1/2 -translate-y-1/2 w-44 p-4 bg-[#1A1C30] backdrop-blur-xl rounded-2xl border border-white/10 shadow-2xl animate-float z-40 hidden md:block">
-                                <div className="flex items-center gap-3 mb-3">
-                                    <div className="w-8 h-8 rounded-lg bg-emerald-500/15 flex items-center justify-center text-emerald-500 border border-emerald-500/20">
-                                        <Check className="w-4 h-4" />
-                                    </div>
-                                    <div className="text-xs font-bold text-white">Task Linked!</div>
-                                </div>
-                                <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
-                                    <div className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 w-[75%] rounded-full" />
-                                </div>
-                                <div className="mt-2 text-[10px] text-slate-400 font-medium">$250.00 / $300.00</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
+            {/* Subtle Divider */}
+            <div className="max-w-4xl mx-auto h-px bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-50" />
 
             {/* ── TESTIMONIALS ───────────────────────────────────────── */}
             {testimonials.length > 0 && (
-                <section className="py-20 relative z-20 w-full overflow-hidden">
+                <section className="py-16 relative z-20 w-full overflow-hidden">
                     <div className="absolute inset-0 bg-[#0D0F1A] pointer-events-none" />
                     <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
                     <div className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
@@ -576,8 +621,11 @@ export const LandingPage: React.FC = () => {
                 </section>
             )}
 
+            {/* Subtle Divider */}
+            <div className="max-w-4xl mx-auto h-px bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-50" />
+
             {/* ── BENTO FEATURES ─────────────────────────────────────── */}
-            <section id="features" className="py-20 px-6 max-w-7xl mx-auto">
+            <section id="features" className="py-16 px-6 max-w-7xl mx-auto">
                 <div className="bg-gradient-to-br from-[#0E1021] via-[#111530] to-[#0A0C1B] rounded-[2.5rem] p-8 md:p-12 relative overflow-hidden shadow-[0_40px_100px_-20px_rgba(0,0,0,0.5)]">
                     {/* Background glows */}
                     <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-600/15 rounded-full blur-[120px] mix-blend-screen animate-pulse-slow" />
@@ -687,52 +735,63 @@ export const LandingPage: React.FC = () => {
                                 </div>
                             </div>
 
-                            {/* Tall: Smart Split */}
-                            <div className="md:col-span-1 bg-gradient-to-b from-emerald-900/30 to-emerald-900/5 border border-emerald-500/15 rounded-2xl p-7 flex flex-col hover:border-emerald-500/30 transition-all duration-300 backdrop-blur-md hover:-translate-y-1 group min-h-[340px]">
-                                <div className="mb-auto">
-                                    <div className="w-11 h-11 bg-emerald-500/15 rounded-xl flex items-center justify-center mb-5 text-emerald-400 border border-emerald-500/20">
-                                        <Split className="w-5 h-5" />
+                            {/* Tall: AI Smart Split (Magic Moment) */}
+                            <div className="md:col-span-1 bg-gradient-to-b from-[#0F172A] to-[#0A0C1B] border border-white/[0.08] rounded-2xl p-7 flex flex-col hover:border-emerald-500/30 transition-all duration-500 backdrop-blur-md group relative overflow-hidden min-h-[380px]">
+                                <div className="absolute inset-0 bg-emerald-500/[0.02] opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                                <div className="relative z-10 mb-auto">
+                                    <div className="w-12 h-12 bg-emerald-500/10 rounded-xl flex items-center justify-center mb-6 text-emerald-400 border border-emerald-500/20 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
+                                        <Split className="w-6 h-6" />
                                     </div>
-                                    <h3 className="text-lg font-bold mb-2 text-white">Smart Split</h3>
-                                    <p className="text-sm text-emerald-100/60 leading-relaxed">Automatically break down complex projects into actionable steps.</p>
+                                    <h3 className="text-xl font-bold mb-3 text-white tracking-tight">AI Smart Split</h3>
+                                    <p className="text-sm text-slate-400 leading-relaxed">The "Magic Moment." Our AI dissects complex projects into manageable, pre-funded task blocks automatically.</p>
                                 </div>
-                                <div className="mt-6 space-y-2.5 font-mono text-[11px]">
-                                    <div className="bg-white/5 p-2.5 rounded-lg border border-white/[0.07] flex items-center justify-between">
-                                        <span className="text-white font-medium truncate mr-2">Family Adventure Fund</span>
-                                        <span className="text-emerald-400 text-[9px] bg-emerald-400/10 px-1.5 py-0.5 rounded shrink-0">Project</span>
+                                <div className="mt-8 space-y-3 font-mono text-[10px] relative z-10">
+                                    <div className="bg-white/5 p-3 rounded-lg border border-white/[0.1] flex items-center justify-between shadow-xl">
+                                        <span className="text-white font-bold truncate mr-2">Q3 Marketing Launch</span>
+                                        <span className="text-emerald-400 text-[8px] bg-emerald-400/10 px-2 py-0.5 rounded-full uppercase font-black tracking-tighter shrink-0">Processing...</span>
                                     </div>
-                                    <div className="relative pl-5 space-y-2 before:absolute before:left-2 before:top-0 before:bottom-0 before:w-px before:bg-white/[0.08]">
+                                    <div className="relative pl-6 space-y-3 before:absolute before:left-2.5 before:top-0 before:bottom-0 before:w-px before:bg-gradient-to-b before:from-emerald-500/50 before:via-emerald-500/20 before:to-transparent">
                                         {[
-                                            { label: "Research flights", amount: "$0", color: "text-slate-400" },
-                                            { label: "Book hotel stay", amount: "-$850", color: "text-red-300" },
-                                            { label: "Excursion tickets", amount: "-$120", color: "text-red-300" },
+                                            { label: "Content Strategy", amount: "$0", delay: "delay-[200ms]" },
+                                            { label: "Ad Spend Setup", amount: "-$2,400", delay: "delay-[400ms]" },
+                                            { label: "Influencer Outreach", amount: "-$850", delay: "delay-[600ms]" },
                                         ].map((item, i) => (
-                                            <div key={i} className="bg-emerald-500/8 p-2 rounded-lg border border-emerald-500/10 flex items-center justify-between opacity-100 translate-x-0 md:opacity-0 md:-translate-x-2 md:group-hover:opacity-100 md:group-hover:translate-x-0 transition-all duration-500 ease-out" style={{ transitionDelay: `${(i + 1) * 100}ms` }}>
-                                                <div className="flex items-center gap-1.5">
-                                                    <div className="w-1 h-1 rounded-full bg-emerald-400 shrink-0" />
-                                                    <span className="text-emerald-100/80 truncate">{item.label}</span>
+                                            <div key={i} className={clsx(
+                                                "bg-[#13151F] p-2.5 rounded-lg border border-white/[0.05] flex items-center justify-between opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-700 ease-out shadow-lg",
+                                                item.delay
+                                            )}>
+                                                <div className="flex items-center gap-2">
+                                                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)] shrink-0" />
+                                                    <span className="text-slate-300 truncate">{item.label}</span>
                                                 </div>
-                                                <span className={item.color}>{item.amount}</span>
+                                                <span className={item.amount.startsWith('-') ? "text-rose-400 font-bold" : "text-slate-500"}>{item.amount}</span>
                                             </div>
                                         ))}
                                     </div>
                                 </div>
                             </div>
 
-                            {/* AI Insights */}
-                            <div className="col-span-1 bg-gradient-to-br from-amber-500/10 to-orange-500/5 border border-amber-500/15 rounded-2xl p-6 flex flex-col justify-between hover:border-amber-500/30 transition-all duration-300 backdrop-blur-md group">
-                                <div>
-                                    <div className="w-10 h-10 bg-amber-500/15 rounded-xl flex items-center justify-center mb-4 text-amber-400 border border-amber-500/20">
+                            {/* AI Insights Card */}
+                            <div className="col-span-1 bg-[#0D0F1A] border border-white/5 rounded-2xl p-7 flex flex-col justify-between hover:border-amber-500/30 transition-all duration-500 group overflow-hidden relative">
+                                <div className="absolute -right-4 -top-4 w-24 h-24 bg-amber-500/10 blur-2xl rounded-full group-hover:bg-amber-500/20 transition-colors" />
+                                <div className="relative z-10">
+                                    <div className="w-11 h-11 bg-amber-500/10 rounded-xl flex items-center justify-center mb-5 text-amber-500 border border-amber-500/20 group-hover:animate-bounce-slow">
                                         <Zap className="w-5 h-5" />
                                     </div>
-                                    <h3 className="font-bold text-white text-base mb-1">AI Insights</h3>
-                                    <p className="text-xs text-slate-400">Predictive analytics for your wallet.</p>
+                                    <h3 className="font-bold text-white text-lg mb-2 tracking-tight">Financial Ticker</h3>
+                                    <p className="text-sm text-slate-500 leading-relaxed">Predictive cashflow analytics that alert you before a budget ceiling is breached.</p>
                                 </div>
-                                <div className="mt-4 flex items-end gap-1.5 h-14 w-full px-1">
-                                    <div className="flex-1 bg-white/[0.07] rounded-t-sm h-[40%]" />
-                                    <div className="flex-1 bg-white/[0.07] rounded-t-sm h-[60%]" />
-                                    <div className="flex-1 bg-white/[0.07] rounded-t-sm h-[50%]" />
-                                    <div className="flex-1 bg-gradient-to-t from-amber-500 to-orange-400 rounded-t-sm h-[80%] shadow-[0_0_12px_rgba(245,158,11,0.4)] animate-pulse" />
+                                <div className="mt-8 flex items-end gap-2 h-20 w-full px-2">
+                                    {[30, 45, 35, 60, 40, 75, 55, 90].map((h, i) => (
+                                        <div 
+                                            key={i} 
+                                            className={clsx(
+                                                "flex-1 rounded-t-md transition-all duration-1000",
+                                                i === 7 ? "bg-gradient-to-t from-amber-600 to-orange-400 shadow-[0_0_15px_rgba(245,158,11,0.5)]" : "bg-white/5 group-hover:bg-white/10"
+                                            )} 
+                                            style={{ height: i === 7 ? '100%' : `${h}%`, transitionDelay: `${i * 100}ms` }} 
+                                        />
+                                    ))}
                                 </div>
                             </div>
 
