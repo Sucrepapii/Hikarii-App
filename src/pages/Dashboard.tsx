@@ -265,9 +265,8 @@ export const Dashboard: React.FC = () => {
                 </div>
             )}
 
-            {/* Stats Grid */}
             <div className={clsx(
-                "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 transition-all duration-700",
+                "grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 mb-6 transition-all duration-700",
                 isFocusMode && "opacity-40 grayscale blur-[0.5px] pointer-events-none scale-95"
             )}>
                 <Card className="relative overflow-hidden">
@@ -281,7 +280,7 @@ export const Dashboard: React.FC = () => {
                                 Total Tasks
                             </span>
                         </div>
-                        <p className="text-3xl font-bold gradient-text">
+                        <p className="text-2xl sm:text-3xl font-bold gradient-text">
                             <NumberCounter value={totalTasks} />
                         </p>
                     </div>
@@ -298,7 +297,7 @@ export const Dashboard: React.FC = () => {
                                 Completed
                             </span>
                         </div>
-                        <p className="text-3xl font-bold gradient-text">
+                        <p className="text-2xl sm:text-3xl font-bold gradient-text">
                             <NumberCounter value={completedTasks} />
                         </p>
                     </div>
@@ -315,7 +314,7 @@ export const Dashboard: React.FC = () => {
                                 Pending
                             </span>
                         </div>
-                        <p className="text-3xl font-bold gradient-text">
+                        <p className="text-2xl sm:text-3xl font-bold gradient-text">
                             <NumberCounter value={pendingTasks} />
                         </p>
                     </div>
@@ -341,9 +340,9 @@ export const Dashboard: React.FC = () => {
 
             {/* Charts (Hidden in Focus Mode for extreme clarity) */}
             {!isFocusMode && (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
                     {/* Financial Momentum Card */}
-                    <Card className="relative overflow-hidden group border-white/10 bg-gradient-to-br from-[#0D0F1A] to-[#161927]">
+                    <Card className="relative overflow-hidden group border-slate-200/50 dark:border-white/10 bg-white/80 dark:bg-gradient-to-br dark:from-[#0D0F1A] dark:to-[#161927]">
                         <div className={clsx(
                             "absolute top-0 right-0 w-32 h-32 blur-[60px] -mr-16 -mt-16 transition-colors duration-700",
                             isPositiveMomentum ? "bg-emerald-500/20" : "bg-rose-500/10"
@@ -352,33 +351,34 @@ export const Dashboard: React.FC = () => {
                             <div className="flex items-center justify-between mb-4">
                                 <div className={clsx(
                                     "p-3 rounded-xl",
-                                    isPositiveMomentum ? "bg-emerald-500/10 text-emerald-500" : "bg-rose-500/10 text-rose-500"
+                                    isPositiveMomentum ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-500" : "bg-rose-500/10 text-rose-600 dark:text-rose-500"
                                 )}>
                                     <TrendingUp className="w-6 h-6" />
                                 </div>
                                 <span className={clsx(
                                     "text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-md",
-                                    isPositiveMomentum ? "bg-emerald-500/10 text-emerald-400" : "bg-rose-500/10 text-rose-400"
+                                    isPositiveMomentum ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" : "bg-rose-500/10 text-rose-600 dark:text-rose-400"
                                 )}>
                                     Net Clarity
                                 </span>
                             </div>
-                            <div className="text-3xl md:text-4xl font-black text-white mb-1">
+                            <div className="text-2xl sm:text-3xl md:text-4xl font-black text-slate-900 dark:text-white mb-1">
                                 <NumberCounter 
                                     value={Math.abs(netMomentum)} 
                                     prefix={netMomentum < 0 ? `-${currency === 'NGN' ? '₦' : '$'}` : (currency === 'NGN' ? '₦' : '$')} 
                                 />
                             </div>
-                            <p className="text-xs text-slate-500 font-medium tracking-tight">
+                            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium tracking-tight">
                                 {isPositiveMomentum ? "Positive financial trajectory" : "Attention required on costs"}
                             </p>
                         </div>
                     </Card>
 
-                    <Card className="bg-[#0D0F1A] border-white/5">
-                        <BudgetProgress />
-                    </Card>
-                    <SpendingChart />
+                    <BudgetProgress />
+                    
+                    <div className="lg:col-span-2">
+                        <SpendingChart />
+                    </div>
                 </div>
             )}
 

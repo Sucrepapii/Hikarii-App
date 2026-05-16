@@ -46,15 +46,17 @@ export const SpendingChart: React.FC<SpendingChartProps> = ({ selectedDate = new
             <h3 className="text-xl font-semibold mb-4">Spending Overview</h3>
             <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={categoryData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#374151" opacity={0.2} />
+                    <CartesianGrid strokeDasharray="3 3" stroke="currentColor" opacity={0.1} />
                     <XAxis
                         dataKey="category"
-                        stroke="#94a3b8"
-                        tick={{ fill: '#94a3b8', fontSize: 12 }}
+                        stroke="currentColor"
+                        tick={{ fill: 'currentColor', fontSize: 10, opacity: 0.6 }}
+                        className="text-slate-500 dark:text-slate-400"
                     />
                     <YAxis
-                        stroke="#94a3b8"
-                        tick={{ fill: '#94a3b8', fontSize: 12 }}
+                        stroke="currentColor"
+                        tick={{ fill: 'currentColor', fontSize: 10, opacity: 0.6 }}
+                        className="text-slate-500 dark:text-slate-400"
                         tickFormatter={(value) => {
                             // Manual formatting for Y-axis to save space
                             const symbol = currency === 'NGN' ? '₦' : currency === 'USD' ? '$' : currency === 'GBP' ? '£' : '€';
@@ -63,15 +65,20 @@ export const SpendingChart: React.FC<SpendingChartProps> = ({ selectedDate = new
                     />
                     <Tooltip
                         contentStyle={{
-                            backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                            backgroundColor: 'var(--tw-bg-opacity, rgba(255, 255, 255, 0.9))',
+                            background: 'CanvasText' in document.documentElement.style ? undefined : undefined, // Placeholder for theme-aware bg
                             border: '1px solid rgba(148, 163, 184, 0.2)',
-                            borderRadius: '12px',
-                            backdropFilter: 'blur(10px)',
+                            borderRadius: '16px',
+                            boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)',
                         }}
-                        labelStyle={{ color: '#e2e8f0' }}
-                        formatter={(value: number) => formatCurrency(value, currency)}
+                        itemStyle={{ fontSize: '12px', fontWeight: 'bold' }}
+                        cursor={{ fill: 'rgba(99, 102, 241, 0.05)' }}
+                        formatter={(value: number) => [formatCurrency(value, currency), 'Spent']}
                     />
-                    <Legend wrapperStyle={{ color: '#94a3b8' }} />
+                    <Legend 
+                        wrapperStyle={{ paddingTop: '20px' }}
+                        iconType="circle"
+                    />
                     <Bar dataKey="spent" fill="url(#colorSpent)" radius={[8, 8, 0, 0]} />
                     <Bar dataKey="budget" fill="url(#colorBudget)" radius={[8, 8, 0, 0]} />
                     <defs>
