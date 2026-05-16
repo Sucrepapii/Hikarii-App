@@ -331,7 +331,12 @@ export const Dashboard: React.FC = () => {
                                 Total Spent
                             </span>
                         </div>
-                        <p className="text-lg sm:text-2xl md:text-3xl font-bold gradient-text break-all">
+                        <p className={clsx(
+                            "font-bold gradient-text break-all transition-all duration-300",
+                            formatCurrency(getConvertedAmount(totalSpent, currency), currency).length > 12 
+                                ? "text-base sm:text-xl md:text-2xl" 
+                                : "text-lg sm:text-2xl md:text-3xl"
+                        )}>
                             {formatCurrency(getConvertedAmount(totalSpent, currency), currency)}
                         </p>
                     </div>
@@ -362,7 +367,12 @@ export const Dashboard: React.FC = () => {
                                     Net Clarity
                                 </span>
                             </div>
-                            <div className="text-2xl sm:text-3xl md:text-4xl font-black text-slate-900 dark:text-white mb-1">
+                            <div className={clsx(
+                                "font-black text-slate-900 dark:text-white mb-1 transition-all duration-300",
+                                (Math.abs(netMomentum).toString().length + (currency === 'NGN' ? 1 : 1)) > 10
+                                    ? "text-xl sm:text-2xl md:text-3xl"
+                                    : "text-2xl sm:text-3xl md:text-4xl"
+                            )}>
                                 <NumberCounter 
                                     value={Math.abs(netMomentum)} 
                                     prefix={netMomentum < 0 ? `-${currency === 'NGN' ? '₦' : '$'}` : (currency === 'NGN' ? '₦' : '$')} 
