@@ -40,6 +40,7 @@ import { AdminMarketing } from './pages/AdminMarketing';
 import { Pricing } from './pages/Pricing';
 import ForcedPasswordChange from './pages/ForcedPasswordChange';
 import { AcceptInvite } from './pages/AcceptInvite';
+import { Method } from './pages/Method';
 import './index.css';
 
 import { useInactivity } from './hooks/useInactivity';
@@ -234,6 +235,7 @@ function App() {
                 <Route path="/faq" element={<FAQ />} />
                 <Route path="/feedback" element={<Feedback />} />
                 <Route path="/pricing" element={<Pricing />} />
+                <Route path="/method" element={<Method />} />
                 <Route
                     path="/invites/:token"
                     element={

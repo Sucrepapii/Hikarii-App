@@ -17,18 +17,18 @@ const ONBOARDING_STEPS = [
         image: "/step1_realistic_1774274821092.png"
     },
     {
-        title: "Dump your thoughts",
-        body: "Add all your pending tasks, goals, and recurring expenses into one secure vault.",
+        title: "Link the Money",
+        body: "Assign a dollar value to every milestone. See the real cost of your time.",
         image: "/step2_realistic_1774274840396.png"
     },
     {
-        title: "Organize & Split",
-        body: "Use our AI to break down massive projects into focused, bite-sized blocks.",
+        title: "Split with AI",
+        body: "Our AI breaks massive projects into pre-funded, bite-sized blocks automatically.",
         image: "/step3_realistic_1774274858410.png"
     },
     {
-        title: "Execute & Track",
-        body: "Check off tasks and watch your financial progress update in real-time.",
+        title: "Execute with ROI",
+        body: "Check off tasks and watch your financial progress update with absolute ROI clarity.",
         image: "/step4_realistic_1774274876575.png"
     }
 ];
@@ -278,32 +278,26 @@ export const LandingPage: React.FC = () => {
                         <span className="text-sm font-semibold text-indigo-300 tracking-wide">Clarity. Focus. Control.</span>
                     </div>
 
-                    <h1 className="text-4xl sm:text-5xl md:text-[84px] font-display font-extrabold tracking-tight mb-6 leading-[1.05] animate-fade-in-up delay-100 text-white px-2">
-                        Master Your <br />
-                        <span className="bg-gradient-to-r from-indigo-600 via-purple-500 to-pink-500 bg-clip-text text-transparent">
-                            Life & Money
-                        </span>
+                    <h1 className="text-4xl md:text-6xl lg:text-7xl font-display font-bold text-white mb-8 leading-[1.1] tracking-tight">
+                        The One Workspace Where <span className="text-indigo-400">Tasks Meet Budgets.</span>
                     </h1>
 
-                    <p className="text-xl text-slate-400 max-w-2xl mx-auto mb-10 animate-fade-in-up delay-200 leading-relaxed">
-                        The all-in-one workspace for task management and financial tracking. Organize your projects, track expenses, and reach your goals.
+                    <p className="text-lg md:text-xl text-slate-400 mb-10 max-w-2xl mx-auto leading-relaxed">
+                        Stop juggling Todoist and Mint. Track projects and expenses side-by-side. Gain total clarity on where your time and money actually go.
                     </p>
 
-                    <div className="flex flex-wrap items-center justify-center gap-4 mb-12 animate-fade-in-up delay-300">
+                    <div className="flex justify-center mb-6">
                         <Button
-                            onClick={() => navigate('/signup')}
                             size="lg"
-                            className="rounded-full px-8 h-[52px] text-base font-semibold bg-indigo-600 hover:bg-indigo-500 text-white border-0 shadow-xl shadow-indigo-500/30 transition-all hover:scale-105 hover:shadow-indigo-500/40"
+                            className="w-full sm:w-auto px-10 py-6 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-lg shadow-xl shadow-indigo-600/20"
+                            onClick={() => navigate('/signup')}
                         >
-                            Create Free Account <ArrowRight className="ml-2 w-4 h-4" />
+                            Get Started Free <ArrowRight className="ml-2 w-5 h-5" />
                         </Button>
-                        <Link
-                            to="/pricing"
-                            className="inline-flex items-center gap-1.5 h-[52px] px-8 rounded-full border border-white/10 text-sm font-semibold text-slate-300 hover:border-indigo-500/50 hover:text-indigo-400 transition-all bg-white/[0.04] backdrop-blur-sm"
-                        >
-                            View Pricing
-                        </Link>
                     </div>
+                    <p className="text-sm text-slate-500 font-medium mb-12">
+                        Connect every task to its budget – from daily errands to $1M projects.
+                    </p>
 
                     {/* Floating social-proof pills */}
                     <div className="flex flex-wrap items-center justify-center gap-3 animate-fade-in-up delay-300">
@@ -342,7 +336,7 @@ export const LandingPage: React.FC = () => {
                         </div>
 
                         <div className="space-y-6">
-                            {HIKARI_METHOD_RULES.map((rule, idx) => (
+                            {HIKARI_METHOD_RULES.slice(0, 3).map((rule, idx) => (
                                 <div key={idx} className={`group flex gap-5 p-5 rounded-2xl border border-transparent hover:border-white/10 hover:bg-white/[0.03] transition-all duration-300 cursor-default`}>
                                     <div className={`shrink-0 w-12 h-12 rounded-xl ${rule.styles.bg} flex items-center justify-center ${rule.styles.text} group-hover:scale-110 transition-transform duration-400`}>
                                         {rule.icon}
@@ -354,6 +348,9 @@ export const LandingPage: React.FC = () => {
                                     </div>
                                 </div>
                             ))}
+                            <Link to="/method" className="inline-flex items-center gap-2 text-indigo-400 font-bold hover:text-indigo-300 transition-colors ml-5 pt-4">
+                                Learn all 5 rules of our philosophy <ArrowRight className="w-4 h-4" />
+                            </Link>
                         </div>
                     </div>
 
@@ -386,7 +383,7 @@ export const LandingPage: React.FC = () => {
             {/* ── GLOBAL CLARITY (Combined) ─────────────────────────── */}
             <section className="py-16 px-6 max-w-7xl mx-auto relative overflow-hidden">
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-indigo-600/5 rounded-full blur-[160px] pointer-events-none -z-10" />
-                
+
                 <div className="text-center mb-20">
                     <span className="inline-block px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-black tracking-widest uppercase mb-6">A Global Movement</span>
                     <h2 className="text-4xl md:text-7xl font-display font-bold text-white mb-6 tracking-tight">Radical Clarity is a <span className="text-indigo-400">Choice.</span></h2>
@@ -407,7 +404,7 @@ export const LandingPage: React.FC = () => {
                                 Before Hikari
                             </h3>
                             <ul className="space-y-6">
-                                {["Tasks in Todoist, money in Mint, stress everywhere.", "Ambiguous upcoming costs causing financial anxiety.", "Asking 'Where did the week go?' with zero ROI insight.", "Fragmented focus across 5 disconnected productivity apps."].map((item, i) => (
+                                {["Task: \"Fix website\" — no budget, no deadline.", "Expense: \"$200 Hosting\" — where does the money go?", "Stress: \"Is this project even profitable?\"", "Chaos: Fragmented focus across 5 disconnected apps."].map((item, i) => (
                                     <li key={i} className="flex gap-4 text-slate-500">
                                         <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-slate-700 shrink-0" />
                                         <span className="text-sm leading-relaxed">{item}</span>
@@ -428,7 +425,7 @@ export const LandingPage: React.FC = () => {
                                 After Hikari
                             </h3>
                             <ul className="space-y-6">
-                                {["One unified institutional workspace for everything.", "Precise financial forecasting for every single task.", "Radical focus on the few things that move the needle.", "Deep peace of mind with AI-automated planning."].map((item, i) => (
+                                {["Task: \"Fix website\" — budget $300 allocated.", "Expense linked to task — remaining $100 tracked.", "Clarity: ROI automatically calculated per milestone.", "Peace: One institutional workspace for everything."].map((item, i) => (
                                     <li key={i} className="flex gap-4 text-white">
                                         <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-indigo-500 shrink-0 shadow-[0_0_8px_rgba(99,102,241,0.8)]" />
                                         <span className="text-sm font-medium leading-relaxed">{item}</span>
@@ -478,6 +475,30 @@ export const LandingPage: React.FC = () => {
                 </div>
             </section>
 
+            {/* Mid-page CTA */}
+            <section className="py-20 px-6 relative overflow-hidden">
+                <div className="max-w-5xl mx-auto text-center relative z-10">
+                    <div className="inline-block p-[1px] rounded-[3rem] bg-gradient-to-r from-indigo-500/30 via-purple-500/30 to-pink-500/30 shadow-2xl">
+                        <div className="px-8 md:px-16 py-12 md:py-20 rounded-[2.9rem] bg-[#0D0F1A]/90 backdrop-blur-xl flex flex-col md:flex-row items-center justify-between gap-10">
+                            <div className="text-left md:max-w-md">
+                                <h3 className="text-3xl md:text-4xl font-display font-bold text-white mb-4 leading-tight">Ready to experience radical clarity?</h3>
+                                <p className="text-slate-400 text-lg">Join 3,000+ professionals who have already mastered their life and money.</p>
+                            </div>
+                            <Button 
+                                size="lg" 
+                                className="w-full md:w-auto px-12 py-7 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xl shadow-2xl shadow-indigo-600/30 transition-all hover:scale-105"
+                                onClick={() => navigate('/signup')}
+                            >
+                                Get Started Now <ArrowRight className="ml-2 w-6 h-6" />
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+                {/* Background decorative glows */}
+                <div className="absolute top-1/2 left-0 w-[300px] h-[300px] bg-indigo-600/10 rounded-full blur-[100px] -translate-y-1/2 -ml-32 pointer-events-none" />
+                <div className="absolute top-1/2 right-0 w-[300px] h-[300px] bg-purple-600/10 rounded-full blur-[100px] -translate-y-1/2 -mr-32 pointer-events-none" />
+            </section>
+
             {/* Subtle Divider */}
             <div className="max-w-4xl mx-auto h-px bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-50" />
 
@@ -517,7 +538,7 @@ export const LandingPage: React.FC = () => {
                                                 <div className="w-[8px] h-[8px] rounded-full bg-[#1a1a2e] border border-[#2a2a3e] mr-3" />
                                             </div>
                                             <div className="absolute top-0 left-0 right-0 h-12 z-20 flex items-end justify-between px-6 pb-1">
-                                                <span className="text-[9px] font-semibold text-white/80">9:41</span>
+                                                <span className="text-[9px] font-semibold text-white/80">Hikari</span>
                                                 <div className="flex items-center gap-1">
                                                     <div className="flex gap-[2px]">
                                                         <div className="w-[3px] h-[4px] bg-white/70 rounded-[0.5px]" />
@@ -570,11 +591,11 @@ export const LandingPage: React.FC = () => {
                     </div>
 
                     <div className="relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw]">
-                        <div 
-                            ref={testimonialRef} 
+                        <div
+                            ref={testimonialRef}
                             onMouseEnter={() => setIsHovered(true)}
                             onMouseLeave={() => setIsHovered(false)}
-                            className="flex overflow-x-auto gap-6 pb-6 snap-x px-6 md:px-[calc((100vw-1280px)/2)]" 
+                            className="flex overflow-x-auto gap-6 pb-6 snap-x px-6 md:px-[calc((100vw-1280px)/2)]"
                             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                         >
                             {testimonials.map((testimonial, idx) => (
@@ -783,13 +804,13 @@ export const LandingPage: React.FC = () => {
                                 </div>
                                 <div className="mt-8 flex items-end gap-2 h-20 w-full px-2">
                                     {[30, 45, 35, 60, 40, 75, 55, 90].map((h, i) => (
-                                        <div 
-                                            key={i} 
+                                        <div
+                                            key={i}
                                             className={clsx(
                                                 "flex-1 rounded-t-md transition-all duration-1000",
                                                 i === 7 ? "bg-gradient-to-t from-amber-600 to-orange-400 shadow-[0_0_15px_rgba(245,158,11,0.5)]" : "bg-white/5 group-hover:bg-white/10"
-                                            )} 
-                                            style={{ height: i === 7 ? '100%' : `${h}%`, transitionDelay: `${i * 100}ms` }} 
+                                            )}
+                                            style={{ height: i === 7 ? '100%' : `${h}%`, transitionDelay: `${i * 100}ms` }}
                                         />
                                     ))}
                                 </div>
@@ -886,21 +907,28 @@ export const LandingPage: React.FC = () => {
                 <div className="max-w-3xl mx-auto px-6 relative z-10 text-center">
                     <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-indigo-300 text-sm font-semibold mb-8 tracking-wide">
                         <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse" />
-                        Support
+                        Next Steps
                     </div>
                     <h2 className="text-3xl md:text-5xl font-display font-bold text-white mb-5 tracking-tight px-4">
-                        Got Questions?
+                        Ready to stop guessing?
                     </h2>
                     <p className="text-base md:text-lg text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed px-4">
-                        Everything you need to know about Hikari and how it can organize your life.
+                        Start living with clarity. Connect your tasks and budgets in minutes. Start free – no credit card required.
                     </p>
-                    <Link
-                        to="/faq"
-                        className="inline-flex items-center gap-3 px-6 md:px-8 py-4 rounded-2xl bg-white/[0.06] border border-white/[0.12] text-white font-semibold hover:bg-white/[0.12] hover:border-white/20 transition-all duration-300 hover:scale-105 text-sm md:text-base backdrop-blur-sm shadow-xl shadow-black/20 mx-4"
-                    >
-                        <span>Have a different question? We're here to help — Just ask!</span>
-                        <ChevronDown className="w-5 h-5 -rotate-90 shrink-0 text-indigo-400" />
-                    </Link>
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                        <Link
+                            to="/signup"
+                            className="inline-flex items-center gap-3 px-10 py-5 rounded-full bg-indigo-600 text-white font-bold hover:bg-indigo-500 transition-all duration-300 hover:scale-105 shadow-xl shadow-indigo-600/20"
+                        >
+                            Get Started Free <ArrowRight className="w-5 h-5" />
+                        </Link>
+                        <Link
+                            to="/faq"
+                            className="inline-flex items-center gap-3 px-8 py-5 rounded-full bg-white/5 border border-white/10 text-white font-semibold hover:bg-white/10 transition-all"
+                        >
+                            Have Questions? <ChevronDown className="w-5 h-5 -rotate-90 shrink-0 text-indigo-400" />
+                        </Link>
+                    </div>
                 </div>
             </section>
 
