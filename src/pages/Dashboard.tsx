@@ -333,9 +333,12 @@ export const Dashboard: React.FC = () => {
                         </div>
                         <p className={clsx(
                             "font-bold gradient-text break-all transition-all duration-300",
-                            formatCurrency(getConvertedAmount(totalSpent, currency), currency).length > 12 
-                                ? "text-base sm:text-xl md:text-2xl" 
-                                : "text-lg sm:text-2xl md:text-3xl"
+                            (() => {
+                                const formatted = formatCurrency(getConvertedAmount(totalSpent, currency), currency);
+                                if (formatted.length > 16) return "text-sm sm:text-lg md:text-xl";
+                                if (formatted.length > 12) return "text-base sm:text-xl md:text-2xl";
+                                return "text-lg sm:text-2xl md:text-3xl";
+                            })()
                         )}>
                             {formatCurrency(getConvertedAmount(totalSpent, currency), currency)}
                         </p>
@@ -343,11 +346,11 @@ export const Dashboard: React.FC = () => {
                 </Card>
             </div>
 
-            {/* Charts (Hidden in Focus Mode for extreme clarity) */}
+            {/* Charts & Primary Insights */}
             {!isFocusMode && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 items-stretch mb-8">
                     {/* Financial Momentum Card */}
-                    <Card className="relative overflow-hidden group border-slate-200/50 dark:border-white/10 bg-white/80 dark:bg-gradient-to-br dark:from-[#0D0F1A] dark:to-[#161927]">
+                    <Card className="relative overflow-hidden group border-slate-200/50 dark:border-white/10 bg-white/80 dark:bg-gradient-to-br dark:from-[#0D0F1A] dark:to-[#161927] flex flex-col justify-center h-full">
                         <div className={clsx(
                             "absolute top-0 right-0 w-32 h-32 blur-[60px] -mr-16 -mt-16 transition-colors duration-700",
                             isPositiveMomentum ? "bg-emerald-500/20" : "bg-rose-500/10"
@@ -368,10 +371,14 @@ export const Dashboard: React.FC = () => {
                                 </span>
                             </div>
                             <div className={clsx(
-                                "font-black text-slate-900 dark:text-white mb-1 transition-all duration-300",
-                                (Math.abs(netMomentum).toString().length + (currency === 'NGN' ? 1 : 1)) > 10
-                                    ? "text-xl sm:text-2xl md:text-3xl"
-                                    : "text-2xl sm:text-3xl md:text-4xl"
+                                "font-black text-slate-900 dark:text-white mb-1 transition-all duration-300 break-all",
+                                (() => {
+                                    const length = (Math.abs(netMomentum).toLocaleString().length + (netMomentum < 0 ? 2 : 1));
+                                    if (length > 18) return "text-sm sm:text-base md:text-lg";
+                                    if (length > 14) return "text-lg sm:text-xl md:text-2xl";
+                                    if (length > 10) return "text-xl sm:text-2xl md:text-3xl";
+                                    return "text-2xl sm:text-3xl md:text-4xl";
+                                })()
                             )}>
                                 <NumberCounter 
                                     value={Math.abs(netMomentum)} 

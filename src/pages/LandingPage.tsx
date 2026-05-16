@@ -533,26 +533,26 @@ export const LandingPage: React.FC = () => {
                                         <div className="absolute -left-[2.5px] top-[100px] w-[3px] h-[30px] bg-[#3A3A3E] rounded-l-sm" />
                                         <div className="absolute -left-[2.5px] top-[140px] w-[3px] h-[30px] bg-[#3A3A3E] rounded-l-sm" />
                                         <div className="absolute -right-[2.5px] top-[110px] w-[3px] h-[45px] bg-[#3A3A3E] rounded-r-sm" />
-                                        <div className="relative rounded-[2rem] overflow-hidden bg-black aspect-[9/19.5]">
-                                            <div className="absolute top-3 left-1/2 -translate-x-1/2 z-30 w-[80px] h-[22px] bg-black rounded-full flex items-center justify-center">
-                                                <div className="w-[8px] h-[8px] rounded-full bg-[#1a1a2e] border border-[#2a2a3e] mr-3" />
-                                            </div>
-                                            <div className="absolute top-0 left-0 right-0 h-12 z-20 flex items-end justify-between px-6 pb-1">
-                                                <span className="text-[9px] font-semibold text-white/80">Hikari</span>
-                                                <div className="flex items-center gap-1">
-                                                    <div className="flex gap-[2px]">
-                                                        <div className="w-[3px] h-[4px] bg-white/70 rounded-[0.5px]" />
-                                                        <div className="w-[3px] h-[6px] bg-white/70 rounded-[0.5px]" />
-                                                        <div className="w-[3px] h-[8px] bg-white/70 rounded-[0.5px]" />
-                                                        <div className="w-[3px] h-[10px] bg-white/30 rounded-[0.5px]" />
-                                                    </div>
-                                                    <div className="w-[14px] h-[7px] border border-white/70 rounded-[1.5px] ml-1 relative">
-                                                        <div className="absolute inset-[1px] bg-white/70 rounded-[0.5px] w-[60%]" />
-                                                        <div className="absolute -right-[2px] top-1/2 -translate-y-1/2 w-[1.5px] h-[4px] bg-white/70 rounded-r-[0.5px]" />
+                                            <div className="relative rounded-[2rem] overflow-hidden bg-[#0D0F1A] aspect-[9/19.5]">
+                                                <div className="absolute top-3 left-1/2 -translate-x-1/2 z-30 w-[80px] h-[22px] bg-black rounded-full flex items-center justify-center">
+                                                    <div className="w-[8px] h-[8px] rounded-full bg-[#1a1a2e] border border-[#2a2a3e] mr-3" />
+                                                </div>
+                                                <div className="absolute top-0 left-0 right-0 h-12 z-20 flex items-end justify-between px-6 pb-1">
+                                                    <span className="text-[9px] font-semibold text-white/80">Hikari</span>
+                                                    <div className="flex items-center gap-1">
+                                                        <div className="flex gap-[2px]">
+                                                            <div className="w-[3px] h-[4px] bg-white/70 rounded-[0.5px]" />
+                                                            <div className="w-[3px] h-[6px] bg-white/70 rounded-[0.5px]" />
+                                                            <div className="w-[3px] h-[8px] bg-white/70 rounded-[0.5px]" />
+                                                            <div className="w-[3px] h-[10px] bg-white/30 rounded-[0.5px]" />
+                                                        </div>
+                                                        <div className="w-[14px] h-[7px] border border-white/70 rounded-[1.5px] ml-1 relative">
+                                                            <div className="absolute inset-[1px] bg-white/70 rounded-[0.5px] w-[60%]" />
+                                                            <div className="absolute -right-[2px] top-1/2 -translate-y-1/2 w-[1.5px] h-[4px] bg-white/70 rounded-r-[0.5px]" />
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <img src={step.image} alt={step.title} loading="lazy" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                                                <img src={step.image} alt={step.title} loading="lazy" className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-110" />
                                             <div className="absolute inset-0 bg-gradient-to-br from-white/[0.06] via-transparent to-transparent pointer-events-none z-10" />
                                             <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none z-10" />
                                             <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-[100px] h-[4px] bg-white/40 rounded-full z-20" />

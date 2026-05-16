@@ -15,7 +15,7 @@ export const BudgetProgress: React.FC<BudgetProgressProps> = ({ selectedDate = n
 
     if (budgets.length === 0) {
         return (
-            <Card>
+            <Card className="h-full flex flex-col justify-center min-h-[200px]">
                 <p className="text-center text-slate-500 dark:text-slate-400 py-8">
                     No budgets set. Add a budget to start tracking!
                 </p>
@@ -24,7 +24,7 @@ export const BudgetProgress: React.FC<BudgetProgressProps> = ({ selectedDate = n
     }
 
     return (
-        <Card>
+        <Card className="h-full">
             <h3 className="text-xl font-semibold mb-4">Budget Progress</h3>
             <div className="space-y-4">
                 {budgets.map((budget: Budget) => {

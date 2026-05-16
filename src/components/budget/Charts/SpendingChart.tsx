@@ -32,7 +32,7 @@ export const SpendingChart: React.FC<SpendingChartProps> = ({ selectedDate = new
 
     if (categoryData.length === 0) {
         return (
-            <Card>
+            <Card className="h-full flex flex-col justify-center min-h-[200px]">
                 <h3 className="text-xl font-semibold mb-4">Spending Overview</h3>
                 <p className="text-center text-slate-500 dark:text-slate-400 py-8">
                     No spending data available yet
@@ -42,7 +42,7 @@ export const SpendingChart: React.FC<SpendingChartProps> = ({ selectedDate = new
     }
 
     return (
-        <Card>
+        <Card className="h-full">
             <h3 className="text-xl font-semibold mb-4">Spending Overview</h3>
             <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={categoryData}>
