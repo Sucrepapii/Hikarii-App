@@ -533,7 +533,7 @@ export const LandingPage: React.FC = () => {
                                         <div className="absolute -left-[2.5px] top-[100px] w-[3px] h-[30px] bg-[#3A3A3E] rounded-l-sm" />
                                         <div className="absolute -left-[2.5px] top-[140px] w-[3px] h-[30px] bg-[#3A3A3E] rounded-l-sm" />
                                         <div className="absolute -right-[2.5px] top-[110px] w-[3px] h-[45px] bg-[#3A3A3E] rounded-r-sm" />
-                                        <div className="relative rounded-[2rem] overflow-hidden bg-black aspect-[9/19.5]">
+                                        <div className="relative rounded-[2rem] bg-black aspect-[9/19.5]">
                                             <div className="absolute top-3 left-1/2 -translate-x-1/2 z-30 w-[80px] h-[22px] bg-black rounded-full flex items-center justify-center">
                                                 <div className="w-[8px] h-[8px] rounded-full bg-[#1a1a2e] border border-[#2a2a3e] mr-3" />
                                             </div>
@@ -552,9 +552,14 @@ export const LandingPage: React.FC = () => {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <img src={step.image} alt={step.title} loading="lazy" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                                            <div className="absolute inset-0 bg-gradient-to-br from-white/[0.06] via-transparent to-transparent pointer-events-none z-10" />
-                                            <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none z-10" />
+                                            <img 
+                                                src={step.image} 
+                                                alt={step.title} 
+                                                loading="lazy" 
+                                                className="absolute inset-0 w-full h-full object-cover rounded-[2rem] transition-all duration-700 ease-out group-hover:scale-110 group-hover:-translate-y-6 group-hover:translate-x-4 group-hover:rotate-2 group-hover:shadow-[0_40px_80px_-15px_rgba(0,0,0,0.6)] z-40" 
+                                            />
+                                            <div className="absolute inset-0 bg-gradient-to-br from-white/[0.06] via-transparent to-transparent pointer-events-none z-10 rounded-[2rem]" />
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none z-10 rounded-[2rem]" />
                                             <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-[100px] h-[4px] bg-white/40 rounded-full z-20" />
                                         </div>
                                     </div>
