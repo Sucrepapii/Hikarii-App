@@ -14,22 +14,22 @@ const ONBOARDING_STEPS = [
     {
         title: "Create account",
         body: "Sign up easily and get instant access to your centralized dashboard.",
-        image: "/step1_signup.png"
+        image: "/step1_signup_v.png"
     },
     {
         title: "Link the Money",
         body: "Assign a dollar value to every milestone. See the real cost of your time.",
-        image: "/step2_link_money.png"
+        image: "/step2_link_money_v.png"
     },
     {
         title: "Split with AI",
         body: "Our AI breaks massive projects into pre-funded, bite-sized blocks automatically.",
-        image: "/step3_ai_splitting.png"
+        image: "/step3_ai_splitting_v.png"
     },
     {
         title: "Execute with ROI",
         body: "Check off tasks and watch your financial progress update with absolute ROI clarity.",
-        image: "/step4_roi_clarity.png"
+        image: "/step4_roi_clarity_v.png"
     }
 ];
 
