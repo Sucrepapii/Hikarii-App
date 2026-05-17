@@ -58,7 +58,7 @@ export const getBaseTemplate = (
           <!-- Colorful Header -->
           <div class="header" style="text-align: center;">
             <div style="display: inline-flex; align-items: center; justify-content: center; gap: 12px;">
-              <img src="${process.env.CLIENT_URL || 'https://www.hikarii.org'}/logo.png" width="45" height="45" alt="Hikari Logo" style="display: block; border: 0; outline: none; text-decoration: none;" />
+              <img src="${process.env.CLIENT_URL || "https://www.hikarii.org"}/logo.png" width="45" height="45" alt="Hikari Logo" style="display: block; border: 0; outline: none; text-decoration: none;" />
               <div class="header-logo">HIKARI</div>
             </div>
             <div class="header-subtitle">Light & Clarity</div>
@@ -111,8 +111,12 @@ export const getVerificationTemplate = (name: string, otp: string) => {
 /**
  * Template for password reset code.
  */
-export const getPasswordResetTemplate = (name: string, otp: string, email: string) => {
-  const resetLink = `${process.env.CLIENT_URL || 'https://www.hikarii.org'}/forgot-password?email=${encodeURIComponent(email)}&code=${otp}`;
+export const getPasswordResetTemplate = (
+  name: string,
+  otp: string,
+  email: string,
+) => {
+  const resetLink = `${process.env.CLIENT_URL || "https://www.hikarii.org"}/forgot-password?email=${encodeURIComponent(email)}&code=${otp}`;
   const content = `
     <p>Hello <strong>${name}</strong>,</p>
     <p>We received a request to reset the password for your Hikari account. No worries, we're here to help you get back on track.</p>
@@ -124,8 +128,14 @@ export const getPasswordResetTemplate = (name: string, otp: string, email: strin
     
     <p style="text-align: center; font-size: 14px; color: #64748b;">This code is valid for <span class="highlight" style="color: #e11d48;">15 minutes</span>.</p>
     <p style="text-align: center; font-size: 14px; color: #94a3b8; margin-top: 8px;">If you didn't request this change, please secure your account immediately.</p>
+    <p style="text-align: center; font-size: 14px; color: #94a3b8; margin-top: 8px;">Click the button below to reset your password:</p>
   `;
-  return getBaseTemplate("Reset Your Password", content, "Reset Password", resetLink);
+  return getBaseTemplate(
+    "Reset Your Password",
+    content,
+    "Reset Password",
+    resetLink,
+  );
 };
 
 /**
@@ -146,9 +156,7 @@ export const getOverdueReminderTemplate = (name: string, tasksHtml: string) => {
     <p>Keeping your workspace clean helps the Hikari intelligence engine give you better insights!</p>
   `;
 
-  const clientUrl =
-    process.env.CLIENT_URL ||
-    "https://www.hikarii.org/";
+  const clientUrl = process.env.CLIENT_URL || "https://www.hikarii.org/";
 
   return getBaseTemplate(
     "Action Required: Overdue Tasks",
@@ -263,8 +271,7 @@ export const getReactivationTemplate = (name: string) => {
     "Account Reactivated",
     content,
     "Go to Dashboard",
-    process.env.CLIENT_URL ||
-    "https://www.hikarii.org/",
+    process.env.CLIENT_URL || "https://www.hikarii.org/",
     "Welcome back to Hikari!",
   );
 };
@@ -276,9 +283,7 @@ export const getAdminOnboardingTemplate = (
   email: string,
   temporaryPassword: string,
 ) => {
-  const loginUrl =
-    process.env.CLIENT_URL ||
-    "https://www.hikarii.org/";
+  const loginUrl = process.env.CLIENT_URL || "https://www.hikarii.org/";
 
   const content = `
     <p>Hello <strong>${name}</strong>,</p>
