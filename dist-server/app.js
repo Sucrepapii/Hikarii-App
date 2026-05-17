@@ -70,7 +70,7 @@ var init_email_service = __esm({
 });
 
 // server/src/utils/emailTemplates.ts
-var getBaseTemplate, getVerificationTemplate, getPasswordResetTemplate, getOverdueReminderTemplate, getContactFormTemplate, getContactAutoReplyTemplate, getSuspensionTemplate, getReactivationTemplate, getAdminOnboardingTemplate, getLeadMagnetTemplate;
+var getBaseTemplate, getVerificationTemplate, getPasswordResetTemplate, getOverdueReminderTemplate, getContactFormTemplate, getContactAutoReplyTemplate, getSuspensionTemplate, getReactivationTemplate, getAdminOnboardingTemplate, getLeadMagnetTemplate, getInviteTemplate;
 var init_emailTemplates = __esm({
   "server/src/utils/emailTemplates.ts"() {
     getBaseTemplate = (title, content, buttonText, buttonUrl, footerText) => {
@@ -192,7 +192,7 @@ var init_emailTemplates = __esm({
     
     <p>Keeping your workspace clean helps the Hikari intelligence engine give you better insights!</p>
   `;
-      const clientUrl = process.env.CLIENT_URL || "https://checkmate-production-7067.up.railway.app/";
+      const clientUrl = process.env.CLIENT_URL || "https://www.hikarii.org/";
       return getBaseTemplate(
         "Action Required: Overdue Tasks",
         content,
@@ -276,12 +276,12 @@ var init_emailTemplates = __esm({
         "Account Reactivated",
         content,
         "Go to Dashboard",
-        process.env.CLIENT_URL || "https://checkmate-production-7067.up.railway.app/",
+        process.env.CLIENT_URL || "https://www.hikarii.org/",
         "Welcome back to Hikari!"
       );
     };
     getAdminOnboardingTemplate = (name, email, temporaryPassword) => {
-      const loginUrl = process.env.CLIENT_URL || "https://checkmate-production-7067.up.railway.app/";
+      const loginUrl = process.env.CLIENT_URL || "https://www.hikarii.org/";
       const content = `
     <p>Hello <strong>${name}</strong>,</p>
     <p>You have been added as an <strong>Administrator</strong> for the Hikari Platform. This role grants you access to manage users, view system analytics, and maintain platform health.</p>
@@ -322,13 +322,34 @@ var init_emailTemplates = __esm({
     
     <p>Once you've had a look, we'd love to hear how it helps your workflow!</p>
   `;
-      const leadMagnetUrl = (process.env.CLIENT_URL || "https://checkmate-production-7067.up.railway.app") + "/resources/HIKARI_METHOD_GUIDE.pdf";
+      const leadMagnetUrl = (process.env.CLIENT_URL || "https://www.hikarii.org") + "/help/article/ultimate-guide-hikari-method";
       return getBaseTemplate(
         "Your Hikari Method Guide Inside!",
         content,
         "Read the Hikari Method Guide",
         leadMagnetUrl,
         "You received this because you requested the Hikari Method magnet on our website."
+      );
+    };
+    getInviteTemplate = (inviterName, projectTitle, inviteLink) => {
+      const content = `
+    <p>Hello,</p>
+    <p><strong>${inviterName}</strong> has invited you to collaborate on the project <strong>"${projectTitle}"</strong> on Hikari.</p>
+    
+    <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 24px; border-radius: 16px; margin: 24px 0;">
+      <p style="margin: 0; text-align: center; color: #64748b; font-size: 14px;">
+        Collaborating on Hikari allows you to co-manage tasks, track shared budgets, and stay in sync in real-time.
+      </p>
+    </div>
+    
+    <p style="text-align: center; font-size: 14px; color: #64748b;">Click the button below to accept the invitation and join the project.</p>
+  `;
+      return getBaseTemplate(
+        "You've been invited to collaborate",
+        content,
+        "Accept Invitation",
+        inviteLink,
+        "You received this because someone invited you to a project on Hikari."
       );
     };
   }
@@ -1694,6 +1715,20 @@ import express from "express";
 
 // server/src/controllers/project.controller.ts
 init_db();
+async function canAccessProject(projectId, userId, requireEdit = false) {
+  const project = await db_default.project.findUnique({
+    where: { id: projectId },
+    include: { members: true }
+  });
+  if (!project) return { project: null, allowed: false, role: null };
+  if (project.userId === userId) return { project, allowed: true, role: "OWNER" };
+  const membership = await db_default.projectMember.findFirst({
+    where: { projectId, userId, status: "ACCEPTED" }
+  });
+  if (!membership) return { project, allowed: false, role: null };
+  if (requireEdit && membership.role === "VIEW_ONLY") return { project, allowed: false, role: membership.role };
+  return { project, allowed: true, role: membership.role };
+}
 var createProject = async (req, res) => {
   try {
     const { title, description, startDate, endDate, budgetLimit } = req.body;
@@ -1736,7 +1771,7 @@ var getProjects = async (req, res) => {
     const ownedWithProgress = ownedProjects.map((project) => {
       const totalTasks = project.tasks.length;
       const completedTasks = project.tasks.filter((t) => t.status === "COMPLETED").length;
-      return { ...project, progress: Math.round(totalTasks > 0 ? completedTasks / totalTasks * 100 : 0), isShared: false, memberRole: null };
+      return { ...project, progress: Math.round(totalTasks > 0 ? completedTasks / totalTasks * 100 : 0), isShared: false, memberRole: "OWNER" };
     });
     const sharedWithProgress = memberships.map((m) => {
       const project = m.project;
@@ -1753,8 +1788,12 @@ var getProjects = async (req, res) => {
 var getProject = async (req, res) => {
   try {
     const { id } = req.params;
-    const project = await db_default.project.findFirst({
-      where: { id, userId: req.userId },
+    const { project, allowed, role } = await canAccessProject(id, req.userId);
+    if (!project || !allowed) {
+      return res.status(404).json({ error: "Project not found or access denied" });
+    }
+    const fullProject = await db_default.project.findUnique({
+      where: { id },
       include: {
         tasks: true,
         budgets: true,
@@ -1764,10 +1803,7 @@ var getProject = async (req, res) => {
         }
       }
     });
-    if (!project) {
-      return res.status(404).json({ error: "Project not found" });
-    }
-    res.json(project);
+    res.json({ ...fullProject, memberRole: role });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -1776,13 +1812,11 @@ var updateProject = async (req, res) => {
   try {
     const { id } = req.params;
     const { title, description, status, budgetLimit, startDate, endDate } = req.body;
-    const parsedLimit = budgetLimit ? parseFloat(budgetLimit) : null;
-    const existingProject = await db_default.project.findFirst({
-      where: { id, userId: req.userId }
-    });
-    if (!existingProject) {
-      return res.status(404).json({ error: "Project not found" });
+    const { project: existingProject, allowed } = await canAccessProject(id, req.userId, true);
+    if (!existingProject || !allowed) {
+      return res.status(404).json({ error: "Project not found or access denied" });
     }
+    const parsedLimit = budgetLimit ? parseFloat(budgetLimit) : null;
     const project = await db_default.project.update({
       where: { id },
       data: {
@@ -1807,7 +1841,7 @@ var deleteProject = async (req, res) => {
       where: { id, userId: req.userId }
     });
     if (!project) {
-      return res.status(404).json({ error: "Project not found" });
+      return res.status(404).json({ error: "Project not found or you don't have permission to delete it" });
     }
     await db_default.project.delete({
       where: { id }
@@ -1820,15 +1854,18 @@ var deleteProject = async (req, res) => {
 var getProjectSummary = async (req, res) => {
   try {
     const { id } = req.params;
-    const project = await db_default.project.findFirst({
-      where: { id, userId: req.userId },
+    const { project, allowed } = await canAccessProject(id, req.userId);
+    if (!project || !allowed) {
+      return res.status(404).json({ error: "Project not found or access denied" });
+    }
+    const fullProject = await db_default.project.findUnique({
+      where: { id },
       include: {
         tasks: true,
         budgets: true,
         expenses: true
       }
     });
-    if (!project) return res.status(404).json({ error: "Project not found" });
     const totalTasks = project.tasks.length;
     const completedTasks = project.tasks.filter(
       (t) => t.status === "COMPLETED"
@@ -1871,7 +1908,7 @@ import { Router as Router3 } from "express";
 // server/src/controllers/budget.controller.ts
 init_db();
 init_whatsapp_service();
-async function canAccessProject(projectId, userId, requireEdit = false) {
+async function canAccessProject2(projectId, userId, requireEdit = false) {
   const project = await db_default.project.findUnique({
     where: { id: projectId }
   });
@@ -1930,7 +1967,7 @@ var createBudget = async (req, res) => {
     });
     const spent = expenses.reduce((sum, exp) => sum + exp.amount, 0);
     if (req.body.projectId) {
-      const allowed = await canAccessProject(req.body.projectId, req.userId, true);
+      const allowed = await canAccessProject2(req.body.projectId, req.userId, true);
       if (!allowed) {
         res.status(403).json({ error: "Access denied to project" });
         return;
@@ -2008,7 +2045,7 @@ var getExpenses = async (req, res) => {
 var createExpense = async (req, res) => {
   try {
     if (req.body.projectId) {
-      const allowed = await canAccessProject(req.body.projectId, req.userId, false);
+      const allowed = await canAccessProject2(req.body.projectId, req.userId, false);
       if (!allowed) {
         res.status(403).json({ error: "Access denied to project" });
         return;
@@ -3399,6 +3436,50 @@ var handleBatchOperations = async (req, res) => {
     res.status(500).json({ message: "Batch operation failed" });
   }
 };
+var getMarketingStats = async (req, res) => {
+  try {
+    const adminId = req.userId;
+    const requestor = await db_default.user.findUnique({
+      where: { id: adminId },
+      select: { role: true }
+    });
+    if (!requestor || requestor.role !== "ADMIN") {
+      return res.status(403).json({ message: "Access Denied" });
+    }
+    const totalLeads = await db_default.lead.count();
+    const recentLeads = await db_default.lead.count({
+      where: { createdAt: { gte: subDays2(/* @__PURE__ */ new Date(), 7) } }
+    });
+    const articleStats = await db_default.articleFeedback.groupBy({
+      by: ["articleSlug", "isHelpful"],
+      _count: {
+        id: true
+      }
+    });
+    const leadSources = await db_default.lead.groupBy({
+      by: ["source"],
+      _count: {
+        id: true
+      }
+    });
+    const recentFeedback = await db_default.articleFeedback.findMany({
+      orderBy: { createdAt: "desc" },
+      take: 10
+    });
+    res.json({
+      leads: {
+        total: totalLeads,
+        last7Days: recentLeads,
+        sources: leadSources
+      },
+      contentPerformance: articleStats,
+      recentFeedback
+    });
+  } catch (error) {
+    console.error("Marketing Stats Error:", error);
+    res.status(500).json({ message: "Failed to fetch marketing stats" });
+  }
+};
 
 // server/src/routes/admin.routes.ts
 var router11 = Router8();
@@ -3410,6 +3491,7 @@ router11.post("/users/:id/suspend", authenticate, suspendUser);
 router11.post("/users/:id/reactivate", authenticate, reactivateUser);
 router11.delete("/users/:id", authenticate, deleteUser);
 router11.post("/batch", authenticate, handleBatchOperations);
+router11.get("/marketing-stats", authenticate, getMarketingStats);
 var admin_routes_default = router11;
 
 // server/src/routes/lead.routes.ts
@@ -3501,13 +3583,15 @@ var getFeedbacks = async (req, res) => {
 };
 var createFeedback = async (req, res) => {
   try {
-    const { name, rating, comment, topic } = req.body;
+    const { name, rating, comment, topic, country, flag } = req.body;
     const feedback = await db_default.feedback.create({
       data: {
         name: name || "Anonymous",
         rating: Number(rating),
         comment,
-        topic: topic || null
+        topic: topic || null,
+        country: country || null,
+        flag: flag || null
       }
     });
     res.status(201).json(feedback);
@@ -3527,12 +3611,15 @@ import express4 from "express";
 
 // server/src/controllers/collaboration.controller.ts
 init_db();
+init_email_service();
+init_emailTemplates();
 import { randomBytes } from "crypto";
 var FREE_COLLAB_LIMIT = 1;
 var isPro = (user) => user?.subscriptionStatus === "PRO" || user?.subscriptionStatus === "TRIAL";
 async function assertOwner(projectId, userId) {
   const project = await db_default.project.findUnique({ where: { id: projectId } });
-  return project?.userId === userId;
+  if (project?.userId !== userId) return null;
+  return project;
 }
 async function getMemberRole(projectId, userId) {
   const membership = await db_default.projectMember.findFirst({
@@ -3545,8 +3632,10 @@ var inviteMember = async (req, res) => {
     const { id: projectId } = req.params;
     const { email, role = "VIEW_ONLY" } = req.body;
     if (!email) return res.status(400).json({ error: "Email is required" });
-    const isOwner = await assertOwner(projectId, req.userId);
-    if (!isOwner) return res.status(403).json({ error: "Only the project owner can invite members" });
+    const project = await assertOwner(projectId, req.userId);
+    if (!project || project.userId !== req.userId) {
+      return res.status(403).json({ error: "Only the project owner can invite members" });
+    }
     const currentUser = await db_default.user.findUnique({ where: { id: req.userId } });
     if (!isPro(currentUser)) {
       const sharedProjectIds = await db_default.projectMember.findMany({
@@ -3586,6 +3675,18 @@ var inviteMember = async (req, res) => {
         token
       }
     });
+    const clientUrl = process.env.CLIENT_URL || "https://www.hikarii.org";
+    const inviteLink = `${clientUrl}/invites/${token}`;
+    try {
+      await sendEmail(
+        email,
+        `Invitation to collaborate on "${project.title}"`,
+        getInviteTemplate(currentUser.name, project.title, inviteLink),
+        { fromName: "Hikari Collaboration" }
+      );
+    } catch (emailErr) {
+      console.error("Failed to send invite email:", emailErr);
+    }
     res.status(201).json({ message: "Invite sent successfully", member });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -3697,10 +3798,115 @@ var deleteComment = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+var getPendingInvites = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const user = await db_default.user.findUnique({ where: { id: userId } });
+    const invites = await db_default.projectMember.findMany({
+      where: {
+        OR: [
+          { userId },
+          { invitedEmail: user?.email }
+        ],
+        status: "PENDING"
+      },
+      include: {
+        project: {
+          select: { title: true }
+        },
+        invitedBy: {
+          select: { name: true }
+        }
+      },
+      orderBy: { createdAt: "desc" }
+    });
+    res.json(invites);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+var getRecentActivity = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const memberships = await db_default.projectMember.findMany({
+      where: { userId, status: "ACCEPTED" },
+      select: { projectId: true, lastViewedActivityAt: true }
+    });
+    const sharedProjectIds = memberships.map((m) => m.projectId);
+    const ownedProjects = await db_default.project.findMany({
+      where: { userId },
+      select: { id: true, lastViewedActivityAt: true }
+    });
+    const ownedProjectIds = ownedProjects.map((p) => p.id);
+    const memberUnreadPromises = memberships.map(
+      (m) => db_default.projectComment.findMany({
+        where: {
+          projectId: m.projectId,
+          userId: { not: userId },
+          createdAt: { gt: m.lastViewedActivityAt }
+        },
+        include: { project: { select: { title: true } } },
+        orderBy: { createdAt: "desc" }
+      })
+    );
+    const ownerUnreadPromises = ownedProjects.map(
+      (p) => db_default.projectComment.findMany({
+        where: {
+          projectId: p.id,
+          userId: { not: userId },
+          createdAt: { gt: p.lastViewedActivityAt }
+        },
+        include: { project: { select: { title: true } } },
+        orderBy: { createdAt: "desc" }
+      })
+    );
+    const allComments = (await Promise.all([...memberUnreadPromises, ...ownerUnreadPromises])).flat();
+    const grouped = allComments.reduce((acc, comment) => {
+      if (!acc[comment.projectId]) {
+        acc[comment.projectId] = {
+          projectId: comment.projectId,
+          projectTitle: comment.project.title,
+          count: 0,
+          lastComment: comment.content,
+          lastCommentAt: comment.createdAt
+        };
+      }
+      acc[comment.projectId].count++;
+      if (new Date(comment.createdAt) > new Date(acc[comment.projectId].lastCommentAt)) {
+        acc[comment.projectId].lastComment = comment.content;
+        acc[comment.projectId].lastCommentAt = comment.createdAt;
+      }
+      return acc;
+    }, {});
+    res.json(Object.values(grouped));
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+var markActivityAsRead = async (req, res) => {
+  try {
+    const { id: projectId } = req.params;
+    const userId = req.userId;
+    await db_default.projectMember.updateMany({
+      where: { projectId, userId },
+      data: { lastViewedActivityAt: /* @__PURE__ */ new Date() }
+    });
+    await db_default.project.updateMany({
+      where: { id: projectId, userId },
+      data: { lastViewedActivityAt: /* @__PURE__ */ new Date() }
+    });
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 // server/src/routes/collaboration.routes.ts
 var router14 = express4.Router();
 router14.use(authenticate);
+router14.get("/pending-invites", getPendingInvites);
+router14.get("/recent-activity", getRecentActivity);
+router14.patch("/projects/:id/mark-activity-read", markActivityAsRead);
 router14.post("/invites/:token/accept", acceptInvite);
 router14.get("/projects/:id/members", getMembers);
 router14.post("/projects/:id/members", inviteMember);
@@ -3710,6 +3916,48 @@ router14.get("/projects/:id/comments", getComments);
 router14.post("/projects/:id/comments", postComment);
 router14.delete("/projects/:id/comments/:commentId", deleteComment);
 var collaboration_routes_default = router14;
+
+// server/src/routes/articleFeedback.routes.ts
+import { Router as Router11 } from "express";
+
+// server/src/controllers/articleFeedback.controller.ts
+init_db();
+var createArticleFeedback = async (req, res) => {
+  try {
+    const { articleSlug, isHelpful } = req.body;
+    if (!articleSlug) {
+      return res.status(400).json({ error: "Article slug is required" });
+    }
+    const feedback = await db_default.articleFeedback.create({
+      data: {
+        articleSlug,
+        isHelpful: Boolean(isHelpful)
+      }
+    });
+    res.status(201).json(feedback);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+var getArticleFeedbackStats = async (req, res) => {
+  try {
+    const stats = await db_default.articleFeedback.groupBy({
+      by: ["articleSlug", "isHelpful"],
+      _count: {
+        id: true
+      }
+    });
+    res.json(stats);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// server/src/routes/articleFeedback.routes.ts
+var router15 = Router11();
+router15.post("/", createArticleFeedback);
+router15.get("/stats", getArticleFeedbackStats);
+var articleFeedback_routes_default = router15;
 
 // server/src/app.ts
 Sentry.init({
@@ -3785,6 +4033,7 @@ app.use("/api/google", google_routes_default);
 app.use("/api/leads", lead_routes_default);
 app.use("/api/feedback", feedback_routes_default);
 app.use("/api/collaboration", collaboration_routes_default);
+app.use("/api/article-feedback", articleFeedback_routes_default);
 app.get("/health", (req, res) => {
   res.json({ status: "ok" });
 });
