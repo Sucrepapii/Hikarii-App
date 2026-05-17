@@ -111,7 +111,8 @@ export const getVerificationTemplate = (name: string, otp: string) => {
 /**
  * Template for password reset code.
  */
-export const getPasswordResetTemplate = (name: string, otp: string) => {
+export const getPasswordResetTemplate = (name: string, otp: string, email: string) => {
+  const resetLink = `${process.env.CLIENT_URL || 'https://www.hikarii.org'}/forgot-password?email=${encodeURIComponent(email)}&code=${otp}`;
   const content = `
     <p>Hello <strong>${name}</strong>,</p>
     <p>We received a request to reset the password for your Hikari account. No worries, we're here to help you get back on track.</p>
@@ -124,7 +125,7 @@ export const getPasswordResetTemplate = (name: string, otp: string) => {
     <p style="text-align: center; font-size: 14px; color: #64748b;">This code is valid for <span class="highlight" style="color: #e11d48;">15 minutes</span>.</p>
     <p style="text-align: center; font-size: 14px; color: #94a3b8; margin-top: 8px;">If you didn't request this change, please secure your account immediately.</p>
   `;
-  return getBaseTemplate("Reset Your Password", content);
+  return getBaseTemplate("Reset Your Password", content, "Reset Password", resetLink);
 };
 
 /**

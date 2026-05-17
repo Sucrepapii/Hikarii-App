@@ -374,7 +374,7 @@ export const forgotPassword = async (
       await sendEmail(
         email,
         "Reset your Hikari Password",
-        getPasswordResetTemplate(user.name, otp),
+        getPasswordResetTemplate(user.name, otp, email),
       );
     } catch (emailError) {
       console.error("Failed to send reset email:", emailError);
