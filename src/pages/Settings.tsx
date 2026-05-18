@@ -259,11 +259,14 @@ export const Settings: React.FC = () => {
 
                             {/* WhatsApp Notification Settings */}
                             <div className="mt-8 pt-8 border-t border-slate-200 dark:border-slate-700">
-                                <div className="flex items-center gap-2 mb-4">
-                                    <MessageCircle className="w-5 h-5 text-green-500" />
-                                    <h3 className="text-lg font-medium text-slate-800 dark:text-slate-200">WhatsApp Notifications</h3>
+                                <div className="flex items-center gap-3 mb-4">
+                                    <div className="flex items-center gap-2">
+                                        <MessageCircle className="w-5 h-5 text-green-500 opacity-60 grayscale" />
+                                        <h3 className="text-lg font-medium text-slate-800 dark:text-slate-200 opacity-60">WhatsApp Notifications</h3>
+                                    </div>
+                                    <span className="px-2 py-0.5 rounded-full bg-slate-200 dark:bg-slate-700 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Coming Soon</span>
                                 </div>
-                                <div className="space-y-4 max-w-md">
+                                <div className="space-y-4 max-w-md opacity-50 pointer-events-none grayscale relative">
                                     <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
                                         <div>
                                             <p className="text-sm font-medium text-slate-900 dark:text-white">Overdue Tasks</p>
@@ -274,6 +277,7 @@ export const Settings: React.FC = () => {
                                             checked={waTasksEnabled}
                                             onChange={(e) => setWaTasksEnabled(e.target.checked)}
                                             className="w-5 h-5 rounded border-slate-300 text-primary-600"
+                                            disabled
                                         />
                                     </div>
                                     <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
@@ -286,6 +290,7 @@ export const Settings: React.FC = () => {
                                             checked={waBudgetEnabled}
                                             onChange={(e) => setWaBudgetEnabled(e.target.checked)}
                                             className="w-5 h-5 rounded border-slate-300 text-primary-600"
+                                            disabled
                                         />
                                     </div>
                                     <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
@@ -298,9 +303,10 @@ export const Settings: React.FC = () => {
                                             checked={waProjectsEnabled}
                                             onChange={(e) => setWaProjectsEnabled(e.target.checked)}
                                             className="w-5 h-5 rounded border-slate-300 text-primary-600"
+                                            disabled
                                         />
                                     </div>
-                                    <Button onClick={handleUpdateProfile} isLoading={isUpdatingProfile} className="w-full">
+                                    <Button disabled className="w-full bg-slate-200 dark:bg-slate-700 text-slate-400">
                                         Save Notification Preferences
                                     </Button>
                                 </div>

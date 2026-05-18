@@ -71,11 +71,10 @@ export const ForgotPassword: React.FC = () => {
         setIsLoading(true);
         try {
             await forgotPassword(data.email);
-            setEmail(data.email);
-            setStep('reset');
-            toast.success('Reset code sent to your email!');
+            toast.success('Check your email for the reset link!');
+            navigate('/login');
         } catch (error: any) {
-            toast.error(error.message || 'Failed to send reset code');
+            toast.error(error.message || 'Failed to send reset link');
         } finally {
             setIsLoading(false);
         }
