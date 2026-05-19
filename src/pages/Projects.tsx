@@ -12,6 +12,7 @@ import { ConfirmModal } from '../components/common/ConfirmModal';
 import { InviteModal } from '../components/collaboration/InviteModal';
 import { MemberList } from '../components/collaboration/MemberList';
 import { ActivityLog } from '../components/collaboration/ActivityLog';
+import { Tooltip } from '../components/common/Tooltip';
 
 export const Projects: React.FC = () => {
     const { projects, isLoading, fetchProjects, toggleProjectStatus, deleteProject } = useProjectStore();
@@ -138,14 +139,15 @@ export const Projects: React.FC = () => {
 
                                 <div className="relative flex items-center justify-between mb-4">
                                     <div className="flex items-center gap-2">
-                                        <button
-                                            onClick={() => handleToggleStatus(project.id, project.status)}
-                                            className="group/check relative flex items-center justify-center p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
-                                            title="Mark as Completed"
-                                        >
-                                            <div className="w-6 h-6 rounded-full border-2 border-slate-300 dark:border-slate-600 group-hover/check:border-primary-500 transition-colors" />
-                                            <CheckCircle2 className="w-6 h-6 absolute text-primary-500 scale-0 group-hover/check:scale-110 group-hover/check:opacity-50 transition-all" />
-                                        </button>
+                                        <Tooltip content={project.status === 'COMPLETED' ? 'Mark as Active' : 'Mark as Completed'}>
+                                            <button
+                                                onClick={() => handleToggleStatus(project.id, project.status)}
+                                                className="group/check relative flex items-center justify-center p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
+                                            >
+                                                <div className="w-6 h-6 rounded-full border-2 border-slate-300 dark:border-slate-600 group-hover/check:border-primary-500 transition-colors" />
+                                                <CheckCircle2 className="w-6 h-6 absolute text-primary-500 scale-0 group-hover/check:scale-110 group-hover/check:opacity-50 transition-all" />
+                                            </button>
+                                        </Tooltip>
                                         <span className="px-2 py-1 rounded-md text-xs font-bold bg-primary-100 text-primary-700">
                                             {project.status || 'ACTIVE'}
                                         </span>
@@ -158,40 +160,46 @@ export const Projects: React.FC = () => {
                                     <div className="flex items-center gap-1">
                                         {/* Share / Collab button */}
                                         {(project.userId === user?.id || project.memberRole === 'CAN_EDIT') && (
+                                            <Tooltip content="Invite Collaborator">
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    onClick={() => setInviteProjectId(project.id)}
+                                                    className="p-2 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 rounded-lg transition-smooth"
+                                                >
+                                                    <Users className="w-4 h-4" />
+                                                </Button>
+                                            </Tooltip>
+                                        )}
+                                        {/* Activity log button */}
+                                        <Tooltip content="Activity Log">
                                             <Button
                                                 variant="ghost"
                                                 size="sm"
-                                                onClick={() => setInviteProjectId(project.id)}
-                                                className="p-2 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 rounded-lg transition-smooth"
-                                                title="Invite Collaborator"
+                                                onClick={() => {
+                                                    setCollabPanelProject({ id: project.id, title: project.title });
+                                                    setCollabTab('activity');
+                                                }}
+                                                className="p-2 bg-slate-500/10 hover:bg-slate-500/20 text-slate-500 dark:text-slate-400 rounded-lg transition-smooth"
                                             >
-                                                <Users className="w-4 h-4" />
+                                                <MessageSquare className="w-4 h-4" />
                                             </Button>
-                                        )}
-                                        {/* Activity log button */}
-                                        <Button
-                                            variant="ghost"
-                                            size="sm"
-                                            onClick={() => {
-                                                setCollabPanelProject({ id: project.id, title: project.title });
-                                                setCollabTab('activity');
-                                            }}
-                                            className="p-2 bg-slate-500/10 hover:bg-slate-500/20 text-slate-500 dark:text-slate-400 rounded-lg transition-smooth"
-                                            title="Activity Log"
-                                        >
-                                            <MessageSquare className="w-4 h-4" />
-                                        </Button>
+                                        </Tooltip>
                                         {(project.userId === user?.id || project.memberRole === 'CAN_EDIT') && (
                                             <>
                                                 <Link to={`/projects/edit/${project.id}`}>
-                                                    <Button variant="ghost" size="sm" className="p-2 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 rounded-lg transition-smooth">
-                                                        <Edit2 className="w-4 h-4" />
-                                                    </Button>
+                                                    <Tooltip content="Edit Project">
+                                                        <Button variant="ghost" size="sm" className="p-2 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 rounded-lg transition-smooth">
+                                                            <Edit2 className="w-4 h-4" />
+                                                        </Button>
+                                                    </Tooltip>
                                                 </Link>
                                                 {project.userId === user?.id && (
-                                                    <Button variant="ghost" size="sm" onClick={() => handleDeleteClick(project.id)} className="p-2 bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 rounded-lg transition-smooth">
-                                                        <Trash2 className="w-4 h-4" />
-                                                    </Button>
+                                                    <Tooltip content="Delete Project">
+                                                        <Button variant="ghost" size="sm" onClick={() => handleDeleteClick(project.id)} className="p-2 bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 rounded-lg transition-smooth">
+                                                            <Trash2 className="w-4 h-4" />
+                                                        </Button>
+                                                    </Tooltip>
                                                 )}
                                             </>
                                         )}

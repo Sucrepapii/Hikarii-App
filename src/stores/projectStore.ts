@@ -19,7 +19,7 @@ interface ProjectState {
   ) => Promise<void>;
 }
 
-export const useProjectStore = create<ProjectState>((set) => ({
+export const useProjectStore = create<ProjectState>((set, get) => ({
   projects: [],
   isLoading: false,
   error: null,
@@ -63,32 +63,42 @@ export const useProjectStore = create<ProjectState>((set) => ({
   },
 
   deleteProject: async (id) => {
+    const previousProjects = get().projects;
     try {
-      set({ isLoading: true, error: null });
-      await projectService.deleteProject(id);
+      // Optimistic Update
       set((state) => ({
         projects: state.projects.filter((p) => p.id !== id),
-        isLoading: false,
+        error: null,
       }));
+      await projectService.deleteProject(id);
     } catch (error: any) {
-      set({ error: error.message, isLoading: false });
+      // Rollback
+      set({ projects: previousProjects, error: error.message });
       throw error;
     }
   },
 
   toggleProjectStatus: async (id, status) => {
+    const previousProjects = get().projects;
     try {
-      set({ isLoading: true, error: null });
+      // Optimistic Update
+      set((state) => ({
+        projects: state.projects.map((p) =>
+          p.id === id ? { ...p, status } : p
+        ),
+        error: null,
+      }));
       const updatedProject = await projectService.toggleProjectStatus(
         id,
         status,
       );
+      // Sync exact server state
       set((state) => ({
         projects: state.projects.map((p) => (p.id === id ? updatedProject : p)),
-        isLoading: false,
       }));
     } catch (error: any) {
-      set({ error: error.message, isLoading: false });
+      // Rollback
+      set({ projects: previousProjects, error: error.message });
       throw error;
     }
   },
