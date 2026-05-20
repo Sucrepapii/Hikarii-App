@@ -70,15 +70,9 @@ export const authenticate = async (
     });
 
     if (!user) {
-      // Just-in-Time (JIT) provisioning from the verified Supabase JWT token
-      const name = decoded.user_metadata?.name || decoded.email?.split("@")[0] || "User";
-      user = await prisma.user.create({
-        data: {
-          id: decoded.sub,
-          email: decoded.email || "",
-          name: name,
-          isVerified: true,
-        },
+      // Fallback: user may exist with old auth system UUID but same email (migration case)
+      const existingByEmail = await prisma.user.findUnique({
+        where: { email: decoded.email || "" },
         select: {
           id: true,
           email: true,
@@ -87,6 +81,30 @@ export const authenticate = async (
           isSuspended: true,
         },
       });
+
+      if (existingByEmail) {
+        // Found via email — use their existing DB record and override userId
+        user = existingByEmail;
+        req.userId = existingByEmail.id;
+      } else {
+        // Truly new user — create with Supabase UUID
+        const name = decoded.user_metadata?.name || decoded.email?.split("@")[0] || "User";
+        user = await prisma.user.create({
+          data: {
+            id: decoded.sub,
+            email: decoded.email || "",
+            name: name,
+            isVerified: true,
+          },
+          select: {
+            id: true,
+            email: true,
+            subscriptionStatus: true,
+            stripeCustomerId: true,
+            isSuspended: true,
+          },
+        });
+      }
     }
 
     if (user.isSuspended) {
