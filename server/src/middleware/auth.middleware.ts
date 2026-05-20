@@ -32,7 +32,7 @@ export const authenticate = async (
     req.userEmail = decoded.email;
 
     // Fetch fresh user data for subscription status
-    const user = await prisma.user.findUnique({
+    let user = await prisma.user.findUnique({
       where: { id: decoded.sub },
       select: {
         id: true,
@@ -44,8 +44,23 @@ export const authenticate = async (
     });
 
     if (!user) {
-      res.status(401).json({ error: "User not found" });
-      return;
+      // Just-in-Time (JIT) provisioning from the verified Supabase JWT token
+      const name = decoded.user_metadata?.name || decoded.email?.split("@")[0] || "User";
+      user = await prisma.user.create({
+        data: {
+          id: decoded.sub,
+          email: decoded.email || "",
+          name: name,
+          isVerified: true,
+        },
+        select: {
+          id: true,
+          email: true,
+          subscriptionStatus: true,
+          stripeCustomerId: true,
+          isSuspended: true,
+        },
+      });
     }
 
     if (user.isSuspended) {
