@@ -62,7 +62,7 @@ export const ResetPassword: React.FC = () => {
                     </div>
                     <h1 className="text-2xl font-display font-bold text-slate-900 dark:text-white">Set New Password</h1>
                     <p className="text-slate-500 mt-2 text-sm">
-                        Please enter your new password below.
+                        Please enter your new password below!
                     </p>
                 </div>
 
