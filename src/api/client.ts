@@ -1,11 +1,11 @@
 import axios, { AxiosInstance, InternalAxiosRequestConfig } from "axios";
+import { supabase } from "../supabase/client";
 
 const API_BASE_URL =
   import.meta.env.VITE_API_URL || 
   (typeof window !== 'undefined' && window.location.hostname === 'www.hikarii.org' 
     ? "https://checkmate-production-7067.up.railway.app/api" 
     : "http://127.0.0.1:5005/api");
-// "https://checkmate-production-7067.up.railway.app/api";
 
 // Create axios instance
 const apiClient: AxiosInstance = axios.create({
@@ -17,8 +17,9 @@ const apiClient: AxiosInstance = axios.create({
 
 // Request interceptor to add auth token
 apiClient.interceptors.request.use(
-  (config: InternalAxiosRequestConfig) => {
-    const token = localStorage.getItem("auth-token");
+  async (config: InternalAxiosRequestConfig) => {
+    const { data } = await supabase.auth.getSession();
+    const token = data.session?.access_token;
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -32,10 +33,10 @@ apiClient.interceptors.request.use(
 // Response interceptor for error handling
 apiClient.interceptors.response.use(
   (response) => response,
-  (error) => {
+  async (error) => {
     if (error.response?.status === 401) {
       // Token expired or invalid
-      localStorage.removeItem("auth-token");
+      await supabase.auth.signOut();
       localStorage.removeItem("auth-user");
       window.location.href = "/login";
     }

@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { verifyToken } from "../utils/jwt";
+import jwt from "jsonwebtoken";
 import prisma from "../config/db";
 
 export interface AuthRequest extends Request {
@@ -21,13 +21,19 @@ export const authenticate = async (
       return;
     }
 
-    const decoded = verifyToken(token) as any;
-    req.userId = decoded.userId;
+    const jwtSecret = process.env.SUPABASE_JWT_SECRET;
+    if (!jwtSecret) {
+      res.status(500).json({ error: "Supabase JWT secret is not configured on the server" });
+      return;
+    }
+
+    const decoded = jwt.verify(token, jwtSecret) as any;
+    req.userId = decoded.sub; // Supabase stores the user UUID in the 'sub' field
     req.userEmail = decoded.email;
 
     // Fetch fresh user data for subscription status
     const user = await prisma.user.findUnique({
-      where: { id: decoded.userId },
+      where: { id: decoded.sub },
       select: {
         id: true,
         email: true,
