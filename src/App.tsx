@@ -39,6 +39,7 @@ import { AdminAuditLogs } from './pages/AdminAuditLogs';
 import { AdminMarketing } from './pages/AdminMarketing';
 import { Pricing } from './pages/Pricing';
 import ForcedPasswordChange from './pages/ForcedPasswordChange';
+import { ResetPassword } from './pages/ResetPassword';
 import { AcceptInvite } from './pages/AcceptInvite';
 import { Method } from './pages/Method';
 import './index.css';
@@ -114,6 +115,10 @@ function App() {
                             <ForcedPasswordChange />
                         </ProtectedRoute>
                     }
+                />
+                <Route
+                    path="/reset-password"
+                    element={<ResetPassword />}
                 />
 
                 {/* Protected Routes */}
