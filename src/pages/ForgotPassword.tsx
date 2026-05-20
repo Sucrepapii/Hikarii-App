@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Mail, Lock, Sun, ArrowLeft, Key, Eye, EyeOff } from 'lucide-react';
 import { useAuthStore } from '../stores/authStore';
+import { supabase } from '../supabase/client';
 import { Input } from '../components/common/Input';
 import { Button } from '../components/common/Button';
 import { Logo } from '../components/common/Logo';
@@ -37,6 +38,7 @@ export const ForgotPassword: React.FC = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [resendTimer, setResendTimer] = useState(0);
+    const [isSupabaseRecovery, setIsSupabaseRecovery] = useState(false);
 
     const emailForm = useForm<EmailFormData>({
         resolver: zodResolver(emailSchema),
@@ -65,6 +67,24 @@ export const ForgotPassword: React.FC = () => {
             resetForm.setValue('code', queryCode);
             setStep('reset');
         }
+
+        // Handle Supabase password recovery (Magic Link)
+        const hash = window.location.hash;
+        if (hash.includes('type=recovery') || searchParams.get('type') === 'recovery') {
+            setIsSupabaseRecovery(true);
+            setStep('reset');
+            resetForm.setValue('code', '123456'); // satisfy zod schema
+        }
+
+        const { data: authListener } = supabase.auth.onAuthStateChange((event) => {
+            if (event === 'PASSWORD_RECOVERY') {
+                setIsSupabaseRecovery(true);
+                setStep('reset');
+                resetForm.setValue('code', '123456'); // satisfy zod schema
+            }
+        });
+
+        return () => authListener.subscription.unsubscribe();
     }, [searchParams, resetForm]);
 
     const onEmailSubmit = async (data: EmailFormData) => {
@@ -172,10 +192,13 @@ export const ForgotPassword: React.FC = () => {
                     ) : (
                         <form onSubmit={resetForm.handleSubmit(onResetSubmit)} className="space-y-6">
                             <p className="text-slate-400 text-sm leading-relaxed mb-8">
-                                Enter the 6-digit code sent to <strong className="text-white">{email}</strong> and your new password.
+                                {isSupabaseRecovery ? 
+                                    "Please enter your new password below." : 
+                                    <><>Enter the 6-digit code sent to <strong className="text-white">{email}</strong> and your new password.</></>
+                                }
                             </p>
 
-                            <div>
+                            {!isSupabaseRecovery && (
                                 <label className="block text-xs font-black tracking-widest text-slate-500 uppercase mb-3">
                                     Verification Code
                                 </label>
@@ -193,6 +216,7 @@ export const ForgotPassword: React.FC = () => {
                                     <p className="mt-2 text-sm text-danger-500">{resetForm.formState.errors.code.message}</p>
                                 )}
                             </div>
+                            )}
 
                             <div>
                                 <label className="block text-xs font-black tracking-widest text-slate-500 uppercase mb-3">
