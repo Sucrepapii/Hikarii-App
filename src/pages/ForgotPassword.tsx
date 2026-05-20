@@ -199,23 +199,26 @@ export const ForgotPassword: React.FC = () => {
                             </p>
 
                             {!isSupabaseRecovery && (
-                                <label className="block text-xs font-black tracking-widest text-slate-500 uppercase mb-3">
-                                    Verification Code
-                                </label>
-                                <div className="relative">
-                                    <Key className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600" />
-                                    <Input
-                                        {...resetForm.register('code')}
-                                        type="text"
-                                        placeholder="123456"
-                                        maxLength={6}
-                                        className="pl-14 text-center tracking-[0.5em] text-xl h-14 bg-white/[0.03] border-white/10 text-white rounded-xl focus:border-indigo-500/50"
-                                    />
-                                </div>
-                                {resetForm.formState.errors.code && (
-                                    <p className="mt-2 text-sm text-danger-500">{resetForm.formState.errors.code.message}</p>
-                                )}
-                            </div>
+                                <>
+                                    <div>
+                                        <label className="block text-xs font-black tracking-widest text-slate-500 uppercase mb-3">
+                                            Verification Code
+                                        </label>
+                                        <div className="relative">
+                                            <Key className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600" />
+                                            <Input
+                                                {...resetForm.register('code')}
+                                                type="text"
+                                                placeholder="123456"
+                                                maxLength={6}
+                                                className="pl-14 text-center tracking-[0.5em] text-xl h-14 bg-white/[0.03] border-white/10 text-white rounded-xl focus:border-indigo-500/50"
+                                            />
+                                        </div>
+                                        {resetForm.formState.errors.code && (
+                                            <p className="mt-2 text-sm text-danger-500">{resetForm.formState.errors.code.message}</p>
+                                        )}
+                                    </div>
+                                </>
                             )}
 
                             <div>

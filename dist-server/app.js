@@ -24,337 +24,6 @@ var init_db = __esm({
   }
 });
 
-// server/src/services/email.service.ts
-import { Resend } from "resend";
-import dotenv from "dotenv";
-var sendEmail;
-var init_email_service = __esm({
-  "server/src/services/email.service.ts"() {
-    dotenv.config();
-    sendEmail = async (to, subject, html, options) => {
-      try {
-        const apiKey = process.env.RESEND_API_KEY;
-        if (!apiKey) {
-          console.log("Skipping email: No RESEND_API_KEY provided.");
-          return;
-        }
-        const resend = new Resend(apiKey);
-        const defaultDomain = process.env.EMAIL_DOMAIN || "hikarii.org";
-        const emailDomain = options?.fromDomain || defaultDomain;
-        const fromName = options?.fromName || "Hikari";
-        const fromEmail = `${fromName} <noreply@${emailDomain}>`;
-        if (!process.env.EMAIL_DOMAIN && !options?.fromDomain) {
-          console.log(
-            "Using default email domain: hikarii.org (EMAIL_DOMAIN not set)"
-          );
-        }
-        console.log(`Sending email from: ${fromEmail} to: ${to}`);
-        const { data, error } = await resend.emails.send({
-          from: fromEmail,
-          to: [to],
-          subject,
-          html
-        });
-        if (error) {
-          console.error("Resend API Error:", error);
-          throw error;
-        }
-        console.log("Email sent successfully:", data);
-        return data;
-      } catch (error) {
-        console.error("Error sending email:", error);
-        throw error;
-      }
-    };
-  }
-});
-
-// server/src/utils/emailTemplates.ts
-var getBaseTemplate, getVerificationTemplate, getPasswordResetTemplate, getOverdueReminderTemplate, getContactFormTemplate, getContactAutoReplyTemplate, getSuspensionTemplate, getReactivationTemplate, getAdminOnboardingTemplate, getLeadMagnetTemplate, getInviteTemplate;
-var init_emailTemplates = __esm({
-  "server/src/utils/emailTemplates.ts"() {
-    getBaseTemplate = (title, content, buttonText, buttonUrl, footerText) => {
-      const buttonHtml = buttonText && buttonUrl ? `
-      <div style="margin: 32px 0; text-align: center;">
-        <a href="${buttonUrl}" style="background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); color: white; padding: 14px 28px; text-decoration: none; border-radius: 12px; font-weight: 600; font-size: 16px; display: inline-block; box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.4);">
-          ${buttonText}
-        </a>
-      </div>` : "";
-      const defaultFooter = "This email was sent to identify and secure your account.";
-      return `
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>${title}</title>
-      <style>
-        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.6; color: #334155; margin: 0; padding: 0; background-color: #f1f5f9; }
-        .wrapper { width: 100%; background-color: #f1f5f9; padding: 40px 0; }
-        .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025); }
-        .header { background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); padding: 40px 20px; text-align: center; }
-        .header-logo { color: #ffffff; font-size: 28px; font-weight: 800; letter-spacing: -0.05em; text-transform: uppercase; margin: 0; text-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .header-subtitle { color: rgba(255,255,255,0.9); font-size: 14px; font-weight: 500; margin-top: 8px; letter-spacing: 0.1em; text-transform: uppercase; }
-        .content { padding: 40px 32px; }
-        h1 { color: #0f172a; font-size: 24px; font-weight: 700; margin-top: 0; margin-bottom: 24px; text-align: center; letter-spacing: -0.025em; }
-        p { margin-bottom: 16px; font-size: 16px; color: #475569; }
-        .footer { padding: 32px; background-color: #f8fafc; text-align: center; border-top: 1px solid #e2e8f0; font-size: 12px; color: #94a3b8; }
-        .otp-container { background: #eef2ff; padding: 24px; border-radius: 16px; text-align: center; margin: 32px 0; border: 2px dashed #818cf8; }
-        .otp-label { color: #6366f1; font-weight: 600; text-transform: uppercase; font-size: 12px; letter-spacing: 0.1em; margin-bottom: 8px; }
-        .otp-code { font-size: 36px; font-weight: 800; letter-spacing: 12px; color: #4338ca; margin: 0; font-family: monospace; }
-        .highlight { color: #6366f1; font-weight: 700; }
-        .divider { height: 1px; background-color: #e2e8f0; margin: 32px 0; }
-        
-        /* Mobile adjustments */
-        @media screen and (max-width: 600px) {
-          .content { padding: 32px 20px; }
-          .otp-code { font-size: 28px; letter-spacing: 8px; }
-        }
-      </style>
-    </head>
-    <body>
-      <div class="wrapper">
-        <div class="container">
-          <!-- Colorful Header -->
-          <div class="header" style="text-align: center;">
-            <div style="display: inline-flex; align-items: center; justify-content: center; gap: 12px;">
-              <img src="${process.env.CLIENT_URL || "https://www.hikarii.org"}/logo.png" width="45" height="45" alt="Hikari Logo" style="display: block; border: 0; outline: none; text-decoration: none;" />
-              <div class="header-logo">HIKARI</div>
-            </div>
-            <div class="header-subtitle">Light & Clarity</div>
-          </div>
-          
-          <!-- Main Content -->
-          <div class="content">
-            <h1>${title}</h1>
-            ${content}
-            ${buttonHtml}
-            
-            <div class="divider"></div>
-            <p style="margin: 0; font-size: 14px; color: #64748b;">
-              Shine bright,<br>
-              <strong>The Hikari Team</strong>
-            </p>
-          </div>
-          
-          <!-- Footer -->
-          <div class="footer">
-            <p style="margin-bottom: 8px;">&copy; ${(/* @__PURE__ */ new Date()).getFullYear()} Hikari App. All rights reserved.</p>
-            <p style="margin: 0;">${footerText || defaultFooter}</p>
-          </div>
-        </div>
-      </div>
-    </body>
-    </html>
-  `;
-    };
-    getVerificationTemplate = (name, otp) => {
-      const content = `
-    <p>Hello <strong>${name}</strong>,</p>
-    <p>Welcome to <strong>Hikari</strong>! You are stepping into a world of clarity and productivity. To activate your account, please verify your email address.</p>
-    
-    <div class="otp-container">
-      <div class="otp-label">Verification Code</div>
-      <div class="otp-code">${otp}</div>
-    </div>
-    
-    <p style="text-align: center; font-size: 14px; color: #64748b;">This secure code will expire in <span class="highlight">1 hour</span>.</p>
-    <p style="text-align: center; font-size: 14px; color: #94a3b8; margin-top: 8px;">If you didn't create an account, you can safely ignore this email.</p>
-  `;
-      return getBaseTemplate("Verify Your Account", content);
-    };
-    getPasswordResetTemplate = (name, otp) => {
-      const content = `
-    <p>Hello <strong>${name}</strong>,</p>
-    <p>We received a request to reset the password for your Hikari account. No worries, we're here to help you get back on track.</p>
-    
-    <div class="otp-container" style="background-color: #fff1f2; border-color: #fda4af;">
-      <div class="otp-label" style="color: #e11d48;">Password Reset Code</div>
-      <div class="otp-code" style="color: #be123c;">${otp}</div>
-    </div>
-    
-    <p style="text-align: center; font-size: 14px; color: #64748b;">This code is valid for <span class="highlight" style="color: #e11d48;">15 minutes</span>.</p>
-    <p style="text-align: center; font-size: 14px; color: #94a3b8; margin-top: 8px;">If you didn't request this change, please secure your account immediately.</p>
-  `;
-      return getBaseTemplate("Reset Your Password", content);
-    };
-    getOverdueReminderTemplate = (name, tasksHtml) => {
-      const content = `
-    <p>Hello <strong>${name}</strong>,</p>
-    <p>It looks like a few things have slipped through the cracks. We found pending items in your workspace that need your attention.</p>
-    
-    <div style="background-color: #fff1f2; border: 1px solid #fecaca; padding: 24px; border-radius: 16px; margin: 24px 0;">
-      <h3 style="margin-top: 0; color: #991b1b; font-size: 16px; margin-bottom: 16px;">\u26A0\uFE0F Overdue Items</h3>
-      <ul style="margin: 0; padding-left: 20px; color: #be123c; line-height: 1.8;">
-        ${tasksHtml}
-      </ul>
-    </div>
-    
-    <p>Keeping your workspace clean helps the Hikari intelligence engine give you better insights!</p>
-  `;
-      const clientUrl = process.env.CLIENT_URL || "https://www.hikarii.org/";
-      return getBaseTemplate(
-        "Action Required: Overdue Tasks",
-        content,
-        "Go to Workspace",
-        clientUrl,
-        "You received this email because you have pending tasks in your Hikari workspace."
-      );
-    };
-    getContactFormTemplate = (firstName, lastName, email, subject, message) => {
-      const content = `
-    <p>You received a new message from the <strong>Hikari Contact Form</strong>.</p>
-    
-    <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 24px; border-radius: 16px; margin: 24px 0;">
-      <p style="margin: 0 0 12px 0;"><strong>Name:</strong> ${firstName} ${lastName}</p>
-      <p style="margin: 0 0 12px 0;"><strong>Email:</strong> <a href="mailto:${email}" style="color: #6366f1;">${email}</a></p>
-      <p style="margin: 0 0 12px 0;"><strong>Subject:</strong> ${subject}</p>
-      <div style="margin-top: 16px; padding-top: 16px; border-top: 1px dashed #cbd5e1;">
-        <p style="margin: 0 0 8px 0; font-size: 12px; text-transform: uppercase; color: #64748b; font-weight: 700;">Message:</p>
-        <p style="margin: 0; white-space: pre-wrap; color: #334155;">${message}</p>
-      </div>
-    </div>
-    
-    <div style="text-align: center;">
-      <a href="mailto:${email}?subject=Re: ${encodeURIComponent(subject)}" style="background: #1e293b; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 14px; display: inline-block;">
-        Reply to User
-      </a>
-    </div>
-  `;
-      return getBaseTemplate(
-        `New Contact: ${subject}`,
-        content,
-        void 0,
-        void 0,
-        "This message was sent via the Hikari website contact form."
-      );
-    };
-    getContactAutoReplyTemplate = (firstName) => {
-      const content = `
-    <p>Hello <strong>${firstName}</strong>,</p>
-    <p>Thanks for reaching out to Hikari! We've received your message and our team is reviewing it.</p>
-    <p>We typically reply within 24-48 hours. In the meantime, you might find answers in our <a href="https://www.hikarii.org/help" style="color: #6366f1;">Help Center</a>.</p>
-    
-    <p>Talk soon,</p>
-  `;
-      return getBaseTemplate(
-        "We received your message",
-        content,
-        "Visit Help Center",
-        "https://www.hikarii.org/help",
-        "You received this because you contacted Hikari Support."
-      );
-    };
-    getSuspensionTemplate = (name, reason, expires) => {
-      const content = `
-    <p>Hello <strong>${name}</strong>,</p>
-    <p>Your Hikari account has been <strong style="color: #e11d48;">suspended</strong> due to a violation of our terms or suspicious activity.</p>
-    
-    <div style="background-color: #fff1f2; border: 1px solid #fecaca; padding: 24px; border-radius: 16px; margin: 24px 0;">
-      <p style="margin: 0 0 12px 0;"><strong>Reason:</strong> ${reason || "Terms of Service Violation"}</p>
-      ${expires ? `<p style="margin: 0;"><strong>Suspension Expires:</strong> ${expires.toLocaleDateString()}</p>` : '<p style="margin: 0;"><strong>Duration:</strong> Indefinite</p>'}
-    </div>
-    
-    <p>While suspended, you will not be able to access your projects or financial data. If you believe this is a mistake, please contact our support team.</p>
-  `;
-      return getBaseTemplate(
-        "Account Suspended",
-        content,
-        "Contact Support",
-        "mailto:support@hikarii.org",
-        "This is a mandatory security notification regarding your account status."
-      );
-    };
-    getReactivationTemplate = (name) => {
-      const content = `
-    <p>Hello <strong>${name}</strong>,</p>
-    <p>Great news! Your Hikari account has been <strong style="color: #059669;">reactivated</strong>. You now have full access to all your features and data.</p>
-    
-    <p>We're glad to have you back. Shine bright!</p>
-  `;
-      return getBaseTemplate(
-        "Account Reactivated",
-        content,
-        "Go to Dashboard",
-        process.env.CLIENT_URL || "https://www.hikarii.org/",
-        "Welcome back to Hikari!"
-      );
-    };
-    getAdminOnboardingTemplate = (name, email, temporaryPassword) => {
-      const loginUrl = process.env.CLIENT_URL || "https://www.hikarii.org/";
-      const content = `
-    <p>Hello <strong>${name}</strong>,</p>
-    <p>You have been added as an <strong>Administrator</strong> for the Hikari Platform. This role grants you access to manage users, view system analytics, and maintain platform health.</p>
-    
-    <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 24px; border-radius: 16px; margin: 24px 0;">
-      <p style="margin: 0 0 12px 0;"><strong>Email:</strong> ${email}</p>
-      <p style="margin: 0;"><strong>Temporary Password:</strong> <code style="background: #eef2ff; padding: 4px 8px; border-radius: 4px; color: #4338ca;">${temporaryPassword}</code></p>
-    </div>
-    
-    <p>For security reasons, you will be <span class="highlight">required to change your password</span> upon your first login.</p>
-    
-    <p style="text-align: center; font-size: 14px; color: #94a3b8; margin-top: 8px;">If you were not expecting this invitation, please contact the system administrator immediately.</p>
-  `;
-      return getBaseTemplate(
-        "Welcome to the Admin Team",
-        content,
-        "Login to Admin Console",
-        loginUrl,
-        "This is a mandatory administrative notification."
-      );
-    };
-    getLeadMagnetTemplate = (email) => {
-      const content = `
-    <p>Success! You're one step closer to radical clarity.</p>
-    <p>As promised, here is your access to the <strong>Hikari Method Guide</strong>. This is the exact system we use to bridge the gap between tasks and finances.</p>
-    
-    <div style="background-color: #f0fdf4; border: 1px solid #bbf7d0; padding: 24px; border-radius: 16px; margin: 24px 0; text-align: center;">
-      <h3 style="margin-top: 0; color: #166534; font-size: 18px; margin-bottom: 8px;">\u{1F381} Your Hikari Method Guide is Ready</h3>
-      <p style="color: #15803d; margin-bottom: 0;">Clarity. Focus. Freedom. The guide to mastering your life & money.</p>
-    </div>
-    
-    <p><strong>Inside the guide:</strong></p>
-    <ul style="color: #475569; line-height: 1.8;">
-      <li><strong>Pillar 1: Clarity</strong> - How to visualize the chaos.</li>
-      <li><strong>Pillar 2: Focus</strong> - The logic behind 15-minute block splitting.</li>
-      <li><strong>Pillar 3: Freedom</strong> - Turning productivity into profit (ROI tracking).</li>
-    </ul>
-    
-    <p>Once you've had a look, we'd love to hear how it helps your workflow!</p>
-  `;
-      const leadMagnetUrl = (process.env.CLIENT_URL || "https://www.hikarii.org") + "/help/article/ultimate-guide-hikari-method";
-      return getBaseTemplate(
-        "Your Hikari Method Guide Inside!",
-        content,
-        "Read the Hikari Method Guide",
-        leadMagnetUrl,
-        "You received this because you requested the Hikari Method magnet on our website."
-      );
-    };
-    getInviteTemplate = (inviterName, projectTitle, inviteLink) => {
-      const content = `
-    <p>Hello,</p>
-    <p><strong>${inviterName}</strong> has invited you to collaborate on the project <strong>"${projectTitle}"</strong> on Hikari.</p>
-    
-    <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 24px; border-radius: 16px; margin: 24px 0;">
-      <p style="margin: 0; text-align: center; color: #64748b; font-size: 14px;">
-        Collaborating on Hikari allows you to co-manage tasks, track shared budgets, and stay in sync in real-time.
-      </p>
-    </div>
-    
-    <p style="text-align: center; font-size: 14px; color: #64748b;">Click the button below to accept the invitation and join the project.</p>
-  `;
-      return getBaseTemplate(
-        "You've been invited to collaborate",
-        content,
-        "Accept Invitation",
-        inviteLink,
-        "You received this because someone invited you to a project on Hikari."
-      );
-    };
-  }
-});
-
 // server/src/services/google.calendar.service.ts
 var google_calendar_service_exports = {};
 __export(google_calendar_service_exports, {
@@ -755,11 +424,11 @@ var init_task_splitter_service = __esm({
 
 // server/src/services/whatsapp.service.ts
 import twilio from "twilio";
-import dotenv2 from "dotenv";
+import dotenv from "dotenv";
 var accountSid, authToken, fromNumber, sendWhatsAppMessage;
 var init_whatsapp_service = __esm({
   "server/src/services/whatsapp.service.ts"() {
-    dotenv2.config();
+    dotenv.config();
     accountSid = process.env.TWILIO_ACCOUNT_SID;
     authToken = process.env.TWILIO_AUTH_TOKEN;
     fromNumber = process.env.TWILIO_WHATSAPP_FROM || "whatsapp:+14155238886";
@@ -782,6 +451,307 @@ var init_whatsapp_service = __esm({
         console.error("Error sending WhatsApp message:", error);
         throw error;
       }
+    };
+  }
+});
+
+// server/src/services/email.service.ts
+import { Resend } from "resend";
+import dotenv2 from "dotenv";
+var sendEmail;
+var init_email_service = __esm({
+  "server/src/services/email.service.ts"() {
+    dotenv2.config();
+    sendEmail = async (to, subject, html, options) => {
+      try {
+        const apiKey = process.env.RESEND_API_KEY;
+        if (!apiKey) {
+          console.log("Skipping email: No RESEND_API_KEY provided.");
+          return;
+        }
+        const resend = new Resend(apiKey);
+        const defaultDomain = process.env.EMAIL_DOMAIN || "hikarii.org";
+        const emailDomain = options?.fromDomain || defaultDomain;
+        const fromName = options?.fromName || "Hikari";
+        const fromEmail = `${fromName} <noreply@${emailDomain}>`;
+        if (!process.env.EMAIL_DOMAIN && !options?.fromDomain) {
+          console.log(
+            "Using default email domain: hikarii.org (EMAIL_DOMAIN not set)"
+          );
+        }
+        console.log(`Sending email from: ${fromEmail} to: ${to}`);
+        const { data, error } = await resend.emails.send({
+          from: fromEmail,
+          to: [to],
+          subject,
+          html
+        });
+        if (error) {
+          console.error("Resend API Error:", error);
+          throw error;
+        }
+        console.log("Email sent successfully:", data);
+        return data;
+      } catch (error) {
+        console.error("Error sending email:", error);
+        throw error;
+      }
+    };
+  }
+});
+
+// server/src/utils/emailTemplates.ts
+var getBaseTemplate, getOverdueReminderTemplate, getContactFormTemplate, getContactAutoReplyTemplate, getSuspensionTemplate, getReactivationTemplate, getAdminOnboardingTemplate, getLeadMagnetTemplate, getInviteTemplate;
+var init_emailTemplates = __esm({
+  "server/src/utils/emailTemplates.ts"() {
+    getBaseTemplate = (title, content, buttonText, buttonUrl, footerText) => {
+      const buttonHtml = buttonText && buttonUrl ? `
+      <div style="margin: 32px 0; text-align: center;">
+        <a href="${buttonUrl}" style="background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); color: white; padding: 14px 28px; text-decoration: none; border-radius: 12px; font-weight: 600; font-size: 16px; display: inline-block; box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.4);">
+          ${buttonText}
+        </a>
+      </div>` : "";
+      const defaultFooter = "This email was sent to identify and secure your account.";
+      return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>${title}</title>
+      <style>
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.6; color: #334155; margin: 0; padding: 0; background-color: #f1f5f9; }
+        .wrapper { width: 100%; background-color: #f1f5f9; padding: 40px 0; }
+        .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025); }
+        .header { background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); padding: 40px 20px; text-align: center; }
+        .header-logo { color: #ffffff; font-size: 28px; font-weight: 800; letter-spacing: -0.05em; text-transform: uppercase; margin: 0; text-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .header-subtitle { color: rgba(255,255,255,0.9); font-size: 14px; font-weight: 500; margin-top: 8px; letter-spacing: 0.1em; text-transform: uppercase; }
+        .content { padding: 40px 32px; }
+        h1 { color: #0f172a; font-size: 24px; font-weight: 700; margin-top: 0; margin-bottom: 24px; text-align: center; letter-spacing: -0.025em; }
+        p { margin-bottom: 16px; font-size: 16px; color: #475569; }
+        .footer { padding: 32px; background-color: #f8fafc; text-align: center; border-top: 1px solid #e2e8f0; font-size: 12px; color: #94a3b8; }
+        .otp-container { background: #eef2ff; padding: 24px; border-radius: 16px; text-align: center; margin: 32px 0; border: 2px dashed #818cf8; }
+        .otp-label { color: #6366f1; font-weight: 600; text-transform: uppercase; font-size: 12px; letter-spacing: 0.1em; margin-bottom: 8px; }
+        .otp-code { font-size: 36px; font-weight: 800; letter-spacing: 12px; color: #4338ca; margin: 0; font-family: monospace; }
+        .highlight { color: #6366f1; font-weight: 700; }
+        .divider { height: 1px; background-color: #e2e8f0; margin: 32px 0; }
+        
+        /* Mobile adjustments */
+        @media screen and (max-width: 600px) {
+          .content { padding: 32px 20px; }
+          .otp-code { font-size: 28px; letter-spacing: 8px; }
+        }
+      </style>
+    </head>
+    <body>
+      <div class="wrapper">
+        <div class="container">
+          <!-- Colorful Header -->
+          <div class="header" style="text-align: center;">
+            <div style="display: inline-flex; align-items: center; justify-content: center; gap: 12px;">
+              <img src="${process.env.CLIENT_URL || "https://www.hikarii.org"}/logo.png" width="45" height="45" alt="Hikari Logo" style="display: block; border: 0; outline: none; text-decoration: none;" />
+              <div class="header-logo">HIKARI</div>
+            </div>
+            <div class="header-subtitle">Light & Clarity</div>
+          </div>
+          
+          <!-- Main Content -->
+          <div class="content">
+            <h1>${title}</h1>
+            ${content}
+            ${buttonHtml}
+            
+            <div class="divider"></div>
+            <p style="margin: 0; font-size: 14px; color: #64748b;">
+              Shine bright,<br>
+              <strong>The Hikari Team</strong>
+            </p>
+          </div>
+          
+          <!-- Footer -->
+          <div class="footer">
+            <p style="margin-bottom: 8px;">&copy; ${(/* @__PURE__ */ new Date()).getFullYear()} Hikari App. All rights reserved.</p>
+            <p style="margin: 0;">${footerText || defaultFooter}</p>
+          </div>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+    };
+    getOverdueReminderTemplate = (name, tasksHtml) => {
+      const content = `
+    <p>Hello <strong>${name}</strong>,</p>
+    <p>It looks like a few things have slipped through the cracks. We found pending items in your workspace that need your attention.</p>
+    
+    <div style="background-color: #fff1f2; border: 1px solid #fecaca; padding: 24px; border-radius: 16px; margin: 24px 0;">
+      <h3 style="margin-top: 0; color: #991b1b; font-size: 16px; margin-bottom: 16px;">\u26A0\uFE0F Overdue Items</h3>
+      <ul style="margin: 0; padding-left: 20px; color: #be123c; line-height: 1.8;">
+        ${tasksHtml}
+      </ul>
+    </div>
+    
+    <p>Keeping your workspace clean helps the Hikari intelligence engine give you better insights!</p>
+  `;
+      const clientUrl = process.env.CLIENT_URL || "https://www.hikarii.org/";
+      return getBaseTemplate(
+        "Action Required: Overdue Tasks",
+        content,
+        "Go to Workspace",
+        clientUrl,
+        "You received this email because you have pending tasks in your Hikari workspace."
+      );
+    };
+    getContactFormTemplate = (firstName, lastName, email, subject, message) => {
+      const content = `
+    <p>You received a new message from the <strong>Hikari Contact Form</strong>.</p>
+    
+    <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 24px; border-radius: 16px; margin: 24px 0;">
+      <p style="margin: 0 0 12px 0;"><strong>Name:</strong> ${firstName} ${lastName}</p>
+      <p style="margin: 0 0 12px 0;"><strong>Email:</strong> <a href="mailto:${email}" style="color: #6366f1;">${email}</a></p>
+      <p style="margin: 0 0 12px 0;"><strong>Subject:</strong> ${subject}</p>
+      <div style="margin-top: 16px; padding-top: 16px; border-top: 1px dashed #cbd5e1;">
+        <p style="margin: 0 0 8px 0; font-size: 12px; text-transform: uppercase; color: #64748b; font-weight: 700;">Message:</p>
+        <p style="margin: 0; white-space: pre-wrap; color: #334155;">${message}</p>
+      </div>
+    </div>
+    
+    <div style="text-align: center;">
+      <a href="mailto:${email}?subject=Re: ${encodeURIComponent(subject)}" style="background: #1e293b; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 14px; display: inline-block;">
+        Reply to User
+      </a>
+    </div>
+  `;
+      return getBaseTemplate(
+        `New Contact: ${subject}`,
+        content,
+        void 0,
+        void 0,
+        "This message was sent via the Hikari website contact form."
+      );
+    };
+    getContactAutoReplyTemplate = (firstName) => {
+      const content = `
+    <p>Hello <strong>${firstName}</strong>,</p>
+    <p>Thanks for reaching out to Hikari! We've received your message and our team is reviewing it.</p>
+    <p>We typically reply within 24-48 hours. In the meantime, you might find answers in our <a href="https://www.hikarii.org/help" style="color: #6366f1;">Help Center</a>.</p>
+    
+    <p>Talk soon,</p>
+  `;
+      return getBaseTemplate(
+        "We received your message",
+        content,
+        "Visit Help Center",
+        "https://www.hikarii.org/help",
+        "You received this because you contacted Hikari Support."
+      );
+    };
+    getSuspensionTemplate = (name, reason, expires) => {
+      const content = `
+    <p>Hello <strong>${name}</strong>,</p>
+    <p>Your Hikari account has been <strong style="color: #e11d48;">suspended</strong> due to a violation of our terms or suspicious activity.</p>
+    
+    <div style="background-color: #fff1f2; border: 1px solid #fecaca; padding: 24px; border-radius: 16px; margin: 24px 0;">
+      <p style="margin: 0 0 12px 0;"><strong>Reason:</strong> ${reason || "Terms of Service Violation"}</p>
+      ${expires ? `<p style="margin: 0;"><strong>Suspension Expires:</strong> ${expires.toLocaleDateString()}</p>` : '<p style="margin: 0;"><strong>Duration:</strong> Indefinite</p>'}
+    </div>
+    
+    <p>While suspended, you will not be able to access your projects or financial data. If you believe this is a mistake, please contact our support team.</p>
+  `;
+      return getBaseTemplate(
+        "Account Suspended",
+        content,
+        "Contact Support",
+        "mailto:support@hikarii.org",
+        "This is a mandatory security notification regarding your account status."
+      );
+    };
+    getReactivationTemplate = (name) => {
+      const content = `
+    <p>Hello <strong>${name}</strong>,</p>
+    <p>Great news! Your Hikari account has been <strong style="color: #059669;">reactivated</strong>. You now have full access to all your features and data.</p>
+    
+    <p>We're glad to have you back. Shine bright!</p>
+  `;
+      return getBaseTemplate(
+        "Account Reactivated",
+        content,
+        "Go to Dashboard",
+        process.env.CLIENT_URL || "https://www.hikarii.org/",
+        "Welcome back to Hikari!"
+      );
+    };
+    getAdminOnboardingTemplate = (name, email, temporaryPassword) => {
+      const loginUrl = process.env.CLIENT_URL || "https://www.hikarii.org/";
+      const content = `
+    <p>Hello <strong>${name}</strong>,</p>
+    <p>You have been added as an <strong>Administrator</strong> for the Hikari Platform. This role grants you access to manage users, view system analytics, and maintain platform health.</p>
+    
+    <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 24px; border-radius: 16px; margin: 24px 0;">
+      <p style="margin: 0 0 12px 0;"><strong>Email:</strong> ${email}</p>
+      <p style="margin: 0;"><strong>Temporary Password:</strong> <code style="background: #eef2ff; padding: 4px 8px; border-radius: 4px; color: #4338ca;">${temporaryPassword}</code></p>
+    </div>
+    
+    <p>For security reasons, you will be <span class="highlight">required to change your password</span> upon your first login.</p>
+    
+    <p style="text-align: center; font-size: 14px; color: #94a3b8; margin-top: 8px;">If you were not expecting this invitation, please contact the system administrator immediately.</p>
+  `;
+      return getBaseTemplate(
+        "Welcome to the Admin Team",
+        content,
+        "Login to Admin Console",
+        loginUrl,
+        "This is a mandatory administrative notification."
+      );
+    };
+    getLeadMagnetTemplate = (email) => {
+      const content = `
+    <p>Success! You're one step closer to radical clarity.</p>
+    <p>As promised, here is your access to the <strong>Hikari Method Guide</strong>. This is the exact system we use to bridge the gap between tasks and finances.</p>
+    
+    <div style="background-color: #f0fdf4; border: 1px solid #bbf7d0; padding: 24px; border-radius: 16px; margin: 24px 0; text-align: center;">
+      <h3 style="margin-top: 0; color: #166534; font-size: 18px; margin-bottom: 8px;">\u{1F381} Your Hikari Method Guide is Ready</h3>
+      <p style="color: #15803d; margin-bottom: 0;">Clarity. Focus. Freedom. The guide to mastering your life & money.</p>
+    </div>
+    
+    <p><strong>Inside the guide:</strong></p>
+    <ul style="color: #475569; line-height: 1.8;">
+      <li><strong>Pillar 1: Clarity</strong> - How to visualize the chaos.</li>
+      <li><strong>Pillar 2: Focus</strong> - The logic behind 15-minute block splitting.</li>
+      <li><strong>Pillar 3: Freedom</strong> - Turning productivity into profit (ROI tracking).</li>
+    </ul>
+    
+    <p>Once you've had a look, we'd love to hear how it helps your workflow!</p>
+  `;
+      const leadMagnetUrl = (process.env.CLIENT_URL || "https://www.hikarii.org") + "/help/article/ultimate-guide-hikari-method";
+      return getBaseTemplate(
+        "Your Hikari Method Guide Inside!",
+        content,
+        "Read the Hikari Method Guide",
+        leadMagnetUrl,
+        "You received this because you requested the Hikari Method magnet on our website."
+      );
+    };
+    getInviteTemplate = (inviterName, projectTitle, inviteLink) => {
+      const content = `
+    <p>Hello,</p>
+    <p><strong>${inviterName}</strong> has invited you to collaborate on the project <strong>"${projectTitle}"</strong> on Hikari.</p>
+    
+    <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 24px; border-radius: 16px; margin: 24px 0;">
+      <p style="margin: 0; text-align: center; color: #64748b; font-size: 14px;">
+        Collaborating on Hikari allows you to co-manage tasks, track shared budgets, and stay in sync in real-time.
+      </p>
+    </div>
+    
+    <p style="text-align: center; font-size: 14px; color: #64748b;">Click the button below to accept the invitation and join the project.</p>
+  `;
+      return getBaseTemplate(
+        "You've been invited to collaborate",
+        content,
+        "Accept Invitation",
+        inviteLink,
+        "You received this because someone invited you to a project on Hikari."
+      );
     };
   }
 });
@@ -895,245 +865,9 @@ import hpp from "hpp";
 
 // server/src/routes/auth.routes.ts
 import { Router } from "express";
-import rateLimit from "express-rate-limit";
 
 // server/src/controllers/auth.controller.ts
 init_db();
-
-// server/src/utils/jwt.ts
-import jwt from "jsonwebtoken";
-var JWT_SECRET = process.env.JWT_SECRET || "fallback-secret-key";
-var JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "7d";
-var generateToken = (payload) => {
-  const options = {
-    expiresIn: JWT_EXPIRES_IN
-  };
-  return jwt.sign(payload, JWT_SECRET, options);
-};
-var verifyToken = (token) => {
-  try {
-    return jwt.verify(token, JWT_SECRET);
-  } catch (error) {
-    throw new Error("Invalid or expired token");
-  }
-};
-
-// server/src/controllers/auth.controller.ts
-init_email_service();
-init_emailTemplates();
-var generateOTP = () => Math.floor(1e5 + Math.random() * 9e5).toString();
-var signup = async (req, res) => {
-  console.log("Signup request received for:", req.body?.email);
-  try {
-    const { name, email, password, phoneNumber } = req.body;
-    if (!name || !email || !password) {
-      console.log("Missing fields in signup request");
-      res.status(400).json({ error: "Name, email, and password are required" });
-      return;
-    }
-    console.log("Finding existing user...");
-    const existingUser = await db_default.user.findUnique({ where: { email } });
-    if (existingUser) {
-      console.log("User already exists:", email);
-      res.status(400).json({ error: "User already exists with this email" });
-      return;
-    }
-    console.log("Creating new user...");
-    const otp = generateOTP();
-    const otpExpires = new Date(Date.now() + 60 * 60 * 1e3);
-    const bcrypt2 = await import("bcryptjs");
-    const salt = await bcrypt2.default.genSalt(10);
-    const hashedPassword = await bcrypt2.default.hash(password, salt);
-    const user = await db_default.user.create({
-      data: {
-        name,
-        email,
-        password: hashedPassword,
-        isVerified: false,
-        verificationToken: otp,
-        verificationTokenExpires: otpExpires,
-        phoneNumber: phoneNumber || null
-      }
-    });
-    try {
-      await sendEmail(
-        email,
-        "Verify your Hikari Account",
-        getVerificationTemplate(name, otp)
-      );
-    } catch (emailError) {
-      console.error("Failed to send verification email:", emailError);
-    }
-    res.status(201).json({
-      message: "Registration successful. Please check your email for a verification code.",
-      email: user.email,
-      requiresVerification: true
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-var login = async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    const user = await db_default.user.findUnique({ where: { email } });
-    if (!user) {
-      res.status(401).json({ error: "Invalid credentials" });
-      return;
-    }
-    if (!user.isVerified) {
-      res.status(403).json({
-        error: "Account not verified. Please verify your email.",
-        requiresVerification: true,
-        email: user.email
-      });
-      return;
-    }
-    if (user.isSuspended) {
-      if (user.suspensionExpires && user.suspensionExpires < /* @__PURE__ */ new Date()) {
-        await db_default.user.update({
-          where: { id: user.id },
-          data: {
-            isSuspended: false,
-            suspensionReason: null,
-            suspensionExpires: null
-          }
-        });
-      } else {
-        res.status(403).json({
-          error: `Account suspended. Reason: ${user.suspensionReason || "No reason provided"}`,
-          isSuspended: true,
-          expiresAt: user.suspensionExpires
-        });
-        return;
-      }
-    }
-    if (user.password !== password) {
-    }
-    const bcrypt2 = await import("bcryptjs");
-    const isMatch = await bcrypt2.default.compare(password, user.password);
-    if (!isMatch) {
-      res.status(401).json({ error: "Invalid credentials" });
-      return;
-    }
-    const token = generateToken({
-      userId: user.id,
-      email: user.email
-    });
-    await db_default.user.update({
-      where: { id: user.id },
-      data: { lastLoginAt: /* @__PURE__ */ new Date() }
-    });
-    res.json({
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        createdAt: user.createdAt,
-        subscriptionStatus: user.subscriptionStatus,
-        stripeCustomerId: user.stripeCustomerId,
-        currentPeriodEnd: user.currentPeriodEnd,
-        phoneNumber: user.phoneNumber,
-        waTasksEnabled: user.waTasksEnabled,
-        waBudgetEnabled: user.waBudgetEnabled,
-        waProjectsEnabled: user.waProjectsEnabled,
-        requiresPasswordChange: user.requiresPasswordChange
-      },
-      token
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-var verifyEmail = async (req, res) => {
-  try {
-    const { email, code } = req.body;
-    const user = await db_default.user.findUnique({ where: { email } });
-    if (!user) {
-      res.status(404).json({ error: "User not found" });
-      return;
-    }
-    if (user.isVerified) {
-      res.status(400).json({ error: "User already verified. Please login." });
-      return;
-    }
-    if (user.verificationToken !== code) {
-      res.status(400).json({ error: "Invalid verification code" });
-      return;
-    }
-    if (!user.verificationTokenExpires || user.verificationTokenExpires < /* @__PURE__ */ new Date()) {
-      res.status(400).json({
-        error: "Verification code expired. Please request a new one."
-      });
-      return;
-    }
-    await db_default.user.update({
-      where: { id: user.id },
-      data: {
-        isVerified: true,
-        verificationToken: null,
-        verificationTokenExpires: null
-      }
-    });
-    const token = generateToken({
-      userId: user.id,
-      email: user.email
-    });
-    res.json({
-      message: "Email verified successfully",
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        createdAt: user.createdAt,
-        subscriptionStatus: user.subscriptionStatus,
-        stripeCustomerId: user.stripeCustomerId,
-        currentPeriodEnd: user.currentPeriodEnd,
-        phoneNumber: user.phoneNumber,
-        waTasksEnabled: user.waTasksEnabled,
-        waBudgetEnabled: user.waBudgetEnabled,
-        waProjectsEnabled: user.waProjectsEnabled,
-        requiresPasswordChange: user.requiresPasswordChange
-      },
-      token
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-var resendVerification = async (req, res) => {
-  try {
-    const { email } = req.body;
-    const user = await db_default.user.findUnique({ where: { email } });
-    if (!user) {
-      res.status(404).json({ error: "User not found" });
-      return;
-    }
-    if (user.isVerified) {
-      res.status(400).json({ error: "User already verified" });
-      return;
-    }
-    const otp = generateOTP();
-    const otpExpires = new Date(Date.now() + 60 * 60 * 1e3);
-    await db_default.user.update({
-      where: { id: user.id },
-      data: {
-        verificationToken: otp,
-        verificationTokenExpires: otpExpires
-      }
-    });
-    await sendEmail(
-      email,
-      "Resend: Verify your Hikari Account",
-      getVerificationTemplate(user.name, otp)
-    );
-    res.json({ message: "Verification code resent" });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
 var getMe = async (req, res) => {
   try {
     const user = await db_default.user.findUnique({ where: { id: req.userId } });
@@ -1159,84 +893,6 @@ var getMe = async (req, res) => {
         requiresPasswordChange: user.requiresPasswordChange
       }
     });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-var forgotPassword = async (req, res) => {
-  try {
-    const { email } = req.body;
-    if (!email) {
-      res.status(400).json({ error: "Email is required" });
-      return;
-    }
-    const user = await db_default.user.findUnique({ where: { email } });
-    if (!user) {
-      console.log("Forgot password attempt for non-existent email:", email);
-      res.json({
-        message: "If an account exists with that email, a reset code has been sent."
-      });
-      return;
-    }
-    const otp = generateOTP();
-    const otpExpires = new Date(Date.now() + 15 * 60 * 1e3);
-    await db_default.user.update({
-      where: { id: user.id },
-      data: {
-        resetPasswordToken: otp,
-        resetPasswordExpires: otpExpires
-      }
-    });
-    try {
-      await sendEmail(
-        email,
-        "Reset your Hikari Password",
-        getPasswordResetTemplate(user.name, otp)
-      );
-    } catch (emailError) {
-      console.error("Failed to send reset email:", emailError);
-    }
-    res.json({
-      message: "If an account exists with that email, a reset code has been sent."
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-var resetPassword = async (req, res) => {
-  try {
-    const { email, code, newPassword } = req.body;
-    if (!email || !code || !newPassword) {
-      res.status(400).json({ error: "Email, code, and new password are required" });
-      return;
-    }
-    const user = await db_default.user.findUnique({ where: { email } });
-    if (!user) {
-      res.status(404).json({ error: "User not found" });
-      return;
-    }
-    if (user.resetPasswordToken !== code) {
-      res.status(400).json({ error: "Invalid or expired reset code" });
-      return;
-    }
-    if (!user.resetPasswordExpires || user.resetPasswordExpires < /* @__PURE__ */ new Date()) {
-      res.status(400).json({ error: "Reset code has expired" });
-      return;
-    }
-    const bcrypt2 = await import("bcryptjs");
-    const salt = await bcrypt2.default.genSalt(10);
-    const hashedPassword = await bcrypt2.default.hash(newPassword, salt);
-    await db_default.user.update({
-      where: { id: user.id },
-      data: {
-        password: hashedPassword,
-        resetPasswordToken: null,
-        resetPasswordExpires: null,
-        isVerified: true
-        // Resetting password counts as verification if they were stuck
-      }
-    });
-    res.json({ message: "Password reset successful. You can now login." });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -1283,58 +939,41 @@ var updateProfile = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-var changePassword = async (req, res) => {
-  try {
-    const { currentPassword, newPassword } = req.body;
-    if (!currentPassword || !newPassword) {
-      res.status(400).json({ error: "Current and new password are required" });
-      return;
-    }
-    const user = await db_default.user.findUnique({ where: { id: req.userId } });
-    if (!user) {
-      res.status(404).json({ error: "User not found" });
-      return;
-    }
-    const bcrypt2 = await import("bcryptjs");
-    const isMatch = await bcrypt2.default.compare(
-      currentPassword,
-      user.password
-    );
-    if (!isMatch) {
-      res.status(400).json({ error: "Incorrect current password" });
-      return;
-    }
-    const salt = await bcrypt2.default.genSalt(10);
-    const hashedPassword = await bcrypt2.default.hash(newPassword, salt);
-    await db_default.user.update({
-      where: { id: user.id },
-      data: {
-        password: hashedPassword,
-        requiresPasswordChange: false
-      }
-    });
-    res.json({ message: "Password updated successfully" });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
 var debugInfo = async (_req, res) => {
   res.json({
     env: {
       NODE_ENV: process.env.NODE_ENV,
       VERCEL: process.env.VERCEL,
       HAS_DATABASE_URL: !!process.env.DATABASE_URL,
-      HAS_JWT_SECRET: !!process.env.JWT_SECRET,
-      HAS_RESEND_KEY: !!process.env.RESEND_API_KEY,
       CLIENT_URL: process.env.CLIENT_URL
     },
     dbStatus: "connected"
-    // Prisma manages connection pool
   });
 };
 
 // server/src/middleware/auth.middleware.ts
 init_db();
+import jwt from "jsonwebtoken";
+import jwksClient from "jwks-rsa";
+var supabaseUrl = process.env.VITE_SUPABASE_URL || "https://kcwcdkanpmonimcdzeix.supabase.co";
+var jwks = jwksClient({
+  jwksUri: `${supabaseUrl}/auth/v1/.well-known/jwks.json`,
+  cache: true,
+  cacheMaxEntries: 5,
+  cacheMaxAge: 6e5,
+  // 10 minutes
+  rateLimit: true
+});
+function getSigningKey(header, callback) {
+  jwks.getSigningKey(header.kid, (err, key) => {
+    if (err) {
+      console.error("[JWKS] Failed to get signing key:", err);
+      return callback(err);
+    }
+    const signingKey = key?.getPublicKey();
+    callback(null, signingKey);
+  });
+}
 var authenticate = async (req, res, next) => {
   try {
     const token = req.headers.authorization?.replace("Bearer ", "");
@@ -1342,11 +981,16 @@ var authenticate = async (req, res, next) => {
       res.status(401).json({ error: "No token provided" });
       return;
     }
-    const decoded = verifyToken(token);
-    req.userId = decoded.userId;
+    const decoded = await new Promise((resolve, reject) => {
+      jwt.verify(token, getSigningKey, { algorithms: ["ES256", "HS256"] }, (err, payload) => {
+        if (err) return reject(err);
+        resolve(payload);
+      });
+    });
+    req.userId = decoded.sub;
     req.userEmail = decoded.email;
-    const user = await db_default.user.findUnique({
-      where: { id: decoded.userId },
+    let user = await db_default.user.findUnique({
+      where: { id: decoded.sub },
       select: {
         id: true,
         email: true,
@@ -1356,8 +1000,37 @@ var authenticate = async (req, res, next) => {
       }
     });
     if (!user) {
-      res.status(401).json({ error: "User not found" });
-      return;
+      const existingByEmail = await db_default.user.findUnique({
+        where: { email: decoded.email || "" },
+        select: {
+          id: true,
+          email: true,
+          subscriptionStatus: true,
+          stripeCustomerId: true,
+          isSuspended: true
+        }
+      });
+      if (existingByEmail) {
+        user = existingByEmail;
+        req.userId = existingByEmail.id;
+      } else {
+        const name = decoded.user_metadata?.name || decoded.email?.split("@")[0] || "User";
+        user = await db_default.user.create({
+          data: {
+            id: decoded.sub,
+            email: decoded.email || "",
+            name,
+            isVerified: true
+          },
+          select: {
+            id: true,
+            email: true,
+            subscriptionStatus: true,
+            stripeCustomerId: true,
+            isSuspended: true
+          }
+        });
+      }
     }
     if (user.isSuspended) {
       res.status(403).json({ error: "Your account is suspended. Please contact support." });
@@ -1366,103 +1039,14 @@ var authenticate = async (req, res, next) => {
     req.user = user;
     next();
   } catch (error) {
+    console.error("[Auth Middleware Error]:", error);
     res.status(401).json({ error: "Invalid or expired token" });
   }
 };
 
-// server/src/middleware/validate.middleware.ts
-import { ZodError } from "zod";
-var validate = (schema) => {
-  return async (req, res, next) => {
-    try {
-      await schema.parseAsync({
-        body: req.body,
-        query: req.query,
-        params: req.params
-      });
-      return next();
-    } catch (error) {
-      if (error instanceof ZodError) {
-        const errorMessage = error.errors.map((err) => err.message).join(", ");
-        return res.status(400).json({
-          error: errorMessage || "Validation error",
-          details: error.errors.map((err) => ({
-            path: err.path,
-            message: err.message
-          }))
-        });
-      }
-      return res.status(500).json({ error: "Internal server error during validation" });
-    }
-  };
-};
-
-// server/src/schemas/auth.schema.ts
-import { z } from "zod";
-var signupSchema = z.object({
-  body: z.object({
-    name: z.string({
-      required_error: "Name is required"
-    }).min(2, "Name must be at least 2 characters long"),
-    email: z.string({
-      required_error: "Email is required"
-    }).email("Invalid email format"),
-    password: z.string({
-      required_error: "Password is required"
-    }).min(8, "Password must be at least 8 characters long").regex(/[A-Z]/, "Password must contain at least one uppercase letter").regex(/[a-z]/, "Password must contain at least one lowercase letter").regex(/[0-9]/, "Password must contain at least one number").regex(
-      /[^A-Za-z0-9]/,
-      "Password must contain at least one special character"
-    ),
-    phoneNumber: z.string().optional()
-  })
-});
-var loginSchema = z.object({
-  body: z.object({
-    email: z.string({
-      required_error: "Email is required"
-    }).email("Invalid email format"),
-    password: z.string({
-      required_error: "Password is required"
-    })
-  })
-});
-var verifyEmailSchema = z.object({
-  body: z.object({
-    email: z.string({
-      required_error: "Email is required"
-    }).email("Invalid email format"),
-    code: z.string({
-      required_error: "Verification code is required"
-    }).length(6, "Code must be exactly 6 digits")
-  })
-});
-
 // server/src/routes/auth.routes.ts
 var router = Router();
-var authRateLimiter = rateLimit({
-  windowMs: 15 * 60 * 1e3,
-  // 15 minutes
-  max: 20,
-  // Limit each IP to 20 requests per windowMs for auth routes
-  message: {
-    error: "Too many requests from this IP, please try again after 15 minutes"
-  },
-  standardHeaders: true,
-  legacyHeaders: false
-});
-router.post("/signup", authRateLimiter, validate(signupSchema), signup);
-router.post("/login", authRateLimiter, validate(loginSchema), login);
-router.post(
-  "/verify-email",
-  authRateLimiter,
-  validate(verifyEmailSchema),
-  verifyEmail
-);
-router.post("/resend-verification", authRateLimiter, resendVerification);
-router.post("/forgot-password", authRateLimiter, forgotPassword);
-router.post("/reset-password", authRateLimiter, resetPassword);
 router.put("/profile", authenticate, updateProfile);
-router.post("/change-password", authenticate, changePassword);
 router.get("/me", authenticate, getMe);
 router.get("/debug", debugInfo);
 var auth_routes_default = router;
