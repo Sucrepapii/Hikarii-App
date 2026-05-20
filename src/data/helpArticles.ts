@@ -40,7 +40,7 @@ export const helpArticles: Article[] = [
     excerpt:
       "Bring your tasks and budgets over from Todoist, Notion, or Excel.",
     content: `
-            <h2>Moving in now?</h2>
+            <h2>Moving in ?</h2>
             <p>Coming soon...</p>
         `,
   },
