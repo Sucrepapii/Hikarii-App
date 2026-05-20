@@ -1,11 +1,36 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
+import jwksClient from "jwks-rsa";
 import prisma from "../config/db";
 
 export interface AuthRequest extends Request {
   userId?: string;
   userEmail?: string;
-  user?: any; // typed via global declaration
+  user?: any;
+}
+
+// Use Supabase's JWKS endpoint to get the public key for ES256 token verification
+const supabaseUrl = process.env.VITE_SUPABASE_URL || "https://kcwcdkanpmonimcdzeix.supabase.co";
+const jwks = jwksClient({
+  jwksUri: `${supabaseUrl}/auth/v1/.well-known/jwks.json`,
+  cache: true,
+  cacheMaxEntries: 5,
+  cacheMaxAge: 600000, // 10 minutes
+  rateLimit: true,
+});
+
+function getSigningKey(
+  header: jwt.JwtHeader,
+  callback: jwt.SigningKeyCallback,
+) {
+  jwks.getSigningKey(header.kid, (err, key) => {
+    if (err) {
+      console.error("[JWKS] Failed to get signing key:", err);
+      return callback(err);
+    }
+    const signingKey = key?.getPublicKey();
+    callback(null, signingKey);
+  });
 }
 
 export const authenticate = async (
@@ -21,14 +46,15 @@ export const authenticate = async (
       return;
     }
 
-    const jwtSecret = process.env.SUPABASE_JWT_SECRET;
-    if (!jwtSecret) {
-      res.status(500).json({ error: "Supabase JWT secret is not configured on the server" });
-      return;
-    }
+    // Verify the Supabase JWT using the JWKS public key (supports ES256 and HS256)
+    const decoded = await new Promise<any>((resolve, reject) => {
+      jwt.verify(token, getSigningKey, { algorithms: ["ES256", "HS256"] }, (err, payload) => {
+        if (err) return reject(err);
+        resolve(payload);
+      });
+    });
 
-    const decoded = jwt.verify(token, jwtSecret) as any;
-    req.userId = decoded.sub; // Supabase stores the user UUID in the 'sub' field
+    req.userId = decoded.sub;
     req.userEmail = decoded.email;
 
     // Fetch fresh user data for subscription status
