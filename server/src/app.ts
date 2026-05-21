@@ -46,6 +46,25 @@ app.use(hpp());
 // 3. Body Parser with Size Limits (Prevents large payload attacks)
 app.use(express.json({ limit: "10kb" }));
 
+// 4. Rate Limiting
+const globalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 300, // Limit each IP to 300 requests per windowMs
+  message: "Too many requests from this IP, please try again later.",
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+});
+
+const strictLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 10, // Limit each IP to 10 requests per windowMs (for contact forms, etc)
+  message: "Too many requests submitted. Please try again later.",
+});
+
+app.use("/api/", globalLimiter);
+app.use("/api/contact", strictLimiter);
+app.use("/api/leads", strictLimiter);
+
 // 4. Request Logging for Debugging CORS/Preflight in Production
 app.use((req, res, next) => {
   if (process.env.NODE_ENV === "production") {
@@ -76,7 +95,6 @@ app.use(
 
       const isAllowed =
         allowedOrigins.indexOf(origin) !== -1 ||
-        origin.endsWith(".railway.app") ||
         process.env.NODE_ENV === "development";
 
       if (isAllowed) {

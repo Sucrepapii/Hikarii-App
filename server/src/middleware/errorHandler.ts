@@ -13,17 +13,18 @@ export const errorHandler = (
   let message = err.message || "Internal Server Error";
 
   // Sanitize technical errors for production
-  if (process.env.NODE_ENV === "production" || !process.env.VERCEL) {
+  const isProduction = process.env.NODE_ENV === "production" || process.env.RAILWAY_ENVIRONMENT === "production";
+  if (isProduction) {
     if (err.code && err.code.startsWith("P")) {
       // Prisma Error
       console.log("Caught technical database error:", err.code);
       message =
-        "Signup failed: A database error occurred. Please try again later.";
+        "A database error occurred. Please try again later.";
       statusCode = 500;
     } else if (err.message && err.message.includes("invocation:")) {
       // General Prisma/ORM leak
       message =
-        "Signup failed: Server configuration issue. Please contact support.";
+        "Server configuration issue. Please contact support.";
       statusCode = 500;
     }
   }
