@@ -7,12 +7,14 @@ import {
   updateProject,
   deleteProject,
   getProjectSummary,
+  scopeProject,
 } from "../controllers/project.controller";
 
 const router = express.Router();
 
 router.use(authenticate);
 
+router.post("/scope", scopeProject);
 router.post("/", createProject);
 router.get("/", getProjects);
 router.get("/:id", getProject);

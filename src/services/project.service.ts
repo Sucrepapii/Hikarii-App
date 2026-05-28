@@ -45,4 +45,9 @@ export const projectService = {
     const response = await apiClient.get(`/projects/${id}/summary`);
     return response.data;
   },
+
+  scopeProject: async (prompt: string, totalBudget?: number): Promise<any> => {
+    const response = await apiClient.post("/projects/scope", { prompt, totalBudget });
+    return response.data;
+  },
 };

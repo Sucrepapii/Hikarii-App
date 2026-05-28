@@ -862,6 +862,7 @@ import path2 from "path";
 import fs2 from "fs";
 import helmet from "helmet";
 import hpp from "hpp";
+import rateLimit from "express-rate-limit";
 
 // server/src/routes/auth.routes.ts
 import { Router } from "express";
@@ -1315,7 +1316,7 @@ async function canAccessProject(projectId, userId, requireEdit = false) {
 }
 var createProject = async (req, res) => {
   try {
-    const { title, description, startDate, endDate, budgetLimit } = req.body;
+    const { title, description, startDate, endDate, budgetLimit, aiPhases } = req.body;
     const userId = req.userId;
     const parsedLimit = budgetLimit ? parseFloat(budgetLimit) : null;
     console.log(`Creating project for user ${userId}:`, { title });
@@ -1329,6 +1330,31 @@ var createProject = async (req, res) => {
         userId
       }
     });
+    if (Array.isArray(aiPhases) && aiPhases.length > 0) {
+      console.log(`[ProjectCreator] Injecting ${aiPhases.length} AI phases/tasks into project: ${project.id}`);
+      for (const phase of aiPhases) {
+        if (Array.isArray(phase.tasks)) {
+          for (const task of phase.tasks) {
+            await db_default.task.create({
+              data: {
+                title: task.title,
+                description: `${phase.name} - ${task.description || ""}`,
+                estimatedDuration: Number(task.duration) || 60,
+                financials: {
+                  type: task.financialType,
+                  estimatedCost: task.financialType === "EXPENSE" ? Number(task.amount) || 0 : void 0,
+                  estimatedIncome: task.financialType === "INCOME" ? Number(task.amount) || 0 : void 0
+                },
+                status: "TODO",
+                priority: "MEDIUM",
+                userId,
+                projectId: project.id
+              }
+            });
+          }
+        }
+      }
+    }
     console.log(`Project created successfully: ${project.id}`);
     res.status(201).json(project);
   } catch (error) {
@@ -1474,10 +1500,68 @@ var getProjectSummary = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+var scopeProject = async (req, res) => {
+  try {
+    const { prompt, totalBudget = 1e3 } = req.body;
+    if (!prompt) {
+      return res.status(400).json({ error: "Prompt is required for scoping" });
+    }
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      return res.status(503).json({ error: "AI Scoping Service is currently unavailable (no API Key configured)" });
+    }
+    const { GoogleGenerativeAI: GoogleGenerativeAI2 } = __require("@google/generative-ai");
+    console.log(`[ProjectScoper] Prompt received: "${prompt}" with budget: $${totalBudget}`);
+    const genAI = new GoogleGenerativeAI2(apiKey);
+    const model = genAI.getGenerativeModel({
+      model: "gemini-flash-latest",
+      generationConfig: { responseMimeType: "application/json" }
+    });
+    const aiPrompt = `
+      You are an expert product manager and technical scoping consultant.
+      Analyze the project description: "${prompt}" and design a comprehensive 3-stage or 4-stage project implementation blueprint.
+      The project has a total target budget of $${totalBudget}.
+      
+      Generate a JSON object with the following structure:
+      {
+        "description": "A high-fidelity project overview including target duration.",
+        "recommendedBudgetLimit": ${totalBudget},
+        "phases": [
+          {
+            "name": "Phase 1: Research & Planning",
+            "tasks": [
+              {
+                "title": "Specific action-oriented task (e.g. Design UI wires in Figma)",
+                "description": "Concrete task details.",
+                "duration": 60,
+                "financialType": "EXPENSE",
+                "amount": 150
+              }
+            ]
+          }
+        ]
+      }
+
+      CRITICAL DIRECTIONS:
+      1. Every task MUST have highly specific titles tailored exactly to "${prompt}". Do not use generic text.
+      2. The sum of all task "amount" allocations for EXPENSE types should not exceed the total budget of $${totalBudget}.
+      3. Make the scopes highly premium, structured, and realistic. Return valid JSON only.
+    `;
+    const result = await model.generateContent(aiPrompt);
+    let responseText = result.response.text();
+    responseText = responseText.replace(/```json/g, "").replace(/```/g, "").trim();
+    const parsedScoping = JSON.parse(responseText);
+    res.json(parsedScoping);
+  } catch (error) {
+    console.error("[ProjectScoper] Scoping failed:", error);
+    res.status(500).json({ error: error.message || "Failed to scope project using AI" });
+  }
+};
 
 // server/src/routes/project.routes.ts
 var router3 = express.Router();
 router3.use(authenticate);
+router3.post("/scope", scopeProject);
 router3.post("/", createProject);
 router3.get("/", getProjects);
 router3.get("/:id", getProject);
@@ -3554,6 +3638,27 @@ var app = express5();
 app.use(helmet());
 app.use(hpp());
 app.use(express5.json({ limit: "10kb" }));
+var globalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1e3,
+  // 15 minutes
+  max: 300,
+  // Limit each IP to 300 requests per windowMs
+  message: "Too many requests from this IP, please try again later.",
+  standardHeaders: true,
+  // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false
+  // Disable the `X-RateLimit-*` headers
+});
+var strictLimiter = rateLimit({
+  windowMs: 60 * 60 * 1e3,
+  // 1 hour
+  max: 10,
+  // Limit each IP to 10 requests per windowMs (for contact forms, etc)
+  message: "Too many requests submitted. Please try again later."
+});
+app.use("/api/", globalLimiter);
+app.use("/api/contact", strictLimiter);
+app.use("/api/leads", strictLimiter);
 app.use((req, res, next) => {
   if (process.env.NODE_ENV === "production") {
     console.log(
@@ -3576,7 +3681,7 @@ app.use(
   cors({
     origin: (origin, callback) => {
       if (!origin) return callback(null, true);
-      const isAllowed = allowedOrigins.indexOf(origin) !== -1 || origin.endsWith(".railway.app") || process.env.NODE_ENV === "development";
+      const isAllowed = allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV === "development";
       if (isAllowed) {
         callback(null, true);
       } else {

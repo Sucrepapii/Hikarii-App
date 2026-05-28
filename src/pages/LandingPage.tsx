@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Check, Zap, Link2, FileText, Split, ArrowRight, Menu, X, ChevronDown, Star, Calendar, Users, MessageSquare, Bell, Shield } from 'lucide-react';
+import { Check, Zap, Link2, FileText, Split, ArrowRight, Menu, X, ChevronDown, Star, Calendar, Users, MessageSquare, Bell, Shield, Sun, Trophy } from 'lucide-react';
 import { Button } from '../components/common/Button';
 import { Logo } from '../components/common/Logo';
 import { Footer } from '../components/layout/Footer';
@@ -761,26 +761,26 @@ export const LandingPage: React.FC = () => {
                                 </div>
                             </div>
 
-                            {/* Tall: AI Smart Split (Magic Moment) */}
+                            {/* Tall: AI Autopilot Scoper (Magic Moment) */}
                             <div className="md:col-span-1 bg-gradient-to-b from-[#0F172A] to-[#0A0C1B] border border-white/[0.08] rounded-2xl p-7 flex flex-col hover:border-emerald-500/30 transition-all duration-500 backdrop-blur-md group relative overflow-hidden min-h-[380px]">
                                 <div className="absolute inset-0 bg-emerald-500/[0.02] opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
                                 <div className="relative z-10 mb-auto">
                                     <div className="w-12 h-12 bg-emerald-500/10 rounded-xl flex items-center justify-center mb-6 text-emerald-400 border border-emerald-500/20 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
                                         <Split className="w-6 h-6" />
                                     </div>
-                                    <h3 className="text-xl font-bold mb-3 text-white tracking-tight">AI Smart Split</h3>
-                                    <p className="text-sm text-slate-400 leading-relaxed">The "Magic Moment." Our AI dissects complex projects into manageable, pre-funded task blocks automatically.</p>
+                                    <h3 className="text-xl font-bold mb-3 text-white tracking-tight">AI Autopilot Scoper</h3>
+                                    <p className="text-sm text-slate-400 leading-relaxed">Enter a single sentence prompt and let Gemini auto-generate complete phases, checklist tasks, and pre-funded budget targets instantly!</p>
                                 </div>
                                 <div className="mt-8 space-y-3 font-mono text-[10px] relative z-10">
                                     <div className="bg-white/5 p-3 rounded-lg border border-white/[0.1] flex items-center justify-between shadow-xl">
-                                        <span className="text-white font-bold truncate mr-2">Q3 Marketing Launch</span>
+                                        <span className="text-white font-bold truncate mr-2">Personal Portfolio (AI)</span>
                                         <span className="text-emerald-400 text-[8px] bg-emerald-400/10 px-2 py-0.5 rounded-full uppercase font-black tracking-tighter shrink-0">Processing...</span>
                                     </div>
                                     <div className="relative pl-6 space-y-3 before:absolute before:left-2.5 before:top-0 before:bottom-0 before:w-px before:bg-gradient-to-b before:from-emerald-500/50 before:via-emerald-500/20 before:to-transparent">
                                         {[
-                                            { label: "Content Strategy", amount: "$0", delay: "delay-[200ms]" },
-                                            { label: "Ad Spend Setup", amount: "-$2,400", delay: "delay-[400ms]" },
-                                            { label: "Influencer Outreach", amount: "-$850", delay: "delay-[600ms]" },
+                                            { label: "Design UI Wires in Figma", amount: "$150", delay: "delay-[200ms]" },
+                                            { label: "Setup Vercel Production", amount: "$50", delay: "delay-[400ms]" },
+                                            { label: "Draft Copywriting Content", amount: "$100", delay: "delay-[600ms]" },
                                         ].map((item, i) => (
                                             <div key={i} className={clsx(
                                                 "bg-[#13151F] p-2.5 rounded-lg border border-white/[0.05] flex items-center justify-between opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-700 ease-out shadow-lg",
@@ -790,57 +790,42 @@ export const LandingPage: React.FC = () => {
                                                     <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)] shrink-0" />
                                                     <span className="text-slate-300 truncate">{item.label}</span>
                                                 </div>
-                                                <span className={item.amount.startsWith('-') ? "text-rose-400 font-bold" : "text-slate-500"}>{item.amount}</span>
+                                                <span className="text-emerald-400 font-bold">{item.amount}</span>
                                             </div>
                                         ))}
                                     </div>
                                 </div>
                             </div>
 
-                            {/* AI Insights Card */}
+                            {/* Ambient Solar Theme Shift */}
                             <div className="col-span-1 bg-[#0D0F1A] border border-white/5 rounded-2xl p-7 flex flex-col justify-between hover:border-amber-500/30 transition-all duration-500 group overflow-hidden relative">
                                 <div className="absolute -right-4 -top-4 w-24 h-24 bg-amber-500/10 blur-2xl rounded-full group-hover:bg-amber-500/20 transition-colors" />
                                 <div className="relative z-10">
                                     <div className="w-11 h-11 bg-amber-500/10 rounded-xl flex items-center justify-center mb-5 text-amber-500 border border-amber-500/20 group-hover:animate-bounce-slow">
-                                        <Zap className="w-5 h-5" />
+                                        <Sun className="w-5 h-5" />
                                     </div>
-                                    <h3 className="font-bold text-white text-lg mb-2 tracking-tight">Financial Ticker</h3>
-                                    <p className="text-sm text-slate-500 leading-relaxed">Predictive cashflow analytics that alert you before a budget ceiling is breached.</p>
+                                    <h3 className="font-bold text-white text-lg mb-2 tracking-tight">Ambient Solar Workspace</h3>
+                                    <p className="text-sm text-slate-500 leading-relaxed">Visual accents, borders, and gradient backdrops dynamically shift from golden sunrise to purple midnight.</p>
                                 </div>
-                                <div className="mt-8 flex items-end gap-2 h-20 w-full px-2">
-                                    {[30, 45, 35, 60, 40, 75, 55, 90].map((h, i) => (
-                                        <div
-                                            key={i}
-                                            className={clsx(
-                                                "flex-1 rounded-t-md transition-all duration-1000",
-                                                i === 7 ? "bg-gradient-to-t from-amber-600 to-orange-400 shadow-[0_0_15px_rgba(245,158,11,0.5)]" : "bg-white/5 group-hover:bg-white/10"
-                                            )}
-                                            style={{ height: i === 7 ? '100%' : `${h}%`, transitionDelay: `${i * 100}ms` }}
-                                        />
-                                    ))}
+                                <div className="mt-8 flex justify-center items-center h-20 w-full relative">
+                                    <div className="absolute w-12 h-12 rounded-full border-2 border-dashed border-amber-500/30 animate-spin-slow" />
+                                    <div className="w-6 h-6 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 shadow-[0_0_15px_rgba(245,158,11,0.6)] animate-pulse" />
                                 </div>
                             </div>
 
-                            {/* Reporting */}
-                            <div className="col-span-1 bg-gradient-to-br from-indigo-500/10 to-violet-600/5 border border-indigo-500/15 rounded-2xl p-6 flex flex-col justify-between hover:border-indigo-500/30 transition-all duration-300 backdrop-blur-md group">
+                            {/* Shareable Wrapped Cards */}
+                            <div className="col-span-1 bg-gradient-to-br from-purple-500/10 to-indigo-600/5 border border-purple-500/15 rounded-2xl p-6 flex flex-col justify-between hover:border-purple-500/30 transition-all duration-300 backdrop-blur-md group">
                                 <div>
-                                    <div className="w-10 h-10 bg-indigo-500/15 rounded-xl flex items-center justify-center mb-4 text-indigo-400 border border-indigo-500/20">
-                                        <FileText className="w-5 h-5" />
+                                    <div className="w-10 h-10 bg-purple-500/15 rounded-xl flex items-center justify-center mb-4 text-purple-400 border border-purple-500/20">
+                                        <Trophy className="w-5 h-5" />
                                     </div>
-                                    <h3 className="font-bold text-white text-base mb-1">Reporting</h3>
-                                    <p className="text-xs text-slate-400">Export professional CSV/PDF reports.</p>
+                                    <h3 className="font-bold text-white text-base mb-1">Shareable Infographics</h3>
+                                    <p className="text-xs text-slate-400">Export high-definition mobile-optimized Wrapped metric cards instantly to LinkedIn or X.</p>
                                 </div>
-                                <div className="mt-4 bg-white/[0.04] border border-white/[0.08] rounded-lg p-3 w-full transform group-hover:rotate-1 transition-transform duration-300">
-                                    <div className="flex gap-1.5 mb-2.5">
-                                        <div className="w-1.5 h-1.5 rounded-full bg-red-400/70" />
-                                        <div className="w-1.5 h-1.5 rounded-full bg-yellow-400/70" />
-                                        <div className="w-1.5 h-1.5 rounded-full bg-green-400/70" />
-                                    </div>
-                                    <div className="space-y-1.5">
-                                        <div className="h-[3px] bg-white/20 rounded-full w-3/4" />
-                                        <div className="h-[3px] bg-white/10 rounded-full w-full" />
-                                        <div className="h-[3px] bg-white/10 rounded-full w-5/6" />
-                                        <div className="h-[3px] bg-indigo-400/30 rounded-full w-1/2" />
+                                <div className="mt-4 bg-white/[0.04] border border-white/[0.08] rounded-xl p-3 w-full transform group-hover:scale-[1.02] transition-all duration-300 relative overflow-hidden flex flex-col items-center">
+                                    <div className="text-[9px] text-purple-300 font-mono tracking-widest uppercase mb-1">DECEMBER Wrapped</div>
+                                    <div className="w-full h-8 bg-purple-500/10 rounded flex items-center justify-center text-[10px] font-black text-white border border-purple-500/20">
+                                        PRODUCTIVITY MASTER
                                     </div>
                                 </div>
                             </div>

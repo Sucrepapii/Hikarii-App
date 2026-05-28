@@ -101,6 +101,124 @@ export const HikariWrapped: React.FC<HikariWrappedProps> = ({ onClose }) => {
         }
     };
 
+    const handleDownloadCard = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        try {
+            const canvas = document.createElement('canvas');
+            canvas.width = 800;
+            canvas.height = 1000;
+            const ctx = canvas.getContext('2d');
+            if (!ctx) return;
+
+            // Draw Gradient Background
+            const grad = ctx.createLinearGradient(0, 0, 0, 1000);
+            grad.addColorStop(0, '#11052C');
+            grad.addColorStop(1, '#080112');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, 800, 1000);
+
+            // Draw glowing design background elements (orbs)
+            ctx.beginPath();
+            ctx.arc(800, 0, 300, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(168, 85, 247, 0.15)'; // purple-500
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.arc(0, 1000, 350, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(99, 102, 241, 0.15)'; // indigo-500
+            ctx.fill();
+
+            // Draw Border
+            ctx.strokeStyle = 'rgba(168, 85, 247, 0.3)';
+            ctx.lineWidth = 15;
+            ctx.strokeRect(0, 0, 800, 1000);
+
+            // Write Brand Name
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+            ctx.font = '900 36px sans-serif';
+            ctx.textAlign = 'left';
+            ctx.fillText('HIKARI', 60, 90);
+
+            // Draw Trophy Icon (visual trophy shape)
+            ctx.fillStyle = '#facc15'; // yellow-400
+            ctx.shadowBlur = 30;
+            ctx.shadowColor = 'rgba(250, 204, 21, 0.5)';
+            
+            // Draw simple trophy using path
+            ctx.beginPath();
+            ctx.moveTo(400, 240);
+            ctx.lineTo(440, 240);
+            ctx.lineTo(430, 290);
+            ctx.lineTo(370, 290);
+            ctx.closePath();
+            ctx.fill();
+            
+            ctx.beginPath();
+            ctx.arc(400, 200, 50, 0, Math.PI, true);
+            ctx.lineTo(400, 240);
+            ctx.closePath();
+            ctx.fill();
+            
+            // Trophy base
+            ctx.fillRect(360, 295, 80, 15);
+            ctx.shadowBlur = 0; // reset shadow
+
+            // Slide Month / Year Header
+            ctx.fillStyle = '#a855f7'; // purple-300
+            ctx.font = 'bold 24px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(`${data?.month.toUpperCase()} ${data?.year} ARCHETYPE`, 400, 380);
+
+            // Draw Archetype Title
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 64px sans-serif';
+            ctx.fillText(data?.archetype || 'WARRIOR', 400, 470);
+
+            // Divider Line
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(100, 580);
+            ctx.lineTo(700, 580);
+            ctx.stroke();
+
+            // Draw Stat: Tasks
+            ctx.fillStyle = '#94a3b8'; // slate-400
+            ctx.font = '24px sans-serif';
+            ctx.textAlign = 'left';
+            ctx.fillText('TASKS COMPLETED', 120, 650);
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 72px sans-serif';
+            ctx.fillText(data?.totalCompleted.toString() || '0', 120, 740);
+
+            // Draw Stat: Income
+            ctx.fillStyle = '#94a3b8';
+            ctx.font = '24px sans-serif';
+            ctx.textAlign = 'right';
+            ctx.fillText('ESTIMATED ROI', 680, 650);
+            ctx.fillStyle = '#34d399'; // emerald-400
+            ctx.font = 'bold 72px sans-serif';
+            ctx.fillText(`$${((data?.totalIncome || 0) / 1500).toFixed(0)}`, 680, 740);
+
+            // Bottom Brand Footprint
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+            ctx.font = 'bold 22px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('Organized & pre-funded via www.hikarii.org', 400, 890);
+
+            // Trigger Browser Download
+            const dataUrl = canvas.toDataURL('image/png');
+            const link = document.createElement('a');
+            link.download = `Hikari_Wrapped_${data?.month}_${data?.year}.png`;
+            link.href = dataUrl;
+            link.click();
+            toast.success("Wrapped Card saved to your device!");
+        } catch (error) {
+            console.error(error);
+            toast.error("Failed to generate wrapped image file.");
+        }
+    };
+
 
     if (loading) {
         return (
@@ -242,10 +360,17 @@ export const HikariWrapped: React.FC<HikariWrappedProps> = ({ onClose }) => {
                         <div className="text-xs text-slate-500 mt-4 text-center">Organized via Hikari</div>
                     </div>
 
-                    <div className="mt-12 flex flex-col gap-4 w-full z-50 relative">
+                    <div className="mt-10 flex flex-col gap-3 w-full z-50 relative">
+                        <button
+                            onClick={handleDownloadCard}
+                            className="w-full h-14 bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white font-bold rounded-full transition-all text-base shadow-lg shadow-purple-500/30 flex items-center justify-center gap-2 hover:scale-[1.02]"
+                        >
+                            <Trophy className="w-5 h-5 text-yellow-300 animate-pulse" />
+                            Download Sharing Card
+                        </button>
                         <button
                             onClick={(e) => { e.stopPropagation(); onClose(); }}
-                            className="w-full h-14 bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 text-white font-bold rounded-full transition-colors text-lg"
+                            className="w-full h-12 bg-white/5 backdrop-blur-md border border-white/10 hover:bg-white/10 text-white/80 font-bold rounded-full transition-colors text-sm"
                         >
                             Close
                         </button>

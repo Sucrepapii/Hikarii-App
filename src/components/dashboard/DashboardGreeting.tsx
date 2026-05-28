@@ -46,8 +46,8 @@ export const DashboardGreeting: React.FC<DashboardGreetingProps> = ({
         <div className="mb-8 animate-fade-in-up">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div className="flex items-center gap-4">
-                    <div className="p-3 rounded-2xl bg-gradient-to-br from-indigo-500/10 to-purple-500/10 border border-indigo-500/20 shadow-sm">
-                        <Icon className="w-8 h-8 text-indigo-500" />
+                    <div className="p-3 rounded-2xl bg-gradient-to-br from-indigo-500/10 to-purple-500/10 shadow-sm ambient-card">
+                        <Icon className="w-8 h-8 ambient-text" />
                     </div>
                     <div>
                         <h2 className="text-3xl font-display font-bold text-slate-900 dark:text-white leading-tight">

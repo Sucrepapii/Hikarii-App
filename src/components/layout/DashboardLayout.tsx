@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
+import { CanvasParticleOverlay } from '../common/CanvasParticleOverlay';
+import { useAmbientTheme } from '../../hooks/useAmbientTheme';
 
 interface DashboardLayoutProps {
     children: React.ReactNode;
@@ -8,12 +10,14 @@ interface DashboardLayoutProps {
 
 export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    useAmbientTheme();
 
     const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
     const closeSidebar = () => setIsSidebarOpen(false);
 
     return (
         <div className="min-h-screen flex flex-col">
+            <CanvasParticleOverlay />
             <Header onMenuClick={toggleSidebar} />
 
             <div className="flex flex-1 relative">

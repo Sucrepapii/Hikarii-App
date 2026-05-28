@@ -574,6 +574,54 @@
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3),
                 inset 0 0 0 1px rgba(255, 255, 255, 0.05);
   }
+
+  /* ===== AMBIENT SOLAR TIME-BASED THEME STYLES ===== */
+  :root {
+    --ambient-glow: rgba(99, 102, 241, 0.12);
+    --ambient-border: rgba(99, 102, 241, 0.25);
+    --ambient-accent: #6366f1;
+  }
+
+  .ambient-card {
+    @apply transition-all duration-700 ease-in-out border;
+    border-color: var(--ambient-border);
+    box-shadow: 0 4px 20px 0 var(--ambient-glow);
+  }
+
+  .ambient-card:hover {
+    box-shadow: 0 8px 30px 0 var(--ambient-glow), 0 0 15px 2px var(--ambient-glow);
+    border-color: var(--ambient-accent);
+    transform: translateY(-2px);
+  }
+
+  .ambient-glow-bg {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ambient-glow-bg::before {
+    content: '';
+    position: absolute;
+    top: -15%;
+    right: -15%;
+    width: 350px;
+    height: 350px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--ambient-glow) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+    transition: background 1.5s ease-in-out;
+  }
+
+  .ambient-text {
+    color: var(--ambient-accent);
+    transition: color 0.7s ease;
+  }
+
+  .ambient-border-accent {
+    border-color: var(--ambient-accent);
+    transition: border-color 0.7s ease;
+  }
 }
 
 @layer utilities {

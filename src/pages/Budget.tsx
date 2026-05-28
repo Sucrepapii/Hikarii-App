@@ -6,6 +6,7 @@ import { ExpenseForm } from '../components/budget/ExpenseForm';
 import { BudgetProgress } from '../components/budget/Charts/BudgetProgress';
 import { SpendingChart } from '../components/budget/Charts/SpendingChart';
 import { BudgetProjection } from '../components/budget/BudgetProjection';
+import { BankSyncPanel } from '../components/budget/BankSyncPanel';
 import { Modal } from '../components/common/Modal';
 import { ConfirmModal } from '../components/common/ConfirmModal';
 import { Button } from '../components/common/Button';
@@ -281,6 +282,12 @@ export const Budget: React.FC = () => {
             </div>
 
             <BudgetSummary />
+
+            {/* Commented out until Plaid Bank permissions are approved
+            <div className="mb-6">
+                <BankSyncPanel />
+            </div>
+            */}
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                 <SpendingChart selectedDate={selectedDate} />

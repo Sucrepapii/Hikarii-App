@@ -30,10 +30,13 @@ export const TaskItem: React.FC<TaskItemProps> = ({
 }) => {
     const [showSparkles, setShowSparkles] = useState(false);
 
-    const handleToggle = () => {
+    const handleToggle = (e: React.MouseEvent<HTMLButtonElement>) => {
         if (task.status !== TaskStatus.COMPLETED) {
             setShowSparkles(true);
             setTimeout(() => setShowSparkles(false), 800);
+            if (typeof window.triggerCoinBurst === 'function') {
+                window.triggerCoinBurst(e.clientX, e.clientY);
+            }
         }
         onToggle(task.id);
     };
