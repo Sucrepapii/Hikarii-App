@@ -114,7 +114,7 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
       const isCompleted = updatedTask.status === "COMPLETED";
       import("react-hot-toast").then(({ default: toast }) => {
         toast.success(
-          isCompleted ? "Task completed! 🏆" : "Task marked as TODO",
+          isCompleted ? "Task completed!" : "Task marked as TODO",
         );
       });
     } catch (error: any) {

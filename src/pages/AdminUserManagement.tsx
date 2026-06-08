@@ -703,7 +703,7 @@ export const AdminUserManagement: React.FC = () => {
                     ? `Are you sure you want to permanently delete ${selectedUserIds.length} selected users and all their associated data?`
                     : `Are you sure you want to suspend ${selectedUserIds.length} selected users for 30 days?`}
                 confirmText={batchActionToConfirm === 'DELETE' ? 'Delete Users' : 'Suspend Users'}
-                variant={batchActionToConfirm === 'DELETE' ? 'danger' : 'warning'}
+                variant={batchActionToConfirm === 'DELETE' ? 'danger' : 'primary'}
                 isLoading={isUpdating}
             />
         </div>

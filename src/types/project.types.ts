@@ -12,6 +12,7 @@ export interface ProjectMember {
   invitedById: string;
   role: CollaborationRole;
   status: InviteStatus;
+  token?: string | null;
   user?: { id: string; name: string; email: string } | null;
   createdAt: string;
 }

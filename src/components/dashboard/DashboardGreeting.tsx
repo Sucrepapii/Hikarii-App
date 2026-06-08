@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Sun, CloudSun, Moon, Zap, zapOff } from 'lucide-react';
+import { Sun, CloudSun, Moon, Zap } from 'lucide-react';
 import { clsx } from 'clsx';
 import { useUIStore } from '../../stores/uiStore';
 

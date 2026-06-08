@@ -2,7 +2,7 @@ import React from 'react';
 import { Expense, ExpenseCategory } from '../../types/budget.types';
 import { Card } from '../common/Card';
 import { Button } from '../common/Button';
-import { Trash2, Edit, ShoppingBag, Car, Film, Zap, Heart, Package } from 'lucide-react';
+import { Trash2, Edit, ShoppingBag, Car, Film, Zap, Heart, Package, GraduationCap, BookOpen } from 'lucide-react';
 import { formatDate } from '../../utils/dateUtils';
 import { formatCurrency } from '../../utils/currencyFormatter';
 import { useBudgetStore } from '../../stores/budgetStore';
@@ -21,6 +21,9 @@ const categoryIcons = {
     [ExpenseCategory.UTILITIES]: Zap,
     [ExpenseCategory.SHOPPING]: ShoppingBag,
     [ExpenseCategory.HEALTH]: Heart,
+    [ExpenseCategory.TUITION]: GraduationCap,
+    [ExpenseCategory.BOOKS]: BookOpen,
+    [ExpenseCategory.GROCERIES]: ShoppingBag,
     [ExpenseCategory.OTHER]: Package,
 };
 
@@ -31,6 +34,9 @@ const categoryColors = {
     [ExpenseCategory.UTILITIES]: 'bg-yellow-500',
     [ExpenseCategory.SHOPPING]: 'bg-pink-500',
     [ExpenseCategory.HEALTH]: 'bg-red-500',
+    [ExpenseCategory.TUITION]: 'bg-indigo-500',
+    [ExpenseCategory.BOOKS]: 'bg-emerald-500',
+    [ExpenseCategory.GROCERIES]: 'bg-rose-500',
     [ExpenseCategory.OTHER]: 'bg-slate-500',
 };
 

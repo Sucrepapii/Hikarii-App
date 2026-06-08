@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { X, Zap, Trophy, Calendar, TrendingUp } from 'lucide-react';
 import { Logo } from '../common/Logo';
 import apiClient from '../../api/client';
+import toast from 'react-hot-toast';
 
 interface WrappedData {
     totalTasksList: number;

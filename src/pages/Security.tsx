@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Shield, Lock, Server, Eye, Key, FileCheck, Cpu, Globe, Database } from 'lucide-react';
-import { Logo } from '../common/Logo';
+import { Logo } from '../components/common/Logo';
 import { Navbar } from '../components/layout/Navbar';
 import { Footer } from '../components/layout/Footer';
 
