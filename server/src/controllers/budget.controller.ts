@@ -251,7 +251,7 @@ export const updateExpense = async (
   res: Response,
 ): Promise<void> => {
   try {
-    const { expense: existingExpense, allowed } = await canAccessExpense(req.params.id, req.userId!, true);
+    const { expense: existingExpense, allowed } = await canAccessExpense(req.params.id as string, req.userId!, true);
 
     if (!existingExpense || !allowed) {
       res.status(404).json({ error: "Expense not found or access denied" });
@@ -319,7 +319,7 @@ export const deleteExpense = async (
   res: Response,
 ): Promise<void> => {
   try {
-    const { expense: existingExpense, allowed } = await canAccessExpense(req.params.id, req.userId!, true);
+    const { expense: existingExpense, allowed } = await canAccessExpense(req.params.id as string, req.userId!, true);
 
     if (!existingExpense || !allowed) {
       res.status(404).json({ error: "Expense not found or access denied" });

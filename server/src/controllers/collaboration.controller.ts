@@ -30,7 +30,7 @@ async function getMemberRole(projectId: string, userId: string) {
 
 export const inviteMember = async (req: AuthRequest, res: Response) => {
   try {
-    const { id: projectId } = req.params;
+    const projectId = req.params.id as string;
     const { email, role = "VIEW_ONLY" } = req.body;
 
     if (!email) return res.status(400).json({ error: "Email is required" });
@@ -115,7 +115,7 @@ export const inviteMember = async (req: AuthRequest, res: Response) => {
 
 export const acceptInvite = async (req: AuthRequest, res: Response) => {
   try {
-    const { token } = req.params;
+    const token = req.params.token as string;
 
     const member = await (prisma as any).projectMember.findUnique({ where: { token } });
     if (!member) return res.status(404).json({ error: "Invalid or expired invite link" });
@@ -136,7 +136,7 @@ export const acceptInvite = async (req: AuthRequest, res: Response) => {
 
 export const getMembers = async (req: AuthRequest, res: Response) => {
   try {
-    const { id: projectId } = req.params;
+    const projectId = req.params.id as string;
 
     // Must be owner or member
     const isOwner = await assertOwner(projectId as string, req.userId!);
@@ -159,7 +159,8 @@ export const getMembers = async (req: AuthRequest, res: Response) => {
 
 export const updateMemberRole = async (req: AuthRequest, res: Response) => {
   try {
-    const { id: projectId, memberId } = req.params;
+    const projectId = req.params.id as string;
+    const memberId = req.params.memberId as string;
     const { role } = req.body;
 
     const isOwner = await assertOwner(projectId as string, req.userId!);
@@ -180,7 +181,8 @@ export const updateMemberRole = async (req: AuthRequest, res: Response) => {
 
 export const removeMember = async (req: AuthRequest, res: Response) => {
   try {
-    const { id: projectId, memberId } = req.params;
+    const projectId = req.params.id as string;
+    const memberId = req.params.memberId as string;
 
     const isOwner = await assertOwner(projectId as string, req.userId!);
     if (!isOwner) return res.status(403).json({ error: "Only the project owner can remove members" });
@@ -197,7 +199,7 @@ export const removeMember = async (req: AuthRequest, res: Response) => {
 
 export const getComments = async (req: AuthRequest, res: Response) => {
   try {
-    const { id: projectId } = req.params;
+    const projectId = req.params.id as string;
 
     const isOwner = await assertOwner(projectId as string, req.userId!);
     const role = await getMemberRole(projectId, req.userId!);
@@ -217,7 +219,7 @@ export const getComments = async (req: AuthRequest, res: Response) => {
 
 export const postComment = async (req: AuthRequest, res: Response) => {
   try {
-    const { id: projectId } = req.params;
+    const projectId = req.params.id as string;
     const { content } = req.body;
 
     if (!content?.trim()) return res.status(400).json({ error: "Comment cannot be empty" });
@@ -239,7 +241,7 @@ export const postComment = async (req: AuthRequest, res: Response) => {
 
 export const deleteComment = async (req: AuthRequest, res: Response) => {
   try {
-    const { commentId } = req.params;
+    const commentId = req.params.commentId as string;
 
     const comment = await (prisma as any).projectComment.findUnique({
       where: { id: commentId },
@@ -362,7 +364,7 @@ export const getRecentActivity = async (req: AuthRequest, res: Response) => {
 
 export const markActivityAsRead = async (req: AuthRequest, res: Response) => {
   try {
-    const { id: projectId } = req.params;
+    const projectId = req.params.id as string;
     const userId = req.userId!;
 
     // Update ProjectMember if exists

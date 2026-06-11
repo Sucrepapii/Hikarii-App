@@ -184,7 +184,7 @@ export const getAdminDashboardData = async (req: Request, res: Response) => {
 export const updateUser = async (req: Request, res: Response) => {
   try {
     const adminId = (req as any).userId;
-    const { id } = req.params;
+    const id = req.params.id as string;
     const { name, email, role, subscriptionStatus } = req.body;
 
     // Verify Admin Access
@@ -238,7 +238,7 @@ export const updateUser = async (req: Request, res: Response) => {
 export const deleteUser = async (req: Request, res: Response) => {
   try {
     const adminId = (req as any).userId;
-    const { id } = req.params;
+    const id = req.params.id as string;
 
     // Verify Admin Access
     const requestor = await prisma.user.findUnique({
@@ -284,7 +284,7 @@ export const deleteUser = async (req: Request, res: Response) => {
 export const suspendUser = async (req: Request, res: Response) => {
   try {
     const adminId = (req as any).userId;
-    const { id } = req.params;
+    const id = req.params.id as string;
     const { reason, durationDays } = req.body;
 
     const requestor = await prisma.user.findUnique({
@@ -346,7 +346,7 @@ export const suspendUser = async (req: Request, res: Response) => {
 export const reactivateUser = async (req: Request, res: Response) => {
   try {
     const adminId = (req as any).userId;
-    const { id } = req.params;
+    const id = req.params.id as string;
 
     const requestor = await prisma.user.findUnique({
       where: { id: adminId },

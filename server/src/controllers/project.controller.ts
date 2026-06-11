@@ -121,7 +121,7 @@ export const getProjects = async (req: AuthRequest, res: Response) => {
 // Get Single Project with Details
 export const getProject = async (req: AuthRequest, res: Response) => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
     const { project, allowed, role } = await canAccessProject(id, req.userId!);
 
     if (!project || !allowed) {
@@ -149,7 +149,7 @@ export const getProject = async (req: AuthRequest, res: Response) => {
 // Update Project
 export const updateProject = async (req: AuthRequest, res: Response) => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
     const { title, description, status, budgetLimit, startDate, endDate } =
       req.body;
 
@@ -183,7 +183,7 @@ export const updateProject = async (req: AuthRequest, res: Response) => {
 // Delete Project
 export const deleteProject = async (req: AuthRequest, res: Response) => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
     
     // Only owner can delete project
     const project = await prisma.project.findFirst({
@@ -206,7 +206,7 @@ export const deleteProject = async (req: AuthRequest, res: Response) => {
 // Get Project Summary / Health
 export const getProjectSummary = async (req: AuthRequest, res: Response) => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
     const { project, allowed } = await canAccessProject(id, req.userId!);
 
     if (!project || !allowed) {
@@ -223,29 +223,29 @@ export const getProjectSummary = async (req: AuthRequest, res: Response) => {
     }) as any;
 
     // Calculate generic health stats
-    const totalTasks = project.tasks.length;
-    const completedTasks = project.tasks.filter(
+    const totalTasks = fullProject.tasks.length;
+    const completedTasks = fullProject.tasks.filter(
       (t: any) => t.status === "COMPLETED",
     ).length;
     const progress = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
 
-    const totalSpent = project.expenses.reduce(
+    const totalSpent = fullProject.expenses.reduce(
       (sum: number, e: any) => sum + e.amount,
       0,
     );
-    const budgetHealth = project.budgetLimit
-      ? (totalSpent / project.budgetLimit) * 100
+    const budgetHealth = fullProject.budgetLimit
+      ? (totalSpent / fullProject.budgetLimit) * 100
       : 0;
 
     res.json({
-      projectId: project.id,
+      projectId: fullProject.id,
       progress: Math.round(progress),
       totalSpent,
-      budgetLimit: project.budgetLimit || 0,
+      budgetLimit: fullProject.budgetLimit || 0,
       budgetHealth: Math.round(budgetHealth),
-      daysRemaining: project.endDate
+      daysRemaining: fullProject.endDate
         ? Math.ceil(
-            (new Date(project.endDate).getTime() - Date.now()) /
+            (new Date(fullProject.endDate).getTime() - Date.now()) /
               (1000 * 60 * 60 * 24),
           )
         : null,
