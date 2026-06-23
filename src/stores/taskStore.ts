@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { Task, TaskFinancials, TaskType } from "../types/task.types";
 import apiClient from "../api/client";
+import { queueForSync } from "../utils/syncManager";
 
 interface TaskStore {
   tasks: Task[];
@@ -51,6 +52,28 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
   },
 
   addTask: async (task) => {
+    // Check if client is offline
+    if (!navigator.onLine) {
+      const tempId = `temp-${Date.now()}`;
+      const tempTask: Task = {
+        ...task,
+        id: tempId,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        status: task.status || "TODO" as any,
+        priority: task.priority || "MEDIUM" as any,
+        tags: task.tags || [],
+      } as unknown as Task;
+
+      queueForSync("task", task, tempId);
+      
+      set((state) => ({
+        tasks: [...state.tasks, tempTask],
+        isLoading: false,
+      }));
+      return;
+    }
+
     try {
       set({ isLoading: true, error: null });
       const response = await apiClient.post("/tasks", task);

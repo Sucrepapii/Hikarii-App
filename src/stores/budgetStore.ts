@@ -7,6 +7,7 @@ import {
   ForecastResult,
 } from "../types/budget.types";
 import apiClient from "../api/client";
+import { queueForSync } from "../utils/syncManager";
 
 interface BudgetStore {
   expenses: Expense[];
@@ -124,6 +125,27 @@ export const useBudgetStore = create<BudgetStore>((set, get) => ({
   },
 
   addExpense: async (expense) => {
+    // Check if client is offline
+    if (!navigator.onLine) {
+      const tempId = `temp-${Date.now()}`;
+      const tempExpense: Expense = {
+        ...expense,
+        id: tempId,
+        date: expense.date ? new Date(expense.date) : new Date(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        isAutoCreated: expense.isAutoCreated || false,
+      } as unknown as Expense;
+
+      queueForSync("expense", expense, tempId);
+      
+      set((state) => ({
+        expenses: [...state.expenses, tempExpense],
+        isLoading: false,
+      }));
+      return;
+    }
+
     try {
       set({ isLoading: true, error: null });
       const response = await apiClient.post("/expenses", expense);

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Send, Trash2, MessageSquare } from 'lucide-react';
 import { useCollaborationStore } from '../../stores/collaborationStore';
+import { supabase } from '../../supabase/client';
 import toast from 'react-hot-toast';
 
 interface ActivityLogProps {
@@ -33,14 +34,28 @@ export const ActivityLog: React.FC<ActivityLogProps> = ({ projectId, currentUser
     fetchComments(projectId);
     markActivityAsRead(projectId); // Mark as read when opening
 
-    // Polling for "real-time" feel without WebSockets
-    const interval = setInterval(() => {
-      fetchComments(projectId);
-      markActivityAsRead(projectId); // Also mark as read during polling if it's open
-    }, 3000); // 3 seconds
+    // Subscribe to real-time updates for ProjectComment events
+    const channel = supabase
+      .channel(`project-comments-${projectId}`)
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'ProjectComment',
+          filter: `projectId=eq.${projectId}`
+        },
+        () => {
+          fetchComments(projectId);
+          markActivityAsRead(projectId);
+        }
+      )
+      .subscribe();
 
-    return () => clearInterval(interval);
-  }, [projectId]);
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [projectId, fetchComments, markActivityAsRead]);
 
   useEffect(() => {
     // Only scroll if we were already at the bottom or if it's the initial load

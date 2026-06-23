@@ -1397,7 +1397,7 @@ var getProjects = async (req, res) => {
 };
 var getProject = async (req, res) => {
   try {
-    const { id } = req.params;
+    const id = req.params.id;
     const { project, allowed, role } = await canAccessProject(id, req.userId);
     if (!project || !allowed) {
       return res.status(404).json({ error: "Project not found or access denied" });
@@ -1420,7 +1420,7 @@ var getProject = async (req, res) => {
 };
 var updateProject = async (req, res) => {
   try {
-    const { id } = req.params;
+    const id = req.params.id;
     const { title, description, status, budgetLimit, startDate, endDate } = req.body;
     const { project: existingProject, allowed } = await canAccessProject(id, req.userId, true);
     if (!existingProject || !allowed) {
@@ -1446,7 +1446,7 @@ var updateProject = async (req, res) => {
 };
 var deleteProject = async (req, res) => {
   try {
-    const { id } = req.params;
+    const id = req.params.id;
     const project = await db_default.project.findFirst({
       where: { id, userId: req.userId }
     });
@@ -1463,7 +1463,7 @@ var deleteProject = async (req, res) => {
 };
 var getProjectSummary = async (req, res) => {
   try {
-    const { id } = req.params;
+    const id = req.params.id;
     const { project, allowed } = await canAccessProject(id, req.userId);
     if (!project || !allowed) {
       return res.status(404).json({ error: "Project not found or access denied" });
@@ -1476,24 +1476,24 @@ var getProjectSummary = async (req, res) => {
         expenses: true
       }
     });
-    const totalTasks = project.tasks.length;
-    const completedTasks = project.tasks.filter(
+    const totalTasks = fullProject.tasks.length;
+    const completedTasks = fullProject.tasks.filter(
       (t) => t.status === "COMPLETED"
     ).length;
     const progress = totalTasks > 0 ? completedTasks / totalTasks * 100 : 0;
-    const totalSpent = project.expenses.reduce(
+    const totalSpent = fullProject.expenses.reduce(
       (sum, e) => sum + e.amount,
       0
     );
-    const budgetHealth = project.budgetLimit ? totalSpent / project.budgetLimit * 100 : 0;
+    const budgetHealth = fullProject.budgetLimit ? totalSpent / fullProject.budgetLimit * 100 : 0;
     res.json({
-      projectId: project.id,
+      projectId: fullProject.id,
       progress: Math.round(progress),
       totalSpent,
-      budgetLimit: project.budgetLimit || 0,
+      budgetLimit: fullProject.budgetLimit || 0,
       budgetHealth: Math.round(budgetHealth),
-      daysRemaining: project.endDate ? Math.ceil(
-        (new Date(project.endDate).getTime() - Date.now()) / (1e3 * 60 * 60 * 24)
+      daysRemaining: fullProject.endDate ? Math.ceil(
+        (new Date(fullProject.endDate).getTime() - Date.now()) / (1e3 * 60 * 60 * 24)
       ) : null
     });
   } catch (error) {
@@ -2852,7 +2852,7 @@ var getAdminDashboardData = async (req, res) => {
 var updateUser = async (req, res) => {
   try {
     const adminId = req.userId;
-    const { id } = req.params;
+    const id = req.params.id;
     const { name, email, role, subscriptionStatus } = req.body;
     const requestor = await db_default.user.findUnique({
       where: { id: adminId },
@@ -2898,7 +2898,7 @@ var updateUser = async (req, res) => {
 var deleteUser = async (req, res) => {
   try {
     const adminId = req.userId;
-    const { id } = req.params;
+    const id = req.params.id;
     const requestor = await db_default.user.findUnique({
       where: { id: adminId },
       select: { role: true }
@@ -2931,7 +2931,7 @@ var deleteUser = async (req, res) => {
 var suspendUser = async (req, res) => {
   try {
     const adminId = req.userId;
-    const { id } = req.params;
+    const id = req.params.id;
     const { reason, durationDays } = req.body;
     const requestor = await db_default.user.findUnique({
       where: { id: adminId },
@@ -2981,7 +2981,7 @@ var suspendUser = async (req, res) => {
 var reactivateUser = async (req, res) => {
   try {
     const adminId = req.userId;
-    const { id } = req.params;
+    const id = req.params.id;
     const requestor = await db_default.user.findUnique({
       where: { id: adminId },
       select: { role: true }
@@ -3297,7 +3297,7 @@ async function getMemberRole(projectId, userId) {
 }
 var inviteMember = async (req, res) => {
   try {
-    const { id: projectId } = req.params;
+    const projectId = req.params.id;
     const { email, role = "VIEW_ONLY" } = req.body;
     if (!email) return res.status(400).json({ error: "Email is required" });
     const project = await assertOwner(projectId, req.userId);
@@ -3362,7 +3362,7 @@ var inviteMember = async (req, res) => {
 };
 var acceptInvite = async (req, res) => {
   try {
-    const { token } = req.params;
+    const token = req.params.token;
     const member = await db_default.projectMember.findUnique({ where: { token } });
     if (!member) return res.status(404).json({ error: "Invalid or expired invite link" });
     if (member.status !== "PENDING") return res.status(400).json({ error: "Invite already used" });
@@ -3377,7 +3377,7 @@ var acceptInvite = async (req, res) => {
 };
 var getMembers = async (req, res) => {
   try {
-    const { id: projectId } = req.params;
+    const projectId = req.params.id;
     const isOwner = await assertOwner(projectId, req.userId);
     const role = await getMemberRole(projectId, req.userId);
     if (!isOwner && !role) return res.status(403).json({ error: "Access denied" });
@@ -3393,7 +3393,8 @@ var getMembers = async (req, res) => {
 };
 var updateMemberRole = async (req, res) => {
   try {
-    const { id: projectId, memberId } = req.params;
+    const projectId = req.params.id;
+    const memberId = req.params.memberId;
     const { role } = req.body;
     const isOwner = await assertOwner(projectId, req.userId);
     if (!isOwner) return res.status(403).json({ error: "Only the project owner can change roles" });
@@ -3408,7 +3409,8 @@ var updateMemberRole = async (req, res) => {
 };
 var removeMember = async (req, res) => {
   try {
-    const { id: projectId, memberId } = req.params;
+    const projectId = req.params.id;
+    const memberId = req.params.memberId;
     const isOwner = await assertOwner(projectId, req.userId);
     if (!isOwner) return res.status(403).json({ error: "Only the project owner can remove members" });
     await db_default.projectMember.delete({ where: { id: memberId } });
@@ -3419,7 +3421,7 @@ var removeMember = async (req, res) => {
 };
 var getComments = async (req, res) => {
   try {
-    const { id: projectId } = req.params;
+    const projectId = req.params.id;
     const isOwner = await assertOwner(projectId, req.userId);
     const role = await getMemberRole(projectId, req.userId);
     if (!isOwner && !role) return res.status(403).json({ error: "Access denied" });
@@ -3435,7 +3437,7 @@ var getComments = async (req, res) => {
 };
 var postComment = async (req, res) => {
   try {
-    const { id: projectId } = req.params;
+    const projectId = req.params.id;
     const { content } = req.body;
     if (!content?.trim()) return res.status(400).json({ error: "Comment cannot be empty" });
     const isOwner = await assertOwner(projectId, req.userId);
@@ -3452,7 +3454,7 @@ var postComment = async (req, res) => {
 };
 var deleteComment = async (req, res) => {
   try {
-    const { commentId } = req.params;
+    const commentId = req.params.commentId;
     const comment = await db_default.projectComment.findUnique({
       where: { id: commentId }
     });
@@ -3553,7 +3555,7 @@ var getRecentActivity = async (req, res) => {
 };
 var markActivityAsRead = async (req, res) => {
   try {
-    const { id: projectId } = req.params;
+    const projectId = req.params.id;
     const userId = req.userId;
     await db_default.projectMember.updateMany({
       where: { projectId, userId },
@@ -3635,38 +3637,6 @@ Sentry.init({
   profilesSampleRate: 1
 });
 var app = express5();
-app.use(helmet());
-app.use(hpp());
-app.use(express5.json({ limit: "10kb" }));
-var globalLimiter = rateLimit({
-  windowMs: 15 * 60 * 1e3,
-  // 15 minutes
-  max: 300,
-  // Limit each IP to 300 requests per windowMs
-  message: "Too many requests from this IP, please try again later.",
-  standardHeaders: true,
-  // Return rate limit info in the `RateLimit-*` headers
-  legacyHeaders: false
-  // Disable the `X-RateLimit-*` headers
-});
-var strictLimiter = rateLimit({
-  windowMs: 60 * 60 * 1e3,
-  // 1 hour
-  max: 10,
-  // Limit each IP to 10 requests per windowMs (for contact forms, etc)
-  message: "Too many requests submitted. Please try again later."
-});
-app.use("/api/", globalLimiter);
-app.use("/api/contact", strictLimiter);
-app.use("/api/leads", strictLimiter);
-app.use((req, res, next) => {
-  if (process.env.NODE_ENV === "production") {
-    console.log(
-      `[${(/* @__PURE__ */ new Date()).toISOString()}] ${req.method} ${req.url} - Origin: ${req.headers.origin || "No Origin"}`
-    );
-  }
-  next();
-});
 var allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:5174",
@@ -3705,6 +3675,38 @@ app.use(
     optionsSuccessStatus: 204
   })
 );
+app.use(helmet());
+app.use(hpp());
+app.use(express5.json({ limit: "10kb" }));
+var globalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1e3,
+  // 15 minutes
+  max: 300,
+  // Limit each IP to 300 requests per windowMs
+  message: "Too many requests from this IP, please try again later.",
+  standardHeaders: true,
+  // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false
+  // Disable the `X-RateLimit-*` headers
+});
+var strictLimiter = rateLimit({
+  windowMs: 60 * 60 * 1e3,
+  // 1 hour
+  max: 10,
+  // Limit each IP to 10 requests per windowMs (for contact forms, etc)
+  message: "Too many requests submitted. Please try again later."
+});
+app.use("/api/", globalLimiter);
+app.use("/api/contact", strictLimiter);
+app.use("/api/leads", strictLimiter);
+app.use((req, res, next) => {
+  if (process.env.NODE_ENV === "production") {
+    console.log(
+      `[${(/* @__PURE__ */ new Date()).toISOString()}] ${req.method} ${req.url} - Origin: ${req.headers.origin || "No Origin"}`
+    );
+  }
+  next();
+});
 app.get("/api/ai/test", (req, res) => {
   res.json({ message: "AI route test successful" });
 });
