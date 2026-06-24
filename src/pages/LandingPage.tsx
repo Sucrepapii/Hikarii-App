@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Check, Zap, Link2, FileText, Split, ArrowRight, Menu, X, ChevronDown, Star, Calendar, Users, MessageSquare, Bell, Shield, Sun, Trophy } from 'lucide-react';
+import { Check, Zap, Link2, FileText, Split, ArrowRight, Menu, X, ChevronDown, Star, Calendar, Users, MessageSquare, Bell, Shield, Sun, Trophy, WifiOff } from 'lucide-react';
 import { Button } from '../components/common/Button';
 import { Logo } from '../components/common/Logo';
 import { Footer } from '../components/layout/Footer';
@@ -761,6 +761,32 @@ export const LandingPage: React.FC = () => {
                                 </div>
                             </div>
 
+                            {/* Offline Synchronization (Premium Bento Item) */}
+                            <div className="md:col-span-2 bg-gradient-to-br from-[#1E293B]/20 to-[#0F172A]/40 border border-white/[0.08] rounded-2xl p-8 flex flex-col justify-between hover:bg-white/[0.07] transition-all duration-300 backdrop-blur-md group hover:border-indigo-500/30 min-h-[340px]">
+                                <div>
+                                    <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-sky-600 rounded-xl flex items-center justify-center mb-6 text-white shadow-lg shadow-indigo-500/30">
+                                        <WifiOff className="w-6 h-6" />
+                                    </div>
+                                    <h3 className="text-2xl font-bold mb-3 text-white tracking-tight">Offline Synchronization</h3>
+                                    <p className="text-indigo-100/70 leading-relaxed text-sm">Keep working, tracking projects, and logging expenses even without internet connection. Hikari queues your updates locally and automatically syncs them to the cloud the moment you reconnect.</p>
+                                </div>
+                                <div className="mt-8 bg-black/50 rounded-xl border border-white/[0.08] relative h-[120px] overflow-hidden flex items-center justify-between p-6">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 rounded-lg bg-rose-500/10 flex items-center justify-center text-rose-500 border border-rose-500/20 group-hover:scale-95 transition-all">
+                                            <WifiOff className="w-5 h-5" />
+                                        </div>
+                                        <div>
+                                            <div className="text-white font-semibold text-sm">Offline Workspace</div>
+                                            <div className="text-xs text-slate-500">2 changes pending sync</div>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+                                        <span className="text-[10px] font-bold text-amber-500 uppercase tracking-wider">Sync Pending</span>
+                                    </div>
+                                </div>
+                            </div>
+
                             {/* Tall: AI Autopilot Scoper (Magic Moment) */}
                             <div className="md:col-span-1 bg-gradient-to-b from-[#0F172A] to-[#0A0C1B] border border-white/[0.08] rounded-2xl p-7 flex flex-col hover:border-emerald-500/30 transition-all duration-500 backdrop-blur-md group relative overflow-hidden min-h-[380px]">
                                 <div className="absolute inset-0 bg-emerald-500/[0.02] opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
@@ -814,7 +840,7 @@ export const LandingPage: React.FC = () => {
                             </div>
 
                             {/* Shareable Wrapped Cards */}
-                            <div className="col-span-1 bg-gradient-to-br from-purple-500/10 to-indigo-600/5 border border-purple-500/15 rounded-2xl p-6 flex flex-col justify-between hover:border-purple-500/30 transition-all duration-300 backdrop-blur-md group">
+                            <div className="col-span-1 md:col-span-2 bg-gradient-to-br from-purple-500/10 to-indigo-600/5 border border-purple-500/15 rounded-2xl p-6 flex flex-col justify-between hover:border-purple-500/30 transition-all duration-300 backdrop-blur-md group">
                                 <div>
                                     <div className="w-10 h-10 bg-purple-500/15 rounded-xl flex items-center justify-center mb-4 text-purple-400 border border-purple-500/20">
                                         <Trophy className="w-5 h-5" />
