@@ -4,32 +4,37 @@ import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-quartz.css'; // Premium theme
 import { useBudgetStore } from '../stores/budgetStore';
 import { ExpenseCategory } from '../types/budget.types';
-import { ColDef, ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
+import { ColDef, ModuleRegistry, AllCommunityModule, ClientSideRowModelModule } from 'ag-grid-community';
 
-ModuleRegistry.registerModules([AllCommunityModule]);
+ModuleRegistry.registerModules([AllCommunityModule, ClientSideRowModelModule]);
 
 import { Plus } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { ConfirmModal } from '../components/common/ConfirmModal';
+import { useState } from 'react';
 
 export const Tracker = () => {
     const { expenses, fetchExpenses, updateExpense, addExpense, deleteExpense, isLoading } = useBudgetStore();
+    const [expenseToDelete, setExpenseToDelete] = useState<string | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     useEffect(() => {
         fetchExpenses();
     }, [fetchExpenses]);
 
     const handleCellValueChanged = async (params: any) => {
-        if (!params.data.id) return;
+        // Prevent infinite loops: only trigger API on actual user edits, not programmatic reverts
+        if (!params.data.id || params.source !== 'edit') return;
         
         try {
             // The backend is extremely strict and will reject the PUT request if it contains
             // fields like `id`, `createdAt`, `updatedAt`, or `userId` in the body.
-            // We must extract ONLY the fields allowed by the backend schema.
+            // We must extract ONLY the fields allowed by the backend schema and ensure none are null.
             const cleanData = {
-                title: params.data.title,
-                amount: Number(params.data.amount),
+                title: params.data.title || "Untitled Item",
+                amount: Number(params.data.amount) || 0,
                 category: params.data.category,
-                date: new Date(params.data.date),
+                date: params.data.date ? new Date(params.data.date) : new Date(),
                 description: params.data.description,
                 linkedTaskId: params.data.linkedTaskId
             };
@@ -39,6 +44,8 @@ export const Tracker = () => {
         } catch (error: any) {
             console.error("Backend Error:", error?.response?.data);
             toast.error(`Error: ${JSON.stringify(error?.response?.data?.error || error?.message)}`);
+            
+            // Revert safely (the 'source' check above prevents infinite loops)
             params.node.setDataValue(params.colDef.field, params.oldValue);
         }
     };
@@ -59,10 +66,21 @@ export const Tracker = () => {
         }
     };
 
-    const handleDelete = async (id: string) => {
-        if (confirm("Are you sure you want to delete this record?")) {
-            await deleteExpense(id);
+    const handleDeleteClick = (id: string) => {
+        setExpenseToDelete(id);
+    }
+
+    const handleConfirmDelete = async () => {
+        if (!expenseToDelete) return;
+        setIsDeleting(true);
+        try {
+            await deleteExpense(expenseToDelete);
             toast.success("Deleted");
+        } catch (error) {
+            toast.error("Failed to delete record");
+        } finally {
+            setIsDeleting(false);
+            setExpenseToDelete(null);
         }
     }
 
@@ -122,7 +140,7 @@ export const Tracker = () => {
             minWidth: 100,
             cellRenderer: (params: any) => (
                 <button 
-                    onClick={() => handleDelete(params.data.id)}
+                    onClick={() => handleDeleteClick(params.data.id)}
                     className="text-red-500 hover:text-red-700 font-semibold"
                 >
                     Delete
@@ -166,6 +184,17 @@ export const Tracker = () => {
                     overlayLoadingTemplate={'<span class="ag-overlay-loading-center">Please wait while your rows are loading</span>'}
                 />
             </div>
+
+            <ConfirmModal
+                isOpen={!!expenseToDelete}
+                onClose={() => !isDeleting && setExpenseToDelete(null)}
+                onConfirm={handleConfirmDelete}
+                title="Delete Record"
+                message="Are you sure you want to delete this ledger record? This action cannot be undone."
+                confirmText="Delete Record"
+                variant="danger"
+                isLoading={isDeleting}
+            />
         </div>
     );
 };
