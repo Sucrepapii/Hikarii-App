@@ -19,9 +19,19 @@ export const Tracker = () => {
         if (!params.data.id) return;
         
         try {
-            // The backend's PUT request expects the full object, not just a partial update.
-            // AG Grid's params.data contains the fully updated row object.
-            await updateExpense(params.data.id, params.data);
+            // The backend is extremely strict and will reject the PUT request if it contains
+            // fields like `id`, `createdAt`, `updatedAt`, or `userId` in the body.
+            // We must extract ONLY the fields allowed by the backend schema.
+            const cleanData = {
+                title: params.data.title,
+                amount: Number(params.data.amount),
+                category: params.data.category,
+                date: new Date(params.data.date),
+                description: params.data.description,
+                linkedTaskId: params.data.linkedTaskId
+            };
+
+            await updateExpense(params.data.id, cleanData);
             toast.success("Updated successfully");
         } catch (error: any) {
             toast.error(error?.response?.data?.error || "Failed to update: Backend rejected changes.");
