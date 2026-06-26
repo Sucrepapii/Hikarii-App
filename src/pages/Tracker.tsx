@@ -19,12 +19,12 @@ export const Tracker = () => {
         if (!params.data.id) return;
         
         try {
-            await updateExpense(params.data.id, {
-                [params.colDef.field]: params.newValue
-            });
+            // The backend's PUT request expects the full object, not just a partial update.
+            // AG Grid's params.data contains the fully updated row object.
+            await updateExpense(params.data.id, params.data);
             toast.success("Updated successfully");
-        } catch (error) {
-            toast.error("Failed to update");
+        } catch (error: any) {
+            toast.error(error?.response?.data?.error || "Failed to update: Backend rejected changes.");
             params.node.setDataValue(params.colDef.field, params.oldValue);
         }
     };
@@ -32,7 +32,7 @@ export const Tracker = () => {
     const handleAddRow = async () => {
         const newExpense = {
             title: 'New Item',
-            amount: 0,
+            amount: 1,
             category: ExpenseCategory.OTHER,
             date: new Date()
         };
@@ -63,6 +63,9 @@ export const Tracker = () => {
                 if (!params.value) return '';
                 return new Date(params.value).toLocaleDateString();
             },
+            valueParser: (params) => {
+                return new Date(params.newValue);
+            },
             minWidth: 120
         },
         { 
@@ -92,6 +95,9 @@ export const Tracker = () => {
             editable: true, 
             sortable: true,
             filter: 'agNumberColumnFilter',
+            valueParser: (params) => {
+                return Number(params.newValue);
+            },
             valueFormatter: (params) => {
                 return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'NGN' }).format(params.value || 0);
             },
