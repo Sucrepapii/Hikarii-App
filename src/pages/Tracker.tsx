@@ -34,8 +34,7 @@ export const Tracker = () => {
             title: 'New Item',
             amount: 0,
             category: ExpenseCategory.OTHER,
-            date: new Date(),
-            type: 'EXPENSE'
+            date: new Date()
         };
         try {
             // @ts-ignore
@@ -74,17 +73,6 @@ export const Tracker = () => {
             filter: true,
             minWidth: 200,
             flex: 1
-        },
-        { 
-            field: 'type', 
-            headerName: 'Type', 
-            editable: true, 
-            sortable: true,
-            cellEditor: 'agSelectCellEditor',
-            cellEditorParams: {
-                values: ['INCOME', 'EXPENSE']
-            },
-            minWidth: 120
         },
         { 
             field: 'category', 
