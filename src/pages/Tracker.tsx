@@ -1,42 +1,52 @@
-import React, { useMemo, useEffect } from 'react';
+import React, { useMemo, useEffect, useState } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-quartz.css'; // Premium theme
 import { useBudgetStore } from '../stores/budgetStore';
+import { useProjectStore } from '../stores/projectStore';
 import { ExpenseCategory } from '../types/budget.types';
 import { ColDef, ModuleRegistry, AllCommunityModule, ClientSideRowModelModule } from 'ag-grid-community';
 
 ModuleRegistry.registerModules([AllCommunityModule, ClientSideRowModelModule]);
 
-import { Plus } from 'lucide-react';
+import { Plus, Wallet, FolderOpen } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { ConfirmModal } from '../components/common/ConfirmModal';
-import { useState } from 'react';
 
 export const Tracker = () => {
     const { expenses, fetchExpenses, updateExpense, addExpense, deleteExpense, isLoading } = useBudgetStore();
+    const { projects, fetchProjects } = useProjectStore();
+    
     const [expenseToDelete, setExpenseToDelete] = useState<string | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [selectedProjectId, setSelectedProjectId] = useState<string>('ALL');
 
     useEffect(() => {
         fetchExpenses();
-    }, [fetchExpenses]);
+        fetchProjects();
+    }, [fetchExpenses, fetchProjects]);
+
+    const filteredExpenses = useMemo(() => {
+        if (selectedProjectId === 'ALL') return expenses;
+        return expenses.filter(e => e.projectId === selectedProjectId);
+    }, [expenses, selectedProjectId]);
+
+    const totalAmount = useMemo(() => {
+        return filteredExpenses.reduce((sum, exp) => sum + (exp.amount || 0), 0);
+    }, [filteredExpenses]);
 
     const handleCellValueChanged = async (params: any) => {
-        // Prevent infinite loops: only trigger API on actual user edits, not programmatic reverts
         if (!params.data.id || params.source !== 'edit') return;
         
         try {
-            // The backend is extremely strict and will reject the PUT request if it contains
-            // fields like `id`, `createdAt`, `updatedAt`, or `userId` in the body.
-            // We must extract ONLY the fields allowed by the backend schema and ensure none are null.
             const cleanData = {
                 title: params.data.title || "Untitled Item",
                 amount: Number(params.data.amount) || 0,
                 category: params.data.category,
                 date: params.data.date ? new Date(params.data.date) : new Date(),
                 description: params.data.description,
-                linkedTaskId: params.data.linkedTaskId
+                linkedTaskId: params.data.linkedTaskId,
+                projectId: params.data.projectId
             };
 
             await updateExpense(params.data.id, cleanData);
@@ -44,8 +54,6 @@ export const Tracker = () => {
         } catch (error: any) {
             console.error("Backend Error:", error?.response?.data);
             toast.error(`Error: ${JSON.stringify(error?.response?.data?.error || error?.message)}`);
-            
-            // Revert safely (the 'source' check above prevents infinite loops)
             params.node.setDataValue(params.colDef.field, params.oldValue);
         }
     };
@@ -55,7 +63,8 @@ export const Tracker = () => {
             title: 'New Item',
             amount: 1,
             category: ExpenseCategory.OTHER,
-            date: new Date()
+            date: new Date(),
+            projectId: selectedProjectId !== 'ALL' ? selectedProjectId : undefined
         };
         try {
             // @ts-ignore
@@ -157,23 +166,52 @@ export const Tracker = () => {
 
     return (
         <div className="flex flex-col h-[calc(100vh-8rem)] p-4 md:p-6 lg:p-8 space-y-6">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
                 <div>
                     <h1 className="text-3xl font-display font-bold gradient-text">Ledger</h1>
-                    <p className="text-slate-600 dark:text-slate-400 mt-1">Track daily expenditures and income.</p>
+                    <p className="text-slate-600 dark:text-slate-400 mt-1">Track daily expenditures across your projects.</p>
                 </div>
-                <button 
-                    onClick={handleAddRow}
-                    className="btn-primary flex items-center gap-2 px-6 py-2.5 rounded-xl shadow-lg hover:shadow-primary-500/25 transition-all"
-                >
-                    <Plus className="w-5 h-5" />
-                    <span>Add Record</span>
-                </button>
+                
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full lg:w-auto">
+                    {/* Project Selector */}
+                    <div className="flex items-center bg-white/50 dark:bg-slate-800/50 backdrop-blur-md border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2 shadow-sm flex-1 sm:flex-none">
+                        <FolderOpen className="w-5 h-5 text-primary-500 mr-3" />
+                        <select 
+                            value={selectedProjectId}
+                            onChange={(e) => setSelectedProjectId(e.target.value)}
+                            className="bg-transparent border-none text-slate-700 dark:text-slate-200 font-medium focus:ring-0 cursor-pointer w-full"
+                        >
+                            <option value="ALL">All Projects</option>
+                            {projects.map(p => (
+                                <option key={p.id} value={p.id}>{p.name}</option>
+                            ))}
+                        </select>
+                    </div>
+
+                    {/* Total Amount Card */}
+                    <div className="flex items-center bg-gradient-to-r from-primary-600 to-accent-600 rounded-xl px-6 py-2.5 shadow-lg shadow-primary-500/25 flex-1 sm:flex-none">
+                        <Wallet className="w-5 h-5 text-white/80 mr-3" />
+                        <div className="flex flex-col">
+                            <span className="text-xs text-white/80 font-medium uppercase tracking-wider">Total Amount</span>
+                            <span className="text-white font-bold text-lg">
+                                {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'NGN' }).format(totalAmount)}
+                            </span>
+                        </div>
+                    </div>
+
+                    <button 
+                        onClick={handleAddRow}
+                        className="btn-primary flex justify-center items-center gap-2 px-6 py-3 sm:py-2.5 rounded-xl shadow-lg hover:shadow-primary-500/25 transition-all h-full"
+                    >
+                        <Plus className="w-5 h-5" />
+                        <span>Add Record</span>
+                    </button>
+                </div>
             </div>
 
             <div className="ag-theme-quartz-dark flex-1 w-full rounded-2xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-800" style={{ '--ag-header-background-color': 'rgba(0,0,0,0.2)', '--ag-odd-row-background-color': 'rgba(255,255,255,0.02)' } as any}>
                 <AgGridReact
-                    rowData={expenses}
+                    rowData={filteredExpenses}
                     columnDefs={columnDefs}
                     defaultColDef={defaultColDef}
                     onCellValueChanged={handleCellValueChanged}
