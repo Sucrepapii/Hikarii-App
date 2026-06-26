@@ -183,7 +183,7 @@ export const Tracker = () => {
                         >
                             <option value="ALL">All Projects</option>
                             {projects.map(p => (
-                                <option key={p.id} value={p.id}>{p.name}</option>
+                                <option key={p.id} value={p.id}>{p.title} {p.status !== 'ACTIVE' ? `(${p.status})` : ''}</option>
                             ))}
                         </select>
                     </div>
