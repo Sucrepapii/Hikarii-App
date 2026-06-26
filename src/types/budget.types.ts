@@ -24,6 +24,7 @@ export interface Expense {
   amount: number;
   category: ExpenseCategory;
   date: Date;
+  type?: "INCOME" | "EXPENSE";
   description?: string;
   linkedTaskId?: string; // Reference to task that created this expense
   isAutoCreated?: boolean; // Was this auto-created from a task?

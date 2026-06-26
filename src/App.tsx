@@ -9,6 +9,7 @@ import { ProtectedRoute } from './components/auth/ProtectedRoute';
 import { Dashboard } from './pages/Dashboard';
 import { Tasks } from './pages/Tasks';
 import { Budget } from './pages/Budget';
+import { Tracker } from './pages/Tracker';
 import { Calendar } from './pages/Calendar';
 import { Login } from './pages/Login';
 import { Signup } from './pages/Signup';
@@ -158,6 +159,16 @@ function App() {
                         <ProtectedRoute>
                             <DashboardLayout>
                                 <Budget />
+                            </DashboardLayout>
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/tracker"
+                    element={
+                        <ProtectedRoute>
+                            <DashboardLayout>
+                                <Tracker />
                             </DashboardLayout>
                         </ProtectedRoute>
                     }
