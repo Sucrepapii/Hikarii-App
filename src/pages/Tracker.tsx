@@ -4,7 +4,10 @@ import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-quartz.css'; // Premium theme
 import { useBudgetStore } from '../stores/budgetStore';
 import { ExpenseCategory } from '../types/budget.types';
-import { ColDef, ValueSetterParams } from 'ag-grid-community';
+import { ColDef, ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
+
+ModuleRegistry.registerModules([AllCommunityModule]);
+
 import { Plus } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -34,7 +37,8 @@ export const Tracker = () => {
             await updateExpense(params.data.id, cleanData);
             toast.success("Updated successfully");
         } catch (error: any) {
-            toast.error(error?.response?.data?.error || "Failed to update: Backend rejected changes.");
+            console.error("Backend Error:", error?.response?.data);
+            toast.error(`Error: ${JSON.stringify(error?.response?.data?.error || error?.message)}`);
             params.node.setDataValue(params.colDef.field, params.oldValue);
         }
     };
