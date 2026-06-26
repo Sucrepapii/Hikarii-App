@@ -4,6 +4,7 @@ import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-quartz.css'; // Premium theme
 import { useBudgetStore } from '../stores/budgetStore';
 import { useProjectStore } from '../stores/projectStore';
+import { useAuthStore } from '../stores/authStore';
 import { ExpenseCategory } from '../types/budget.types';
 import { ColDef, ModuleRegistry, AllCommunityModule, ClientSideRowModelModule } from 'ag-grid-community';
 
@@ -16,6 +17,9 @@ import { ConfirmModal } from '../components/common/ConfirmModal';
 export const Tracker = () => {
     const { expenses, fetchExpenses, updateExpense, addExpense, deleteExpense, isLoading } = useBudgetStore();
     const { projects, fetchProjects } = useProjectStore();
+    const { user } = useAuthStore();
+    
+    const isPro = user?.subscriptionStatus === 'PRO';
     
     const [expenseToDelete, setExpenseToDelete] = useState<string | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
@@ -182,9 +186,14 @@ export const Tracker = () => {
                             className="bg-transparent border-none text-slate-700 dark:text-slate-200 font-medium focus:ring-0 cursor-pointer w-full"
                         >
                             <option value="ALL">All Projects</option>
-                            {projects.map(p => (
-                                <option key={p.id} value={p.id}>{p.title} {p.status !== 'ACTIVE' ? `(${p.status})` : ''}</option>
-                            ))}
+                            {projects.map((p, index) => {
+                                const isDisabled = !isPro && index > 0;
+                                return (
+                                    <option key={p.id} value={p.id} disabled={isDisabled}>
+                                        {p.title} {p.status !== 'ACTIVE' ? `(${p.status})` : ''} {isDisabled ? ' 🔒 PRO' : ''}
+                                    </option>
+                                );
+                            })}
                         </select>
                     </div>
 
