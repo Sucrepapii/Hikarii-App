@@ -308,6 +308,22 @@ export const helpArticles: Article[] = [
                 </div>
             </div>
 
+            <div class="my-12 p-10 rounded-3xl bg-gradient-to-br from-slate-900 to-[#0D0F1A] border border-emerald-500/20 shadow-2xl relative overflow-hidden">
+                <div class="absolute -right-20 -bottom-20 w-64 h-64 bg-emerald-500/10 blur-3xl rounded-full"></div>
+                <div class="relative z-10">
+                    <div class="w-14 h-14 bg-emerald-500/20 text-emerald-400 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-emerald-500/10 ring-1 ring-emerald-500/20">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-4">The Unified Financial Ledger</h3>
+                    <p class="text-slate-400 text-lg leading-relaxed mb-6">
+                        The ultimate realization of the Hikari Method is our Unified Financial Ledger. It tracks daily expenditures and income across all your projects in real-time. Calculate totals instantly, filter by active tasks, and seamlessly connect every transaction with your daily workflow to eliminate financial chaos.
+                    </p>
+                    <a href="/tracker" class="inline-flex items-center text-emerald-400 font-bold hover:text-emerald-300 transition-colors">
+                        Explore the Ledger <svg class="ml-2 w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                    </a>
+                </div>
+            </div>
+
             <div class="bg-indigo-600/10 border border-indigo-500/20 rounded-3xl p-10 text-center text-white shadow-xl">
                 <h2 class="text-2xl font-bold mb-4">Ready to achieve Radical Clarity?</h2>
                 <p class="text-slate-400 mb-8 max-w-lg mx-auto">Mastering the Hikari Method is about moving from reactive stress toward proactive control.</p>
