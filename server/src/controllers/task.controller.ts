@@ -194,6 +194,18 @@ export const toggleTaskStatus = async (
       data: { status: newStatus },
     });
 
+    if (newStatus === TaskStatus.COMPLETED) {
+      import("../services/notification.service").then(({ notifyUser }) => {
+        notifyUser(
+          req.userId!,
+          "Task Completed! 🎉",
+          `You've successfully completed: ${task.title}`,
+          "TASK_COMPLETED",
+          { url: "/tasks" }
+        );
+      });
+    }
+
     res.json(updatedTask);
   } catch (error: any) {
     res.status(500).json({ error: error.message });

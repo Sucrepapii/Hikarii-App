@@ -547,3 +547,38 @@ export const getMarketingStats = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Failed to fetch marketing stats" });
   }
 };
+
+export const deleteFeedback = async (req: Request, res: Response) => {
+  try {
+    const adminId = (req as any).userId;
+    const requestor = await prisma.user.findUnique({
+      where: { id: adminId },
+      select: { role: true },
+    });
+
+    if (!requestor || requestor.role !== "ADMIN") {
+      return res.status(403).json({ message: "Access Denied" });
+    }
+
+    const { id } = req.params;
+
+    // Check standard feedback first
+    const feedback = await prisma.feedback.findUnique({ where: { id } });
+    if (!feedback) {
+      // Check article feedback if not found
+      const articleFeedback = await prisma.articleFeedback.findUnique({ where: { id } });
+      if (articleFeedback) {
+        await prisma.articleFeedback.delete({ where: { id } });
+        return res.json({ message: "Article feedback deleted successfully" });
+      }
+      return res.status(404).json({ message: "Feedback not found" });
+    }
+
+    await prisma.feedback.delete({ where: { id } });
+
+    res.json({ message: "Feedback deleted successfully" });
+  } catch (error) {
+    console.error("Delete Feedback Error:", error);
+    res.status(500).json({ message: "Failed to delete feedback" });
+  }
+};

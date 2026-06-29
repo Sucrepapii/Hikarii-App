@@ -34,6 +34,7 @@ import leadRoutes from "./routes/lead.routes";
 import feedbackRoutes from "./routes/feedback.routes";
 import collaborationRoutes from "./routes/collaboration.routes";
 import articleFeedbackRoutes from "./routes/articleFeedback.routes";
+import notificationRoutes from "./routes/notification.routes";
 
 const app = express();
 
@@ -44,6 +45,8 @@ const allowedOrigins = [
   "http://127.0.0.1:5173",
   "http://127.0.0.1:5174",
   "http://localhost:3000",
+  "http://localhost:8081",
+  "http://127.0.0.1:8081",
   "https://www.hikarii.org",
   "https://hikarii.org",
   "https://checkmate-production-7067.up.railway.app",
@@ -141,6 +144,7 @@ app.use("/api/leads", leadRoutes);
 app.use("/api/feedback", feedbackRoutes);
 app.use("/api/collaboration", collaborationRoutes);
 app.use("/api/article-feedback", articleFeedbackRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 // Health check
 app.get("/health", (req, res) => {
@@ -187,7 +191,13 @@ app.listen(PORT_NUM, () => {
       .then(({ startReminderJob }) => {
         startReminderJob();
       })
-      .catch((err) => console.error("Failed to load cron job:", err));
+      .catch((err) => console.error("Failed to load reminder job:", err));
+
+    import("./jobs/monthly.job.js")
+      .then(({ startMonthlyGreetingJob }) => {
+        startMonthlyGreetingJob();
+      })
+      .catch((err) => console.error("Failed to load monthly job:", err));
   }
   console.log(`\n🚀 Server is running on port ${PORT_NUM}`);
 });

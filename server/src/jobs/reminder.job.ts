@@ -12,10 +12,25 @@ export const startReminderJob = () => {
     );
     return;
   }
-  // Run every day at 9:00 AM '0 9 * * *'
-  cron.schedule("0 9 * * *", async () => {
-    console.log("Running daily reminder job...");
+  // Run every day at 10:00 AM '0 10 * * *'
+  cron.schedule("0 10 * * *", async () => {
+    console.log("Running daily reminder and cleanup job...");
     try {
+      // 1. Cleanup Old Chats (Keep 30 days for completed projects)
+      const thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+      const deletedChats = await prisma.projectComment.deleteMany({
+        where: {
+          createdAt: { lt: thirtyDaysAgo },
+          project: {
+            status: { in: ["COMPLETED", "ARCHIVED"] } // only delete if project is done
+          }
+        }
+      });
+      console.log(`Cleaned up ${deletedChats.count} old chat messages from completed projects.`);
+
+      // 2. Daily Reminders
       const users = await prisma.user.findMany({});
       const today = new Date();
       today.setHours(0, 0, 0, 0);

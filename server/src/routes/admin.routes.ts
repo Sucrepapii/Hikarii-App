@@ -10,6 +10,7 @@ import {
   handleBatchOperations,
   createAdmin,
   getMarketingStats,
+  deleteFeedback,
 } from "../controllers/admin.controller";
 
 const router = Router();
@@ -24,5 +25,6 @@ router.post("/users/:id/reactivate", authenticate, reactivateUser);
 router.delete("/users/:id", authenticate, deleteUser);
 router.post("/batch", authenticate, handleBatchOperations);
 router.get("/marketing-stats", authenticate, getMarketingStats);
+router.delete("/feedback/:id", authenticate, deleteFeedback);
 
 export default router;

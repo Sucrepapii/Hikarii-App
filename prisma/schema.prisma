@@ -56,13 +56,15 @@ model User {
 
   requiresPasswordChange Boolean   @default(false)
 
-  // WhatsApp Notifications
+  // WhatsApp & Push Notifications
   phoneNumber             String?
+  pushToken              String?
   waTasksEnabled         Boolean   @default(false)
   waBudgetEnabled        Boolean   @default(false)
   waProjectsEnabled      Boolean   @default(false)
 
   auditLogs              AuditLog[] @relation("AdminActions")
+  notifications          Notification[] @relation("UserNotifications")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -345,4 +347,20 @@ model ArticleFeedback {
   createdAt   DateTime @default(now())
 
   @@index([articleSlug])
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  title     String
+  body      String
+  type      String   // e.g., 'BUDGET_ALERT', 'TASK_ASSIGNED', 'PROJECT_INVITE'
+  data      Json?    // Optional payload (e.g. { url: '/budget' })
+  isRead    Boolean  @default(false)
+  
+  userId    String
+  user      User     @relation("UserNotifications", fields: [userId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+
+  @@index([userId, isRead])
 }

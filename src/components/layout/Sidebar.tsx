@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { LayoutDashboard, CheckSquare, Wallet, X, Calendar, LineChart, Settings, RefreshCw, LogOut, ChevronDown, ChevronRight, User, Database, DollarSign, Link2, HelpCircle, Shield, Archive, FileText, Clock, TrendingUp, BookOpen } from 'lucide-react';
+import { LayoutDashboard, CheckSquare, Wallet, X, Calendar, LineChart, Settings, RefreshCw, LogOut, ChevronDown, ChevronRight, User, Database, DollarSign, Link2, HelpCircle, Shield, Archive, FileText, Clock, TrendingUp, BookOpen, MessageSquare } from 'lucide-react';
 import { clsx } from 'clsx';
 import { useAuthStore } from '../../stores/authStore';
 import toast from 'react-hot-toast';
@@ -55,6 +55,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
             { to: '/admin/marketing', icon: TrendingUp, label: 'Marketing Insights' },
             { to: '/admin/reports', icon: FileText, label: 'Full Report' },
             { to: '/admin/audit', icon: Clock, label: 'Audit Trail' },
+            { to: '/admin/feedback', icon: MessageSquare, label: 'User Feedback' },
         ];
     } else {
         displayNavItems = [...navItems];

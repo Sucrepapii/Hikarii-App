@@ -85,6 +85,33 @@ export const updateProfile = async (
   }
 };
 
+// Update Push Token
+export const updatePushToken = async (
+  req: AuthRequest,
+  res: Response,
+): Promise<void> => {
+  try {
+    const { pushToken } = req.body;
+
+    if (!pushToken) {
+      res.status(400).json({ error: "pushToken is required" });
+      return;
+    }
+
+    const user = await prisma.user.update({
+      where: { id: req.userId },
+      data: { pushToken },
+    });
+
+    res.json({
+      message: "Push token updated successfully",
+      pushToken: user.pushToken,
+    });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 // Debug Environment Info
 export const debugInfo = async (_req: any, res: Response) => {
   res.json({

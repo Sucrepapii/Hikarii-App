@@ -227,16 +227,25 @@ export const createExpense = async (
         include: { user: true },
       });
 
-      // Immediate WhatsApp Alert for Budget
-      if (
-        updatedBudget.user.waBudgetEnabled &&
-        updatedBudget.user.phoneNumber &&
-        updatedBudget.spent >= updatedBudget.limit
-      ) {
-        await sendWhatsAppMessage(
-          updatedBudget.user.phoneNumber,
-          `Budget Alert! You have reached your limit for ${updatedBudget.category}: Spent ${updatedBudget.spent}/${updatedBudget.limit}`,
-        );
+      // Check if limit is reached
+      if (updatedBudget.spent >= updatedBudget.limit) {
+        import("../services/notification.service").then(({ notifyUser }) => {
+          notifyUser(
+            req.userId!,
+            "Budget Limit Reached",
+            `You have reached your limit for ${updatedBudget.category}: Spent $${updatedBudget.spent}/$${updatedBudget.limit}`,
+            "BUDGET_ALERT",
+            { url: "/budget" }
+          );
+        });
+
+        // Immediate WhatsApp Alert for Budget
+        if (updatedBudget.user.waBudgetEnabled && updatedBudget.user.phoneNumber) {
+          await sendWhatsAppMessage(
+            updatedBudget.user.phoneNumber,
+            `Budget Alert! You have reached your limit for ${updatedBudget.category}: Spent ${updatedBudget.spent}/${updatedBudget.limit}`,
+          );
+        }
       }
     }
 
@@ -301,10 +310,22 @@ export const updateExpense = async (
         },
       });
       if (newBudget) {
-        await prisma.budget.update({
+        const updatedNewBudget = await prisma.budget.update({
           where: { id: newBudget.id },
           data: { spent: { increment: updatedExpense.amount } },
         });
+
+        if (updatedNewBudget.spent >= newBudget.limit) {
+          import("../services/notification.service").then(({ notifyUser }) => {
+            notifyUser(
+              req.userId!,
+              "Budget Limit Reached",
+              `You have reached your limit for ${updatedExpense.category}: Spent $${updatedNewBudget.spent}/$${newBudget.limit}`,
+              "BUDGET_ALERT",
+              { url: "/budget" }
+            );
+          });
+        }
       }
     }
 

@@ -105,6 +105,19 @@ export const inviteMember = async (req: AuthRequest, res: Response) => {
       // We still return 201 because the database record is created
     }
 
+    // Notify user if they are registered
+    if (invitedUser?.id) {
+      import("../services/notification.service").then(({ notifyUser }) => {
+        notifyUser(
+          invitedUser.id,
+          "Project Invite",
+          `You have been invited to collaborate on "${project.title}" by ${currentUser!.name}.`,
+          "PROJECT_INVITE",
+          { url: "/settings" } // Assuming settings has invites
+        );
+      });
+    }
+
     res.status(201).json({ message: "Invite sent successfully", member });
   } catch (error: any) {
     res.status(500).json({ error: error.message });
@@ -249,6 +262,11 @@ export const deleteComment = async (req: AuthRequest, res: Response) => {
     if (!comment) return res.status(404).json({ error: "Comment not found" });
     if (comment.userId !== req.userId) {
       return res.status(403).json({ error: "You can only delete your own comments" });
+    }
+
+    const ageInMs = Date.now() - new Date(comment.createdAt).getTime();
+    if (ageInMs > 24 * 60 * 60 * 1000) {
+      return res.status(403).json({ error: "Comments cannot be deleted after 24 hours" });
     }
 
     await (prisma as any).projectComment.delete({ where: { id: commentId } });
