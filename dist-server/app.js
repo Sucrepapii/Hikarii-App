@@ -1685,9 +1685,9 @@ var scopeProject = async (req, res) => {
     if (!apiKey) {
       return res.status(503).json({ error: "AI Scoping Service is currently unavailable (no API Key configured)" });
     }
-    const { GoogleGenerativeAI: GoogleGenerativeAI2 } = __require("@google/generative-ai");
+    const { GoogleGenerativeAI: GoogleGenerativeAI3 } = __require("@google/generative-ai");
     console.log(`[ProjectScoper] Prompt received: "${prompt}" with budget: $${totalBudget}`);
-    const genAI = new GoogleGenerativeAI2(apiKey);
+    const genAI = new GoogleGenerativeAI3(apiKey);
     const model = genAI.getGenerativeModel({
       model: "gemini-flash-latest",
       generationConfig: { responseMimeType: "application/json" }
@@ -2046,6 +2046,58 @@ import { Router as Router4 } from "express";
 
 // server/src/controllers/insights.controller.ts
 init_db();
+
+// server/src/services/predictive.service.ts
+init_db();
+import {
+  getDaysInMonth,
+  differenceInCalendarDays,
+  lastDayOfMonth
+} from "date-fns";
+var PredictiveService = class {
+  async generateForecast(userId) {
+    console.log(`[PredictiveService] Generating forecast for user: ${userId}`);
+    const today = /* @__PURE__ */ new Date();
+    const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+    const endOfMonth = lastDayOfMonth(today);
+    const daysInCurrentMonth = getDaysInMonth(today);
+    const daysPassed = differenceInCalendarDays(today, startOfMonth) + 1;
+    const daysRemaining = daysInCurrentMonth - daysPassed;
+    const budgets = await db_default.budget.findMany({
+      where: { userId },
+      include: { user: false }
+    });
+    const recurringExpenses = await db_default.recurringExpense.findMany({
+      where: { userId, isActive: true }
+    });
+    const forecasts = [];
+    for (const budget of budgets) {
+      const dailyBurnRate = budget.spent / Math.max(daysPassed, 1);
+      let projectedTotal = budget.spent + dailyBurnRate * daysRemaining;
+      let status = "SAFE";
+      if (projectedTotal > budget.limit) {
+        status = "CRITICAL";
+      } else if (projectedTotal > budget.limit * 0.9) {
+        status = "WARNING";
+      }
+      forecasts.push({
+        budgetId: budget.id,
+        category: budget.category,
+        budgetLimit: budget.limit,
+        currentSpent: budget.spent,
+        projectedTotal: Math.round(projectedTotal),
+        status,
+        confidence: daysPassed > 10 ? 0.8 : 0.5,
+        // Low confidence early in month
+        upcomingRecurrings: []
+        // Populated if we had category linking
+      });
+    }
+    return forecasts;
+  }
+};
+
+// server/src/controllers/insights.controller.ts
 var getInsights = async (req, res) => {
   try {
     const [tasks, budgets] = await Promise.all([
@@ -2199,6 +2251,27 @@ var getInsights = async (req, res) => {
         createdAt: /* @__PURE__ */ new Date()
       });
     }
+    const predictiveService2 = new PredictiveService();
+    try {
+      const forecasts = await predictiveService2.generateForecast(req.userId);
+      forecasts.forEach((forecast) => {
+        if (forecast.status === "CRITICAL" || forecast.status === "WARNING") {
+          insights.push({
+            id: `forecast-${forecast.budgetId}`,
+            type: "BUDGET_WARNING",
+            priority: forecast.status === "CRITICAL" ? "HIGH" : "MEDIUM",
+            title: `Predictive Burn: ${forecast.category}`,
+            message: `Based on your weekly spending, you are projected to exhaust your ${forecast.category} budget (Limit: NGN ${forecast.budgetLimit.toLocaleString()}, Projected: NGN ${forecast.projectedTotal.toLocaleString()}).`,
+            actionable: true,
+            suggestedAction: "Reduce variable spending or increase budget limit",
+            financialImpact: forecast.budgetLimit - forecast.projectedTotal,
+            createdAt: /* @__PURE__ */ new Date()
+          });
+        }
+      });
+    } catch (e) {
+      console.error("Failed to generate predictive insights", e);
+    }
     res.json({ insights });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -2321,57 +2394,9 @@ var insights_routes_default = router5;
 // server/src/routes/predictive.routes.ts
 import { Router as Router5 } from "express";
 
-// server/src/services/predictive.service.ts
-init_db();
-import {
-  getDaysInMonth,
-  differenceInCalendarDays,
-  lastDayOfMonth
-} from "date-fns";
-var PredictiveService = class {
-  async generateForecast(userId) {
-    console.log(`[PredictiveService] Generating forecast for user: ${userId}`);
-    const today = /* @__PURE__ */ new Date();
-    const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-    const endOfMonth = lastDayOfMonth(today);
-    const daysInCurrentMonth = getDaysInMonth(today);
-    const daysPassed = differenceInCalendarDays(today, startOfMonth) + 1;
-    const daysRemaining = daysInCurrentMonth - daysPassed;
-    const budgets = await db_default.budget.findMany({
-      where: { userId },
-      include: { user: false }
-    });
-    const recurringExpenses = await db_default.recurringExpense.findMany({
-      where: { userId, isActive: true }
-    });
-    const forecasts = [];
-    for (const budget of budgets) {
-      const dailyBurnRate = budget.spent / Math.max(daysPassed, 1);
-      let projectedTotal = budget.spent + dailyBurnRate * daysRemaining;
-      let status = "SAFE";
-      if (projectedTotal > budget.limit) {
-        status = "CRITICAL";
-      } else if (projectedTotal > budget.limit * 0.9) {
-        status = "WARNING";
-      }
-      forecasts.push({
-        budgetId: budget.id,
-        category: budget.category,
-        budgetLimit: budget.limit,
-        currentSpent: budget.spent,
-        projectedTotal: Math.round(projectedTotal),
-        status,
-        confidence: daysPassed > 10 ? 0.8 : 0.5,
-        // Low confidence early in month
-        upcomingRecurrings: []
-        // Populated if we had category linking
-      });
-    }
-    return forecasts;
-  }
-};
-
 // server/src/controllers/predictive.controller.ts
+init_db();
+import { GoogleGenerativeAI as GoogleGenerativeAI2 } from "@google/generative-ai";
 var predictiveService = new PredictiveService();
 var getForecast = async (req, res) => {
   try {
@@ -2381,10 +2406,55 @@ var getForecast = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+var getCoachResponse = async (req, res) => {
+  try {
+    const { query } = req.body;
+    if (!query) {
+      res.status(400).json({ error: "Query is required" });
+      return;
+    }
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      res.status(500).json({ error: "AI Features are currently disabled (missing API key)" });
+      return;
+    }
+    const [tasks, budgets] = await Promise.all([
+      db_default.task.findMany({ where: { userId: req.userId } }),
+      db_default.budget.findMany({ where: { userId: req.userId } })
+    ]);
+    const genAI = new GoogleGenerativeAI2(apiKey);
+    const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
+    const budgetsContext = budgets.map((b) => `- Category: ${b.category}, Limit: ${b.limit}, Spent: ${b.spent}`).join("\n");
+    const tasksContext = tasks.map((t) => `- Title: ${t.title}, Priority: ${t.priority}, Status: ${t.status}, Type: ${t.financials?.type || "NEUTRAL"}, Cost: ${t.financials?.estimatedCost || 0}, Income: ${t.financials?.estimatedIncome || 0}, Due: ${t.dueDate ? new Date(t.dueDate).toLocaleDateString() : "N/A"}`).join("\n");
+    const systemPrompt = `
+You are Hikari, a financial and productivity assistant. You analyze the user's tasks and budgets to give them "radical clarity", in a hope-driven, premium, encouraging way.
+Use the following user data to provide context for their query:
+
+Active Budgets:
+${budgetsContext || "No budgets set yet."}
+
+Active Tasks:
+${tasksContext || "No tasks created yet."}
+
+Instructions:
+- Give concise, smart, actionable recommendations based on the user's query and their data.
+- Keep responses friendly but focused on time and money optimization (e.g. spending habits, saving opportunities, prioritizing high-value or overdue tasks).
+- Do not make up information. If they ask about something not in their data, politely answer that you don't track it, but relate it back to how they can manage their finances in Hikari.
+
+User Query: "${query}"
+    `;
+    const result = await model.generateContent(systemPrompt);
+    const reply = result.response.text();
+    res.json({ reply });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 // server/src/routes/predictive.routes.ts
 var router6 = Router5();
 router6.get("/forecast", authenticate, getForecast);
+router6.post("/coach", authenticate, getCoachResponse);
 var predictive_routes_default = router6;
 
 // server/src/routes/pattern.routes.ts

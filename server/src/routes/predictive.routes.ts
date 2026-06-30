@@ -1,9 +1,10 @@
 import { Router } from "express";
 import { authenticate } from "../middleware/auth.middleware";
-import { getForecast } from "../controllers/predictive.controller";
+import { getForecast, getCoachResponse } from "../controllers/predictive.controller";
 
 const router = Router();
 
 router.get("/forecast", authenticate, getForecast);
+router.post("/coach", authenticate, getCoachResponse);
 
 export default router;

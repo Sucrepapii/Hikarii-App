@@ -2,6 +2,7 @@ import { Response } from "express";
 import prisma from "../config/db";
 import { AuthRequest } from "../middleware/auth.middleware";
 import { TaskType, TaskStatus } from "../models/types";
+import { PredictiveService } from "../services/predictive.service";
 
 interface Insight {
   id: string;
@@ -229,6 +230,29 @@ export const getInsights = async (
         actionable: false,
         createdAt: new Date(),
       });
+    }
+
+    // 8. Predictive Forecasting Warnings
+    const predictiveService = new PredictiveService();
+    try {
+      const forecasts = await predictiveService.generateForecast(req.userId);
+      forecasts.forEach((forecast) => {
+        if (forecast.status === "CRITICAL" || forecast.status === "WARNING") {
+          insights.push({
+            id: `forecast-${forecast.budgetId}`,
+            type: "BUDGET_WARNING",
+            priority: forecast.status === "CRITICAL" ? "HIGH" : "MEDIUM",
+            title: `Predictive Burn: ${forecast.category}`,
+            message: `Based on your weekly spending, you are projected to exhaust your ${forecast.category} budget (Limit: NGN ${forecast.budgetLimit.toLocaleString()}, Projected: NGN ${forecast.projectedTotal.toLocaleString()}).`,
+            actionable: true,
+            suggestedAction: "Reduce variable spending or increase budget limit",
+            financialImpact: forecast.budgetLimit - forecast.projectedTotal,
+            createdAt: new Date(),
+          });
+        }
+      });
+    } catch (e) {
+      console.error("Failed to generate predictive insights", e);
     }
 
     res.json({ insights });

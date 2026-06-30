@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { LayoutDashboard, CheckSquare, Wallet, X, Calendar, LineChart, Settings, RefreshCw, LogOut, ChevronDown, ChevronRight, User, Database, DollarSign, Link2, HelpCircle, Shield, Archive, FileText, Clock, TrendingUp, BookOpen, MessageSquare } from 'lucide-react';
+import { LayoutDashboard, CheckSquare, Wallet, X, Calendar, LineChart, Settings, RefreshCw, LogOut, ChevronDown, ChevronRight, User, Database, DollarSign, Link2, HelpCircle, Shield, Archive, FileText, Clock, TrendingUp, BookOpen, MessageSquare, Sparkles } from 'lucide-react';
 import { clsx } from 'clsx';
 import { useAuthStore } from '../../stores/authStore';
 import toast from 'react-hot-toast';
@@ -21,6 +21,7 @@ const navItems: NavItem[] = [
     { to: '/calendar', icon: Calendar, label: 'Calendar' },
     { to: '/analytics', icon: LineChart, label: 'Analytics' },
     { to: '/subscriptions', icon: RefreshCw, label: 'Subscriptions' },
+    { to: '/insights/coach', icon: Sparkles, label: 'AI Advisor' },
     {
         to: '/settings',
         icon: Settings,

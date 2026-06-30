@@ -39,6 +39,7 @@ import { AdminReport } from './pages/AdminReport';
 import { AdminAuditLogs } from './pages/AdminAuditLogs';
 import { AdminMarketing } from './pages/AdminMarketing';
 import { AdminFeedback } from './pages/AdminFeedback';
+import { AIAdvisor } from './pages/AIAdvisor';
 import { Pricing } from './pages/Pricing';
 import ForcedPasswordChange from './pages/ForcedPasswordChange';
 import { ResetPassword } from './pages/ResetPassword';
@@ -228,6 +229,13 @@ function App() {
                     <ProtectedRoute>
                         <DashboardLayout>
                             <Settings />
+                        </DashboardLayout>
+                    </ProtectedRoute>
+                } />
+                <Route path="/insights/coach" element={
+                    <ProtectedRoute>
+                        <DashboardLayout>
+                            <AIAdvisor />
                         </DashboardLayout>
                     </ProtectedRoute>
                 } />

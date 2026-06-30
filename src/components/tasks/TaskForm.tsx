@@ -9,8 +9,9 @@ import { projectService } from '../../services/project.service';
 import { Input } from '../common/Input';
 import { Button } from '../common/Button';
 import { useBudgetStore } from '../../stores/budgetStore';
-import { Briefcase, Calendar, DollarSign, TrendingDown, TrendingUp, AlertTriangle, CheckCircle2, Clock } from 'lucide-react';
+import { Briefcase, Calendar, DollarSign, TrendingDown, TrendingUp, AlertTriangle, CheckCircle2, Clock, Sparkles } from 'lucide-react';
 import apiClient from '../../api/client';
+import { parseNaturalLanguageTask } from '../../utils/nlpParser';
 
 interface TaskFormProps {
     onSubmit: (data: TaskFormData) => void;
@@ -37,6 +38,40 @@ export const TaskForm: React.FC<TaskFormProps> = ({
 }) => {
     const { currency, getConvertedAmount, getAmountInBaseCurrency } = useBudgetStore();
     const currencySymbol = CURRENCY_SYMBOLS[currency] || currency;
+    const [aiInput, setAiInput] = useState('');
+
+    const handleAiFill = () => {
+        if (!aiInput.trim()) {
+            toast.error('Please enter a sentence first');
+            return;
+        }
+
+        try {
+            const parsed = parseNaturalLanguageTask(aiInput);
+            
+            if (parsed.title) setValue('title', parsed.title);
+            if (parsed.taskType) setValue('taskType', parsed.taskType);
+            if (parsed.priority) setValue('priority', parsed.priority);
+            
+            if (parsed.dueDate) {
+                const dateStr = parsed.dueDate.toISOString().split('T')[0];
+                setValue('dueDate', dateStr as any);
+            }
+            if (parsed.estimatedDuration) setValue('estimatedDuration', parsed.estimatedDuration);
+
+            if (parsed.taskType === TaskType.EXPENSE) {
+                if (parsed.estimatedCost) setValue('estimatedCost', parsed.estimatedCost);
+                if (parsed.expenseCategory) setValue('expenseCategory', parsed.expenseCategory);
+                if (parsed.lateFeePerDay) setValue('lateFeePerDay', parsed.lateFeePerDay);
+            } else if (parsed.taskType === TaskType.INCOME) {
+                if (parsed.estimatedIncome) setValue('estimatedIncome', parsed.estimatedIncome);
+            }
+
+            toast.success('Form populated successfully!');
+        } catch (e) {
+            toast.error('Failed to parse the text. Try again.');
+        }
+    };
 
     const {
         register,
@@ -151,6 +186,34 @@ export const TaskForm: React.FC<TaskFormProps> = ({
 
     return (
         <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
+            {/* AI Quick Fill Section */}
+            <div className="p-4 rounded-2xl border border-cyan-500/20 bg-cyan-500/5 dark:bg-cyan-500/5 mb-6 space-y-3">
+                <div className="flex items-center gap-2 text-cyan-600 dark:text-cyan-400 font-semibold text-sm">
+                    <Sparkles className="w-4 h-4 text-cyan-500" />
+                    <span>AI Quick Fill</span>
+                </div>
+                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                    Type a sentence (e.g. "Pay internet bill of 50 by next Friday or there is a 5/day late fee") and fill the form instantly.
+                </p>
+                <div className="flex gap-2">
+                    <input
+                        type="text"
+                        placeholder="Describe your task here..."
+                        value={aiInput}
+                        onChange={(e) => setAiInput(e.target.value)}
+                        className="flex-1 px-4 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-white/50 dark:bg-slate-800/50 focus:outline-none focus:ring-2 focus:ring-cyan-500 text-slate-900 dark:text-slate-100"
+                    />
+                    <button
+                        type="button"
+                        onClick={handleAiFill}
+                        className="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded-xl text-sm font-semibold transition-colors flex items-center gap-1.5 shrink-0 shadow-sm shadow-cyan-600/10"
+                    >
+                        <Sparkles className="w-3.5 h-3.5" />
+                        Fill Form
+                    </button>
+                </div>
+            </div>
+
             <Input
                 label="Title"
                 placeholder="Enter task title (e.g., 'Write Report (2 hours)')"
