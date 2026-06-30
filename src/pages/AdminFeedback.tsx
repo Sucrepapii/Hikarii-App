@@ -60,7 +60,7 @@ export const AdminFeedback: React.FC = () => {
     if (loading) {
         return (
             <div className="flex items-center justify-center min-h-[60vh]">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-600"></div>
             </div>
         );
     }
@@ -72,7 +72,7 @@ export const AdminFeedback: React.FC = () => {
                     <h1 className="text-3xl font-display font-bold text-slate-900 dark:text-white">User Feedback</h1>
                     <p className="text-slate-500 dark:text-slate-400 mt-1">Review and manage feedback submitted by users.</p>
                 </div>
-                <div className="flex items-center gap-2 px-4 py-2 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 rounded-xl font-medium">
+                <div className="flex items-center gap-2 px-4 py-2 bg-cyan-50 dark:bg-cyan-900/30 text-cyan-600 rounded-xl font-medium">
                     <MessageSquare className="w-5 h-5" />
                     <span>{feedbacks.length} Responses</span>
                 </div>
@@ -102,7 +102,7 @@ export const AdminFeedback: React.FC = () => {
                                 <div className="flex-1 space-y-4">
                                     <div className="flex items-center justify-between md:justify-start gap-4">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold">
+                                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500 to-purple-500 flex items-center justify-center text-white font-bold">
                                                 {feedback.name.charAt(0).toUpperCase()}
                                             </div>
                                             <div>

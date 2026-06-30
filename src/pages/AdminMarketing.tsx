@@ -36,7 +36,7 @@ export const AdminMarketing: React.FC = () => {
     if (loading || !data) {
         return (
             <div className="flex items-center justify-center min-h-[60vh]">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-600"></div>
             </div>
         );
     }
@@ -90,7 +90,7 @@ export const AdminMarketing: React.FC = () => {
                                 Lifetime capture
                             </p>
                         </div>
-                        <div className="p-3 bg-indigo-50 dark:bg-indigo-900/30 rounded-xl text-indigo-600">
+                        <div className="p-3 bg-cyan-50 dark:bg-cyan-900/30 rounded-xl text-cyan-600">
                             <Mail className="w-6 h-6" />
                         </div>
                     </div>
@@ -114,7 +114,7 @@ export const AdminMarketing: React.FC = () => {
                         <div>
                             <p className="text-sm font-medium text-slate-500">Search Visibility</p>
                             <h3 className="text-3xl font-bold mt-1 text-slate-900 dark:text-white">Live</h3>
-                            <p className="text-xs text-indigo-500 mt-1">Technical SEO Active</p>
+                            <p className="text-xs text-cyan-500 mt-1">Technical SEO Active</p>
                         </div>
                         <div className="p-3 bg-emerald-50 dark:bg-emerald-900/30 rounded-xl text-emerald-600">
                             <Search className="w-6 h-6" />

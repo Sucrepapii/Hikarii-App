@@ -109,10 +109,10 @@ export const AdminReport: React.FC = () => {
             {/* Key Performance Indicators */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {[
-                    { label: 'Total Users', value: data.stats.totalUsers, icon: Users, color: 'indigo' },
+                    { label: 'Total Users', value: data.stats.totalUsers, icon: Users, color: 'cyan' },
                     { label: 'Active (7d)', value: data.stats.activeUsers, icon: Activity, color: 'emerald' },
                     { label: 'Pro Members', value: data.stats.proUsers, icon: Crown, color: 'amber' },
-                    { label: 'MRR', value: `$${data.stats.estimatedMRR.toFixed(2)}`, icon: Zap, color: 'indigo' },
+                    { label: 'MRR', value: `$${data.stats.estimatedMRR.toFixed(2)}`, icon: Zap, color: 'cyan' },
                 ].map((stat, i) => (
                     <Card key={i} className="p-6">
                         <div className="flex items-start justify-between">
@@ -122,7 +122,7 @@ export const AdminReport: React.FC = () => {
                             </div>
                             <div className={clsx(
                                 "p-2 rounded-lg",
-                                stat.color === 'indigo' && "bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400",
+                                stat.color === 'cyan' && "bg-cyan-100 dark:bg-cyan-900/30 text-cyan-600 dark:text-cyan-400",
                                 stat.color === 'emerald' && "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400",
                                 stat.color === 'amber' && "bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400"
                             )}>
@@ -159,7 +159,7 @@ export const AdminReport: React.FC = () => {
                     </div>
                     <div className="mt-6 grid grid-cols-3 gap-4 border-t border-slate-100 dark:border-slate-800 pt-6">
                         <div className="text-center">
-                            <p className="text-2xl font-bold text-indigo-500">{data.stats.totalTasks}</p>
+                            <p className="text-2xl font-bold text-cyan-500">{data.stats.totalTasks}</p>
                             <p className="text-xs text-slate-400 mt-1 uppercase tracking-wider font-semibold">Tasks</p>
                         </div>
                         <div className="text-center">

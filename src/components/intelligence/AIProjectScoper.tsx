@@ -138,9 +138,9 @@ export const AIProjectScoper: React.FC<AIProjectScoperProps> = ({
                     /* AI Scoping Result View */
                     <div className="space-y-6 animate-fade-in">
                         {/* Summary Description Box */}
-                        <div className="p-4 rounded-2xl bg-indigo-600/5 border border-indigo-500/20 relative overflow-hidden">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 rounded-full blur-2xl pointer-events-none" />
-                            <h3 className="text-sm font-bold text-indigo-400 mb-1 flex items-center gap-1.5">
+                        <div className="p-4 rounded-2xl bg-cyan-600/5 border border-cyan-500/20 relative overflow-hidden">
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/10 rounded-full blur-2xl pointer-events-none" />
+                            <h3 className="text-sm font-bold text-cyan-400 mb-1 flex items-center gap-1.5">
                                 <Sparkles className="w-4 h-4" />
                                 Gemini Scoped Overview
                             </h3>

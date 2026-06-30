@@ -142,7 +142,7 @@ export const AdminDashboard: React.FC = () => {
                             <h3 className="text-2xl font-bold mt-1 text-slate-800 dark:text-white">{data.stats.totalTasks}</h3>
                             <p className="text-xs text-slate-400 mt-1">Lifetime</p>
                         </div>
-                        <div className="p-2 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg text-indigo-600 dark:text-indigo-400">
+                        <div className="p-2 bg-cyan-100 dark:bg-cyan-900/30 rounded-lg text-cyan-600 dark:text-cyan-400">
                             <ListTodo className="w-5 h-5" />
                         </div>
                     </div>
@@ -246,17 +246,17 @@ export const AdminDashboard: React.FC = () => {
                         <div className="grid grid-cols-1 gap-3">
                             <button 
                                 onClick={() => navigate('/admin/users')}
-                                className="w-full flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-900/50 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 text-slate-700 dark:text-slate-200 transition-colors group"
+                                className="w-full flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-900/50 hover:bg-cyan-50 dark:hover:bg-cyan-900/20 text-slate-700 dark:text-slate-200 transition-colors group"
                             >
                                 <div className="flex items-center gap-3">
-                                    <Users className="w-4 h-4 text-indigo-500" />
+                                    <Users className="w-4 h-4 text-cyan-500" />
                                     <span className="text-sm font-medium">Manage Users</span>
                                 </div>
                                 <Zap className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
                             </button>
                             <button 
                                 onClick={() => navigate('/admin/marketing')}
-                                className="w-full flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-900/50 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 text-slate-700 dark:text-slate-200 transition-colors group"
+                                className="w-full flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-900/50 hover:bg-cyan-50 dark:hover:bg-cyan-900/20 text-slate-700 dark:text-slate-200 transition-colors group"
                             >
                                 <div className="flex items-center gap-3">
                                     <TrendingUp className="w-4 h-4 text-purple-500" />
@@ -266,7 +266,7 @@ export const AdminDashboard: React.FC = () => {
                             </button>
                             <button 
                                 onClick={() => navigate('/admin/audit')}
-                                className="w-full flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-900/50 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 text-slate-700 dark:text-slate-200 transition-colors group"
+                                className="w-full flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-900/50 hover:bg-cyan-50 dark:hover:bg-cyan-900/20 text-slate-700 dark:text-slate-200 transition-colors group"
                             >
                                 <div className="flex items-center gap-3">
                                     <Shield className="w-4 h-4 text-emerald-500" />

@@ -11,7 +11,7 @@ export const PrivacyPolicy: React.FC = () => {
 
             {/* Content */}
             <div className="container mx-auto px-6 py-20 max-w-5xl relative">
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-indigo-600/5 rounded-full blur-[150px] pointer-events-none -z-10" />
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-cyan-600/5 rounded-full blur-[150px] pointer-events-none -z-10" />
 
                 <h1 className="text-5xl md:text-7xl font-display font-bold text-white mb-6 tracking-tight">
                     Privacy Policy
@@ -22,7 +22,7 @@ export const PrivacyPolicy: React.FC = () => {
 
                 <div className="space-y-12">
                     <section className="bg-[#0D0F1A] p-10 md:p-16 rounded-[3rem] border border-white/[0.06] shadow-2xl relative overflow-hidden group">
-                        <div className="absolute top-0 left-0 w-2 h-full bg-indigo-500/50 group-hover:bg-indigo-500 transition-colors" />
+                        <div className="absolute top-0 left-0 w-2 h-full bg-cyan-500/50 group-hover:bg-cyan-500 transition-colors" />
                         <h2 className="text-3xl font-bold text-white mb-8 tracking-tight">1. Scope of Data Processing</h2>
                         <p className="text-slate-400 leading-relaxed text-lg mb-6">
                             This Privacy Policy describes the policies and procedures of Hikari World Ltd ("Company," "we," "us," or "our") on the collection, use, and disclosure of your information when you use the Service and tells you about your privacy rights and how the law protects you.
@@ -42,7 +42,7 @@ export const PrivacyPolicy: React.FC = () => {
                                 <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     {['Legal Name', 'Email Address', 'Hashed Credentials', 'Billing Telemetry'].map((item) => (
                                         <li key={item} className="flex items-center gap-3 text-slate-300">
-                                            <div className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
+                                            <div className="w-1.5 h-1.5 rounded-full bg-cyan-500" />
                                             {item}
                                         </li>
                                     ))}
@@ -105,7 +105,7 @@ export const PrivacyPolicy: React.FC = () => {
                     </section>
 
                     <div className="bg-white/5 p-12 rounded-[3rem] border border-white/10 text-center relative overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-transparent to-indigo-500/10" />
+                        <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-transparent to-cyan-500/10" />
                         <h2 className="text-3xl font-bold text-white mb-6 tracking-tight relative">Data Protection Officer</h2>
                         <p className="text-slate-400 mb-10 max-w-2xl mx-auto relative text-lg">For all inquiries regarding data processing, cross-border transfers, or to exercise your statutory rights, please contact our DPO.</p>
                         <a href="mailto:privacy@hikarii.org" className="relative inline-flex items-center justify-center px-12 py-5 rounded-2xl bg-white text-black font-black tracking-[0.2em] uppercase text-xs hover:bg-slate-200 transition-all shadow-xl shadow-white/5">

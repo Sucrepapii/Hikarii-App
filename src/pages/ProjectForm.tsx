@@ -97,21 +97,21 @@ export const ProjectForm: React.FC = () => {
             {!isEditing && (
                 <div 
                     onClick={() => setShowAIScoper(true)}
-                    className="mb-6 p-4 rounded-2xl bg-gradient-to-br from-indigo-500/10 to-purple-500/10 border border-indigo-500/20 shadow-sm cursor-pointer hover:border-indigo-500/40 hover:-translate-y-0.5 transition-all flex items-center justify-between gap-4 group"
+                    className="mb-6 p-4 rounded-2xl bg-gradient-to-br from-cyan-500/10 to-purple-500/10 border border-cyan-500/20 shadow-sm cursor-pointer hover:border-cyan-500/40 hover:-translate-y-0.5 transition-all flex items-center justify-between gap-4 group"
                 >
                     <div className="flex items-center gap-3">
-                        <div className="p-2.5 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-500 text-white shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform duration-300">
+                        <div className="p-2.5 rounded-xl bg-gradient-to-br from-cyan-500 to-purple-500 text-white shadow-md shadow-cyan-500/20 group-hover:scale-105 transition-transform duration-300">
                             <Sparkles className="w-5 h-5 animate-pulse" />
                         </div>
                         <div>
                             <p className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
                                 AI Autopilot Scoper
-                                <span className="px-1.5 py-0.5 rounded bg-indigo-500/10 text-[9.5px] text-indigo-500 font-bold uppercase tracking-wider">New</span>
+                                <span className="px-1.5 py-0.5 rounded bg-cyan-500/10 text-[9.5px] text-cyan-500 font-bold uppercase tracking-wider">New</span>
                             </p>
                             <p className="text-xs text-slate-500 dark:text-slate-400">Describe what you want to build and let Gemini auto-generate the complete task checklist!</p>
                         </div>
                     </div>
-                    <ArrowRight className="w-5 h-5 text-slate-400 group-hover:text-indigo-500 group-hover:translate-x-1 transition-all" />
+                    <ArrowRight className="w-5 h-5 text-slate-400 group-hover:text-cyan-500 group-hover:translate-x-1 transition-all" />
                 </div>
             )}
 

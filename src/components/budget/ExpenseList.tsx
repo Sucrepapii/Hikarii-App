@@ -34,7 +34,7 @@ const categoryColors = {
     [ExpenseCategory.UTILITIES]: 'bg-yellow-500',
     [ExpenseCategory.SHOPPING]: 'bg-pink-500',
     [ExpenseCategory.HEALTH]: 'bg-red-500',
-    [ExpenseCategory.TUITION]: 'bg-indigo-500',
+    [ExpenseCategory.TUITION]: 'bg-cyan-500',
     [ExpenseCategory.BOOKS]: 'bg-emerald-500',
     [ExpenseCategory.GROCERIES]: 'bg-rose-500',
     [ExpenseCategory.OTHER]: 'bg-slate-500',

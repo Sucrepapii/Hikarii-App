@@ -18,7 +18,7 @@ export const Navbar: React.FC = () => {
                     <Link to="/" className="flex items-center gap-2">
                         <Logo variant="full" size="md" suppressLink={true} />
                     </Link>
-                    <span className="text-sm font-medium bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-500 bg-clip-text text-transparent bg-[length:200%_auto] animate-shimmer overflow-hidden whitespace-nowrap opacity-0 max-w-0 group-hover:opacity-100 group-hover:max-w-xs transition-all duration-700 ease-out pl-2 border-l border-white/10 hidden md:block">
+                    <span className="text-sm font-medium bg-gradient-to-r from-cyan-500 via-amber-500 to-cyan-500 bg-clip-text text-transparent bg-[length:200%_auto] animate-shimmer overflow-hidden whitespace-nowrap opacity-0 max-w-0 group-hover:opacity-100 group-hover:max-w-xs transition-all duration-700 ease-out pl-2 border-l border-white/10 hidden md:block">
                         Clarity. Focus. Control.
                     </span>
                 </div>
@@ -30,7 +30,7 @@ export const Navbar: React.FC = () => {
                     <Link to="/about" className="text-sm font-medium text-slate-400 hover:text-white transition-colors">
                         Who is Hikari For?
                     </Link>
-                    <Link to="/help/article/ultimate-guide-hikari-method" className="text-sm font-medium text-indigo-400 hover:text-indigo-300 transition-colors">
+                    <Link to="/help/article/ultimate-guide-hikari-method" className="text-sm font-medium text-cyan-400 hover:text-cyan-300 transition-colors">
                         The Ultimate Guide
                     </Link>
                     {!isAuthenticated && (
@@ -38,7 +38,7 @@ export const Navbar: React.FC = () => {
                     )}
                     <Button
                         onClick={() => navigate(isAuthenticated ? '/dashboard' : '/signup')}
-                        className="bg-indigo-600 text-white hover:bg-indigo-500 rounded-full px-5 h-9 text-sm font-semibold border-0 shadow-md shadow-indigo-500/20 transition-all hover:scale-105"
+                        className="bg-cyan-600 text-white hover:bg-cyan-500 rounded-full px-5 h-9 text-sm font-semibold border-0 shadow-md shadow-cyan-500/20 transition-all hover:scale-105"
                     >
                         {isAuthenticated ? 'Dashboard' : 'Get Started'}
                     </Button>
@@ -59,7 +59,7 @@ export const Navbar: React.FC = () => {
                     <Link to="/about" className="text-lg font-medium text-slate-300 py-2 border-b border-white/5" onClick={() => setIsMenuOpen(false)}>
                         Who is Hikari For?
                     </Link>
-                    <Link to="/help/article/ultimate-guide-hikari-method" className="text-lg font-medium text-indigo-400 py-2 border-b border-white/5" onClick={() => setIsMenuOpen(false)}>
+                    <Link to="/help/article/ultimate-guide-hikari-method" className="text-lg font-medium text-cyan-400 py-2 border-b border-white/5" onClick={() => setIsMenuOpen(false)}>
                         The Ultimate Guide
                     </Link>
                     {!isAuthenticated && (
@@ -72,7 +72,7 @@ export const Navbar: React.FC = () => {
                             navigate(isAuthenticated ? '/dashboard' : '/signup');
                             setIsMenuOpen(false);
                         }}
-                        className="bg-indigo-600 text-white w-full py-4 rounded-xl font-bold"
+                        className="bg-cyan-600 text-white w-full py-4 rounded-xl font-bold"
                     >
                         {isAuthenticated ? 'Dashboard' : 'Get Started'}
                     </Button>

@@ -173,7 +173,7 @@ export const Dashboard: React.FC = () => {
         <div className={clsx(
             "min-h-screen transition-all duration-1000 ease-in-out -m-4 md:-m-6 p-4 md:p-6",
             isFocusMode
-                ? "bg-gradient-to-br from-slate-50 to-indigo-50/50 dark:from-[#080910] dark:to-indigo-950/20"
+                ? "bg-gradient-to-br from-slate-50 to-cyan-50/50 dark:from-[#080910] dark:to-cyan-950/20"
                 : "animate-fade-in"
         )}>
             {/* Visual Depth: Starfield (Only in Dark Mode) */}
@@ -220,11 +220,11 @@ export const Dashboard: React.FC = () => {
 
             {/* Hikari Wrapped Trigger (Only visible on last day of month) */}
             {isLastDayOfMonth && (
-                <div className="mb-6 p-1 rounded-2xl bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 animate-pulse-slow">
+                <div className="mb-6 p-1 rounded-2xl bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 animate-pulse-slow">
                     <div className="bg-[#0B0C15] rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
                         <div>
                             <h3 className="text-xl font-display font-bold text-white mb-1">Your {today.toLocaleString('default', { month: 'long' })} Wrapped is ready!</h3>
-                            <p className="text-indigo-200 text-sm">See your productivity and financial story for this month.</p>
+                            <p className="text-cyan-200 text-sm">See your productivity and financial story for this month.</p>
                         </div>
                         <button
                             onClick={() => setIsWrappedOpen(true)}
@@ -511,8 +511,8 @@ export const Dashboard: React.FC = () => {
             {/* Focus Mode Overlay Message */}
             {isFocusMode && (
                 <div className="fixed inset-0 pointer-events-none z-50 flex items-center justify-center animate-fade-in">
-                    <div className="bg-indigo-600/10 backdrop-blur-xl border border-indigo-500/20 px-8 py-4 rounded-3xl shadow-2xl">
-                        <p className="text-indigo-600 dark:text-indigo-400 font-display font-bold text-xl flex items-center gap-3">
+                    <div className="bg-cyan-600/10 backdrop-blur-xl border border-cyan-500/20 px-8 py-4 rounded-3xl shadow-2xl">
+                        <p className="text-cyan-600 dark:text-cyan-400 font-display font-bold text-xl flex items-center gap-3">
                             <Zap className="w-6 h-6 animate-pulse" /> Focus Mode Active
                         </p>
                     </div>

@@ -11,7 +11,7 @@ export const TermsOfService: React.FC = () => {
 
             {/* Content */}
             <div className="container mx-auto px-6 py-20 max-w-5xl relative">
-                <div className="absolute top-0 right-1/2 translate-x-1/2 w-[800px] h-[800px] bg-indigo-600/5 rounded-full blur-[150px] pointer-events-none -z-10" />
+                <div className="absolute top-0 right-1/2 translate-x-1/2 w-[800px] h-[800px] bg-cyan-600/5 rounded-full blur-[150px] pointer-events-none -z-10" />
 
                 <h1 className="text-5xl md:text-7xl font-display font-bold text-white mb-6 tracking-tight">
                     Terms of Service
@@ -22,7 +22,7 @@ export const TermsOfService: React.FC = () => {
 
                 <div className="space-y-12">
                     <section className="bg-[#0D0F1A] p-10 md:p-16 rounded-[3rem] border border-white/[0.06] shadow-2xl relative overflow-hidden group">
-                        <div className="absolute top-0 left-0 w-2 h-full bg-indigo-500/50 group-hover:bg-indigo-500 transition-colors" />
+                        <div className="absolute top-0 left-0 w-2 h-full bg-cyan-500/50 group-hover:bg-cyan-500 transition-colors" />
                         <h2 className="text-3xl font-bold text-white mb-8 tracking-tight">1. Preamble and Acceptance</h2>
                         <p className="text-slate-400 leading-relaxed text-lg mb-6">
                             These Terms of Service ("Agreement") constitute a legally binding contract between you ("User," "you," or "your") and Hikari World Ltd ("Company," "we," "us," or "our"). This Agreement governs your access to and use of the Hikari application, website, and associated services (collectively, the "Service").
@@ -99,7 +99,7 @@ export const TermsOfService: React.FC = () => {
                     </section>
 
                     <div className="bg-white/5 p-12 rounded-[3rem] border border-white/10 text-center relative overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-tr from-indigo-500/10 via-transparent to-purple-500/10" />
+                        <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500/10 via-transparent to-purple-500/10" />
                         <h2 className="text-3xl font-bold text-white mb-6 tracking-tight relative">Questions or Concerns?</h2>
                         <p className="text-slate-400 mb-10 max-w-2xl mx-auto relative text-lg">Our legal department is available to clarify any aspects of these terms to ensure total transparency.</p>
                         <a href="mailto:legal@hikarii.org" className="relative inline-flex items-center justify-center px-12 py-5 rounded-2xl bg-white text-black font-black tracking-[0.2em] uppercase text-xs hover:bg-slate-200 transition-all shadow-xl shadow-white/5">

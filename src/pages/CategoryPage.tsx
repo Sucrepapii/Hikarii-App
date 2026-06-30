@@ -16,7 +16,7 @@ export const CategoryPage: React.FC = () => {
 
     const getIcon = (cat: string) => {
         switch (cat) {
-            case 'Getting Started': return <Book className="w-8 h-8 text-indigo-500" />;
+            case 'Getting Started': return <Book className="w-8 h-8 text-cyan-500" />;
             case 'Account & Billing': return <FileQuestion className="w-8 h-8 text-purple-500" />;
             case 'Troubleshooting': return <HelpCircle className="w-8 h-8 text-pink-500" />;
             default: return <Book className="w-8 h-8 text-slate-500" />;
@@ -58,9 +58,9 @@ export const CategoryPage: React.FC = () => {
 
                 <div className="grid gap-4">
                     {articles.map((article) => (
-                        <Link key={article.id} to={`/help/article/${article.slug}`} className="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-indigo-500/30 hover:bg-white/10 transition-all cursor-pointer flex items-center justify-between group shadow-sm hover:shadow-md">
+                        <Link key={article.id} to={`/help/article/${article.slug}`} className="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-cyan-500/30 hover:bg-white/10 transition-all cursor-pointer flex items-center justify-between group shadow-sm hover:shadow-md">
                             <div>
-                                <h3 className="text-xl font-bold mb-2 group-hover:text-indigo-400 transition-colors text-white">{article.title}</h3>
+                                <h3 className="text-xl font-bold mb-2 group-hover:text-cyan-400 transition-colors text-white">{article.title}</h3>
                                 <p className="text-slate-400">{article.excerpt}</p>
                             </div>
                             <ArrowRight className="w-5 h-5 text-slate-500 group-hover:translate-x-1 transition-transform" />

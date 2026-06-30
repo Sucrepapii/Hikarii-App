@@ -52,7 +52,7 @@ export const Contact: React.FC = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
                     {/* Left Column: Info */}
                     <div className="relative">
-                        <div className="absolute top-0 left-0 w-64 h-64 bg-indigo-600/10 rounded-full blur-[100px] -z-10" />
+                        <div className="absolute top-0 left-0 w-64 h-64 bg-cyan-600/10 rounded-full blur-[100px] -z-10" />
                         <h1 className="text-4xl md:text-7xl font-display font-bold mb-8 tracking-tight">Get in touch</h1>
                         <p className="text-xl text-slate-400 mb-12 leading-relaxed max-w-lg">
                             Have a question about the platform? Interested in enterprise plans?
@@ -60,14 +60,14 @@ export const Contact: React.FC = () => {
                         </p>
 
                         <div className="space-y-6 mb-12">
-                            <div className="flex items-start gap-5 p-8 rounded-[2rem] bg-[#0D0F1A] border border-white/[0.06] hover:border-indigo-500/30 transition-all duration-300 group">
-                                <div className="w-12 h-12 bg-indigo-500/10 rounded-2xl flex items-center justify-center text-indigo-400 border border-indigo-500/20 shadow-lg shadow-indigo-500/10 group-hover:scale-110 transition-transform">
+                            <div className="flex items-start gap-5 p-8 rounded-[2rem] bg-[#0D0F1A] border border-white/[0.06] hover:border-cyan-500/30 transition-all duration-300 group">
+                                <div className="w-12 h-12 bg-cyan-500/10 rounded-2xl flex items-center justify-center text-cyan-400 border border-cyan-500/20 shadow-lg shadow-cyan-500/10 group-hover:scale-110 transition-transform">
                                     <Mail className="w-6 h-6" />
                                 </div>
                                 <div>
                                     <h3 className="font-bold text-lg mb-1 text-white">Email Support</h3>
                                     <p className="text-slate-500 text-sm mb-3 leading-relaxed">For general inquiries and technical help.</p>
-                                    <a href="mailto:support@hikarii.org" className="text-indigo-400 font-black tracking-widest text-[10px] uppercase hover:text-white transition-colors">support@hikarii.org</a>
+                                    <a href="mailto:support@hikarii.org" className="text-cyan-400 font-black tracking-widest text-[10px] uppercase hover:text-white transition-colors">support@hikarii.org</a>
                                 </div>
                             </div>
 
@@ -87,7 +87,7 @@ export const Contact: React.FC = () => {
 
                     {/* Right Column: Interactive Form */}
                     <div className="bg-[#0D0F1A] p-8 md:p-12 rounded-[2.5rem] border border-white/[0.06] shadow-[0_20px_50px_rgba(0,0,0,0.3)] relative overflow-hidden group">
-                        <div className="absolute top-0 right-0 w-80 h-80 bg-indigo-600/5 rounded-full blur-[100px] -z-10" />
+                        <div className="absolute top-0 right-0 w-80 h-80 bg-cyan-600/5 rounded-full blur-[100px] -z-10" />
 
                         <h2 className="text-2xl font-bold mb-8 relative z-10 tracking-tight text-white">Send us a message</h2>
                         <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
@@ -98,7 +98,7 @@ export const Contact: React.FC = () => {
                                         name="firstName"
                                         required
                                         type="text"
-                                        className="w-full px-5 py-4 rounded-xl bg-white/[0.03] border border-white/10 text-white placeholder:text-slate-700 focus:border-indigo-500/50 outline-none transition-all"
+                                        className="w-full px-5 py-4 rounded-xl bg-white/[0.03] border border-white/10 text-white placeholder:text-slate-700 focus:border-cyan-500/50 outline-none transition-all"
                                         placeholder="Jane"
                                     />
                                 </div>
@@ -108,7 +108,7 @@ export const Contact: React.FC = () => {
                                         name="lastName"
                                         required
                                         type="text"
-                                        className="w-full px-5 py-4 rounded-xl bg-white/[0.03] border border-white/10 text-white placeholder:text-slate-700 focus:border-indigo-500/50 outline-none transition-all"
+                                        className="w-full px-5 py-4 rounded-xl bg-white/[0.03] border border-white/10 text-white placeholder:text-slate-700 focus:border-cyan-500/50 outline-none transition-all"
                                         placeholder="Doe"
                                     />
                                 </div>
@@ -120,7 +120,7 @@ export const Contact: React.FC = () => {
                                     name="email"
                                     required
                                     type="email"
-                                    className="w-full px-5 py-4 rounded-xl bg-white/[0.03] border border-white/10 text-white placeholder:text-slate-700 focus:border-indigo-500/50 outline-none transition-all"
+                                    className="w-full px-5 py-4 rounded-xl bg-white/[0.03] border border-white/10 text-white placeholder:text-slate-700 focus:border-cyan-500/50 outline-none transition-all"
                                     placeholder="jane@company.com"
                                 />
                             </div>
@@ -130,7 +130,7 @@ export const Contact: React.FC = () => {
                                 <div className="relative">
                                     <select
                                         name="subject"
-                                        className="w-full px-5 py-4 rounded-xl bg-white/[0.03] border border-white/10 text-white focus:border-indigo-500/50 outline-none transition-all appearance-none cursor-pointer"
+                                        className="w-full px-5 py-4 rounded-xl bg-white/[0.03] border border-white/10 text-white focus:border-cyan-500/50 outline-none transition-all appearance-none cursor-pointer"
                                     >
                                         <option value="General Support" className="bg-[#0F111A] text-white">General Support</option>
                                         <option value="Billing Question" className="bg-[#0F111A] text-white">Billing Question</option>
@@ -149,7 +149,7 @@ export const Contact: React.FC = () => {
                                     name="message"
                                     required
                                     rows={4}
-                                    className="w-full px-5 py-4 rounded-xl bg-white/[0.03] border border-white/10 text-white placeholder:text-slate-700 focus:border-indigo-500/50 outline-none transition-all resize-none"
+                                    className="w-full px-5 py-4 rounded-xl bg-white/[0.03] border border-white/10 text-white placeholder:text-slate-700 focus:border-cyan-500/50 outline-none transition-all resize-none"
                                     placeholder="How can we help you?"
                                 ></textarea>
                             </div>
@@ -157,7 +157,7 @@ export const Contact: React.FC = () => {
                             <Button
                                 type="submit"
                                 disabled={isSubmitting}
-                                className="w-full py-5 text-xs font-black tracking-widest uppercase rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white shadow-xl shadow-indigo-500/25 flex items-center justify-center gap-3 transition-all hover:scale-[1.02] active:scale-[0.98] border-0"
+                                className="w-full py-5 text-xs font-black tracking-widest uppercase rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white shadow-xl shadow-cyan-500/25 flex items-center justify-center gap-3 transition-all hover:scale-[1.02] active:scale-[0.98] border-0"
                             >
                                 {isSubmitting ? 'Sending...' : (
                                     <>

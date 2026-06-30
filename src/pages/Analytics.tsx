@@ -259,9 +259,9 @@ export const Analytics: React.FC = () => {
                         <div className={`space-y-4 ${!isPro ? 'opacity-40 pointer-events-none select-none filter blur-sm' : ''}`}>
                             <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-300">Financial & Productivity Insights</h3>
                             {insights.filter(i => i.type !== 'TASK_RECOMMENDATION').map(insight => (
-                                <div key={insight.id} className="p-4 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800">
+                                <div key={insight.id} className="p-4 rounded-xl bg-cyan-50 dark:bg-cyan-900/20 border border-cyan-100 dark:border-cyan-800">
                                     <div className="flex items-start gap-3">
-                                        <div className="p-2 bg-indigo-100 dark:bg-indigo-800 text-indigo-600 dark:text-indigo-300 rounded-lg">
+                                        <div className="p-2 bg-cyan-100 dark:bg-cyan-800 text-cyan-600 dark:text-cyan-300 rounded-lg">
                                             <TrendingUp className="w-5 h-5" />
                                         </div>
                                         <div>

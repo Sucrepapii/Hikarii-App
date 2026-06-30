@@ -4,6 +4,7 @@ import prisma from "../config/db";
 import { sendEmail } from "../services/email.service";
 import { sendWhatsAppMessage } from "../services/whatsapp.service";
 import { getOverdueReminderTemplate } from "../utils/emailTemplates";
+import { notifyUser } from "../services/notification.service";
 
 export const startReminderJob = () => {
   if (process.env.VERCEL) {
@@ -87,6 +88,14 @@ export const startReminderJob = () => {
               );
             }
           }
+
+          // Push Notification / In-App Notification
+          await notifyUser(
+            user.id,
+            "Overdue Tasks",
+            `You have ${overdueTasks.length} overdue tasks that need your attention.`,
+            "REMINDER"
+          );
         }
 
         // WhatsApp for Projects
@@ -99,16 +108,34 @@ export const startReminderJob = () => {
             },
           });
 
-          if (overdueProjects.length > 0) {
-            const projectList = overdueProjects
-              .map(
-                (p: any) =>
-                  `- ${p.title} (Ended: ${new Date(p.endDate).toLocaleDateString()})`,
-              )
-              .join("\n");
-            await sendWhatsAppMessage(
-              user.phoneNumber,
-              `Project Alert! The following projects have passed their end date:\n${projectList}`,
+            if (overdueProjects.length > 0) {
+              const projectList = overdueProjects
+                .map(
+                  (p: any) =>
+                    `- ${p.title} (Ended: ${new Date(p.endDate).toLocaleDateString()})`,
+                )
+                .join("\n");
+              await sendWhatsAppMessage(
+                user.phoneNumber,
+                `Project Alert! The following projects have passed their end date:\n${projectList}`,
+              );
+            }
+          }
+
+          const allOverdueProjects = await prisma.project.findMany({
+            where: {
+              userId: user.id,
+              status: "ACTIVE",
+              endDate: { lt: today },
+            },
+          });
+
+          if (allOverdueProjects.length > 0) {
+            await notifyUser(
+              user.id,
+              "Overdue Projects",
+              `You have ${allOverdueProjects.length} overdue projects.`,
+              "REMINDER"
             );
           }
         }

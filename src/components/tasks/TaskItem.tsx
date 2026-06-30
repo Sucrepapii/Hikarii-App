@@ -85,7 +85,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({
                             {showSparkles && (
                                 <>
                                     <Sparkles className="sparkle-burst text-yellow-400 top-[-10px] left-[-10px]" size={16} />
-                                    <Sparkles className="sparkle-burst text-indigo-400 top-[-5px] right-[-5px]" size={12} style={{ animationDelay: '0.1s' }} />
+                                    <Sparkles className="sparkle-burst text-cyan-400 top-[-5px] right-[-5px]" size={12} style={{ animationDelay: '0.1s' }} />
                                     <Sparkles className="sparkle-burst text-purple-400 bottom-[-8px] left-[5px]" size={14} style={{ animationDelay: '0.2s' }} />
                                 </>
                             )}

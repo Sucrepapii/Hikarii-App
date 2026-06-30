@@ -35,20 +35,20 @@ export const HelpCenter: React.FC = () => {
             <main className="flex-grow pt-32 px-6 max-w-6xl mx-auto w-full pb-20">
                 {/* Search Hero */}
                 <div className="text-center mb-20 relative">
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-64 bg-indigo-600/10 rounded-full blur-[100px] -z-10" />
-                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-[10px] font-black uppercase tracking-widest mb-8">
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-64 bg-cyan-600/10 rounded-full blur-[100px] -z-10" />
+                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-[10px] font-black uppercase tracking-widest mb-8">
                         Hikari Support
                     </div>
                     <h1 className="text-4xl md:text-7xl font-display font-bold mb-8 tracking-tight">How can we help?</h1>
                     <div className="max-w-2xl mx-auto relative group">
-                        <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full blur opacity-20 group-hover:opacity-30 transition-opacity"></div>
+                        <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full blur opacity-20 group-hover:opacity-30 transition-opacity"></div>
                         <div className="relative">
                             <input
                                 type="text"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 placeholder="Search for articles (e.g., 'workspace', 'cancel subscription')"
-                                className="w-full px-8 py-6 pl-16 rounded-[2rem] bg-[#0D0F1A] border border-white/10 focus:border-indigo-500/50 focus:outline-none transition-all text-lg shadow-2xl placeholder:text-slate-600 text-white"
+                                className="w-full px-8 py-6 pl-16 rounded-[2rem] bg-[#0D0F1A] border border-white/10 focus:border-cyan-500/50 focus:outline-none transition-all text-lg shadow-2xl placeholder:text-slate-600 text-white"
                             />
                             <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-slate-500" />
                         </div>
@@ -63,12 +63,12 @@ export const HelpCenter: React.FC = () => {
                         {searchResults.length > 0 ? (
                             <div className="grid gap-4">
                                 {searchResults.map((article) => (
-                                <Link key={article.id} to={`/help/article/${article.slug}`} className="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-indigo-500/30 hover:bg-white/10 transition-all cursor-pointer flex items-center justify-between group shadow-sm hover:shadow-md">
+                                <Link key={article.id} to={`/help/article/${article.slug}`} className="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-cyan-500/30 hover:bg-white/10 transition-all cursor-pointer flex items-center justify-between group shadow-sm hover:shadow-md">
                                     <div>
                                         <div className="flex items-center gap-2 mb-2">
                                             <span className="text-xs font-medium px-2 py-1 rounded bg-white/10 text-slate-400">{article.category}</span>
                                         </div>
-                                        <h3 className="text-xl font-bold mb-1 group-hover:text-indigo-400 transition-colors">{article.title}</h3>
+                                        <h3 className="text-xl font-bold mb-1 group-hover:text-cyan-400 transition-colors">{article.title}</h3>
                                         <p className="text-slate-400">{article.excerpt}</p>
                                     </div>
                                     <ArrowRight className="w-5 h-5 text-slate-500 group-hover:translate-x-1 transition-transform" />
@@ -90,8 +90,8 @@ export const HelpCenter: React.FC = () => {
                         <h2 className="text-xl font-bold mb-6 text-white">Popular Articles</h2>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                             {popularArticles.map((article) => (
-                                <Link key={article.id} to={`/help/article/${article.slug}`} className="p-4 rounded-xl bg-white/5 border border-white/5 hover:border-indigo-500/30 hover:bg-white/10 transition-colors cursor-pointer flex items-center justify-between group">
-                                    <span className="text-sm font-medium text-slate-300 group-hover:text-indigo-400">{article.title}</span>
+                                <Link key={article.id} to={`/help/article/${article.slug}`} className="p-4 rounded-xl bg-white/5 border border-white/5 hover:border-cyan-500/30 hover:bg-white/10 transition-colors cursor-pointer flex items-center justify-between group">
+                                    <span className="text-sm font-medium text-slate-300 group-hover:text-cyan-400">{article.title}</span>
                                     <ArrowRight className="w-4 h-4 text-slate-500 group-hover:translate-x-1 transition-transform" />
                                 </Link>
                             ))}
@@ -101,14 +101,14 @@ export const HelpCenter: React.FC = () => {
                         {/* Categories */}
                         <h2 className="text-3xl font-bold mb-12 text-center tracking-tight">Browse by Category</h2>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-24">
-                            <Link to="/help/category/Getting%20Started" className="p-8 rounded-[2rem] bg-[#0D0F1A] border border-white/[0.06] hover:border-indigo-500/30 transition-all duration-300 group block">
-                                <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 flex items-center justify-center mb-6 border border-indigo-500/20 shadow-lg shadow-indigo-500/10 group-hover:scale-110 transition-transform">
-                                    <Book className="w-6 h-6 text-indigo-400" />
+                            <Link to="/help/category/Getting%20Started" className="p-8 rounded-[2rem] bg-[#0D0F1A] border border-white/[0.06] hover:border-cyan-500/30 transition-all duration-300 group block">
+                                <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 flex items-center justify-center mb-6 border border-cyan-500/20 shadow-lg shadow-cyan-500/10 group-hover:scale-110 transition-transform">
+                                    <Book className="w-6 h-6 text-cyan-400" />
                                 </div>
                                 <h3 className="text-lg font-bold mb-2 text-white">Getting Started</h3>
                                 <p className="text-sm text-slate-500 mb-6 leading-relaxed">Account setup, first project, and interface tour.</p>
                                 {getCount('Getting Started') > 0 && (
-                                    <span className="text-indigo-400 text-xs font-black tracking-widest uppercase">{getCount('Getting Started')} Articles</span>
+                                    <span className="text-cyan-400 text-xs font-black tracking-widest uppercase">{getCount('Getting Started')} Articles</span>
                                 )}
                             </Link>
 
@@ -150,14 +150,14 @@ export const HelpCenter: React.FC = () => {
 
                 {/* Contact CTA */}
                 <div className="bg-[#0D0F1A] border border-white/[0.06] rounded-[2.5rem] p-12 text-center relative overflow-hidden shadow-2xl">
-                    <div className="absolute top-0 right-0 w-80 h-80 bg-indigo-600/5 rounded-full blur-[100px] -z-10" />
+                    <div className="absolute top-0 right-0 w-80 h-80 bg-cyan-600/5 rounded-full blur-[100px] -z-10" />
                     <div className="relative z-10">
                         <div className="w-16 h-16 bg-yellow-400/10 rounded-2xl flex items-center justify-center mx-auto mb-8 border border-yellow-400/20 shadow-lg shadow-yellow-400/10">
                             <Zap className="w-8 h-8 text-yellow-400" />
                         </div>
                         <h2 className="text-3xl font-bold text-white mb-4 tracking-tight">Can't find what you're looking for?</h2>
                         <p className="text-slate-400 mb-10 text-lg max-w-md mx-auto leading-relaxed">Our support team is available Mon-Fri, 9am - 5pm EST. We usually respond in under 2 hours.</p>
-                        <Button onClick={() => navigate('/contact')} size="lg" className="bg-indigo-600 hover:bg-indigo-500 text-white border-0 px-10 h-14 rounded-xl font-black tracking-widest uppercase text-xs shadow-xl shadow-indigo-500/25 transition-all hover:scale-105">Contact Support</Button>
+                        <Button onClick={() => navigate('/contact')} size="lg" className="bg-cyan-600 hover:bg-cyan-500 text-white border-0 px-10 h-14 rounded-xl font-black tracking-widest uppercase text-xs shadow-xl shadow-cyan-500/25 transition-all hover:scale-105">Contact Support</Button>
                     </div>
                 </div>
             </main>

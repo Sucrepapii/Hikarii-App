@@ -152,7 +152,7 @@ export const Projects: React.FC = () => {
                                             {project.status || 'ACTIVE'}
                                         </span>
                                         {project.isShared && (
-                                            <span className="px-2 py-1 rounded-md text-xs font-bold bg-indigo-100 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center gap-1">
+                                            <span className="px-2 py-1 rounded-md text-xs font-bold bg-cyan-100 dark:bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 flex items-center gap-1">
                                                 <Users className="w-3 h-3" /> Shared
                                             </span>
                                         )}
@@ -165,7 +165,7 @@ export const Projects: React.FC = () => {
                                                     variant="ghost"
                                                     size="sm"
                                                     onClick={() => setInviteProjectId(project.id)}
-                                                    className="p-2 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 rounded-lg transition-smooth"
+                                                    className="p-2 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 rounded-lg transition-smooth"
                                                 >
                                                     <Users className="w-4 h-4" />
                                                 </Button>
@@ -189,7 +189,7 @@ export const Projects: React.FC = () => {
                                             <>
                                                 <Link to={`/projects/edit/${project.id}`}>
                                                     <Tooltip content="Edit Project">
-                                                        <Button variant="ghost" size="sm" className="p-2 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 rounded-lg transition-smooth">
+                                                        <Button variant="ghost" size="sm" className="p-2 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 rounded-lg transition-smooth">
                                                             <Edit2 className="w-4 h-4" />
                                                         </Button>
                                                     </Tooltip>
@@ -250,7 +250,7 @@ export const Projects: React.FC = () => {
                                     onClick={() => setCollabTab(tab)}
                                     className={`py-3 px-1 mr-5 text-xs font-semibold border-b-2 transition-colors capitalize ${
                                         collabTab === tab
-                                            ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400'
+                                            ? 'border-cyan-500 text-cyan-600 dark:text-cyan-400'
                                             : 'border-transparent text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
                                     }`}
                                 >

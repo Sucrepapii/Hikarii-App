@@ -173,10 +173,10 @@ export const Settings: React.FC = () => {
 
                     <>
                         {/* Feedback Banner */}
-                        <Card className="mb-6 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/10 dark:to-purple-900/10 border-indigo-100 dark:border-indigo-800/30">
+                        <Card className="mb-6 bg-gradient-to-r from-cyan-50 to-purple-50 dark:from-cyan-900/10 dark:to-purple-900/10 border-cyan-100 dark:border-cyan-800/30">
                             <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                                 <div className="flex items-center gap-4">
-                                    <div className="p-3 rounded-xl bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400">
+                                    <div className="p-3 rounded-xl bg-cyan-100 dark:bg-cyan-900/30 text-cyan-600 dark:text-cyan-400">
                                         <MessageCircle className="w-6 h-6" />
                                     </div>
                                     <div>
@@ -358,7 +358,7 @@ export const Settings: React.FC = () => {
                                 Since I am replacing the 'profile' block, I should output the subscription card content too.
                             */}
                             <div className="flex items-center gap-4 mb-6">
-                                <div className="p-3 rounded-xl bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400">
+                                <div className="p-3 rounded-xl bg-cyan-100 dark:bg-cyan-900/30 text-cyan-600 dark:text-cyan-400">
                                     <CreditCard className="w-6 h-6" />
                                 </div>
                                 <div>
@@ -542,7 +542,7 @@ export const Settings: React.FC = () => {
                 {activeTab === 'integrations' && (
                     <Card>
                         <div className="flex items-center gap-4 mb-6">
-                            <div className="p-3 rounded-xl bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400">
+                            <div className="p-3 rounded-xl bg-cyan-100 dark:bg-cyan-900/30 text-cyan-600 dark:text-cyan-400">
                                 <CalendarIcon className="w-6 h-6" />
                             </div>
                             <div>

@@ -218,7 +218,7 @@ export const NotificationBell: React.FC = () => {
                     <div className="p-2 space-y-2">
                         {isFocusMode ? (
                             <div className="text-center py-12">
-                                <Shield className="w-12 h-12 mx-auto mb-3 text-indigo-400 opacity-50" />
+                                <Shield className="w-12 h-12 mx-auto mb-3 text-cyan-400 opacity-50" />
                                 <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">
                                     Quiet Mode Active
                                 </h3>
@@ -232,12 +232,12 @@ export const NotificationBell: React.FC = () => {
                                 {pendingInvites.map((invite) => (
                                     <div
                                         key={invite.id}
-                                        className="p-3 rounded-xl border-2 border-indigo-500/30 bg-indigo-500/10 dark:bg-indigo-500/20 transition-all hover:scale-[1.02]"
+                                        className="p-3 rounded-xl border-2 border-cyan-500/30 bg-cyan-500/10 dark:bg-cyan-500/20 transition-all hover:scale-[1.02]"
                                     >
                                         <div className="flex items-start gap-3">
-                                            <Users className="w-5 h-5 mt-0.5 flex-shrink-0 text-indigo-600 dark:text-indigo-400" />
+                                            <Users className="w-5 h-5 mt-0.5 flex-shrink-0 text-cyan-600 dark:text-cyan-400" />
                                             <div className="flex-1 min-w-0">
-                                                <h4 className="font-semibold text-sm mb-1 text-indigo-700 dark:text-indigo-300">
+                                                <h4 className="font-semibold text-sm mb-1 text-cyan-700 dark:text-cyan-300">
                                                     New Invitation
                                                 </h4>
                                                 <p className="text-xs leading-relaxed text-slate-700 dark:text-slate-300">
@@ -247,7 +247,7 @@ export const NotificationBell: React.FC = () => {
                                                     <button
                                                         onClick={(e) => handleAcceptInvite(invite.token!, e)}
                                                         disabled={isAccepting === invite.token}
-                                                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-600 text-white text-[10px] font-bold hover:bg-indigo-700 transition-colors disabled:opacity-50"
+                                                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-cyan-600 text-white text-[10px] font-bold hover:bg-cyan-700 transition-colors disabled:opacity-50"
                                                     >
                                                         {isAccepting === invite.token ? 'Accepting...' : (
                                                             <>

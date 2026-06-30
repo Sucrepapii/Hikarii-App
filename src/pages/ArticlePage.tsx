@@ -39,7 +39,7 @@ export const ArticlePage: React.FC = () => {
             <main className="flex-grow pt-32 pb-20 px-6 max-w-3xl mx-auto w-full">
                 <div className="mb-8">
                     <div className="flex items-center gap-4 text-sm text-slate-500 dark:text-slate-400 mb-6">
-                    <div className="flex items-center gap-1 bg-indigo-500/10 text-indigo-400 px-3 py-1 rounded-full">
+                    <div className="flex items-center gap-1 bg-cyan-500/10 text-cyan-400 px-3 py-1 rounded-full">
                         <Tag className="w-3 h-3" /> {article.category}
                     </div>
                     <span className="flex items-center gap-1">
@@ -50,7 +50,7 @@ export const ArticlePage: React.FC = () => {
                 <p className="text-xl text-slate-400 leading-relaxed font-light">{article.excerpt}</p>
             </div>
 
-            <article className="prose prose-invert prose-lg max-w-none prose-headings:font-display prose-headings:font-bold prose-headings:text-white prose-p:text-slate-300 prose-a:text-indigo-400">
+            <article className="prose prose-invert prose-lg max-w-none prose-headings:font-display prose-headings:font-bold prose-headings:text-white prose-p:text-slate-300 prose-a:text-cyan-400">
                 <div dangerouslySetInnerHTML={{ __html: article.content }} />
             </article>
 
