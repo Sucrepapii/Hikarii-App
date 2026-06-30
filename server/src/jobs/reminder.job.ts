@@ -139,7 +139,6 @@ export const startReminderJob = () => {
             );
           }
         }
-      }
     } catch (error) {
       console.error("Error in reminder job:", error);
     }

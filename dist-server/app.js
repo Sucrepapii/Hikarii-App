@@ -219,6 +219,72 @@ var init_google_calendar_service = __esm({
   }
 });
 
+// server/src/utils/notifications.ts
+import { Expo } from "expo-server-sdk";
+var expo, sendPushNotification;
+var init_notifications = __esm({
+  "server/src/utils/notifications.ts"() {
+    expo = new Expo();
+    sendPushNotification = async (pushToken, title, body, data) => {
+      if (!Expo.isExpoPushToken(pushToken)) {
+        console.error(`Push token ${pushToken} is not a valid Expo push token`);
+        return;
+      }
+      const message = {
+        to: pushToken,
+        sound: "default",
+        title,
+        body,
+        data
+      };
+      try {
+        const receipts = await expo.sendPushNotificationsAsync([message]);
+        console.log("Push notification sent:", receipts);
+        return receipts;
+      } catch (error) {
+        console.error("Error sending push notification:", error);
+      }
+    };
+  }
+});
+
+// server/src/services/notification.service.ts
+var notification_service_exports = {};
+__export(notification_service_exports, {
+  notifyUser: () => notifyUser
+});
+var notifyUser;
+var init_notification_service = __esm({
+  "server/src/services/notification.service.ts"() {
+    init_db();
+    init_notifications();
+    notifyUser = async (userId, title, body, type, data) => {
+      try {
+        const notification = await db_default.notification.create({
+          data: {
+            userId,
+            title,
+            body,
+            type,
+            data: data || {}
+          }
+        });
+        const user = await db_default.user.findUnique({
+          where: { id: userId },
+          select: { pushToken: true }
+        });
+        if (user && user.pushToken) {
+          await sendPushNotification(user.pushToken, title, body, data);
+        }
+        return notification;
+      } catch (error) {
+        console.error("Failed to notify user:", error);
+        return null;
+      }
+    };
+  }
+});
+
 // server/src/services/task.splitter.service.ts
 var task_splitter_service_exports = {};
 __export(task_splitter_service_exports, {
@@ -769,6 +835,7 @@ var init_reminder_job = __esm({
     init_email_service();
     init_whatsapp_service();
     init_emailTemplates();
+    init_notification_service();
     startReminderJob = () => {
       if (process.env.VERCEL) {
         console.log(
@@ -776,9 +843,21 @@ var init_reminder_job = __esm({
         );
         return;
       }
-      cron.schedule("0 9 * * *", async () => {
-        console.log("Running daily reminder job...");
+      cron.schedule("0 10 * * *", async () => {
+        console.log("Running daily reminder and cleanup job...");
         try {
+          const thirtyDaysAgo = /* @__PURE__ */ new Date();
+          thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+          const deletedChats = await db_default.projectComment.deleteMany({
+            where: {
+              createdAt: { lt: thirtyDaysAgo },
+              project: {
+                status: { in: ["COMPLETED", "ARCHIVED"] }
+                // only delete if project is done
+              }
+            }
+          });
+          console.log(`Cleaned up ${deletedChats.count} old chat messages from completed projects.`);
           const users = await db_default.user.findMany({});
           const today = /* @__PURE__ */ new Date();
           today.setHours(0, 0, 0, 0);
@@ -823,6 +902,12 @@ ${taskList}`
                   );
                 }
               }
+              await notifyUser(
+                user.id,
+                "Overdue Tasks",
+                `You have ${overdueTasks.length} overdue tasks that need your attention.`,
+                "REMINDER"
+              );
             }
             if (user.waProjectsEnabled && user.phoneNumber) {
               const overdueProjects = await db_default.project.findMany({
@@ -843,9 +928,68 @@ ${projectList}`
                 );
               }
             }
+            const allOverdueProjects = await db_default.project.findMany({
+              where: {
+                userId: user.id,
+                status: "ACTIVE",
+                endDate: { lt: today }
+              }
+            });
+            if (allOverdueProjects.length > 0) {
+              await notifyUser(
+                user.id,
+                "Overdue Projects",
+                `You have ${allOverdueProjects.length} overdue projects.`,
+                "REMINDER"
+              );
+            }
           }
         } catch (error) {
           console.error("Error in reminder job:", error);
+        }
+      });
+    };
+  }
+});
+
+// server/src/jobs/monthly.job.ts
+var monthly_job_exports = {};
+__export(monthly_job_exports, {
+  startMonthlyGreetingJob: () => startMonthlyGreetingJob
+});
+import cron2 from "node-cron";
+var startMonthlyGreetingJob;
+var init_monthly_job = __esm({
+  "server/src/jobs/monthly.job.ts"() {
+    init_db();
+    init_notification_service();
+    startMonthlyGreetingJob = () => {
+      if (process.env.VERCEL) {
+        console.log(
+          "Cron jobs are not supported on Vercel Serverless. Skipping..."
+        );
+        return;
+      }
+      cron2.schedule("0 9 1 * *", async () => {
+        console.log("Running monthly greeting job...");
+        try {
+          const users = await db_default.user.findMany({
+            where: { pushToken: { not: null } }
+          });
+          const currentMonth = (/* @__PURE__ */ new Date()).toLocaleString("default", { month: "long" });
+          for (const user of users) {
+            if (user.id) {
+              await notifyUser(
+                user.id,
+                "Happy New Month! \u{1F31F}",
+                `Wishing you a productive and successful ${currentMonth}! Let's crush your goals on Hikari.`,
+                "SYSTEM_ANNOUNCEMENT",
+                { url: "/" }
+              );
+            }
+          }
+        } catch (error) {
+          console.error("Error in monthly greeting job:", error);
         }
       });
     };
@@ -935,6 +1079,25 @@ var updateProfile = async (req, res) => {
         waProjectsEnabled: user.waProjectsEnabled,
         requiresPasswordChange: user.requiresPasswordChange
       }
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+var updatePushToken = async (req, res) => {
+  try {
+    const { pushToken } = req.body;
+    if (!pushToken) {
+      res.status(400).json({ error: "pushToken is required" });
+      return;
+    }
+    const user = await db_default.user.update({
+      where: { id: req.userId },
+      data: { pushToken }
+    });
+    res.json({
+      message: "Push token updated successfully",
+      pushToken: user.pushToken
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -1048,6 +1211,7 @@ var authenticate = async (req, res, next) => {
 // server/src/routes/auth.routes.ts
 var router = Router();
 router.put("/profile", authenticate, updateProfile);
+router.put("/push-token", authenticate, updatePushToken);
 router.get("/me", authenticate, getMe);
 router.get("/debug", debugInfo);
 var auth_routes_default = router;
@@ -1189,6 +1353,17 @@ var toggleTaskStatus = async (req, res) => {
       where: { id: task.id },
       data: { status: newStatus }
     });
+    if (newStatus === "COMPLETED" /* COMPLETED */) {
+      Promise.resolve().then(() => (init_notification_service(), notification_service_exports)).then(({ notifyUser: notifyUser2 }) => {
+        notifyUser2(
+          req.userId,
+          "Task Completed! \u{1F389}",
+          `You've successfully completed: ${task.title}`,
+          "TASK_COMPLETED",
+          { url: "/tasks" }
+        );
+      });
+    }
     res.json(updatedTask);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -1741,11 +1916,22 @@ var createExpense = async (req, res) => {
         data: { spent: { increment: expense.amount } },
         include: { user: true }
       });
-      if (updatedBudget.user.waBudgetEnabled && updatedBudget.user.phoneNumber && updatedBudget.spent >= updatedBudget.limit) {
-        await sendWhatsAppMessage(
-          updatedBudget.user.phoneNumber,
-          `Budget Alert! You have reached your limit for ${updatedBudget.category}: Spent ${updatedBudget.spent}/${updatedBudget.limit}`
-        );
+      if (updatedBudget.spent >= updatedBudget.limit) {
+        Promise.resolve().then(() => (init_notification_service(), notification_service_exports)).then(({ notifyUser: notifyUser2 }) => {
+          notifyUser2(
+            req.userId,
+            "Budget Limit Reached",
+            `You have reached your limit for ${updatedBudget.category}: Spent $${updatedBudget.spent}/$${updatedBudget.limit}`,
+            "BUDGET_ALERT",
+            { url: "/budget" }
+          );
+        });
+        if (updatedBudget.user.waBudgetEnabled && updatedBudget.user.phoneNumber) {
+          await sendWhatsAppMessage(
+            updatedBudget.user.phoneNumber,
+            `Budget Alert! You have reached your limit for ${updatedBudget.category}: Spent ${updatedBudget.spent}/${updatedBudget.limit}`
+          );
+        }
       }
     }
     res.status(201).json(expense);
@@ -1792,10 +1978,21 @@ var updateExpense = async (req, res) => {
         }
       });
       if (newBudget) {
-        await db_default.budget.update({
+        const updatedNewBudget = await db_default.budget.update({
           where: { id: newBudget.id },
           data: { spent: { increment: updatedExpense.amount } }
         });
+        if (updatedNewBudget.spent >= newBudget.limit) {
+          Promise.resolve().then(() => (init_notification_service(), notification_service_exports)).then(({ notifyUser: notifyUser2 }) => {
+            notifyUser2(
+              req.userId,
+              "Budget Limit Reached",
+              `You have reached your limit for ${updatedExpense.category}: Spent $${updatedNewBudget.spent}/$${newBudget.limit}`,
+              "BUDGET_ALERT",
+              { url: "/budget" }
+            );
+          });
+        }
       }
     }
     res.json(updatedExpense);
@@ -3148,6 +3345,33 @@ var getMarketingStats = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch marketing stats" });
   }
 };
+var deleteFeedback = async (req, res) => {
+  try {
+    const adminId = req.userId;
+    const requestor = await db_default.user.findUnique({
+      where: { id: adminId },
+      select: { role: true }
+    });
+    if (!requestor || requestor.role !== "ADMIN") {
+      return res.status(403).json({ message: "Access Denied" });
+    }
+    const { id } = req.params;
+    const feedback = await db_default.feedback.findUnique({ where: { id } });
+    if (!feedback) {
+      const articleFeedback = await db_default.articleFeedback.findUnique({ where: { id } });
+      if (articleFeedback) {
+        await db_default.articleFeedback.delete({ where: { id } });
+        return res.json({ message: "Article feedback deleted successfully" });
+      }
+      return res.status(404).json({ message: "Feedback not found" });
+    }
+    await db_default.feedback.delete({ where: { id } });
+    res.json({ message: "Feedback deleted successfully" });
+  } catch (error) {
+    console.error("Delete Feedback Error:", error);
+    res.status(500).json({ message: "Failed to delete feedback" });
+  }
+};
 
 // server/src/routes/admin.routes.ts
 var router11 = Router8();
@@ -3160,6 +3384,7 @@ router11.post("/users/:id/reactivate", authenticate, reactivateUser);
 router11.delete("/users/:id", authenticate, deleteUser);
 router11.post("/batch", authenticate, handleBatchOperations);
 router11.get("/marketing-stats", authenticate, getMarketingStats);
+router11.delete("/feedback/:id", authenticate, deleteFeedback);
 var admin_routes_default = router11;
 
 // server/src/routes/lead.routes.ts
@@ -3355,6 +3580,18 @@ var inviteMember = async (req, res) => {
     } catch (emailErr) {
       console.error("Failed to send invite email:", emailErr);
     }
+    if (invitedUser?.id) {
+      Promise.resolve().then(() => (init_notification_service(), notification_service_exports)).then(({ notifyUser: notifyUser2 }) => {
+        notifyUser2(
+          invitedUser.id,
+          "Project Invite",
+          `You have been invited to collaborate on "${project.title}" by ${currentUser.name}.`,
+          "PROJECT_INVITE",
+          { url: "/settings" }
+          // Assuming settings has invites
+        );
+      });
+    }
     res.status(201).json({ message: "Invite sent successfully", member });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -3461,6 +3698,10 @@ var deleteComment = async (req, res) => {
     if (!comment) return res.status(404).json({ error: "Comment not found" });
     if (comment.userId !== req.userId) {
       return res.status(403).json({ error: "You can only delete your own comments" });
+    }
+    const ageInMs = Date.now() - new Date(comment.createdAt).getTime();
+    if (ageInMs > 24 * 60 * 60 * 1e3) {
+      return res.status(403).json({ error: "Comments cannot be deleted after 24 hours" });
     }
     await db_default.projectComment.delete({ where: { id: commentId } });
     res.json({ message: "Comment deleted" });
@@ -3629,6 +3870,54 @@ router15.post("/", createArticleFeedback);
 router15.get("/stats", getArticleFeedbackStats);
 var articleFeedback_routes_default = router15;
 
+// server/src/routes/notification.routes.ts
+import { Router as Router12 } from "express";
+
+// server/src/controllers/notification.controller.ts
+init_db();
+var getNotifications = async (req, res) => {
+  try {
+    const notifications = await db_default.notification.findMany({
+      where: { userId: req.userId },
+      orderBy: { createdAt: "desc" },
+      take: 50
+    });
+    res.json({ notifications });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+var markAsRead = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const notification = await db_default.notification.updateMany({
+      where: { id, userId: req.userId },
+      data: { isRead: true }
+    });
+    res.json({ message: "Notification marked as read" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+var markAllAsRead = async (req, res) => {
+  try {
+    await db_default.notification.updateMany({
+      where: { userId: req.userId, isRead: false },
+      data: { isRead: true }
+    });
+    res.json({ message: "All notifications marked as read" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// server/src/routes/notification.routes.ts
+var router16 = Router12();
+router16.get("/", authenticate, getNotifications);
+router16.put("/mark-all-read", authenticate, markAllAsRead);
+router16.put("/:id/read", authenticate, markAsRead);
+var notification_routes_default = router16;
+
 // server/src/app.ts
 Sentry.init({
   dsn: process.env.SENTRY_DSN || process.env.VITE_SENTRY_DSN,
@@ -3643,6 +3932,8 @@ var allowedOrigins = [
   "http://127.0.0.1:5173",
   "http://127.0.0.1:5174",
   "http://localhost:3000",
+  "http://localhost:8081",
+  "http://127.0.0.1:8081",
   "https://www.hikarii.org",
   "https://hikarii.org",
   "https://checkmate-production-7067.up.railway.app"
@@ -3725,6 +4016,7 @@ app.use("/api/leads", lead_routes_default);
 app.use("/api/feedback", feedback_routes_default);
 app.use("/api/collaboration", collaboration_routes_default);
 app.use("/api/article-feedback", articleFeedback_routes_default);
+app.use("/api/notifications", notification_routes_default);
 app.get("/health", (req, res) => {
   res.json({ status: "ok" });
 });
@@ -3754,7 +4046,10 @@ app.listen(PORT_NUM, () => {
   if (process.env.NODE_ENV === "production" && !process.env.VERCEL) {
     Promise.resolve().then(() => (init_reminder_job(), reminder_job_exports)).then(({ startReminderJob: startReminderJob2 }) => {
       startReminderJob2();
-    }).catch((err) => console.error("Failed to load cron job:", err));
+    }).catch((err) => console.error("Failed to load reminder job:", err));
+    Promise.resolve().then(() => (init_monthly_job(), monthly_job_exports)).then(({ startMonthlyGreetingJob: startMonthlyGreetingJob2 }) => {
+      startMonthlyGreetingJob2();
+    }).catch((err) => console.error("Failed to load monthly job:", err));
   }
   console.log(`
 \u{1F680} Server is running on port ${PORT_NUM}`);
