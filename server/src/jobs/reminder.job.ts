@@ -72,6 +72,15 @@ export const startReminderJob = () => {
               `Hi ${user.name}, you have ${overdueTasks.length} overdue tasks:\n${taskList}`,
             );
           }
+
+          // Push Notification / In-App Notification
+          await notifyUser(
+            user.id,
+            "Overdue Tasks",
+            `You have ${overdueTasks.length} overdue tasks that need your attention.`,
+            "REMINDER",
+            { url: "/tasks" }
+          );
         }
 
         // WhatsApp for Budgets
@@ -88,14 +97,6 @@ export const startReminderJob = () => {
               );
             }
           }
-
-          // Push Notification / In-App Notification
-          await notifyUser(
-            user.id,
-            "Overdue Tasks",
-            `You have ${overdueTasks.length} overdue tasks that need your attention.`,
-            "REMINDER"
-          );
         }
 
         // WhatsApp for Projects
@@ -108,36 +109,46 @@ export const startReminderJob = () => {
             },
           });
 
-            if (overdueProjects.length > 0) {
-              const projectList = overdueProjects
-                .map(
-                  (p: any) =>
-                    `- ${p.title} (Ended: ${new Date(p.endDate).toLocaleDateString()})`,
-                )
-                .join("\n");
-              await sendWhatsAppMessage(
-                user.phoneNumber,
-                `Project Alert! The following projects have passed their end date:\n${projectList}`,
-              );
-            }
-          }
-
-          const allOverdueProjects = await prisma.project.findMany({
-            where: {
-              userId: user.id,
-              status: "ACTIVE",
-              endDate: { lt: today },
-            },
-          });
-
-          if (allOverdueProjects.length > 0) {
-            await notifyUser(
-              user.id,
-              "Overdue Projects",
-              `You have ${allOverdueProjects.length} overdue projects.`,
-              "REMINDER"
+          if (overdueProjects.length > 0) {
+            const projectList = overdueProjects
+              .map(
+                (p: any) =>
+                  `- ${p.title} (Ended: ${new Date(p.endDate).toLocaleDateString()})`,
+              )
+              .join("\n");
+            await sendWhatsAppMessage(
+              user.phoneNumber,
+              `Project Alert! The following projects have passed their end date:\n${projectList}`,
             );
           }
+        }
+
+        const allOverdueProjects = await prisma.project.findMany({
+          where: {
+            userId: user.id,
+            status: "ACTIVE",
+            endDate: { lt: today },
+          },
+        });
+
+        if (allOverdueProjects.length > 0) {
+          const isSingle = allOverdueProjects.length === 1;
+          const title = isSingle ? "Overdue Project" : "Overdue Projects";
+          const body = isSingle
+            ? `Your project "${allOverdueProjects[0].title}" is overdue.`
+            : `You have ${allOverdueProjects.length} overdue projects: ${allOverdueProjects.map(p => `"${p.title}"`).join(', ')}`;
+          const data = {
+            url: isSingle ? `/projects/${allOverdueProjects[0].id}` : "/projects"
+          };
+
+          await notifyUser(
+            user.id,
+            title,
+            body,
+            "REMINDER",
+            data
+          );
+        }
         }
     } catch (error) {
       console.error("Error in reminder job:", error);

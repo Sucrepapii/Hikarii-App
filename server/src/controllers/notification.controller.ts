@@ -24,10 +24,11 @@ export const markAsRead = async (
   res: Response,
 ): Promise<void> => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
+    const userId = req.userId as string;
 
-    const notification = await prisma.notification.updateMany({
-      where: { id, userId: req.userId },
+    await prisma.notification.updateMany({
+      where: { id, userId },
       data: { isRead: true },
     });
 
@@ -42,8 +43,9 @@ export const markAllAsRead = async (
   res: Response,
 ): Promise<void> => {
   try {
+    const userId = req.userId as string;
     await prisma.notification.updateMany({
-      where: { userId: req.userId, isRead: false },
+      where: { userId, isRead: false },
       data: { isRead: true },
     });
 
@@ -52,3 +54,39 @@ export const markAllAsRead = async (
     res.status(500).json({ error: error.message });
   }
 };
+
+export const deleteNotification = async (
+  req: AuthRequest,
+  res: Response,
+): Promise<void> => {
+  try {
+    const id = req.params.id as string;
+    const userId = req.userId as string;
+
+    await prisma.notification.deleteMany({
+      where: { id, userId },
+    });
+
+    res.json({ message: "Notification deleted successfully" });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const clearAllNotifications = async (
+  req: AuthRequest,
+  res: Response,
+): Promise<void> => {
+  try {
+    const userId = req.userId as string;
+    await prisma.notification.deleteMany({
+      where: { userId },
+    });
+
+    res.json({ message: "All notifications cleared successfully" });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+
