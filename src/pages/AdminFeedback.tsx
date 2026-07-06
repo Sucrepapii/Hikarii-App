@@ -102,7 +102,7 @@ export const AdminFeedback: React.FC = () => {
                                 <div className="flex-1 space-y-4">
                                     <div className="flex items-center justify-between md:justify-start gap-4">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center text-white font-bold">
+                                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center text-white font-bold">
                                                 {feedback.name.charAt(0).toUpperCase()}
                                             </div>
                                             <div>

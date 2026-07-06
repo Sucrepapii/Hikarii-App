@@ -220,7 +220,7 @@ export const Dashboard: React.FC = () => {
 
             {/* Hikari Wrapped Trigger (Only visible on last day of month) */}
             {isLastDayOfMonth && (
-                <div className="mb-6 p-1 rounded-2xl bg-gradient-to-r from-primary-500 via-secondary-500 to-pink-500 animate-pulse-slow">
+                <div className="mb-6 p-1 rounded-2xl bg-gradient-to-r from-primary-500 via-accent-500 to-pink-500 animate-pulse-slow">
                     <div className="bg-[#0B0C15] rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
                         <div>
                             <h3 className="text-xl font-display font-bold text-white mb-1">Your {today.toLocaleString('default', { month: 'long' })} Wrapped is ready!</h3>
@@ -321,11 +321,11 @@ export const Dashboard: React.FC = () => {
                 </Card>
 
                 <Card className="relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-secondary-500/20 to-transparent rounded-full blur-2xl" />
+                    <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-accent-500/20 to-transparent rounded-full blur-2xl" />
                     <div className="relative">
                         <div className="flex items-center gap-3 mb-2">
-                            <div className="p-2 rounded-lg bg-secondary-500/10">
-                                <Wallet className="w-5 h-5 text-secondary-500" />
+                            <div className="p-2 rounded-lg bg-accent-500/10">
+                                <Wallet className="w-5 h-5 text-accent-500" />
                             </div>
                             <span className="text-sm font-medium text-slate-600 dark:text-slate-400">
                                 Total Spent

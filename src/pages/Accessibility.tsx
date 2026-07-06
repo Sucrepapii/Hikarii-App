@@ -5,7 +5,7 @@ import { Footer } from '../components/layout/Footer';
 
 export const Accessibility: React.FC = () => {
     return (
-        <div className="min-h-screen bg-[#080910] text-slate-100 selection:bg-secondary-500/30 overflow-x-hidden flex flex-col deep-dark">
+        <div className="min-h-screen bg-[#080910] text-slate-100 selection:bg-accent-500/30 overflow-x-hidden flex flex-col deep-dark">
             <Navbar />
 
             {/* Content */}

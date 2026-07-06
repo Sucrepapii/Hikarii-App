@@ -104,7 +104,7 @@ export const InviteModal: React.FC<InviteModalProps> = ({ projectId, projectTitl
                     value={option.value}
                     checked={role === option.value}
                     onChange={() => setRole(option.value)}
-                    className="mt-0.5 secondary-primary-600"
+                    className="mt-0.5 accent-primary-600"
                   />
                   <div>
                     <div className="text-sm font-semibold text-slate-800 dark:text-white">{option.label}</div>

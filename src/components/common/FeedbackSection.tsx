@@ -166,7 +166,7 @@ export const FeedbackSection: React.FC = () => {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
                 {/* FORM COLUMN */}
                 <div className="lg:col-span-5 relative bg-white/5 dark:bg-[#0B0C15]/50 backdrop-blur-xl border border-slate-200/50 dark:border-white/10 p-8 rounded-[2rem] shadow-2xl h-fit group">
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary-500/10 via-transparent to-secondary-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none rounded-[2rem]"></div>
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary-500/10 via-transparent to-accent-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none rounded-[2rem]"></div>
                     
                     <div className="relative z-10 text-center mb-8">
                         <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-primary-100 dark:bg-primary-500/20 text-primary-600 dark:text-primary-400 mb-4 shadow-inner ring-1 ring-primary-500/20">
@@ -333,7 +333,7 @@ export const FeedbackSection: React.FC = () => {
                                 <div key={fb.id} className="bg-white/40 dark:bg-white/[0.03] backdrop-blur-sm border border-slate-200/50 dark:border-white/5 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all hover:-translate-y-1 group">
                                     <div className="flex justify-between items-start mb-4">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-100 to-secondary-100 dark:from-primary-900/40 dark:to-secondary-900/40 border border-primary-200 dark:border-primary-500/20 flex items-center justify-center text-primary-600 dark:text-primary-400 shrink-0">
+                                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-100 to-accent-100 dark:from-primary-900/40 dark:to-accent-900/40 border border-primary-200 dark:border-primary-500/20 flex items-center justify-center text-primary-600 dark:text-primary-400 shrink-0">
                                                 <User className="w-5 h-5" />
                                             </div>
                                             <div>

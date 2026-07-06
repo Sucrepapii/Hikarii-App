@@ -77,7 +77,7 @@ export const Method: React.FC = () => {
                     ))}
                 </div>
 
-                <div className="bg-gradient-to-br from-primary-600 to-secondary-700 rounded-[2.5rem] p-12 text-center relative overflow-hidden">
+                <div className="bg-gradient-to-br from-primary-600 to-accent-700 rounded-[2.5rem] p-12 text-center relative overflow-hidden">
                     <div className="relative z-10">
                         <h2 className="text-3xl font-bold mb-6 italic">"The secret to wealth is simple: Spend less than you earn. The secret to peace is simpler: Know exactly why you're spending."</h2>
                         <p className="text-primary-100 mb-8 font-medium">— The Hikari Philosophy</p>

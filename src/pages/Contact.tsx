@@ -45,7 +45,7 @@ export const Contact: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[#080910] font-sans text-slate-100 flex flex-col selection:bg-secondary-500/30 overflow-x-hidden deep-dark">
+        <div className="min-h-screen bg-[#080910] font-sans text-slate-100 flex flex-col selection:bg-accent-500/30 overflow-x-hidden deep-dark">
             <Navbar />
 
             <main className="flex-grow pt-32 pb-20 px-6 w-full max-w-7xl mx-auto">
@@ -71,14 +71,14 @@ export const Contact: React.FC = () => {
                                 </div>
                             </div>
 
-                            <div className="flex items-start gap-5 p-8 rounded-[2rem] bg-[#0D0F1A] border border-white/[0.06] hover:border-secondary-500/30 transition-all duration-300 group">
-                                <div className="w-12 h-12 bg-secondary-500/10 rounded-2xl flex items-center justify-center text-secondary-400 border border-secondary-500/20 shadow-lg shadow-secondary-500/10 group-hover:scale-110 transition-transform">
+                            <div className="flex items-start gap-5 p-8 rounded-[2rem] bg-[#0D0F1A] border border-white/[0.06] hover:border-accent-500/30 transition-all duration-300 group">
+                                <div className="w-12 h-12 bg-accent-500/10 rounded-2xl flex items-center justify-center text-accent-400 border border-accent-500/20 shadow-lg shadow-accent-500/10 group-hover:scale-110 transition-transform">
                                     <MessageSquare className="w-6 h-6" />
                                 </div>
                                 <div>
                                     <h3 className="font-bold text-lg mb-1 text-white">Sales & Enterprise</h3>
                                     <p className="text-slate-500 text-sm mb-3 leading-relaxed">For teams larger than 20 people.</p>
-                                    <a href="mailto:support@hikarii.org" className="text-secondary-400 font-black tracking-widest text-[10px] uppercase hover:text-white transition-colors">support@hikarii.org</a>
+                                    <a href="mailto:support@hikarii.org" className="text-accent-400 font-black tracking-widest text-[10px] uppercase hover:text-white transition-colors">support@hikarii.org</a>
                                 </div>
                             </div>
 

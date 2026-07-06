@@ -53,7 +53,7 @@ export const BankSyncPanel: React.FC = () => {
     return (
         <Card className="glass-card overflow-hidden border border-white/10 relative">
             {/* Background absolute glow */}
-            <div className="absolute top-0 right-0 w-48 h-48 bg-secondary-500/10 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute top-0 right-0 w-48 h-48 bg-accent-500/10 rounded-full blur-3xl pointer-events-none" />
 
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center pb-6 border-b border-slate-100 dark:border-slate-800 gap-4">
                 <div>
@@ -128,7 +128,7 @@ export const BankSyncPanel: React.FC = () => {
                 <div className="py-6 grid grid-cols-1 lg:grid-cols-[280px,1fr] gap-8 animate-fade-in">
                     {/* Left Panel: Glassmorphic Credit Card */}
                     <div className="space-y-4">
-                        <div className="relative w-full aspect-[1.58/1] rounded-2xl bg-gradient-to-br from-primary-500 via-secondary-600 to-pink-500 p-5 text-white shadow-xl flex flex-col justify-between overflow-hidden group hover:scale-[1.02] transition-transform duration-300">
+                        <div className="relative w-full aspect-[1.58/1] rounded-2xl bg-gradient-to-br from-primary-500 via-accent-600 to-pink-500 p-5 text-white shadow-xl flex flex-col justify-between overflow-hidden group hover:scale-[1.02] transition-transform duration-300">
                             {/* Glass overlay */}
                             <div className="absolute inset-0 bg-white/5 backdrop-blur-[1px] pointer-events-none" />
                             {/* Shining glow overlay */}

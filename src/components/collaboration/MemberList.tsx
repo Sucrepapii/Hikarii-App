@@ -85,7 +85,7 @@ export const MemberList: React.FC<MemberListProps> = ({ projectId, members, curr
             className="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/5"
           >
             {/* Avatar */}
-            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary-500 to-secondary-600 flex items-center justify-center text-white text-xs font-bold shrink-0">
+            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary-500 to-accent-600 flex items-center justify-center text-white text-xs font-bold shrink-0">
               {initials}
             </div>
 

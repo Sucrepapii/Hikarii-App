@@ -56,7 +56,7 @@ export const AIProjectScoper: React.FC<AIProjectScoperProps> = ({
             {/* Header */}
             <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
                 <div className="flex items-center gap-2">
-                    <div className="p-2 rounded-xl bg-secondary-500/10 text-secondary-500 animate-pulse">
+                    <div className="p-2 rounded-xl bg-accent-500/10 text-accent-500 animate-pulse">
                         <Sparkles className="w-5 h-5" />
                     </div>
                     <div>

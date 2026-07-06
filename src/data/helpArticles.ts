@@ -261,7 +261,7 @@ export const helpArticles: Article[] = [
         </div>
 
         <div class="prose prose-slate dark:prose-invert max-w-none">
-            <h2 class="text-3xl font-bold bg-gradient-to-r from-primary-500 to-secondary-600 bg-clip-text text-transparent mb-6">The Core Philosophy: Bridging the Gap</h2>
+            <h2 class="text-3xl font-bold bg-gradient-to-r from-primary-500 to-accent-600 bg-clip-text text-transparent mb-6">The Core Philosophy: Bridging the Gap</h2>
             <p class="text-lg leading-relaxed text-slate-600 dark:text-slate-300 mb-8">
                 For decades, we’ve been taught to manage our lives in two separate silos: our <strong>To-Do List</strong> and our <strong>Budget</strong>. The result? A constant sense of disconnect. You feel productive because you checked off 10 tasks, but stressed because you don't know if you can afford the project you just planned.
             </p>
@@ -287,8 +287,8 @@ export const helpArticles: Article[] = [
                     </p>
                 </div>
 
-                <div class="p-8 rounded-3xl bg-white/[0.03] border border-white/[0.08] hover:border-secondary-500/30 transition-all group">
-                    <div class="w-12 h-12 bg-secondary-500/20 text-secondary-400 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-secondary-500/10 ring-1 ring-secondary-500/20">
+                <div class="p-8 rounded-3xl bg-white/[0.03] border border-white/[0.08] hover:border-accent-500/30 transition-all group">
+                    <div class="w-12 h-12 bg-accent-500/20 text-accent-400 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-accent-500/10 ring-1 ring-accent-500/20">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                     </div>
                     <h3 class="text-xl font-bold text-white mb-3">3. Scale with Collaboration</h3>

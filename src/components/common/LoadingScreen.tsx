@@ -7,7 +7,7 @@ export const LoadingScreen: React.FC = () => {
             {/* Ambient background glow */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-primary-500/10 blur-[120px] rounded-full animate-pulse" />
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-secondary-500/10 blur-[80px] rounded-full animate-pulse" style={{ animationDelay: '1s' }} />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-accent-500/10 blur-[80px] rounded-full animate-pulse" style={{ animationDelay: '1s' }} />
             </div>
 
             <div className="relative flex flex-col items-center gap-6">

@@ -121,7 +121,7 @@ export const HikariWrapped: React.FC<HikariWrappedProps> = ({ onClose }) => {
             // Draw glowing design background elements (orbs)
             ctx.beginPath();
             ctx.arc(800, 0, 300, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(245, 158, 11, 0.15)'; // secondary-500
+            ctx.fillStyle = 'rgba(245, 158, 11, 0.15)'; // accent-500
             ctx.fill();
 
             ctx.beginPath();
@@ -165,7 +165,7 @@ export const HikariWrapped: React.FC<HikariWrappedProps> = ({ onClose }) => {
             ctx.shadowBlur = 0; // reset shadow
 
             // Slide Month / Year Header
-            ctx.fillStyle = '#f59e0b'; // secondary-300
+            ctx.fillStyle = '#f59e0b'; // accent-300
             ctx.font = 'bold 24px sans-serif';
             ctx.textAlign = 'center';
             ctx.fillText(`${data?.month.toUpperCase()} ${data?.year} ARCHETYPE`, 400, 380);
@@ -251,7 +251,7 @@ export const HikariWrapped: React.FC<HikariWrappedProps> = ({ onClose }) => {
 
     return (
         <div
-            className="fixed inset-0 z-[100] bg-black text-white overflow-hidden flex justify-center selection:bg-secondary-500/30"
+            className="fixed inset-0 z-[100] bg-black text-white overflow-hidden flex justify-center selection:bg-accent-500/30"
             onClick={handleTap}
         >
 
@@ -260,7 +260,7 @@ export const HikariWrapped: React.FC<HikariWrappedProps> = ({ onClose }) => {
                 <div className={`w-full h-full absolute transition-opacity duration-1000 ${activeSlide === 0 ? 'opacity-100' : 'opacity-0'} bg-gradient-to-b from-primary-900 via-black to-black`} />
                 <div className={`w-full h-full absolute transition-opacity duration-1000 ${activeSlide === 1 ? 'opacity-100' : 'opacity-0'} bg-gradient-to-b from-fuchsia-900 via-black to-black`} />
                 <div className={`w-full h-full absolute transition-opacity duration-1000 ${activeSlide === 2 ? 'opacity-100' : 'opacity-0'} bg-gradient-to-b from-emerald-900 via-black to-black`} />
-                <div className={`w-full h-full absolute transition-opacity duration-1000 ${activeSlide === 3 ? 'opacity-100' : 'opacity-0'} bg-gradient-to-b from-secondary-900 via-[#11052C] to-black`} />
+                <div className={`w-full h-full absolute transition-opacity duration-1000 ${activeSlide === 3 ? 'opacity-100' : 'opacity-0'} bg-gradient-to-b from-accent-900 via-[#11052C] to-black`} />
             </div>
 
             {/* Floating gradient orb */}
@@ -282,7 +282,7 @@ export const HikariWrapped: React.FC<HikariWrappedProps> = ({ onClose }) => {
                 <div className={`absolute inset-0 flex flex-col items-center justify-center p-8 text-center transition-all duration-700 ${activeSlide === 0 ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-8 scale-95 pointer-events-none'}`}>
                     <Logo variant="icon" size="xl" className="mb-8 drop-shadow-[0_0_30px_rgba(168,85,247,0.5)] animate-bounce-slow" />
                     <h2 className="text-2xl font-medium text-primary-300 mb-2 uppercase tracking-widest">Your {data.month}</h2>
-                    <h1 className="text-6xl font-display font-bold mb-8 leading-tight">By the <br /><span className="bg-gradient-to-r from-primary-400 to-secondary-400 bg-clip-text text-transparent">Numbers</span></h1>
+                    <h1 className="text-6xl font-display font-bold mb-8 leading-tight">By the <br /><span className="bg-gradient-to-r from-primary-400 to-accent-400 bg-clip-text text-transparent">Numbers</span></h1>
 
                     <div className="bg-white/10 backdrop-blur-md border border-white/20 p-6 rounded-3xl w-full">
                         <div className="flex justify-center mb-4"><Zap className="w-8 h-8 text-yellow-400 fill-yellow-400 drop-shadow-[0_0_15px_rgba(250,204,21,0.5)]" /></div>
@@ -329,20 +329,20 @@ export const HikariWrapped: React.FC<HikariWrappedProps> = ({ onClose }) => {
                 {/* === SLIDE 4: THE ARCHETYPE (SHAREABLE CARD) === */}
                 <div className={`absolute inset-0 flex flex-col items-center justify-center p-8 text-center transition-all duration-700 ${activeSlide === 3 ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-8 scale-95 pointer-events-none'}`}>
 
-                    <h2 className="text-2xl font-medium text-secondary-300 mb-6 drop-shadow-lg z-50">So, what's your vibe?</h2>
+                    <h2 className="text-2xl font-medium text-accent-300 mb-6 drop-shadow-lg z-50">So, what's your vibe?</h2>
 
                     {/* The Shareable Card Component */}
-                    <div className="relative bg-[#11052C] border border-secondary-500/40 rounded-[2.5rem] p-8 w-full shadow-[0_0_50px_rgba(168,85,247,0.3)] overflow-hidden group z-50">
+                    <div className="relative bg-[#11052C] border border-accent-500/40 rounded-[2.5rem] p-8 w-full shadow-[0_0_50px_rgba(168,85,247,0.3)] overflow-hidden group z-50">
                         {/* Card Background Effects */}
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-secondary-500/20 rounded-full blur-[40px]" />
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-accent-500/20 rounded-full blur-[40px]" />
                         <div className="absolute bottom-0 left-0 w-32 h-32 bg-primary-500/20 rounded-full blur-[40px]" />
 
                         <Logo variant="full" size="sm" className="absolute top-6 left-6 opacity-50" />
 
                         <div className="mt-12 mb-6">
                             <Trophy className="w-12 h-12 text-yellow-400 mx-auto drop-shadow-lg mb-4" />
-                            <div className="text-sm text-secondary-300 font-medium tracking-widest uppercase mb-1">{data.month} {data.year} Archetype</div>
-                            <div className="text-4xl font-display font-bold text-white bg-gradient-to-r from-secondary-200 to-primary-200 bg-clip-text">
+                            <div className="text-sm text-accent-300 font-medium tracking-widest uppercase mb-1">{data.month} {data.year} Archetype</div>
+                            <div className="text-4xl font-display font-bold text-white bg-gradient-to-r from-accent-200 to-primary-200 bg-clip-text">
                                 {data.archetype}
                             </div>
                         </div>
@@ -364,7 +364,7 @@ export const HikariWrapped: React.FC<HikariWrappedProps> = ({ onClose }) => {
                     <div className="mt-10 flex flex-col gap-3 w-full z-50 relative">
                         <button
                             onClick={handleDownloadCard}
-                            className="w-full h-14 bg-gradient-to-r from-secondary-500 to-primary-600 hover:from-secondary-600 hover:to-primary-700 text-white font-bold rounded-full transition-all text-base shadow-lg shadow-secondary-500/30 flex items-center justify-center gap-2 hover:scale-[1.02]"
+                            className="w-full h-14 bg-gradient-to-r from-accent-500 to-primary-600 hover:from-accent-600 hover:to-primary-700 text-white font-bold rounded-full transition-all text-base shadow-lg shadow-accent-500/30 flex items-center justify-center gap-2 hover:scale-[1.02]"
                         >
                             <Trophy className="w-5 h-5 text-yellow-300 animate-pulse" />
                             Download Sharing Card

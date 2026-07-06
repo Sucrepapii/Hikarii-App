@@ -48,7 +48,7 @@ export const FAQ: React.FC = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-[#080910] text-slate-100 selection:bg-secondary-500/30 overflow-x-hidden deep-dark">
+        <div className="min-h-screen bg-[#080910] text-slate-100 selection:bg-accent-500/30 overflow-x-hidden deep-dark">
             <Helmet>
                 <title>FAQ | Hikari Support & Help Center</title>
                 <meta name="description" content="Find answers to frequently asked questions about Hikari. Learn about AI Smart Split, WhatsApp notifications, and how to master your budget." />
@@ -69,7 +69,7 @@ export const FAQ: React.FC = () => {
                     </div>
                     <h1 className="text-4xl md:text-7xl font-display font-bold text-white mb-8 tracking-tight leading-tight">
                         Frequently Asked <br />
-                        <span className="bg-gradient-to-r from-primary-400 via-secondary-400 to-pink-400 bg-clip-text text-transparent">Questions</span>
+                        <span className="bg-gradient-to-r from-primary-400 via-accent-400 to-pink-400 bg-clip-text text-transparent">Questions</span>
                     </h1>
                     <p className="text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed">
                         Find answers to common questions about Hikari and learn how to make the most of our tools.

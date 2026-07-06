@@ -38,7 +38,7 @@ const GRADIENT_COLORS = [
     "from-sky-500 to-amber-500",
     "from-orange-500 to-rose-500",
     "from-teal-500 to-emerald-500",
-    "from-sky-500 to-secondary-500",
+    "from-sky-500 to-accent-500",
     "from-pink-500 to-rose-500",
 ];
 
@@ -107,10 +107,10 @@ const HIKARI_METHOD_RULES = [
         icon: <Users className="w-6 h-6" />,
         color: "blue",
         styles: {
-            bg: "bg-secondary-500/10",
-            text: "text-secondary-500 dark:text-secondary-400",
-            border: "hover:border-secondary-500/50",
-            shadow: "hover:shadow-secondary-500/10"
+            bg: "bg-accent-500/10",
+            text: "text-accent-500 dark:text-accent-400",
+            border: "hover:border-accent-500/50",
+            shadow: "hover:shadow-accent-500/10"
         }
     }
 ];

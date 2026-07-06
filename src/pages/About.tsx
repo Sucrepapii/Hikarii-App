@@ -11,7 +11,7 @@ export const About: React.FC = () => {
     const navigate = useNavigate();
 
     return (
-        <div className="min-h-screen bg-[#080910] font-sans text-slate-100 flex flex-col selection:bg-secondary-500/30 overflow-x-hidden deep-dark">
+        <div className="min-h-screen bg-[#080910] font-sans text-slate-100 flex flex-col selection:bg-accent-500/30 overflow-x-hidden deep-dark">
             <Helmet>
                 <title>About Us | Hikari - Radical Clarity in Tasks & Budgeting</title>
                 <meta name="description" content="Discover the Hikari Method. We build tools for the Focused Few to bring radical clarity to the intersection of life's work and costs." />
@@ -26,7 +26,7 @@ export const About: React.FC = () => {
                     <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-64 bg-primary-600/10 rounded-full blur-[100px] -z-10" />
                     <h1 className="text-4xl md:text-7xl font-display font-bold mb-8 tracking-tight">
                         We build tools for the <br />
-                        <span className="bg-gradient-to-r from-primary-400 via-secondary-400 to-pink-400 bg-clip-text text-transparent">Focused Few.</span>
+                        <span className="bg-gradient-to-r from-primary-400 via-accent-400 to-pink-400 bg-clip-text text-transparent">Focused Few.</span>
                     </h1>
                     <p className="text-xl md:text-2xl text-slate-400 leading-relaxed max-w-2xl mx-auto">
                         Hikari means <span className="text-white font-semibold">"Light"</span>. We exist to bring radical clarity to the chaotic intersection of your life's work and your life's costs.
@@ -48,7 +48,7 @@ export const About: React.FC = () => {
                         </div>
                     </div>
                     <div className="relative group">
-                        <div className="absolute inset-0 bg-gradient-to-tr from-primary-500/20 to-secondary-500/20 rounded-[2.5rem] rotate-3 blur-2xl group-hover:rotate-6 transition-transform duration-700"></div>
+                        <div className="absolute inset-0 bg-gradient-to-tr from-primary-500/20 to-accent-500/20 rounded-[2.5rem] rotate-3 blur-2xl group-hover:rotate-6 transition-transform duration-700"></div>
                         <div className="relative bg-[#0D0F1A] border border-white/[0.06] p-12 rounded-[2.5rem] md:aspect-square flex items-center justify-center overflow-hidden">
                             <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-primary-500/5 to-transparent pointer-events-none" />
                             <div className="text-center relative z-10">
@@ -80,8 +80,8 @@ export const About: React.FC = () => {
                             </p>
                         </div>
 
-                        <div className="group p-10 rounded-[2rem] bg-[#0D0F1A] border border-white/[0.06] hover:border-secondary-500/30 transition-all duration-300">
-                            <div className="w-14 h-14 rounded-2xl bg-secondary-500/10 flex items-center justify-center mb-8 text-secondary-400 group-hover:bg-secondary-600 group-hover:text-white transition-all shadow-lg group-hover:shadow-secondary-500/20">
+                        <div className="group p-10 rounded-[2rem] bg-[#0D0F1A] border border-white/[0.06] hover:border-accent-500/30 transition-all duration-300">
+                            <div className="w-14 h-14 rounded-2xl bg-accent-500/10 flex items-center justify-center mb-8 text-accent-400 group-hover:bg-accent-600 group-hover:text-white transition-all shadow-lg group-hover:shadow-accent-500/20">
                                 <Heart className="w-7 h-7" />
                             </div>
                             <h3 className="text-2xl font-bold mb-4 text-white">Home Renovators</h3>
@@ -120,8 +120,8 @@ export const About: React.FC = () => {
                             </p>
                         </div>
                         <div className="p-10 rounded-[2rem] bg-white/[0.02] border border-white/[0.06] hover:bg-white/[0.04] transition-all duration-300">
-                            <div className="w-12 h-12 bg-secondary-500/10 rounded-2xl flex items-center justify-center mb-8 border border-secondary-500/20 shadow-lg shadow-secondary-500/10">
-                                <Users className="w-6 h-6 text-secondary-400" />
+                            <div className="w-12 h-12 bg-accent-500/10 rounded-2xl flex items-center justify-center mb-8 border border-accent-500/20 shadow-lg shadow-accent-500/10">
+                                <Users className="w-6 h-6 text-accent-400" />
                             </div>
                             <h3 className="text-xl font-bold mb-4 text-white">User Sovereignty</h3>
                             <p className="text-slate-400 leading-relaxed">

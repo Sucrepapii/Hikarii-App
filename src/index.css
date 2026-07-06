@@ -116,7 +116,7 @@
   }
 
   .gradient-text {
-    @apply bg-gradient-to-r from-primary-400 via-secondary-400 to-pink-400 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-primary-400 via-accent-400 to-pink-400 bg-clip-text text-transparent;
     background-size: 200% auto;
     animation: textShimmer 4s linear infinite;
   }
@@ -221,7 +221,7 @@
 
   /* Gradient text */
   .gradient-text {
-    @apply bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent;
   }
 
   /* Brand Background Gradient */

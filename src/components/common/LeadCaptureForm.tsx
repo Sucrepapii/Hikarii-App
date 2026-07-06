@@ -83,7 +83,7 @@ export const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
                         required
                         className={`w-full px-0 py-3 bg-transparent border-b border-slate-700 dark:border-white/10 text-white focus:border-primary-500 outline-none transition-all placeholder:text-slate-600 font-medium`}
                     />
-                    <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-primary-500 to-secondary-500 group-focus-within:w-full transition-all duration-500"></div>
+                    <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-primary-500 to-accent-500 group-focus-within:w-full transition-all duration-500"></div>
                 </div>
 
                 <Button

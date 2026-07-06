@@ -17,7 +17,7 @@ export const CategoryPage: React.FC = () => {
     const getIcon = (cat: string) => {
         switch (cat) {
             case 'Getting Started': return <Book className="w-8 h-8 text-primary-500" />;
-            case 'Account & Billing': return <FileQuestion className="w-8 h-8 text-secondary-500" />;
+            case 'Account & Billing': return <FileQuestion className="w-8 h-8 text-accent-500" />;
             case 'Troubleshooting': return <HelpCircle className="w-8 h-8 text-pink-500" />;
             default: return <Book className="w-8 h-8 text-slate-500" />;
         }

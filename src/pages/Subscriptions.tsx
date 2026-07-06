@@ -137,7 +137,7 @@ export const Subscriptions: React.FC = () => {
             </div>
 
             {advice && (
-                <div className="bg-gradient-to-r from-primary-50 to-secondary-50 dark:from-primary-900/20 dark:to-secondary-900/20 border border-primary-100 dark:border-primary-800 rounded-xl p-5 mb-6 flex gap-4 animate-fade-in-up">
+                <div className="bg-gradient-to-r from-primary-50 to-accent-50 dark:from-primary-900/20 dark:to-accent-900/20 border border-primary-100 dark:border-primary-800 rounded-xl p-5 mb-6 flex gap-4 animate-fade-in-up">
                     <div className="bg-white dark:bg-slate-800 p-2 rounded-lg h-fit shadow-sm border border-primary-50 dark:border-primary-900">
                         <Lightbulb className="w-6 h-6 text-primary-500 fill-primary-100 dark:fill-primary-900" />
                     </div>

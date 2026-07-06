@@ -107,7 +107,7 @@ export const ActivityLog: React.FC<ActivityLogProps> = ({ projectId, currentUser
             const initials = getInitials(comment.user?.name);
             return (
               <div key={comment.id} className={`flex gap-2.5 group ${isMe ? 'flex-row-reverse' : ''}`}>
-                <div className="w-7 h-7 rounded-full bg-gradient-to-br from-primary-400 to-secondary-500 flex items-center justify-center text-white text-xs font-bold shrink-0 mt-0.5">
+                <div className="w-7 h-7 rounded-full bg-gradient-to-br from-primary-400 to-accent-500 flex items-center justify-center text-white text-xs font-bold shrink-0 mt-0.5">
                   {initials}
                 </div>
                 <div className={`max-w-[75%] ${isMe ? 'items-end' : 'items-start'} flex flex-col gap-0.5`}>

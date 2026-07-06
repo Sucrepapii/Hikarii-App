@@ -112,7 +112,7 @@ export const ProjectCarousel: React.FC = () => {
                                             <div className="w-6 h-6 rounded-full border-2 border-slate-300 dark:border-slate-600 group-hover/check:border-primary-500 transition-colors" />
                                             <CheckCircle2 className="w-6 h-6 absolute text-primary-500 scale-0 group-hover/check:scale-110 group-hover/check:opacity-50 transition-all" />
                                         </button>
-                                        <span className="px-2 py-1 rounded-md bg-secondary-100 dark:bg-secondary-900/30 text-[10px] font-bold text-primary-700 dark:text-primary-300">
+                                        <span className="px-2 py-1 rounded-md bg-accent-100 dark:bg-accent-900/30 text-[10px] font-bold text-primary-700 dark:text-primary-300">
                                             {project.status || 'ACTIVE'}
                                         </span>
                                     </div>
@@ -121,7 +121,7 @@ export const ProjectCarousel: React.FC = () => {
                                             <Button
                                                 variant="ghost"
                                                 size="sm"
-                                                className="p-1.5 h-auto bg-secondary-500/10 hover:bg-secondary-500/20 text-secondary-600 dark:text-secondary-400 rounded-lg"
+                                                className="p-1.5 h-auto bg-accent-500/10 hover:bg-accent-500/20 text-accent-600 dark:text-accent-400 rounded-lg"
                                             >
                                                 <Edit2 className="w-3.5 h-3.5" />
                                             </Button>

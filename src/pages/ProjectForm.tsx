@@ -97,10 +97,10 @@ export const ProjectForm: React.FC = () => {
             {!isEditing && (
                 <div 
                     onClick={() => setShowAIScoper(true)}
-                    className="mb-6 p-4 rounded-2xl bg-gradient-to-br from-primary-500/10 to-secondary-500/10 border border-primary-500/20 shadow-sm cursor-pointer hover:border-primary-500/40 hover:-translate-y-0.5 transition-all flex items-center justify-between gap-4 group"
+                    className="mb-6 p-4 rounded-2xl bg-gradient-to-br from-primary-500/10 to-accent-500/10 border border-primary-500/20 shadow-sm cursor-pointer hover:border-primary-500/40 hover:-translate-y-0.5 transition-all flex items-center justify-between gap-4 group"
                 >
                     <div className="flex items-center gap-3">
-                        <div className="p-2.5 rounded-xl bg-gradient-to-br from-primary-500 to-secondary-500 text-white shadow-md shadow-primary-500/20 group-hover:scale-105 transition-transform duration-300">
+                        <div className="p-2.5 rounded-xl bg-gradient-to-br from-primary-500 to-accent-500 text-white shadow-md shadow-primary-500/20 group-hover:scale-105 transition-transform duration-300">
                             <Sparkles className="w-5 h-5 animate-pulse" />
                         </div>
                         <div>

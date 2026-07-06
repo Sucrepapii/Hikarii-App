@@ -5,11 +5,11 @@ import { Navbar } from '../components/layout/Navbar';
 
 export const Feedback = () => {
     return (
-        <div className="min-h-screen bg-[#080910] font-sans text-slate-100 flex flex-col selection:bg-secondary-500/30 overflow-x-hidden deep-dark">
+        <div className="min-h-screen bg-[#080910] font-sans text-slate-100 flex flex-col selection:bg-accent-500/30 overflow-x-hidden deep-dark">
             <Navbar />
 
             <div className="flex-grow pt-32 pb-20 relative">
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-secondary-600/5 rounded-full blur-[120px] pointer-events-none -z-10" />
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-accent-600/5 rounded-full blur-[120px] pointer-events-none -z-10" />
                 <FeedbackSection />
             </div>
             

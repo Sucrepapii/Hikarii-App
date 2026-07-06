@@ -80,7 +80,7 @@ export const Pricing: React.FC = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-[#080910] text-slate-100 selection:bg-secondary-500/30 overflow-x-hidden flex flex-col deep-dark">
+        <div className="min-h-screen bg-[#080910] text-slate-100 selection:bg-accent-500/30 overflow-x-hidden flex flex-col deep-dark">
             <Helmet>
                 <title>Pricing | Hikari</title>
                 <meta name="description" content="Choose the plan that fits your growth. Affordable, institutional-grade tools for personal and professional clarity." />
@@ -123,7 +123,7 @@ export const Pricing: React.FC = () => {
                                 className={`relative p-10 md:p-14 rounded-[3.5rem] border ${plan.highlight ? 'bg-white/[0.03] border-primary-500/30 shadow-2xl shadow-primary-500/10' : 'bg-[#0D0F1A] border-white/5 shadow-2xl'}`}
                             >
                                 {plan.highlight && (
-                                    <div className="absolute -top-5 left-1/2 -translate-x-1/2 px-6 py-2 bg-gradient-to-r from-primary-600 to-secondary-600 rounded-full text-[10px] font-black tracking-[0.3em] uppercase text-white shadow-xl shadow-primary-500/20">
+                                    <div className="absolute -top-5 left-1/2 -translate-x-1/2 px-6 py-2 bg-gradient-to-r from-primary-600 to-accent-600 rounded-full text-[10px] font-black tracking-[0.3em] uppercase text-white shadow-xl shadow-primary-500/20">
                                         Most Popular
                                     </div>
                                 )}

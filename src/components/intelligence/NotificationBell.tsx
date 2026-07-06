@@ -40,9 +40,9 @@ const priorityStyles = {
         icon: "text-yellow-600 dark:text-yellow-400",
     },
     [InsightPriority.LOW]: {
-        bg: "bg-secondary-500/10 dark:bg-secondary-500/20 border-secondary-500/30",
-        text: "text-secondary-700 dark:text-secondary-300",
-        icon: "text-secondary-600 dark:text-secondary-400",
+        bg: "bg-accent-500/10 dark:bg-accent-500/20 border-accent-500/30",
+        text: "text-accent-700 dark:text-accent-300",
+        icon: "text-accent-600 dark:text-accent-400",
     },
 };
 
@@ -181,7 +181,7 @@ export const NotificationBell: React.FC = () => {
                             "absolute -top-1 -right-1 flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full text-xs font-bold text-white",
                             criticalCount > 0
                                 ? "bg-gradient-to-r from-red-500 to-red-600 animate-pulse"
-                                : "bg-gradient-to-r from-primary-500 to-secondary-500"
+                                : "bg-gradient-to-r from-primary-500 to-accent-500"
                         )}
                     >
                         {unreadCount > 9 ? "9+" : unreadCount}

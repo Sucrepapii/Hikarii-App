@@ -103,7 +103,7 @@ export const AdminMarketing: React.FC = () => {
                             <h3 className="text-3xl font-bold mt-1 text-slate-900 dark:text-white">+{data?.leads?.last7Days || 0}</h3>
                             <p className="text-xs text-slate-400 mt-1">New leads this week</p>
                         </div>
-                        <div className="p-3 bg-secondary-50 dark:bg-secondary-900/30 rounded-xl text-secondary-600">
+                        <div className="p-3 bg-accent-50 dark:bg-accent-900/30 rounded-xl text-accent-600">
                             <Users className="w-6 h-6" />
                         </div>
                     </div>

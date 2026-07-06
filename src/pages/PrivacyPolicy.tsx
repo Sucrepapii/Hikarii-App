@@ -6,7 +6,7 @@ import { Footer } from '../components/layout/Footer';
 
 export const PrivacyPolicy: React.FC = () => {
     return (
-        <div className="min-h-screen bg-[#080910] text-slate-100 selection:bg-secondary-500/30 overflow-x-hidden flex flex-col deep-dark">
+        <div className="min-h-screen bg-[#080910] text-slate-100 selection:bg-accent-500/30 overflow-x-hidden flex flex-col deep-dark">
             <Navbar />
 
             {/* Content */}
@@ -33,7 +33,7 @@ export const PrivacyPolicy: React.FC = () => {
                     </section>
 
                     <section className="bg-[#0D0F1A] p-10 md:p-16 rounded-[3rem] border border-white/[0.06] shadow-2xl relative overflow-hidden group">
-                        <div className="absolute top-0 left-0 w-2 h-full bg-secondary-500/50 group-hover:bg-secondary-500 transition-colors" />
+                        <div className="absolute top-0 left-0 w-2 h-full bg-accent-500/50 group-hover:bg-accent-500 transition-colors" />
                         <h2 className="text-3xl font-bold text-white mb-8 tracking-tight">2. Information Collection and Categorization</h2>
                         <div className="space-y-10">
                             <div className="p-8 rounded-2xl bg-white/5 border border-white/5">
@@ -54,7 +54,7 @@ export const PrivacyPolicy: React.FC = () => {
                                 <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     {['IP Addresses', 'Browser Fingerprints', 'Session Logs', 'Geographical Metadata'].map((item) => (
                                         <li key={item} className="flex items-center gap-3 text-slate-300">
-                                            <div className="w-1.5 h-1.5 rounded-full bg-secondary-500" />
+                                            <div className="w-1.5 h-1.5 rounded-full bg-accent-500" />
                                             {item}
                                         </li>
                                     ))}
@@ -87,7 +87,7 @@ export const PrivacyPolicy: React.FC = () => {
                     </section>
 
                     <section className="bg-[#0D0F1A] p-10 md:p-16 rounded-[3rem] border border-white/[0.06] shadow-2xl relative overflow-hidden group">
-                        <div className="absolute top-0 left-0 w-2 h-full bg-secondary-500/50 group-hover:bg-secondary-500 transition-colors" />
+                        <div className="absolute top-0 left-0 w-2 h-full bg-accent-500/50 group-hover:bg-accent-500 transition-colors" />
                         <h2 className="text-3xl font-bold text-white mb-8 tracking-tight">4. International Transfers and Security</h2>
                         <p className="text-slate-400 leading-relaxed text-lg mb-8">
                             Your information may be transferred to, and maintained on, computers located outside of your state, province, or country. We utilize <strong>Standard Contractual Clauses (SCCs)</strong> approved by the European Commission to ensure a high level of data protection.

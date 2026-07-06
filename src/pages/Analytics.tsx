@@ -99,7 +99,7 @@ export const Analytics: React.FC = () => {
 
                 <Card>
                     <div className="flex items-center gap-3 mb-2">
-                        <div className="p-2 rounded-lg bg-secondary-100 dark:bg-secondary-900/30 text-secondary-600">
+                        <div className="p-2 rounded-lg bg-accent-100 dark:bg-accent-900/30 text-accent-600">
                             <CheckCircle className="w-5 h-5" />
                         </div>
                         <h3 className="font-medium text-slate-600 dark:text-slate-400">Task Completion Rate</h3>
@@ -111,7 +111,7 @@ export const Analytics: React.FC = () => {
 
                 <Card>
                     <div className="flex items-center gap-3 mb-2">
-                        <div className="p-2 rounded-lg bg-secondary-100 dark:bg-secondary-900/30 text-secondary-600">
+                        <div className="p-2 rounded-lg bg-accent-100 dark:bg-accent-900/30 text-accent-600">
                             <AlertCircle className="w-5 h-5" />
                         </div>
                         <h3 className="font-medium text-slate-600 dark:text-slate-400">Actionable Insights</h3>

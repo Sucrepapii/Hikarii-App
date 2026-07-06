@@ -173,7 +173,7 @@ export const Settings: React.FC = () => {
 
                     <>
                         {/* Feedback Banner */}
-                        <Card className="mb-6 bg-gradient-to-r from-primary-50 to-secondary-50 dark:from-primary-900/10 dark:to-secondary-900/10 border-primary-100 dark:border-primary-800/30">
+                        <Card className="mb-6 bg-gradient-to-r from-primary-50 to-accent-50 dark:from-primary-900/10 dark:to-accent-900/10 border-primary-100 dark:border-primary-800/30">
                             <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                                 <div className="flex items-center gap-4">
                                     <div className="p-3 rounded-xl bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400">
@@ -441,7 +441,7 @@ export const Settings: React.FC = () => {
                 {activeTab === 'data' && (
                     <Card>
                         <div className="flex items-center gap-4 mb-6">
-                            <div className="p-3 rounded-xl bg-secondary-100 dark:bg-secondary-900/30 text-secondary-600 dark:text-secondary-400">
+                            <div className="p-3 rounded-xl bg-accent-100 dark:bg-accent-900/30 text-accent-600 dark:text-accent-400">
                                 <Database className="w-6 h-6" />
                             </div>
                             <div>

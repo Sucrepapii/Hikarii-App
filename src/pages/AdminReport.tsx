@@ -163,7 +163,7 @@ export const AdminReport: React.FC = () => {
                             <p className="text-xs text-slate-400 mt-1 uppercase tracking-wider font-semibold">Tasks</p>
                         </div>
                         <div className="text-center">
-                            <p className="text-2xl font-bold text-secondary-500">{data.stats.totalAiSplits}</p>
+                            <p className="text-2xl font-bold text-accent-500">{data.stats.totalAiSplits}</p>
                             <p className="text-xs text-slate-400 mt-1 uppercase tracking-wider font-semibold">Splits</p>
                         </div>
                         <div className="text-center">

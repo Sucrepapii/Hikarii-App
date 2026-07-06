@@ -127,9 +127,9 @@ export const Signup: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center p-6 bg-[#080910] text-slate-100 selection:bg-secondary-500/30 overflow-x-hidden relative">
+        <div className="min-h-screen flex items-center justify-center p-6 bg-[#080910] text-slate-100 selection:bg-accent-500/30 overflow-x-hidden relative">
             <div className="absolute top-0 right-1/4 w-96 h-96 bg-primary-600/10 rounded-full blur-[120px] pointer-events-none" />
-            <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-secondary-600/10 rounded-full blur-[120px] pointer-events-none" />
+            <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-accent-600/10 rounded-full blur-[120px] pointer-events-none" />
             {/* Back Button */}
             <Link
                 to="/"

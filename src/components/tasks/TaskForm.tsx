@@ -440,12 +440,12 @@ const GoogleSyncCheckbox = ({ register }: { register: any }) => {
     if (!isConnected) return null;
 
     return (
-        <div className="flex items-center gap-3 p-3 rounded-xl bg-secondary-50 dark:bg-secondary-900/20 border border-secondary-100 dark:border-secondary-900/50">
+        <div className="flex items-center gap-3 p-3 rounded-xl bg-accent-50 dark:bg-accent-900/20 border border-accent-100 dark:border-accent-900/50">
             <div className="relative flex items-center">
                 <input
                     type="checkbox"
                     id="addToCalendar"
-                    className="peer h-5 w-5 cursor-pointer appearance-none rounded-md border border-slate-300 bg-white transition-all checked:border-secondary-500 checked:bg-secondary-500 hover:border-secondary-400 dark:border-slate-600 dark:bg-slate-700 dark:checked:border-secondary-500 dark:checked:bg-secondary-500"
+                    className="peer h-5 w-5 cursor-pointer appearance-none rounded-md border border-slate-300 bg-white transition-all checked:border-accent-500 checked:bg-accent-500 hover:border-accent-400 dark:border-slate-600 dark:bg-slate-700 dark:checked:border-accent-500 dark:checked:bg-accent-500"
                     {...register('addToCalendar')}
                 />
                 <CheckCircle2 className="pointer-events-none absolute left-1/2 top-1/2 h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 text-white opacity-0 transition-opacity peer-checked:opacity-100" />

@@ -30,7 +30,7 @@ export const useAmbientTheme = () => {
             } else {
                 // Midnight / Night (8pm - 6am)
                 root.classList.add('ambient-midnight');
-                root.style.setProperty('--ambient-glow', 'rgba(245, 158, 11, 0.15)'); // secondary-500
+                root.style.setProperty('--ambient-glow', 'rgba(245, 158, 11, 0.15)'); // accent-500
                 root.style.setProperty('--ambient-border', 'rgba(245, 158, 11, 0.3)');
                 root.style.setProperty('--ambient-accent', '#f59e0b');
             }

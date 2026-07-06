@@ -348,7 +348,7 @@ export const AdminUserManagement: React.FC = () => {
                                                     <span className={clsx(
                                                         "px-2 py-0.5 rounded-lg text-[10px] font-bold border",
                                                         u.subscriptionStatus === 'PRO'
-                                                            ? "bg-secondary-100 text-secondary-700 border-secondary-200 dark:bg-secondary-900/30 dark:text-secondary-300 dark:border-secondary-800"
+                                                            ? "bg-accent-100 text-accent-700 border-accent-200 dark:bg-accent-900/30 dark:text-accent-300 dark:border-accent-800"
                                                             : "bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700"
                                                     )}>
                                                         {u.subscriptionStatus}

@@ -29,7 +29,7 @@ export const HelpCenter: React.FC = () => {
         : [];
 
     return (
-        <div className="min-h-screen bg-[#080910] font-sans text-slate-100 flex flex-col selection:bg-secondary-500/30 overflow-x-hidden deep-dark">
+        <div className="min-h-screen bg-[#080910] font-sans text-slate-100 flex flex-col selection:bg-accent-500/30 overflow-x-hidden deep-dark">
             <Navbar />
 
             <main className="flex-grow pt-32 px-6 max-w-6xl mx-auto w-full pb-20">
@@ -41,7 +41,7 @@ export const HelpCenter: React.FC = () => {
                     </div>
                     <h1 className="text-4xl md:text-7xl font-display font-bold mb-8 tracking-tight">How can we help?</h1>
                     <div className="max-w-2xl mx-auto relative group">
-                        <div className="absolute inset-0 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-full blur opacity-20 group-hover:opacity-30 transition-opacity"></div>
+                        <div className="absolute inset-0 bg-gradient-to-r from-primary-500 to-accent-500 rounded-full blur opacity-20 group-hover:opacity-30 transition-opacity"></div>
                         <div className="relative">
                             <input
                                 type="text"
@@ -112,14 +112,14 @@ export const HelpCenter: React.FC = () => {
                                 )}
                             </Link>
 
-                            <Link to="/help/category/Account%20&%20Billing" className="p-8 rounded-[2rem] bg-[#0D0F1A] border border-white/[0.06] hover:border-secondary-500/30 transition-all duration-300 group block">
-                                <div className="w-12 h-12 rounded-2xl bg-secondary-500/10 flex items-center justify-center mb-6 border border-secondary-500/20 shadow-lg shadow-secondary-500/10 group-hover:scale-110 transition-transform">
-                                    <FileQuestion className="w-6 h-6 text-secondary-400" />
+                            <Link to="/help/category/Account%20&%20Billing" className="p-8 rounded-[2rem] bg-[#0D0F1A] border border-white/[0.06] hover:border-accent-500/30 transition-all duration-300 group block">
+                                <div className="w-12 h-12 rounded-2xl bg-accent-500/10 flex items-center justify-center mb-6 border border-accent-500/20 shadow-lg shadow-accent-500/10 group-hover:scale-110 transition-transform">
+                                    <FileQuestion className="w-6 h-6 text-accent-400" />
                                 </div>
                                 <h3 className="text-lg font-bold mb-2 text-white">Account & Billing</h3>
                                 <p className="text-sm text-slate-500 mb-6 leading-relaxed">Plans, payments, invoices, and settings.</p>
                                 {getCount('Account & Billing') > 0 && (
-                                    <span className="text-secondary-400 text-xs font-black tracking-widest uppercase">{getCount('Account & Billing')} Articles</span>
+                                    <span className="text-accent-400 text-xs font-black tracking-widest uppercase">{getCount('Account & Billing')} Articles</span>
                                 )}
                             </Link>
 

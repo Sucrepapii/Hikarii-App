@@ -889,6 +889,13 @@ var init_reminder_job = __esm({
 ${taskList}`
                 );
               }
+              await notifyUser(
+                user.id,
+                "Overdue Tasks",
+                `You have ${overdueTasks.length} overdue tasks that need your attention.`,
+                "REMINDER",
+                { url: "/tasks" }
+              );
             }
             if (user.waBudgetEnabled && user.phoneNumber) {
               const budgets = await db_default.budget.findMany({
@@ -902,12 +909,6 @@ ${taskList}`
                   );
                 }
               }
-              await notifyUser(
-                user.id,
-                "Overdue Tasks",
-                `You have ${overdueTasks.length} overdue tasks that need your attention.`,
-                "REMINDER"
-              );
             }
             if (user.waProjectsEnabled && user.phoneNumber) {
               const overdueProjects = await db_default.project.findMany({
@@ -936,11 +937,18 @@ ${projectList}`
               }
             });
             if (allOverdueProjects.length > 0) {
+              const isSingle = allOverdueProjects.length === 1;
+              const title = isSingle ? "Overdue Project" : "Overdue Projects";
+              const body = isSingle ? `Your project "${allOverdueProjects[0].title}" is overdue.` : `You have ${allOverdueProjects.length} overdue projects: ${allOverdueProjects.map((p) => `"${p.title}"`).join(", ")}`;
+              const data = {
+                url: isSingle ? `/projects/${allOverdueProjects[0].id}` : "/projects"
+              };
               await notifyUser(
                 user.id,
-                "Overdue Projects",
-                `You have ${allOverdueProjects.length} overdue projects.`,
-                "REMINDER"
+                title,
+                body,
+                "REMINDER",
+                data
               );
             }
           }
@@ -3959,9 +3967,10 @@ var getNotifications = async (req, res) => {
 };
 var markAsRead = async (req, res) => {
   try {
-    const { id } = req.params;
-    const notification = await db_default.notification.updateMany({
-      where: { id, userId: req.userId },
+    const id = req.params.id;
+    const userId = req.userId;
+    await db_default.notification.updateMany({
+      where: { id, userId },
       data: { isRead: true }
     });
     res.json({ message: "Notification marked as read" });
@@ -3971,11 +3980,35 @@ var markAsRead = async (req, res) => {
 };
 var markAllAsRead = async (req, res) => {
   try {
+    const userId = req.userId;
     await db_default.notification.updateMany({
-      where: { userId: req.userId, isRead: false },
+      where: { userId, isRead: false },
       data: { isRead: true }
     });
     res.json({ message: "All notifications marked as read" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+var deleteNotification = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const userId = req.userId;
+    await db_default.notification.deleteMany({
+      where: { id, userId }
+    });
+    res.json({ message: "Notification deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+var clearAllNotifications = async (req, res) => {
+  try {
+    const userId = req.userId;
+    await db_default.notification.deleteMany({
+      where: { userId }
+    });
+    res.json({ message: "All notifications cleared successfully" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -3986,6 +4019,8 @@ var router16 = Router12();
 router16.get("/", authenticate, getNotifications);
 router16.put("/mark-all-read", authenticate, markAllAsRead);
 router16.put("/:id/read", authenticate, markAsRead);
+router16.delete("/clear-all", authenticate, clearAllNotifications);
+router16.delete("/:id", authenticate, deleteNotification);
 var notification_routes_default = router16;
 
 // server/src/app.ts
