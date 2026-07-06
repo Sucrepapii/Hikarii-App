@@ -88,7 +88,7 @@ export const ActivityLog: React.FC<ActivityLogProps> = ({ projectId, currentUser
     <div className="flex flex-col h-full">
       {/* Header */}
       <div className="flex items-center gap-2 mb-4">
-        <MessageSquare className="w-4 h-4 text-cyan-500" />
+        <MessageSquare className="w-4 h-4 text-primary-500" />
         <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">Activity & Comments</span>
         <span className="ml-auto text-xs text-slate-400">{comments.length} messages</span>
       </div>
@@ -107,7 +107,7 @@ export const ActivityLog: React.FC<ActivityLogProps> = ({ projectId, currentUser
             const initials = getInitials(comment.user?.name);
             return (
               <div key={comment.id} className={`flex gap-2.5 group ${isMe ? 'flex-row-reverse' : ''}`}>
-                <div className="w-7 h-7 rounded-full bg-gradient-to-br from-cyan-400 to-purple-500 flex items-center justify-center text-white text-xs font-bold shrink-0 mt-0.5">
+                <div className="w-7 h-7 rounded-full bg-gradient-to-br from-primary-400 to-secondary-500 flex items-center justify-center text-white text-xs font-bold shrink-0 mt-0.5">
                   {initials}
                 </div>
                 <div className={`max-w-[75%] ${isMe ? 'items-end' : 'items-start'} flex flex-col gap-0.5`}>
@@ -118,7 +118,7 @@ export const ActivityLog: React.FC<ActivityLogProps> = ({ projectId, currentUser
                   <div className={`flex items-center gap-1.5 ${isMe ? 'flex-row-reverse' : ''}`}>
                     <div className={`px-3 py-2 rounded-2xl text-sm leading-relaxed ${
                       isMe
-                        ? 'bg-cyan-600 text-white rounded-tr-sm'
+                        ? 'bg-gradient-to-r from-primary-600 to-accent-600 text-white rounded-tr-sm'
                         : 'bg-slate-100 dark:bg-white/5 text-slate-800 dark:text-slate-200 rounded-tl-sm'
                     }`}>
                       {comment.content}
@@ -147,12 +147,12 @@ export const ActivityLog: React.FC<ActivityLogProps> = ({ projectId, currentUser
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
           placeholder="Write a comment..."
-          className="flex-1 px-3 py-2 rounded-xl text-sm bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+          className="flex-1 px-3 py-2 rounded-xl text-sm bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500"
         />
         <button
           type="submit"
           disabled={!newComment.trim() || isPosting}
-          className="w-9 h-9 shrink-0 bg-cyan-600 hover:bg-cyan-700 disabled:bg-slate-300 dark:disabled:bg-white/10 text-white rounded-xl flex items-center justify-center transition-colors"
+          className="w-9 h-9 shrink-0 bg-gradient-to-r from-primary-600 to-accent-600 hover:from-primary-700 hover:to-accent-700 disabled:bg-slate-300 dark:disabled:bg-white/10 text-white rounded-xl flex items-center justify-center transition-colors"
         >
           <Send className="w-4 h-4" />
         </button>

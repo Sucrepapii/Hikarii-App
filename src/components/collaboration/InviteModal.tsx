@@ -55,8 +55,8 @@ export const InviteModal: React.FC<InviteModalProps> = ({ projectId, projectTitl
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-slate-100 dark:border-white/5">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-cyan-500/10 rounded-xl flex items-center justify-center">
-              <UserPlus className="w-5 h-5 text-cyan-600 dark:text-cyan-400" />
+            <div className="w-10 h-10 bg-primary-500/10 rounded-xl flex items-center justify-center">
+              <UserPlus className="w-5 h-5 text-primary-600 dark:text-primary-400" />
             </div>
             <div>
               <h2 className="font-bold text-slate-900 dark:text-white text-base">Invite Collaborator</h2>
@@ -79,7 +79,7 @@ export const InviteModal: React.FC<InviteModalProps> = ({ projectId, projectTitl
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="colleague@example.com"
-              className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
               required
             />
           </div>
@@ -94,7 +94,7 @@ export const InviteModal: React.FC<InviteModalProps> = ({ projectId, projectTitl
                   key={option.value}
                   className={`flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition-all ${
                     role === option.value
-                      ? 'border-cyan-500 bg-cyan-50 dark:bg-cyan-500/10'
+                      ? 'border-primary-500 bg-primary-50 dark:bg-primary-500/10'
                       : 'border-slate-200 dark:border-white/5 hover:border-slate-300 dark:hover:border-white/10'
                   }`}
                 >
@@ -104,7 +104,7 @@ export const InviteModal: React.FC<InviteModalProps> = ({ projectId, projectTitl
                     value={option.value}
                     checked={role === option.value}
                     onChange={() => setRole(option.value)}
-                    className="mt-0.5 accent-cyan-600"
+                    className="mt-0.5 secondary-primary-600"
                   />
                   <div>
                     <div className="text-sm font-semibold text-slate-800 dark:text-white">{option.label}</div>

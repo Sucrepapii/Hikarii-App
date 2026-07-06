@@ -80,7 +80,7 @@ export const Pricing: React.FC = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-[#080910] text-slate-100 selection:bg-purple-500/30 overflow-x-hidden flex flex-col deep-dark">
+        <div className="min-h-screen bg-[#080910] text-slate-100 selection:bg-secondary-500/30 overflow-x-hidden flex flex-col deep-dark">
             <Helmet>
                 <title>Pricing | Hikari</title>
                 <meta name="description" content="Choose the plan that fits your growth. Affordable, institutional-grade tools for personal and professional clarity." />
@@ -89,7 +89,7 @@ export const Pricing: React.FC = () => {
             <Navbar />
 
             <main className="flex-grow pt-32 pb-24 px-6 relative">
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[1000px] bg-cyan-600/5 rounded-full blur-[180px] pointer-events-none -z-10" />
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[1000px] bg-primary-600/5 rounded-full blur-[180px] pointer-events-none -z-10" />
 
                 <div className="container mx-auto max-w-6xl">
                     <div className="text-center mb-20">
@@ -120,10 +120,10 @@ export const Pricing: React.FC = () => {
                         {plans.map((plan, i) => (
                             <div
                                 key={i}
-                                className={`relative p-10 md:p-14 rounded-[3.5rem] border ${plan.highlight ? 'bg-white/[0.03] border-cyan-500/30 shadow-2xl shadow-cyan-500/10' : 'bg-[#0D0F1A] border-white/5 shadow-2xl'}`}
+                                className={`relative p-10 md:p-14 rounded-[3.5rem] border ${plan.highlight ? 'bg-white/[0.03] border-primary-500/30 shadow-2xl shadow-primary-500/10' : 'bg-[#0D0F1A] border-white/5 shadow-2xl'}`}
                             >
                                 {plan.highlight && (
-                                    <div className="absolute -top-5 left-1/2 -translate-x-1/2 px-6 py-2 bg-gradient-to-r from-cyan-600 to-purple-600 rounded-full text-[10px] font-black tracking-[0.3em] uppercase text-white shadow-xl shadow-cyan-500/20">
+                                    <div className="absolute -top-5 left-1/2 -translate-x-1/2 px-6 py-2 bg-gradient-to-r from-primary-600 to-secondary-600 rounded-full text-[10px] font-black tracking-[0.3em] uppercase text-white shadow-xl shadow-primary-500/20">
                                         Most Popular
                                     </div>
                                 )}
@@ -140,7 +140,7 @@ export const Pricing: React.FC = () => {
                                 <div className="space-y-5 mb-12">
                                     {plan.features.map((feature, j) => (
                                         <div key={j} className="flex items-center gap-4 group">
-                                            <div className={`w-6 h-6 rounded-lg flex items-center justify-center transition-colors ${plan.highlight ? 'bg-cyan-500/20 text-cyan-400' : 'bg-white/5 text-slate-500'}`}>
+                                            <div className={`w-6 h-6 rounded-lg flex items-center justify-center transition-colors ${plan.highlight ? 'bg-primary-500/20 text-primary-400' : 'bg-white/5 text-slate-500'}`}>
                                                 <Check className="w-3.5 h-3.5" />
                                             </div>
                                             <span className="text-slate-300 font-medium group-hover:text-white transition-colors">{feature}</span>

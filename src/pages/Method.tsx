@@ -45,12 +45,12 @@ const RULES = [
 
 export const Method: React.FC = () => {
     return (
-        <div className="min-h-screen bg-[#0D0F1A] text-white selection:bg-cyan-500/30">
+        <div className="min-h-screen bg-[#0D0F1A] text-white selection:bg-primary-500/30">
             <Navbar />
             
             <main className="pt-32 pb-20 px-6 max-w-5xl mx-auto">
                 <div className="text-center mb-20 animate-fade-in">
-                    <span className="inline-block px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-sm font-semibold mb-6 tracking-wide">Our Philosophy</span>
+                    <span className="inline-block px-4 py-1.5 rounded-full bg-primary-500/10 border border-primary-500/20 text-primary-300 text-sm font-semibold mb-6 tracking-wide">Our Philosophy</span>
                     <h1 className="text-4xl md:text-6xl font-display font-bold mb-6 tracking-tight">The Hikari Method</h1>
                     <p className="text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed">
                         Clarity is not a state of being; it's a practice. We built Hikari on five foundational rules that transform how you manage your most precious resources: time and money.
@@ -65,10 +65,10 @@ export const Method: React.FC = () => {
                             </div>
                             <div>
                                 <div className="flex items-center gap-3 mb-2">
-                                    <span className="text-sm font-bold text-cyan-400 uppercase tracking-widest">{rule.rule}</span>
+                                    <span className="text-sm font-bold text-primary-400 uppercase tracking-widest">{rule.rule}</span>
                                     <div className="h-px flex-1 bg-white/5" />
                                 </div>
-                                <h2 className="text-2xl font-bold mb-4 group-hover:text-cyan-300 transition-colors">{rule.title}</h2>
+                                <h2 className="text-2xl font-bold mb-4 group-hover:text-primary-300 transition-colors">{rule.title}</h2>
                                 <p className="text-lg text-slate-400 leading-relaxed">
                                     {rule.description}
                                 </p>
@@ -77,13 +77,13 @@ export const Method: React.FC = () => {
                     ))}
                 </div>
 
-                <div className="bg-gradient-to-br from-cyan-600 to-purple-700 rounded-[2.5rem] p-12 text-center relative overflow-hidden">
+                <div className="bg-gradient-to-br from-primary-600 to-secondary-700 rounded-[2.5rem] p-12 text-center relative overflow-hidden">
                     <div className="relative z-10">
                         <h2 className="text-3xl font-bold mb-6 italic">"The secret to wealth is simple: Spend less than you earn. The secret to peace is simpler: Know exactly why you're spending."</h2>
-                        <p className="text-cyan-100 mb-8 font-medium">— The Hikari Philosophy</p>
+                        <p className="text-primary-100 mb-8 font-medium">— The Hikari Philosophy</p>
                         <Link 
                             to="/signup" 
-                            className="inline-flex items-center gap-2 px-8 py-4 bg-white text-cyan-600 font-bold rounded-full hover:scale-105 transition-transform shadow-xl"
+                            className="inline-flex items-center gap-2 px-8 py-4 bg-white text-primary-600 font-bold rounded-full hover:scale-105 transition-transform shadow-xl"
                         >
                             Start Living with Clarity <ArrowRight className="w-5 h-5" />
                         </Link>

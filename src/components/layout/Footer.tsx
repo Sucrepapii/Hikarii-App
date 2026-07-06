@@ -7,7 +7,7 @@ import { LeadCaptureForm } from '../common/LeadCaptureForm';
 export const Footer: React.FC = () => {
     return (
         <footer className="bg-[#080910] border-t border-white/[0.06] pt-32 pb-12 overflow-hidden relative">
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[120%] h-px bg-gradient-to-r from-transparent via-cyan-500/20 to-transparent" />
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[120%] h-px bg-gradient-to-r from-transparent via-primary-500/20 to-transparent" />
             <div className="max-w-7xl mx-auto px-6">
                 <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-12 mb-20">
                     {/* Brand Column */}
@@ -37,19 +37,19 @@ export const Footer: React.FC = () => {
                     <div>
                         <h4 className="text-[10px] font-black tracking-[0.3em] text-slate-500 uppercase mb-8">Product</h4>
                         <ul className="space-y-4 text-sm text-slate-400">
-                            <li><Link to="/#features" className="hover:text-cyan-400 transition-colors">Features</Link></li>
-                            <li><Link to="/pricing" className="hover:text-cyan-400 transition-colors">Pricing</Link></li>
+                            <li><Link to="/#features" className="hover:text-primary-400 transition-colors">Features</Link></li>
+                            <li><Link to="/pricing" className="hover:text-primary-400 transition-colors">Pricing</Link></li>
                         </ul>
                     </div>
 
                     <div>
                         <h4 className="text-[10px] font-black tracking-[0.3em] text-slate-500 uppercase mb-8">Resources</h4>
                         <ul className="space-y-4 text-sm text-slate-400">
-                            <li><Link to="/help/article/ultimate-guide-hikari-method" className="text-cyan-400 font-semibold hover:text-cyan-300 transition-colors">The Ultimate Guide</Link></li>
-                            <li><a href="https://www.linkedin.com/company/hikari-world/" target="_blank" rel="noopener noreferrer" className="hover:text-cyan-400 transition-colors">Blog</a></li>
-                            <li><Link to="/help" className="hover:text-cyan-400 transition-colors">Help Center</Link></li>
-                            <li><Link to="/faq" className="hover:text-cyan-400 transition-colors">FAQ</Link></li>
-                            <li><Link to="/feedback" className="hover:text-cyan-400 transition-colors">Feedback</Link></li>
+                            <li><Link to="/help/article/ultimate-guide-hikari-method" className="text-primary-400 font-semibold hover:text-primary-300 transition-colors">The Ultimate Guide</Link></li>
+                            <li><a href="https://www.linkedin.com/company/hikari-world/" target="_blank" rel="noopener noreferrer" className="hover:text-primary-400 transition-colors">Blog</a></li>
+                            <li><Link to="/help" className="hover:text-primary-400 transition-colors">Help Center</Link></li>
+                            <li><Link to="/faq" className="hover:text-primary-400 transition-colors">FAQ</Link></li>
+                            <li><Link to="/feedback" className="hover:text-primary-400 transition-colors">Feedback</Link></li>
                         </ul>
                     </div>
 
@@ -57,11 +57,11 @@ export const Footer: React.FC = () => {
                     <div>
                         <h4 className="text-[10px] font-black tracking-[0.3em] text-slate-500 uppercase mb-8">Company</h4>
                         <ul className="space-y-4 text-sm text-slate-400">
-                            <li><Link to="/about" className="hover:text-cyan-400 transition-colors">About Us</Link></li>
-                            <li><Link to="/contact" className="hover:text-cyan-400 transition-colors">Contact</Link></li>
+                            <li><Link to="/about" className="hover:text-primary-400 transition-colors">About Us</Link></li>
+                            <li><Link to="/contact" className="hover:text-primary-400 transition-colors">Contact</Link></li>
                             <li className="pt-2">
                                 <span className="block text-[10px] font-black text-slate-600 uppercase tracking-[0.2em] mb-2">Support</span>
-                                <a href="tel:+2349024129891" className="text-cyan-400 hover:text-white transition-all font-bold">+234 902 412 9891</a>
+                                <a href="tel:+2349024129891" className="text-primary-400 hover:text-white transition-all font-bold">+234 902 412 9891</a>
                             </li>
                         </ul>
                     </div>

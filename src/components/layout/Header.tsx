@@ -73,7 +73,7 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
                     */}
                     {user && (
                         <div className="hidden sm:flex items-center gap-3 px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800/50 shadow-sm">
-                            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center shadow-md">
+                            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center shadow-md">
                                 <User className="w-4 h-4 text-white" />
                             </div>
                             <div className="text-sm">

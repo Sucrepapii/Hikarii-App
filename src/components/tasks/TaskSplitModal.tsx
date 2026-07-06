@@ -94,7 +94,7 @@ export const TaskSplitModal: React.FC<TaskSplitModalProps> = ({ isOpen, onClose,
                     <div className="bg-white dark:bg-slate-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                         <div className="flex justify-between items-start mb-5">
                             <div className="flex items-center gap-3">
-                                <div className="p-2 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-lg">
+                                <div className="p-2 bg-secondary-100 dark:bg-secondary-900/30 text-secondary-600 dark:text-secondary-400 rounded-lg">
                                     <Sparkles className="w-6 h-6" />
                                 </div>
                                 <div>
@@ -114,15 +114,15 @@ export const TaskSplitModal: React.FC<TaskSplitModalProps> = ({ isOpen, onClose,
                         <div className="mt-4">
                             {loading ? (
                                 <div className="py-12 text-center text-slate-500">
-                                    <Sparkles className="w-8 h-8 animate-spin mx-auto mb-2 text-purple-500" />
+                                    <Sparkles className="w-8 h-8 animate-spin mx-auto mb-2 text-secondary-500" />
                                     <p>{blocks.length > 0 ? "Syncing to calendar..." : "Analyzing task structure..."}</p>
                                 </div>
                             ) : blocks.length > 0 ? (
                                 <div className="space-y-3">
                                     {blocks.sort((a, b) => a.order - b.order).map((block) => (
-                                        <div key={block.id} className="p-4 rounded-xl bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 flex justify-between items-center group hover:border-purple-300 dark:hover:border-purple-600 transition-colors">
+                                        <div key={block.id} className="p-4 rounded-xl bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 flex justify-between items-center group hover:border-secondary-300 dark:hover:border-secondary-600 transition-colors">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-6 h-6 rounded-full bg-purple-100 dark:bg-purple-900/50 text-purple-600 dark:text-purple-400 flex items-center justify-center text-xs font-bold">
+                                                <div className="w-6 h-6 rounded-full bg-secondary-100 dark:bg-secondary-900/50 text-secondary-600 dark:text-secondary-400 flex items-center justify-center text-xs font-bold">
                                                     {block.order + 1}
                                                 </div>
                                                 <span className="font-medium text-slate-700 dark:text-slate-200">{block.title}</span>

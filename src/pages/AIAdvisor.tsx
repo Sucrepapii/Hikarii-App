@@ -87,7 +87,7 @@ export const AIAdvisor: React.FC = () => {
             <div className="flex items-center justify-between mb-4 mt-2">
                 <div>
                     <h1 className="text-3xl font-display font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                        <Sparkles className="w-7 h-7 text-cyan-500 animate-pulse" />
+                        <Sparkles className="w-7 h-7 text-primary-500 animate-pulse" />
                         AI Advisor
                     </h1>
                     <p className="text-slate-500 dark:text-slate-400 mt-1">
@@ -103,7 +103,7 @@ export const AIAdvisor: React.FC = () => {
             {/* Chat Body */}
             <Card className="flex-1 flex flex-col p-0 overflow-hidden bg-white/70 dark:bg-[#0D0F1A] border-slate-200/50 dark:border-white/5 backdrop-blur-xl relative">
                 {/* Visual Glow */}
-                <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-500/5 rounded-full blur-[80px] pointer-events-none" />
+                <div className="absolute top-0 right-0 w-64 h-64 bg-primary-500/5 rounded-full blur-[80px] pointer-events-none" />
                 <div className="absolute bottom-0 left-0 w-64 h-64 bg-amber-500/5 rounded-full blur-[80px] pointer-events-none" />
 
                 {/* Messages Viewport */}
@@ -121,7 +121,7 @@ export const AIAdvisor: React.FC = () => {
                                 "w-9 h-9 rounded-xl flex items-center justify-center shrink-0 shadow-sm border",
                                 msg.sender === 'user'
                                     ? "bg-slate-100 border-slate-200 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300"
-                                    : "bg-cyan-500/10 border-cyan-500/20 text-cyan-600 dark:text-cyan-400"
+                                    : "bg-primary-500/10 border-primary-500/20 text-primary-600 dark:text-primary-400"
                             )}>
                                 {msg.sender === 'user' ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
                             </div>
@@ -130,7 +130,7 @@ export const AIAdvisor: React.FC = () => {
                             <div className={clsx(
                                 "p-4 rounded-2xl text-sm leading-relaxed whitespace-pre-line shadow-sm",
                                 msg.sender === 'user'
-                                    ? "bg-cyan-600 text-white font-medium rounded-tr-none"
+                                    ? "bg-gradient-to-r from-primary-600 to-accent-600 text-white font-medium rounded-tr-none"
                                     : "bg-slate-50 dark:bg-white/[0.03] text-slate-800 dark:text-slate-200 border border-slate-100 dark:border-white/[0.05] rounded-tl-none"
                             )}>
                                 {msg.text}
@@ -141,13 +141,13 @@ export const AIAdvisor: React.FC = () => {
                     {/* Loader */}
                     {isLoading && (
                         <div className="flex items-start gap-4 mr-auto max-w-[85%]">
-                            <div className="w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-600 dark:text-cyan-400 flex items-center justify-center shrink-0">
+                            <div className="w-9 h-9 rounded-xl bg-primary-500/10 border border-primary-500/20 text-primary-600 dark:text-primary-400 flex items-center justify-center shrink-0">
                                 <Bot className="w-4 h-4 animate-bounce" />
                             </div>
                             <div className="p-4 rounded-2xl rounded-tl-none bg-slate-50 dark:bg-white/[0.03] border border-slate-100 dark:border-white/[0.05] flex items-center gap-1">
-                                <span className="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-bounce delay-[100ms]" />
-                                <span className="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-bounce delay-[200ms]" />
-                                <span className="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-bounce delay-[300ms]" />
+                                <span className="w-1.5 h-1.5 rounded-full bg-primary-500 animate-bounce delay-[100ms]" />
+                                <span className="w-1.5 h-1.5 rounded-full bg-primary-500 animate-bounce delay-[200ms]" />
+                                <span className="w-1.5 h-1.5 rounded-full bg-primary-500 animate-bounce delay-[300ms]" />
                             </div>
                         </div>
                     )}
@@ -161,9 +161,9 @@ export const AIAdvisor: React.FC = () => {
                             <button
                                 key={idx}
                                 onClick={() => handleSendMessage(prompt)}
-                                className="text-left p-3 rounded-xl border border-slate-200/60 dark:border-white/5 bg-white/50 dark:bg-slate-900/30 hover:bg-cyan-500/5 hover:border-cyan-500/20 text-xs font-medium text-slate-600 dark:text-slate-400 dark:hover:text-cyan-400 transition-all flex items-center gap-2"
+                                className="text-left p-3 rounded-xl border border-slate-200/60 dark:border-white/5 bg-white/50 dark:bg-slate-900/30 hover:bg-primary-500/5 hover:border-primary-500/20 text-xs font-medium text-slate-600 dark:text-slate-400 dark:hover:text-primary-400 transition-all flex items-center gap-2"
                             >
-                                <HelpCircle className="w-3.5 h-3.5 text-cyan-500 shrink-0" />
+                                <HelpCircle className="w-3.5 h-3.5 text-primary-500 shrink-0" />
                                 <span className="truncate">{prompt}</span>
                             </button>
                         ))}
@@ -185,12 +185,12 @@ export const AIAdvisor: React.FC = () => {
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
                             disabled={isLoading}
-                            className="flex-1 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:opacity-50"
+                            className="flex-1 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:opacity-50"
                         />
                         <button
                             type="submit"
                             disabled={isLoading || !input.trim()}
-                            className="px-5 py-3 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-semibold text-sm transition-colors flex items-center justify-center gap-1.5 shadow-sm shadow-cyan-600/10 disabled:opacity-50"
+                            className="px-5 py-3 rounded-xl bg-gradient-to-r from-primary-600 to-accent-600 hover:from-primary-500 hover:to-accent-500 text-white font-semibold text-sm transition-colors flex items-center justify-center gap-1.5 shadow-sm shadow-primary-600/10 disabled:opacity-50"
                         >
                             <Send className="w-4 h-4" />
                         </button>

@@ -29,12 +29,12 @@ const categoryIcons = {
 
 const categoryColors = {
     [ExpenseCategory.FOOD]: 'bg-orange-500',
-    [ExpenseCategory.TRANSPORT]: 'bg-blue-500',
-    [ExpenseCategory.ENTERTAINMENT]: 'bg-purple-500',
+    [ExpenseCategory.TRANSPORT]: 'bg-secondary-500',
+    [ExpenseCategory.ENTERTAINMENT]: 'bg-secondary-500',
     [ExpenseCategory.UTILITIES]: 'bg-yellow-500',
     [ExpenseCategory.SHOPPING]: 'bg-pink-500',
     [ExpenseCategory.HEALTH]: 'bg-red-500',
-    [ExpenseCategory.TUITION]: 'bg-cyan-500',
+    [ExpenseCategory.TUITION]: 'bg-primary-500',
     [ExpenseCategory.BOOKS]: 'bg-emerald-500',
     [ExpenseCategory.GROCERIES]: 'bg-rose-500',
     [ExpenseCategory.OTHER]: 'bg-slate-500',
@@ -114,7 +114,7 @@ export const ExpenseList: React.FC<ExpenseListProps> = ({
                                     variant="ghost"
                                     size="sm"
                                     onClick={() => onEdit(expense)}
-                                    className="p-2 sm:p-2.5 bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 dark:text-blue-400 rounded-lg sm:rounded-xl transition-smooth flex items-center justify-center gap-2"
+                                    className="p-2 sm:p-2.5 bg-secondary-500/10 hover:bg-secondary-500/20 text-secondary-600 dark:text-secondary-400 rounded-lg sm:rounded-xl transition-smooth flex items-center justify-center gap-2"
                                 >
                                     <Edit className="w-4 h-4 sm:w-5 sm:h-5" />
                                     <span className="hidden lg:inline font-medium">Edit</span>

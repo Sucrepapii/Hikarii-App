@@ -95,7 +95,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                                             'flex items-center justify-between px-4 py-3 rounded-2xl transition-smooth w-full',
                                             'hover:bg-white/20 dark:hover:bg-black/30',
                                             (isLinkActive && !hasSubItems)
-                                                ? 'bg-gradient-to-r from-primary-600 to-accent-600 text-white shadow-lg'
+                                                ? 'bg-gradient-to-r from-primary-600 to-secondary-600 text-white shadow-lg'
                                                 : isLinkActive ? 'text-primary-600 dark:text-primary-400 font-semibold' : 'text-slate-700 dark:text-slate-300'
                                         )
                                     }

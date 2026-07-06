@@ -6,7 +6,7 @@ import { Footer } from '../components/layout/Footer';
 
 export const Security: React.FC = () => {
     return (
-        <div className="min-h-screen bg-[#080910] text-slate-100 selection:bg-purple-500/30 overflow-x-hidden flex flex-col deep-dark">
+        <div className="min-h-screen bg-[#080910] text-slate-100 selection:bg-secondary-500/30 overflow-x-hidden flex flex-col deep-dark">
             <Navbar />
 
             {/* Content */}
@@ -50,11 +50,11 @@ export const Security: React.FC = () => {
                         <h2 className="text-3xl font-bold text-white mb-8 tracking-tight">Compute Integrity</h2>
                         <div className="space-y-6">
                             <div>
-                                <h4 className="text-cyan-400 font-bold text-sm uppercase tracking-widest mb-2">Runtime Protection</h4>
+                                <h4 className="text-primary-400 font-bold text-sm uppercase tracking-widest mb-2">Runtime Protection</h4>
                                 <p className="text-slate-400 leading-relaxed">Our application environment utilizes container isolation with read-only filesystems and real-time process monitoring to prevent unauthorized execution.</p>
                             </div>
                             <div>
-                                <h4 className="text-cyan-400 font-bold text-sm uppercase tracking-widest mb-2">Access Lifecycle</h4>
+                                <h4 className="text-primary-400 font-bold text-sm uppercase tracking-widest mb-2">Access Lifecycle</h4>
                                 <p className="text-slate-400 leading-relaxed">Zero-trust administrative access requires multi-factor authentication (MFA) and is restricted via transient, short-lived IAM credentials.</p>
                             </div>
                         </div>
@@ -76,7 +76,7 @@ export const Security: React.FC = () => {
                 </div>
 
                 <div className="bg-white/5 p-16 rounded-[4rem] border border-white/10 text-center relative overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/10 via-transparent to-cyan-500/10" />
+                    <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/10 via-transparent to-primary-500/10" />
                     <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 tracking-tight relative">Responsible Disclosure</h2>
                     <p className="text-slate-400 mb-12 max-w-2xl mx-auto relative text-lg">If you are a security researcher and believe you have discovered a vulnerability, please reach out via our secure channel. We operate a private bug bounty program.</p>
                     <a href="mailto:security@hikarii.org" className="relative inline-flex items-center justify-center px-16 py-6 rounded-2xl bg-white text-black font-black tracking-[0.2em] uppercase text-xs hover:bg-slate-200 transition-all shadow-xl">

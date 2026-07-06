@@ -34,11 +34,11 @@ const ONBOARDING_STEPS = [
 ];
 
 const GRADIENT_COLORS = [
-    "from-cyan-500 to-amber-500",
+    "from-primary-500 to-amber-500",
     "from-sky-500 to-amber-500",
     "from-orange-500 to-rose-500",
     "from-teal-500 to-emerald-500",
-    "from-sky-500 to-blue-500",
+    "from-sky-500 to-secondary-500",
     "from-pink-500 to-rose-500",
 ];
 
@@ -55,10 +55,10 @@ const HIKARI_METHOD_RULES = [
         icon: <Link2 className="w-6 h-6" />,
         color: "cyan",
         styles: {
-            bg: "bg-cyan-500/10",
-            text: "text-cyan-500 dark:text-cyan-400",
-            border: "hover:border-cyan-500/50",
-            shadow: "hover:shadow-cyan-500/10"
+            bg: "bg-primary-500/10",
+            text: "text-primary-500 dark:text-primary-400",
+            border: "hover:border-primary-500/50",
+            shadow: "hover:shadow-primary-500/10"
         }
     },
     {
@@ -107,10 +107,10 @@ const HIKARI_METHOD_RULES = [
         icon: <Users className="w-6 h-6" />,
         color: "blue",
         styles: {
-            bg: "bg-blue-500/10",
-            text: "text-blue-500 dark:text-blue-400",
-            border: "hover:border-blue-500/50",
-            shadow: "hover:shadow-blue-500/10"
+            bg: "bg-secondary-500/10",
+            text: "text-secondary-500 dark:text-secondary-400",
+            border: "hover:border-secondary-500/50",
+            shadow: "hover:shadow-secondary-500/10"
         }
     }
 ];
@@ -135,7 +135,7 @@ export const LandingPage: React.FC = () => {
             location: "Singapore",
             flag: "🇸🇬",
             rating: 5,
-            color: "from-cyan-500 to-amber-500"
+            color: "from-primary-500 to-amber-500"
         },
         {
             topic: "HOME RENO",
@@ -265,21 +265,21 @@ export const LandingPage: React.FC = () => {
                 {/* Layered background */}
                 <div className="absolute inset-0 bg-gradient-to-br from-[#080910] via-[#0D0F1C] to-[#0A0B16] pointer-events-none" />
                 {/* Animated orbs */}
-                <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[700px] h-[700px] bg-cyan-600/15 rounded-full blur-[120px] pointer-events-none animate-pulse-slow" />
+                <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[700px] h-[700px] bg-primary-600/15 rounded-full blur-[120px] pointer-events-none animate-pulse-slow" />
                 <div className="absolute top-1/3 left-1/3 w-[400px] h-[400px] bg-amber-600/10 rounded-full blur-[100px] pointer-events-none" />
                 {/* Subtle dot-grid */}
                 <div className="absolute inset-0 pointer-events-none opacity-[0.04]"
-                    style={{ backgroundImage: 'radial-gradient(circle, #6366f1 1px, transparent 1px)', backgroundSize: '32px 32px' }} />
+                    style={{ backgroundImage: 'radial-gradient(circle, #06b6d4 1px, transparent 1px)', backgroundSize: '32px 32px' }} />
 
                 <div className="relative z-10 max-w-4xl mx-auto">
                     {/* Badge */}
-                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-cyan-500/30 bg-cyan-500/10 mb-8 animate-fade-in-up shadow-sm">
-                        <span className="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-pulse" />
-                        <span className="text-sm font-semibold text-cyan-300 tracking-wide">Clarity. Focus. Control.</span>
+                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-primary-500/30 bg-primary-500/10 mb-8 animate-fade-in-up shadow-sm">
+                        <span className="w-1.5 h-1.5 rounded-full bg-primary-500 animate-pulse" />
+                        <span className="text-sm font-semibold text-primary-300 tracking-wide">Clarity. Focus. Control.</span>
                     </div>
 
                     <h1 className="text-4xl md:text-6xl lg:text-7xl font-display font-bold text-white mb-8 leading-[1.1] tracking-tight">
-                        The One Workspace Where <span className="text-cyan-400">Tasks Meet Budgets.</span>
+                        The One Workspace Where <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-accent-400">Tasks Meet Budgets.</span>
                     </h1>
 
                     <p className="text-lg md:text-xl text-slate-400 mb-10 max-w-2xl mx-auto leading-relaxed">
@@ -289,7 +289,7 @@ export const LandingPage: React.FC = () => {
                     <div className="flex justify-center mb-6">
                         <Button
                             size="lg"
-                            className="w-full sm:w-auto px-10 py-6 rounded-full bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-lg shadow-xl shadow-cyan-600/20"
+                            className="w-full sm:w-auto px-10 py-6 rounded-full bg-gradient-to-r from-primary-600 to-accent-600 hover:from-primary-500 hover:to-accent-500 text-white font-bold text-lg shadow-xl shadow-primary-600/20"
                             onClick={() => navigate('/signup')}
                         >
                             Get Started Free <ArrowRight className="ml-2 w-5 h-5" />
@@ -328,10 +328,10 @@ export const LandingPage: React.FC = () => {
                     {/* Left: text */}
                     <div className="space-y-10">
                         <div>
-                            <span className="inline-block px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-sm font-semibold mb-6 tracking-wide">The Philosophy</span>
+                            <span className="inline-block px-4 py-1.5 rounded-full bg-primary-500/10 border border-primary-500/20 text-primary-300 text-sm font-semibold mb-6 tracking-wide">The Philosophy</span>
                             <h2 className="text-3xl md:text-5xl font-display font-bold text-white mb-5 leading-tight tracking-tight">The Hikari Method</h2>
                             <p className="text-base md:text-lg text-slate-400 leading-relaxed">
-                                92% of Hikari users feel more in control of their time and money within the first week. Our method is built on clarity and intentionality. <Link to="/help/article/ultimate-guide-hikari-method" className="text-cyan-400 font-semibold hover:underline">Read the Guide &rarr;</Link>
+                                92% of Hikari users feel more in control of their time and money within the first week. Our method is built on clarity and intentionality. <Link to="/help/article/ultimate-guide-hikari-method" className="text-primary-400 font-semibold hover:underline">Read the Guide &rarr;</Link>
                             </p>
                         </div>
 
@@ -348,7 +348,7 @@ export const LandingPage: React.FC = () => {
                                     </div>
                                 </div>
                             ))}
-                            <Link to="/method" className="inline-flex items-center gap-2 text-cyan-400 font-bold hover:text-cyan-300 transition-colors ml-5 pt-4">
+                            <Link to="/method" className="inline-flex items-center gap-2 text-primary-400 font-bold hover:text-primary-300 transition-colors ml-5 pt-4">
                                 Learn all 5 rules of our philosophy <ArrowRight className="w-4 h-4" />
                             </Link>
                         </div>
@@ -356,7 +356,7 @@ export const LandingPage: React.FC = () => {
 
                     {/* Right: mockup */}
                     <div className="relative group pb-16">
-                        <div className="absolute -inset-8 bg-gradient-to-r from-cyan-500/8 via-amber-500/8 to-pink-500/8 rounded-3xl blur-[80px] opacity-60 group-hover:opacity-100 transition-opacity duration-1000" />
+                        <div className="absolute -inset-8 bg-gradient-to-r from-primary-500/8 via-amber-500/8 to-pink-500/8 rounded-3xl blur-[80px] opacity-60 group-hover:opacity-100 transition-opacity duration-1000" />
                         <div className="relative w-full aspect-[16/10] bg-[#0F111A] rounded-2xl overflow-hidden border border-white/[0.08] shadow-[0_40px_80px_-20px_rgba(0,0,0,0.5)] transform perspective-[2000px] rotate-y-[-5deg] rotate-x-[2deg] group-hover:rotate-y-0 group-hover:rotate-x-0 transition-all duration-700 ease-out">
                             <div className="h-full bg-[#0B0C15]">
                                 <img src="/hikari_hero_desk.png" alt="Hikari Desktop Dashboard" loading="lazy" className="w-full h-full object-cover" />
@@ -382,11 +382,11 @@ export const LandingPage: React.FC = () => {
 
             {/* ── GLOBAL CLARITY (Combined) ─────────────────────────── */}
             <section className="py-16 px-6 max-w-7xl mx-auto relative overflow-hidden">
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-cyan-600/5 rounded-full blur-[160px] pointer-events-none -z-10" />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-primary-600/5 rounded-full blur-[160px] pointer-events-none -z-10" />
 
                 <div className="text-center mb-20">
                     <span className="inline-block px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-black tracking-widest uppercase mb-6">A Global Movement</span>
-                    <h2 className="text-4xl md:text-7xl font-display font-bold text-white mb-6 tracking-tight">Radical Clarity is a <span className="text-cyan-400">Choice.</span></h2>
+                    <h2 className="text-4xl md:text-7xl font-display font-bold text-white mb-6 tracking-tight">Radical Clarity is a <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-accent-400">Choice.</span></h2>
                     <p className="text-lg md:text-2xl text-slate-400 max-w-3xl mx-auto leading-relaxed">
                         Built for the <span className="text-white font-bold">Global Professional</span>. From Lagos to London, Nairobi to New York—Hikari empowers you to architect your growth with institutional precision.
                     </p>
@@ -415,11 +415,11 @@ export const LandingPage: React.FC = () => {
                     </div>
 
                     {/* After Card */}
-                    <div className="p-8 md:p-12 rounded-[2.5rem] bg-cyan-600/5 border border-cyan-500/20 relative group overflow-hidden shadow-2xl shadow-cyan-500/10">
-                        <div className="absolute inset-0 bg-cyan-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                    <div className="p-8 md:p-12 rounded-[2.5rem] bg-primary-600/5 border border-primary-500/20 relative group overflow-hidden shadow-2xl shadow-primary-500/10">
+                        <div className="absolute inset-0 bg-primary-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
                         <div className="relative z-10">
-                            <h3 className="text-xl font-bold text-cyan-400 mb-8 flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center text-cyan-500">
+                            <h3 className="text-xl font-bold text-primary-400 mb-8 flex items-center gap-3">
+                                <div className="w-8 h-8 rounded-lg bg-primary-500/10 flex items-center justify-center text-primary-500">
                                     <Check className="w-5 h-5" />
                                 </div>
                                 After Hikari
@@ -427,7 +427,7 @@ export const LandingPage: React.FC = () => {
                             <ul className="space-y-6">
                                 {["Task: \"Fix website\" — budget $300 allocated.", "Expense linked to task — remaining $100 tracked.", "Clarity: ROI automatically calculated per milestone.", "Peace: One institutional workspace for everything."].map((item, i) => (
                                     <li key={i} className="flex gap-4 text-white">
-                                        <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-cyan-500 shrink-0 shadow-[0_0_8px_rgba(99,102,241,0.8)]" />
+                                        <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-primary-500 shrink-0 shadow-[0_0_8px_rgba(99,102,241,0.8)]" />
                                         <span className="text-sm font-medium leading-relaxed">{item}</span>
                                     </li>
                                 ))}
@@ -450,7 +450,7 @@ export const LandingPage: React.FC = () => {
                             </div>
                         </div>
                         <div className="lg:col-span-2">
-                            <p className="text-lg md:text-xl text-slate-400 leading-relaxed italic relative pl-8 border-l border-cyan-500/30">
+                            <p className="text-lg md:text-xl text-slate-400 leading-relaxed italic relative pl-8 border-l border-primary-500/30">
                                 "Hikari is the first tool that understands the complex interplay between my time in London and my business in Nairobi."
                             </p>
                         </div>
@@ -478,7 +478,7 @@ export const LandingPage: React.FC = () => {
             {/* Mid-page CTA */}
             <section className="py-20 px-6 relative overflow-hidden">
                 <div className="max-w-5xl mx-auto text-center relative z-10">
-                    <div className="inline-block p-[1px] rounded-[3rem] bg-gradient-to-r from-cyan-500/30 via-amber-500/30 to-pink-500/30 shadow-2xl">
+                    <div className="inline-block p-[1px] rounded-[3rem] bg-gradient-to-r from-primary-500/30 via-amber-500/30 to-pink-500/30 shadow-2xl">
                         <div className="px-8 md:px-16 py-12 md:py-20 rounded-[2.9rem] bg-[#0D0F1A]/90 backdrop-blur-xl flex flex-col md:flex-row items-center justify-between gap-10">
                             <div className="text-left md:max-w-md">
                                 <h3 className="text-3xl md:text-4xl font-display font-bold text-white mb-4 leading-tight">Ready to experience radical clarity?</h3>
@@ -486,7 +486,7 @@ export const LandingPage: React.FC = () => {
                             </div>
                             <Button 
                                 size="lg" 
-                                className="w-full md:w-auto px-12 py-7 rounded-full bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xl shadow-2xl shadow-cyan-600/30 transition-all hover:scale-105"
+                                className="w-full md:w-auto px-12 py-7 rounded-full bg-gradient-to-r from-primary-600 to-accent-600 hover:from-primary-500 hover:to-accent-500 text-white font-bold text-xl shadow-2xl shadow-primary-600/30 transition-all hover:scale-105"
                                 onClick={() => navigate('/signup')}
                             >
                                 Get Started Now <ArrowRight className="ml-2 w-6 h-6" />
@@ -495,7 +495,7 @@ export const LandingPage: React.FC = () => {
                     </div>
                 </div>
                 {/* Background decorative glows */}
-                <div className="absolute top-1/2 left-0 w-[300px] h-[300px] bg-cyan-600/10 rounded-full blur-[100px] -translate-y-1/2 -ml-32 pointer-events-none" />
+                <div className="absolute top-1/2 left-0 w-[300px] h-[300px] bg-primary-600/10 rounded-full blur-[100px] -translate-y-1/2 -ml-32 pointer-events-none" />
                 <div className="absolute top-1/2 right-0 w-[300px] h-[300px] bg-amber-600/10 rounded-full blur-[100px] -translate-y-1/2 -mr-32 pointer-events-none" />
             </section>
 
@@ -505,12 +505,12 @@ export const LandingPage: React.FC = () => {
             {/* ── FOUR STEPS ─────────────────────────────────────────── */}
             <section className="py-16 px-6 max-w-7xl mx-auto relative z-20">
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[500px] pointer-events-none">
-                    <div className="absolute top-0 left-0 w-[400px] h-[400px] bg-cyan-400/8 rounded-full blur-[120px]" />
+                    <div className="absolute top-0 left-0 w-[400px] h-[400px] bg-primary-400/8 rounded-full blur-[120px]" />
                     <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-amber-400/8 rounded-full blur-[120px]" />
                 </div>
 
                 <div className="text-center mb-12 md:mb-20 relative z-10">
-                    <span className="inline-block px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-sm font-semibold mb-5 tracking-wide">How It Works</span>
+                    <span className="inline-block px-4 py-1.5 rounded-full bg-primary-500/10 border border-primary-500/20 text-primary-300 text-sm font-semibold mb-5 tracking-wide">How It Works</span>
                     <h2 className="text-3xl md:text-5xl font-display font-bold text-white mb-4 tracking-tight">Four simple steps to get started</h2>
                     <p className="text-base md:text-lg text-slate-400 max-w-xl mx-auto px-4">Join Hikari and take control of your tasks and finances in minutes.</p>
                 </div>
@@ -522,7 +522,7 @@ export const LandingPage: React.FC = () => {
                             <div key={idx} className="flex flex-col items-center text-center group cursor-default">
                                 {/* Step badge */}
                                 <div className="mb-6 flex items-center gap-3">
-                                    <span className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-gradient-to-br from-cyan-500 to-amber-600 text-white text-sm font-bold shadow-lg shadow-cyan-500/30 ring-4 ring-cyan-500/10">
+                                    <span className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-gradient-to-br from-primary-500 to-amber-600 text-white text-sm font-bold shadow-lg shadow-primary-500/30 ring-4 ring-primary-500/10">
                                         {idx + 1}
                                     </span>
                                 </div>
@@ -564,7 +564,7 @@ export const LandingPage: React.FC = () => {
                                         </div>
                                     </div>
                                     {/* Glow on hover */}
-                                    <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-[70%] h-6 bg-gradient-to-t from-cyan-500/20 to-transparent blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                                    <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-[70%] h-6 bg-gradient-to-t from-primary-500/20 to-transparent blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
                                 </div>
 
                                 <div className="mt-8">
@@ -589,7 +589,7 @@ export const LandingPage: React.FC = () => {
 
                     <div className="max-w-7xl mx-auto px-6 relative z-10">
                         <div className="text-center mb-10 md:mb-14">
-                            <span className="inline-block px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-sm font-semibold mb-5 tracking-wide">Reviews</span>
+                            <span className="inline-block px-4 py-1.5 rounded-full bg-primary-500/10 border border-primary-500/20 text-primary-300 text-sm font-semibold mb-5 tracking-wide">Reviews</span>
                             <h2 className="text-3xl md:text-5xl font-display font-bold text-white tracking-tight">Customer Testimonials</h2>
                             <p className="text-base md:text-lg text-slate-400 mt-4">See how others are taking back control of their time and money.</p>
                         </div>
@@ -617,14 +617,14 @@ export const LandingPage: React.FC = () => {
                                             </div>
                                         </div>
                                         {/* Decorative quote mark */}
-                                        <div className="text-5xl font-serif text-cyan-800/60 leading-none mb-2 select-none">"</div>
+                                        <div className="text-5xl font-serif text-primary-800/60 leading-none mb-2 select-none">"</div>
                                         <p className="text-base md:text-lg text-slate-200 leading-relaxed mb-8">
                                             {testimonial.quote}
                                         </p>
                                     </div>
                                     <div className="pt-5 border-t border-white/[0.07] flex items-center gap-4">
                                         {testimonial.image ? (
-                                            <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-white/10 shadow-lg group-hover:border-cyan-500/50 transition-colors">
+                                            <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-white/10 shadow-lg group-hover:border-primary-500/50 transition-colors">
                                                 <img src={testimonial.image} alt={testimonial.name} className="w-full h-full object-cover" />
                                             </div>
                                         ) : (
@@ -654,7 +654,7 @@ export const LandingPage: React.FC = () => {
             <section id="features" className="py-16 px-6 max-w-7xl mx-auto">
                 <div className="bg-gradient-to-br from-[#0E1021] via-[#111530] to-[#0A0C1B] rounded-[2.5rem] p-8 md:p-12 relative overflow-hidden shadow-[0_40px_100px_-20px_rgba(0,0,0,0.5)]">
                     {/* Background glows */}
-                    <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-cyan-600/15 rounded-full blur-[120px] mix-blend-screen animate-pulse-slow" />
+                    <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary-600/15 rounded-full blur-[120px] mix-blend-screen animate-pulse-slow" />
                     <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-violet-600/10 rounded-full blur-[120px] mix-blend-screen animate-pulse-slow delay-700" />
                     {/* Grid pattern */}
                     <div className="absolute inset-0 pointer-events-none opacity-[0.03]"
@@ -662,20 +662,20 @@ export const LandingPage: React.FC = () => {
 
                     <div className="relative z-10">
                         <div className="text-center mb-10 md:mb-14">
-                            <span className="inline-block px-4 py-1.5 rounded-full bg-white/[0.08] border border-white/[0.12] text-cyan-200 text-sm font-semibold mb-5 tracking-wide">Premium Features</span>
+                            <span className="inline-block px-4 py-1.5 rounded-full bg-white/[0.08] border border-white/[0.12] text-primary-200 text-sm font-semibold mb-5 tracking-wide">Premium Features</span>
                             <h2 className="text-3xl md:text-5xl font-display font-bold mb-4 text-white tracking-tight">Everything You Need</h2>
-                            <p className="text-cyan-200/70 text-base md:text-lg max-w-2xl mx-auto">Unlock the full potential of your productivity with our suite of powerful tools.</p>
+                            <p className="text-primary-200/70 text-base md:text-lg max-w-2xl mx-auto">Unlock the full potential of your productivity with our suite of powerful tools.</p>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                             {/* Large: Task-Expense Linking */}
                             <div className="md:col-span-2 bg-white/[0.04] border border-white/[0.08] rounded-2xl p-8 flex flex-col justify-between hover:bg-white/[0.07] transition-all duration-300 group backdrop-blur-md hover:border-white/[0.14] min-h-[340px]">
                                 <div>
-                                    <div className="w-13 h-13 w-12 h-12 bg-gradient-to-br from-cyan-500 to-violet-600 rounded-xl flex items-center justify-center mb-6 text-white shadow-lg shadow-cyan-500/30">
+                                    <div className="w-13 h-13 w-12 h-12 bg-gradient-to-br from-primary-500 to-violet-600 rounded-xl flex items-center justify-center mb-6 text-white shadow-lg shadow-primary-500/30">
                                         <Link2 className="w-6 h-6" />
                                     </div>
                                     <h3 className="text-2xl font-bold mb-3 text-white tracking-tight">Task-Expense Linking</h3>
-                                    <p className="text-cyan-100/70 leading-relaxed text-sm">Directly connect your spending to your projects. See the true cost of every task and the ROI of your time.</p>
+                                    <p className="text-primary-100/70 leading-relaxed text-sm">Directly connect your spending to your projects. See the true cost of every task and the ROI of your time.</p>
                                 </div>
                                 <div className="mt-8 bg-black/50 rounded-xl border border-white/[0.08] relative h-[120px] overflow-hidden">
                                     <div className="absolute inset-0 p-5 flex items-center gap-4 transition-all duration-500 opacity-100 group-hover:opacity-0 group-hover:scale-95">
@@ -703,7 +703,7 @@ export const LandingPage: React.FC = () => {
                                             <div className="text-[10px] text-white/50 mb-1 font-medium uppercase tracking-wider">Task</div>
                                             <div className="font-semibold text-white relative w-fit text-sm">
                                                 <span className="invisible">Order Dress</span>
-                                                <span className="absolute top-0 left-0 overflow-hidden whitespace-nowrap w-0 group-hover:w-full transition-[width] duration-[1500ms] ease-linear border-r-2 border-transparent group-hover:border-cyan-400/50 delay-100">
+                                                <span className="absolute top-0 left-0 overflow-hidden whitespace-nowrap w-0 group-hover:w-full transition-[width] duration-[1500ms] ease-linear border-r-2 border-transparent group-hover:border-primary-400/50 delay-100">
                                                     Order Dress
                                                 </span>
                                             </div>
@@ -713,16 +713,16 @@ export const LandingPage: React.FC = () => {
                             </div>
 
                             {/* New: Real-time Collaboration */}
-                            <div className="md:col-span-1 bg-gradient-to-br from-cyan-900/30 to-amber-900/10 border border-cyan-500/20 rounded-2xl p-7 flex flex-col justify-between hover:border-cyan-500/40 transition-all duration-500 backdrop-blur-md group relative overflow-hidden min-h-[340px]">
+                            <div className="md:col-span-1 bg-gradient-to-br from-primary-900/30 to-amber-900/10 border border-primary-500/20 rounded-2xl p-7 flex flex-col justify-between hover:border-primary-500/40 transition-all duration-500 backdrop-blur-md group relative overflow-hidden min-h-[340px]">
                                 {/* Animated background elements */}
                                 <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-30 transition-all duration-700 group-hover:scale-110 group-hover:rotate-12">
-                                    <Users className="w-24 h-24 text-cyan-400" />
+                                    <Users className="w-24 h-24 text-primary-400" />
                                 </div>
-                                <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-cyan-500/10 rounded-full blur-[50px] group-hover:bg-cyan-500/20 transition-colors duration-700" />
+                                <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-primary-500/10 rounded-full blur-[50px] group-hover:bg-primary-500/20 transition-colors duration-700" />
 
                                 <div className="relative z-10">
                                     <div className="flex items-center justify-between mb-5">
-                                        <div className="w-11 h-11 bg-cyan-500/15 rounded-xl flex items-center justify-center text-cyan-400 border border-cyan-500/20 group-hover:scale-110 transition-transform duration-500 shadow-lg shadow-cyan-500/10">
+                                        <div className="w-11 h-11 bg-primary-500/15 rounded-xl flex items-center justify-center text-primary-400 border border-primary-500/20 group-hover:scale-110 transition-transform duration-500 shadow-lg shadow-primary-500/10">
                                             <Users className="w-5 h-5" />
                                         </div>
                                         <div className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 shadow-lg shadow-emerald-500/5">
@@ -730,8 +730,8 @@ export const LandingPage: React.FC = () => {
                                             <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-wider">Live Now</span>
                                         </div>
                                     </div>
-                                    <h3 className="text-xl font-bold text-white mb-2 group-hover:text-cyan-200 transition-colors">Real-time Collaboration</h3>
-                                    <p className="text-sm text-cyan-200/60 leading-relaxed">
+                                    <h3 className="text-xl font-bold text-white mb-2 group-hover:text-primary-200 transition-colors">Real-time Collaboration</h3>
+                                    <p className="text-sm text-primary-200/60 leading-relaxed">
                                         Invite partners or teammates to your projects. Track shared budgets and see live updates as tasks are completed.
                                     </p>
                                 </div>
@@ -739,7 +739,7 @@ export const LandingPage: React.FC = () => {
                                 {/* Animated Avatars Mockup */}
                                 <div className="mt-8 flex items-center -space-x-3 relative z-10 group-hover:translate-x-2 transition-transform duration-500">
                                     {[
-                                        { color: "bg-cyan-500", label: "A" },
+                                        { color: "bg-primary-500", label: "A" },
                                         { color: "bg-amber-500", label: "B" },
                                         { color: "bg-pink-500", label: "C" }
                                     ].map((avatar, i) => (
@@ -762,13 +762,13 @@ export const LandingPage: React.FC = () => {
                             </div>
 
                             {/* Offline Synchronization (Premium Bento Item) */}
-                            <div className="md:col-span-2 bg-gradient-to-br from-[#1E293B]/20 to-[#0F172A]/40 border border-white/[0.08] rounded-2xl p-8 flex flex-col justify-between hover:bg-white/[0.07] transition-all duration-300 backdrop-blur-md group hover:border-cyan-500/30 min-h-[340px]">
+                            <div className="md:col-span-2 bg-gradient-to-br from-[#1E293B]/20 to-[#0F172A]/40 border border-white/[0.08] rounded-2xl p-8 flex flex-col justify-between hover:bg-white/[0.07] transition-all duration-300 backdrop-blur-md group hover:border-primary-500/30 min-h-[340px]">
                                 <div>
-                                    <div className="w-12 h-12 bg-gradient-to-br from-cyan-500 to-sky-600 rounded-xl flex items-center justify-center mb-6 text-white shadow-lg shadow-cyan-500/30">
+                                    <div className="w-12 h-12 bg-gradient-to-br from-primary-500 to-sky-600 rounded-xl flex items-center justify-center mb-6 text-white shadow-lg shadow-primary-500/30">
                                         <WifiOff className="w-6 h-6" />
                                     </div>
                                     <h3 className="text-2xl font-bold mb-3 text-white tracking-tight">Offline Synchronization</h3>
-                                    <p className="text-cyan-100/70 leading-relaxed text-sm">Keep working, tracking projects, and logging expenses even without internet connection. Hikari queues your updates locally and automatically syncs them to the cloud the moment you reconnect.</p>
+                                    <p className="text-primary-100/70 leading-relaxed text-sm">Keep working, tracking projects, and logging expenses even without internet connection. Hikari queues your updates locally and automatically syncs them to the cloud the moment you reconnect.</p>
                                 </div>
                                 <div className="mt-8 bg-black/50 rounded-xl border border-white/[0.08] relative h-[120px] overflow-hidden flex items-center justify-between p-6">
                                     <div className="flex items-center gap-3">
@@ -867,7 +867,7 @@ export const LandingPage: React.FC = () => {
             {/* ── MEET THE TEAM ──────────────────────────────────────── */}
             {/* <section className="py-28 px-6 max-w-7xl mx-auto relative z-20">
                 <div className="text-center mb-20">
-                    <span className="inline-block px-4 py-1.5 rounded-full bg-cyan-50 dark:bg-cyan-500/10 border border-cyan-100 dark:border-cyan-500/20 text-cyan-600 dark:text-cyan-300 text-sm font-semibold mb-5 tracking-wide">Behind Hikari</span>
+                    <span className="inline-block px-4 py-1.5 rounded-full bg-primary-50 dark:bg-primary-500/10 border border-primary-100 dark:border-primary-500/20 text-primary-600 dark:text-primary-300 text-sm font-semibold mb-5 tracking-wide">Behind Hikari</span>
                     <h2 className="text-4xl md:text-5xl font-display font-bold text-slate-900 dark:text-white mb-4 tracking-tight">Meet the Founder</h2>
                     <p className="text-lg text-slate-500 dark:text-slate-400 max-w-xl mx-auto">The human building the methodology for your radical clarity.</p>
                 </div>
@@ -887,7 +887,7 @@ export const LandingPage: React.FC = () => {
                                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                             </div>
                             <h3 className="text-3xl font-bold text-slate-900 dark:text-white mb-2 tracking-tight">{member.name}</h3>
-                            <p className="text-cyan-600 dark:text-cyan-400 font-bold text-lg mb-4">{member.role}</p>
+                            <p className="text-primary-600 dark:text-primary-400 font-bold text-lg mb-4">{member.role}</p>
                             <p className="text-slate-500 dark:text-slate-400 text-base leading-relaxed">{member.bio}</p>
                         </div>
                     ))}
@@ -897,19 +897,19 @@ export const LandingPage: React.FC = () => {
             {/* ── MOBILE APP COMING SOON ────────────────────────────── */}
             <section className="py-24 relative overflow-hidden bg-gradient-to-b from-[#060814] to-[#04060a] border-t border-white/5">
                 {/* Cyan glow */}
-                <div className="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-cyan-600/10 rounded-full blur-[120px] pointer-events-none" />
+                <div className="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary-600/10 rounded-full blur-[120px] pointer-events-none" />
                 {/* Amber glow */}
                 <div className="absolute bottom-1/4 right-1/4 w-[600px] h-[600px] bg-amber-600/10 rounded-full blur-[120px] pointer-events-none" />
                 
                 <div className="max-w-7xl mx-auto px-6 relative z-10 flex flex-col lg:flex-row items-center justify-between gap-16">
                     <div className="flex-1 text-center lg:text-left">
-                        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-sm font-semibold mb-6 tracking-wide">
+                        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary-500/10 border border-primary-500/20 text-primary-400 text-sm font-semibold mb-6 tracking-wide">
                             <Smartphone className="w-4 h-4" />
                             Mobile App
                         </div>
                         <h2 className="text-4xl md:text-5xl font-display font-bold text-white mb-6 tracking-tight">
                             Radical Clarity, <br className="hidden lg:block" />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-amber-400">
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-amber-400">
                                 in your pocket.
                             </span>
                         </h2>
@@ -929,7 +929,7 @@ export const LandingPage: React.FC = () => {
                     
                     {/* Mobile Mockup Image */}
                     <div className="flex-1 flex justify-center relative group">
-                        <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500/10 to-amber-500/10 blur-3xl rounded-full" />
+                        <div className="absolute inset-0 bg-gradient-to-tr from-primary-500/10 to-amber-500/10 blur-3xl rounded-full" />
                         <div className="relative z-10 w-full max-w-[320px] mx-auto">
                             <img 
                                 src="/hikari_mobile_mockup.png" 
@@ -951,13 +951,13 @@ export const LandingPage: React.FC = () => {
                     <div className="flex items-center gap-1 p-1 bg-white/5 rounded-full border border-white/10">
                         <button
                             onClick={() => setCurrency('NGN')}
-                            className={`px-6 py-2 rounded-full text-sm font-bold transition-all ${currency === 'NGN' ? 'bg-cyan-600 text-white shadow-sm' : 'text-slate-500 hover:text-white'}`}
+                            className={`px-6 py-2 rounded-full text-sm font-bold transition-all ${currency === 'NGN' ? 'bg-gradient-to-r from-primary-600 to-accent-600 text-white shadow-sm' : 'text-slate-500 hover:text-white'}`}
                         >
                             ₦ NGN
                         </button>
                         <button
                             onClick={() => setCurrency('USD')}
-                            className={`px-6 py-2 rounded-full text-sm font-bold transition-all ${currency === 'USD' ? 'bg-cyan-600 text-white shadow-sm' : 'text-slate-500 hover:text-white'}`}
+                            className={`px-6 py-2 rounded-full text-sm font-bold transition-all ${currency === 'USD' ? 'bg-gradient-to-r from-primary-600 to-accent-600 text-white shadow-sm' : 'text-slate-500 hover:text-white'}`}
                         >
                             $ USD
                         </button>
@@ -969,10 +969,10 @@ export const LandingPage: React.FC = () => {
             <section className="py-20 relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-[#0E1022] to-slate-900 pointer-events-none" />
                 {/* Accent glow */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-cyan-600/10 rounded-full blur-[120px] pointer-events-none" />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary-600/10 rounded-full blur-[120px] pointer-events-none" />
                 <div className="max-w-3xl mx-auto px-6 relative z-10 text-center">
-                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-cyan-300 text-sm font-semibold mb-8 tracking-wide">
-                        <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-primary-300 text-sm font-semibold mb-8 tracking-wide">
+                        <span className="w-1.5 h-1.5 rounded-full bg-primary-400 animate-pulse" />
                         Next Steps
                     </div>
                     <h2 className="text-3xl md:text-5xl font-display font-bold text-white mb-5 tracking-tight px-4">
@@ -984,7 +984,7 @@ export const LandingPage: React.FC = () => {
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                         <Link
                             to="/signup"
-                            className="inline-flex items-center gap-3 px-10 py-5 rounded-full bg-cyan-600 text-white font-bold hover:bg-cyan-500 transition-all duration-300 hover:scale-105 shadow-xl shadow-cyan-600/20"
+                            className="inline-flex items-center gap-3 px-10 py-5 rounded-full bg-gradient-to-r from-primary-600 to-accent-600 text-white font-bold hover:from-primary-500 hover:to-accent-500 transition-all duration-300 hover:scale-105 shadow-xl shadow-primary-600/20"
                         >
                             Get Started Free <ArrowRight className="w-5 h-5" />
                         </Link>
@@ -992,7 +992,7 @@ export const LandingPage: React.FC = () => {
                             to="/faq"
                             className="inline-flex items-center gap-3 px-8 py-5 rounded-full bg-white/5 border border-white/10 text-white font-semibold hover:bg-white/10 transition-all"
                         >
-                            Have Questions? <ChevronDown className="w-5 h-5 -rotate-90 shrink-0 text-cyan-400" />
+                            Have Questions? <ChevronDown className="w-5 h-5 -rotate-90 shrink-0 text-primary-400" />
                         </Link>
                     </div>
                 </div>

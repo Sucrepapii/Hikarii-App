@@ -85,14 +85,14 @@ export const MemberList: React.FC<MemberListProps> = ({ projectId, members, curr
             className="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/5"
           >
             {/* Avatar */}
-            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center text-white text-xs font-bold shrink-0">
+            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary-500 to-secondary-600 flex items-center justify-center text-white text-xs font-bold shrink-0">
               {initials}
             </div>
 
             {/* Info */}
             <div className="flex-1 min-w-0">
               <div className="text-sm font-semibold text-slate-800 dark:text-white truncate">
-                {displayName}{isCurrentUser && <span className="ml-1 text-xs text-cyan-500">(you)</span>}
+                {displayName}{isCurrentUser && <span className="ml-1 text-xs text-primary-500">(you)</span>}
               </div>
               <div className="text-xs text-slate-400 truncate">{member.invitedEmail}</div>
             </div>
@@ -109,7 +109,7 @@ export const MemberList: React.FC<MemberListProps> = ({ projectId, members, curr
                   value={member.role}
                   disabled={isLoading}
                   onChange={(e) => handleRoleChange(member.id, e.target.value as CollaborationRole)}
-                  className="text-xs bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/10 rounded-lg px-2 py-1 text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 pr-6 appearance-none"
+                  className="text-xs bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/10 rounded-lg px-2 py-1 text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-1 focus:ring-primary-500 pr-6 appearance-none"
                 >
                   {Object.entries(ROLE_LABELS).map(([val, label]) => (
                     <option key={val} value={val}>{label}</option>

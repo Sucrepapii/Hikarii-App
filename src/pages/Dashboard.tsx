@@ -161,7 +161,7 @@ export const Dashboard: React.FC = () => {
                 </p>
                 <button 
                     onClick={() => { fetchTasks(); fetchExpenses(); }}
-                    className="px-6 py-2 bg-primary-600 hover:bg-primary-500 text-white font-bold rounded-xl transition-all"
+                    className="px-6 py-2 bg-gradient-to-r from-primary-600 to-accent-600 hover:from-primary-500 hover:to-accent-500 text-white font-bold rounded-xl transition-all"
                 >
                     Try Again
                 </button>
@@ -173,7 +173,7 @@ export const Dashboard: React.FC = () => {
         <div className={clsx(
             "min-h-screen transition-all duration-1000 ease-in-out -m-4 md:-m-6 p-4 md:p-6",
             isFocusMode
-                ? "bg-gradient-to-br from-slate-50 to-cyan-50/50 dark:from-[#080910] dark:to-cyan-950/20"
+                ? "bg-gradient-to-br from-slate-50 to-primary-50/50 dark:from-[#080910] dark:to-primary-950/20"
                 : "animate-fade-in"
         )}>
             {/* Visual Depth: Starfield (Only in Dark Mode) */}
@@ -220,11 +220,11 @@ export const Dashboard: React.FC = () => {
 
             {/* Hikari Wrapped Trigger (Only visible on last day of month) */}
             {isLastDayOfMonth && (
-                <div className="mb-6 p-1 rounded-2xl bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 animate-pulse-slow">
+                <div className="mb-6 p-1 rounded-2xl bg-gradient-to-r from-primary-500 via-secondary-500 to-pink-500 animate-pulse-slow">
                     <div className="bg-[#0B0C15] rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
                         <div>
                             <h3 className="text-xl font-display font-bold text-white mb-1">Your {today.toLocaleString('default', { month: 'long' })} Wrapped is ready!</h3>
-                            <p className="text-cyan-200 text-sm">See your productivity and financial story for this month.</p>
+                            <p className="text-primary-200 text-sm">See your productivity and financial story for this month.</p>
                         </div>
                         <button
                             onClick={() => setIsWrappedOpen(true)}
@@ -321,11 +321,11 @@ export const Dashboard: React.FC = () => {
                 </Card>
 
                 <Card className="relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-accent-500/20 to-transparent rounded-full blur-2xl" />
+                    <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-secondary-500/20 to-transparent rounded-full blur-2xl" />
                     <div className="relative">
                         <div className="flex items-center gap-3 mb-2">
-                            <div className="p-2 rounded-lg bg-accent-500/10">
-                                <Wallet className="w-5 h-5 text-accent-500" />
+                            <div className="p-2 rounded-lg bg-secondary-500/10">
+                                <Wallet className="w-5 h-5 text-secondary-500" />
                             </div>
                             <span className="text-sm font-medium text-slate-600 dark:text-slate-400">
                                 Total Spent
@@ -511,8 +511,8 @@ export const Dashboard: React.FC = () => {
             {/* Focus Mode Overlay Message */}
             {isFocusMode && (
                 <div className="fixed inset-0 pointer-events-none z-50 flex items-center justify-center animate-fade-in">
-                    <div className="bg-cyan-600/10 backdrop-blur-xl border border-cyan-500/20 px-8 py-4 rounded-3xl shadow-2xl">
-                        <p className="text-cyan-600 dark:text-cyan-400 font-display font-bold text-xl flex items-center gap-3">
+                    <div className="bg-primary-600/10 backdrop-blur-xl border border-primary-500/20 px-8 py-4 rounded-3xl shadow-2xl">
+                        <p className="text-primary-600 dark:text-primary-400 font-display font-bold text-xl flex items-center gap-3">
                             <Zap className="w-6 h-6 animate-pulse" /> Focus Mode Active
                         </p>
                     </div>

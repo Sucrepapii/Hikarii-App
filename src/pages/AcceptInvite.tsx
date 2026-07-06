@@ -33,7 +33,7 @@ export const AcceptInvite: React.FC = () => {
       <div className="max-w-md w-full bg-white dark:bg-slate-900 p-8 rounded-3xl shadow-xl border border-slate-100 dark:border-white/5 animate-fade-in-up">
         {status === 'loading' && (
           <div className="space-y-4">
-            <Loader2 className="w-12 h-12 text-cyan-600 animate-spin mx-auto" />
+            <Loader2 className="w-12 h-12 text-primary-600 animate-spin mx-auto" />
             <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Accepting Invitation...</h1>
             <p className="text-slate-500">Please wait while we process your request.</p>
           </div>

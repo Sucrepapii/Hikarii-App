@@ -80,7 +80,7 @@ export const AdminDashboard: React.FC = () => {
                     <p className="text-slate-500 mt-2">{error || 'Unable to load dashboard data.'}</p>
                     <button
                         onClick={() => window.location.reload()}
-                        className="mt-6 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+                        className="mt-6 px-4 py-2 bg-gradient-to-r from-primary-600 to-accent-600 text-white rounded-lg hover:from-primary-700 hover:to-accent-700 transition-colors"
                     >
                         Retry Connection
                     </button>
@@ -90,8 +90,8 @@ export const AdminDashboard: React.FC = () => {
     }
 
     const engagementData = [
-        { name: 'Clarity (Dump)', value: data.engagement.clarity, color: '#6366f1' },
-        { name: 'Focus (Split)', value: data.engagement.focus, color: '#a855f7' },
+        { name: 'Clarity (Dump)', value: data.engagement.clarity, color: '#06b6d4' },
+        { name: 'Focus (Split)', value: data.engagement.focus, color: '#f59e0b' },
         { name: 'Freedom (Track)', value: data.engagement.freedom, color: '#10b981' },
     ];
 
@@ -129,7 +129,7 @@ export const AdminDashboard: React.FC = () => {
                             <h3 className="text-2xl font-bold mt-1 text-slate-800 dark:text-white">{data.stats.activeUsers}</h3>
                             <p className="text-xs text-slate-400 mt-1">Last 7 days</p>
                         </div>
-                        <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg text-blue-600 dark:text-blue-400">
+                        <div className="p-2 bg-secondary-100 dark:bg-secondary-900/30 rounded-lg text-secondary-600 dark:text-secondary-400">
                             <Users className="w-5 h-5" />
                         </div>
                     </div>
@@ -142,7 +142,7 @@ export const AdminDashboard: React.FC = () => {
                             <h3 className="text-2xl font-bold mt-1 text-slate-800 dark:text-white">{data.stats.totalTasks}</h3>
                             <p className="text-xs text-slate-400 mt-1">Lifetime</p>
                         </div>
-                        <div className="p-2 bg-cyan-100 dark:bg-cyan-900/30 rounded-lg text-cyan-600 dark:text-cyan-400">
+                        <div className="p-2 bg-primary-100 dark:bg-primary-900/30 rounded-lg text-primary-600 dark:text-primary-400">
                             <ListTodo className="w-5 h-5" />
                         </div>
                     </div>
@@ -155,7 +155,7 @@ export const AdminDashboard: React.FC = () => {
                             <h3 className="text-2xl font-bold mt-1 text-slate-800 dark:text-white">{data.stats.totalAiSplits}</h3>
                             <p className="text-xs text-slate-400 mt-1">Total Breakdowns</p>
                         </div>
-                        <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg text-purple-600 dark:text-purple-400">
+                        <div className="p-2 bg-secondary-100 dark:bg-secondary-900/30 rounded-lg text-secondary-600 dark:text-secondary-400">
                             <Split className="w-5 h-5" />
                         </div>
                     </div>
@@ -246,27 +246,27 @@ export const AdminDashboard: React.FC = () => {
                         <div className="grid grid-cols-1 gap-3">
                             <button 
                                 onClick={() => navigate('/admin/users')}
-                                className="w-full flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-900/50 hover:bg-cyan-50 dark:hover:bg-cyan-900/20 text-slate-700 dark:text-slate-200 transition-colors group"
+                                className="w-full flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-900/50 hover:bg-primary-50 dark:hover:bg-primary-900/20 text-slate-700 dark:text-slate-200 transition-colors group"
                             >
                                 <div className="flex items-center gap-3">
-                                    <Users className="w-4 h-4 text-cyan-500" />
+                                    <Users className="w-4 h-4 text-primary-500" />
                                     <span className="text-sm font-medium">Manage Users</span>
                                 </div>
                                 <Zap className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
                             </button>
                             <button 
                                 onClick={() => navigate('/admin/marketing')}
-                                className="w-full flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-900/50 hover:bg-cyan-50 dark:hover:bg-cyan-900/20 text-slate-700 dark:text-slate-200 transition-colors group"
+                                className="w-full flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-900/50 hover:bg-primary-50 dark:hover:bg-primary-900/20 text-slate-700 dark:text-slate-200 transition-colors group"
                             >
                                 <div className="flex items-center gap-3">
-                                    <TrendingUp className="w-4 h-4 text-purple-500" />
+                                    <TrendingUp className="w-4 h-4 text-secondary-500" />
                                     <span className="text-sm font-medium">Marketing Insights</span>
                                 </div>
                                 <Zap className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
                             </button>
                             <button 
                                 onClick={() => navigate('/admin/audit')}
-                                className="w-full flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-900/50 hover:bg-cyan-50 dark:hover:bg-cyan-900/20 text-slate-700 dark:text-slate-200 transition-colors group"
+                                className="w-full flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-900/50 hover:bg-primary-50 dark:hover:bg-primary-900/20 text-slate-700 dark:text-slate-200 transition-colors group"
                             >
                                 <div className="flex items-center gap-3">
                                     <Shield className="w-4 h-4 text-emerald-500" />

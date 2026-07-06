@@ -53,7 +53,7 @@ export const ProjectArchive: React.FC = () => {
         <Card>
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
                 <div className="flex items-center gap-4">
-                    <div className="p-3 rounded-xl bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">
+                    <div className="p-3 rounded-xl bg-secondary-100 dark:bg-secondary-900/30 text-secondary-600 dark:text-secondary-400">
                         <Briefcase className="w-6 h-6" />
                     </div>
                     <div>
@@ -102,7 +102,7 @@ export const ProjectArchive: React.FC = () => {
                                 <div className="flex items-center gap-3 mt-1 text-xs text-slate-500">
                                     <span>Completed {format(new Date(project.updatedAt || project.createdAt), 'MMM d, yyyy')}</span>
                                     {project.budgetLimit && (
-                                        <span className="px-1.5 py-0.5 rounded bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 font-medium">
+                                        <span className="px-1.5 py-0.5 rounded bg-secondary-50 dark:bg-secondary-900/20 text-secondary-600 dark:text-secondary-400 font-medium">
                                             ₦{project.budgetLimit.toLocaleString()}
                                         </span>
                                     )}

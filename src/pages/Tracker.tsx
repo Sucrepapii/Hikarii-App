@@ -198,7 +198,7 @@ export const Tracker = () => {
                     </div>
 
                     {/* Total Amount Card */}
-                    <div className="flex items-center bg-gradient-to-r from-primary-600 to-accent-600 rounded-xl px-6 py-2.5 shadow-lg shadow-primary-500/25 flex-1 sm:flex-none">
+                    <div className="flex items-center bg-gradient-to-r from-primary-600 to-secondary-600 rounded-xl px-6 py-2.5 shadow-lg shadow-primary-500/25 flex-1 sm:flex-none">
                         <Wallet className="w-5 h-5 text-white/80 mr-3" />
                         <div className="flex flex-col">
                             <span className="text-xs text-white/80 font-medium uppercase tracking-wider">Total Amount</span>

@@ -72,7 +72,7 @@ export const SpendingChart: React.FC<SpendingChartProps> = ({ selectedDate = new
                             boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)',
                         }}
                         itemStyle={{ fontSize: '12px', fontWeight: 'bold' }}
-                        cursor={{ fill: 'rgba(99, 102, 241, 0.05)' }}
+                        cursor={{ fill: 'rgba(6, 182, 212, 0.05)' }}
                         formatter={(value: number) => [formatCurrency(value, currency), 'Spent']}
                     />
                     <Legend 
@@ -83,8 +83,8 @@ export const SpendingChart: React.FC<SpendingChartProps> = ({ selectedDate = new
                     <Bar dataKey="budget" fill="url(#colorBudget)" radius={[8, 8, 0, 0]} />
                     <defs>
                         <linearGradient id="colorSpent" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="#a855f7" stopOpacity={1} />
-                            <stop offset="100%" stopColor="#6366f1" stopOpacity={0.8} />
+                            <stop offset="0%" stopColor="#f59e0b" stopOpacity={1} />
+                            <stop offset="100%" stopColor="#06b6d4" stopOpacity={0.8} />
                         </linearGradient>
                         <linearGradient id="colorBudget" x1="0" y1="0" x2="0" y2="1">
                             <stop offset="0%" stopColor="#10b981" stopOpacity={1} />

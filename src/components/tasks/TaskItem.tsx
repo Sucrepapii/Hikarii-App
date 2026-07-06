@@ -16,7 +16,7 @@ interface TaskItemProps {
 }
 
 const priorityColors = {
-    [TaskPriority.LOW]: 'bg-blue-500',
+    [TaskPriority.LOW]: 'bg-secondary-500',
     [TaskPriority.MEDIUM]: 'bg-yellow-500',
     [TaskPriority.HIGH]: 'bg-orange-500',
     [TaskPriority.URGENT]: 'bg-red-500',
@@ -85,8 +85,8 @@ export const TaskItem: React.FC<TaskItemProps> = ({
                             {showSparkles && (
                                 <>
                                     <Sparkles className="sparkle-burst text-yellow-400 top-[-10px] left-[-10px]" size={16} />
-                                    <Sparkles className="sparkle-burst text-cyan-400 top-[-5px] right-[-5px]" size={12} style={{ animationDelay: '0.1s' }} />
-                                    <Sparkles className="sparkle-burst text-purple-400 bottom-[-8px] left-[5px]" size={14} style={{ animationDelay: '0.2s' }} />
+                                    <Sparkles className="sparkle-burst text-primary-400 top-[-5px] right-[-5px]" size={12} style={{ animationDelay: '0.1s' }} />
+                                    <Sparkles className="sparkle-burst text-secondary-400 bottom-[-8px] left-[5px]" size={14} style={{ animationDelay: '0.2s' }} />
                                 </>
                             )}
                             <div className={clsx(
@@ -116,7 +116,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({
                                     task.priority === TaskPriority.URGENT ? 'bg-red-100 text-red-600 dark:bg-red-900/30' :
                                         task.priority === TaskPriority.HIGH ? 'bg-orange-100 text-orange-600 dark:bg-orange-900/30' :
                                             task.priority === TaskPriority.MEDIUM ? 'bg-yellow-100 text-yellow-600 dark:bg-yellow-900/30' :
-                                                'bg-blue-100 text-blue-600 dark:bg-blue-900/30'
+                                                'bg-secondary-100 text-secondary-600 dark:bg-secondary-900/30'
                                 )}>
                                     {task.priority}
                                 </span>
@@ -181,14 +181,14 @@ export const TaskItem: React.FC<TaskItemProps> = ({
                     <div className="flex gap-1 shrink-0">
                         <button
                             onClick={() => openSplitModal(task.id)}
-                            className="p-2 text-slate-400 hover:text-purple-500 hover:bg-purple-50 dark:hover:bg-purple-500/10 rounded-lg transition-colors"
+                            className="p-2 text-slate-400 hover:text-secondary-500 hover:bg-secondary-50 dark:hover:bg-secondary-500/10 rounded-lg transition-colors"
                             title="Smart Split"
                         >
                             <Sparkles className="w-4 h-4" />
                         </button>
                         <button
                             onClick={() => onEdit(task)}
-                            className="p-2 text-slate-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-500/10 rounded-lg transition-colors"
+                            className="p-2 text-slate-400 hover:text-secondary-500 hover:bg-secondary-50 dark:hover:bg-secondary-500/10 rounded-lg transition-colors"
                         >
                             <Edit className="w-4 h-4" />
                         </button>

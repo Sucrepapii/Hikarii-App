@@ -63,7 +63,7 @@ export const AdminReport: React.FC = () => {
                     <p className="text-slate-500 mt-2">{error || 'Unable to load report data.'}</p>
                     <button
                         onClick={() => window.location.reload()}
-                        className="mt-6 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+                        className="mt-6 px-4 py-2 bg-gradient-to-r from-primary-600 to-accent-600 text-white rounded-lg hover:from-primary-700 hover:to-accent-700 transition-colors"
                     >
                         Retry
                     </button>
@@ -73,8 +73,8 @@ export const AdminReport: React.FC = () => {
     }
 
     const engagementData = [
-        { name: 'Clarity (Dump)', value: data.engagement.clarity, color: '#6366f1' },
-        { name: 'Focus (Split)', value: data.engagement.focus, color: '#a855f7' },
+        { name: 'Clarity (Dump)', value: data.engagement.clarity, color: '#06b6d4' },
+        { name: 'Focus (Split)', value: data.engagement.focus, color: '#f59e0b' },
         { name: 'Freedom (Track)', value: data.engagement.freedom, color: '#10b981' },
     ];
 
@@ -122,7 +122,7 @@ export const AdminReport: React.FC = () => {
                             </div>
                             <div className={clsx(
                                 "p-2 rounded-lg",
-                                stat.color === 'cyan' && "bg-cyan-100 dark:bg-cyan-900/30 text-cyan-600 dark:text-cyan-400",
+                                stat.color === 'cyan' && "bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400",
                                 stat.color === 'emerald' && "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400",
                                 stat.color === 'amber' && "bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400"
                             )}>
@@ -159,11 +159,11 @@ export const AdminReport: React.FC = () => {
                     </div>
                     <div className="mt-6 grid grid-cols-3 gap-4 border-t border-slate-100 dark:border-slate-800 pt-6">
                         <div className="text-center">
-                            <p className="text-2xl font-bold text-cyan-500">{data.stats.totalTasks}</p>
+                            <p className="text-2xl font-bold text-primary-500">{data.stats.totalTasks}</p>
                             <p className="text-xs text-slate-400 mt-1 uppercase tracking-wider font-semibold">Tasks</p>
                         </div>
                         <div className="text-center">
-                            <p className="text-2xl font-bold text-purple-500">{data.stats.totalAiSplits}</p>
+                            <p className="text-2xl font-bold text-secondary-500">{data.stats.totalAiSplits}</p>
                             <p className="text-xs text-slate-400 mt-1 uppercase tracking-wider font-semibold">Splits</p>
                         </div>
                         <div className="text-center">

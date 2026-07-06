@@ -99,7 +99,7 @@ export const Analytics: React.FC = () => {
 
                 <Card>
                     <div className="flex items-center gap-3 mb-2">
-                        <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-600">
+                        <div className="p-2 rounded-lg bg-secondary-100 dark:bg-secondary-900/30 text-secondary-600">
                             <CheckCircle className="w-5 h-5" />
                         </div>
                         <h3 className="font-medium text-slate-600 dark:text-slate-400">Task Completion Rate</h3>
@@ -111,7 +111,7 @@ export const Analytics: React.FC = () => {
 
                 <Card>
                     <div className="flex items-center gap-3 mb-2">
-                        <div className="p-2 rounded-lg bg-purple-100 dark:bg-purple-900/30 text-purple-600">
+                        <div className="p-2 rounded-lg bg-secondary-100 dark:bg-secondary-900/30 text-secondary-600">
                             <AlertCircle className="w-5 h-5" />
                         </div>
                         <h3 className="font-medium text-slate-600 dark:text-slate-400">Actionable Insights</h3>
@@ -259,9 +259,9 @@ export const Analytics: React.FC = () => {
                         <div className={`space-y-4 ${!isPro ? 'opacity-40 pointer-events-none select-none filter blur-sm' : ''}`}>
                             <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-300">Financial & Productivity Insights</h3>
                             {insights.filter(i => i.type !== 'TASK_RECOMMENDATION').map(insight => (
-                                <div key={insight.id} className="p-4 rounded-xl bg-cyan-50 dark:bg-cyan-900/20 border border-cyan-100 dark:border-cyan-800">
+                                <div key={insight.id} className="p-4 rounded-xl bg-primary-50 dark:bg-primary-900/20 border border-primary-100 dark:border-primary-800">
                                     <div className="flex items-start gap-3">
-                                        <div className="p-2 bg-cyan-100 dark:bg-cyan-800 text-cyan-600 dark:text-cyan-300 rounded-lg">
+                                        <div className="p-2 bg-primary-100 dark:bg-primary-800 text-primary-600 dark:text-primary-300 rounded-lg">
                                             <TrendingUp className="w-5 h-5" />
                                         </div>
                                         <div>

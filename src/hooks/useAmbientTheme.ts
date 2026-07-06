@@ -18,9 +18,9 @@ export const useAmbientTheme = () => {
             } else if (hour >= 10 && hour < 16) {
                 // Midday (10am - 4pm)
                 root.classList.add('ambient-midday');
-                root.style.setProperty('--ambient-glow', 'rgba(99, 102, 241, 0.12)'); // indigo-500
-                root.style.setProperty('--ambient-border', 'rgba(99, 102, 241, 0.25)');
-                root.style.setProperty('--ambient-accent', '#6366f1');
+                root.style.setProperty('--ambient-glow', 'rgba(6, 182, 212, 0.12)'); // primary-500
+                root.style.setProperty('--ambient-border', 'rgba(6, 182, 212, 0.25)');
+                root.style.setProperty('--ambient-accent', '#06b6d4');
             } else if (hour >= 16 && hour < 20) {
                 // Sunset (4pm - 8pm)
                 root.classList.add('ambient-sunset');
@@ -30,9 +30,9 @@ export const useAmbientTheme = () => {
             } else {
                 // Midnight / Night (8pm - 6am)
                 root.classList.add('ambient-midnight');
-                root.style.setProperty('--ambient-glow', 'rgba(168, 85, 247, 0.15)'); // purple-500
-                root.style.setProperty('--ambient-border', 'rgba(168, 85, 247, 0.3)');
-                root.style.setProperty('--ambient-accent', '#a855f7');
+                root.style.setProperty('--ambient-glow', 'rgba(245, 158, 11, 0.15)'); // secondary-500
+                root.style.setProperty('--ambient-border', 'rgba(245, 158, 11, 0.3)');
+                root.style.setProperty('--ambient-accent', '#f59e0b');
             }
         };
 

@@ -348,7 +348,7 @@ export const AdminUserManagement: React.FC = () => {
                                                     <span className={clsx(
                                                         "px-2 py-0.5 rounded-lg text-[10px] font-bold border",
                                                         u.subscriptionStatus === 'PRO'
-                                                            ? "bg-purple-100 text-purple-700 border-purple-200 dark:bg-purple-900/30 dark:text-purple-300 dark:border-purple-800"
+                                                            ? "bg-secondary-100 text-secondary-700 border-secondary-200 dark:bg-secondary-900/30 dark:text-secondary-300 dark:border-secondary-800"
                                                             : "bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700"
                                                     )}>
                                                         {u.subscriptionStatus}
@@ -444,7 +444,7 @@ export const AdminUserManagement: React.FC = () => {
                     <Card className="relative w-full max-w-2xl animate-scale-in overflow-hidden border-none shadow-2xl">
                         <div className="p-8 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-slate-900/50">
                             <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 rounded-2xl bg-primary-600 text-white flex items-center justify-center font-bold text-xl">
+                                <div className="w-12 h-12 rounded-2xl bg-gradient-to-r from-primary-600 to-accent-600 text-white flex items-center justify-center font-bold text-xl">
                                     {editingUser.name.charAt(0).toUpperCase()}
                                 </div>
                                 <div>
@@ -475,7 +475,7 @@ export const AdminUserManagement: React.FC = () => {
                                                 className={clsx(
                                                     "px-4 py-2 rounded-xl text-sm font-bold border transition-all",
                                                     editingUser.role === r
-                                                        ? "bg-primary-600 border-primary-600 text-white shadow-lg shadow-primary-600/20"
+                                                        ? "bg-gradient-to-r from-primary-600 to-accent-600 border-primary-600 text-white shadow-lg shadow-primary-600/20"
                                                         : "border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-primary-400"
                                                 )}
                                             >
@@ -629,7 +629,7 @@ export const AdminUserManagement: React.FC = () => {
                     <Card className="relative w-full max-w-md animate-scale-in overflow-hidden border-none shadow-2xl">
                         <div className="p-8 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-slate-900/50">
                             <h3 className="text-2xl font-display font-bold text-slate-900 dark:text-white flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-xl bg-primary-600 text-white flex items-center justify-center">
+                                <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-primary-600 to-accent-600 text-white flex items-center justify-center">
                                     <UserPlus className="w-6 h-6" />
                                 </div>
                                 Create New Admin
@@ -686,7 +686,7 @@ export const AdminUserManagement: React.FC = () => {
                             <button
                                 type="submit"
                                 disabled={isUpdating}
-                                className="w-full py-4 bg-primary-600 text-white rounded-xl font-bold hover:bg-primary-700 transition-all shadow-xl shadow-primary-600/20 disabled:opacity-50"
+                                className="w-full py-4 bg-gradient-to-r from-primary-600 to-accent-600 text-white rounded-xl font-bold hover:from-primary-700 hover:to-accent-700 transition-all shadow-xl shadow-primary-600/20 disabled:opacity-50"
                             >
                                 {isUpdating ? 'Creating Account...' : 'Create Admin Account'}
                             </button>

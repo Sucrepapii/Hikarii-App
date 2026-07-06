@@ -55,7 +55,7 @@ export const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
     }
 
     const containerClasses = {
-        hero: "max-w-xl mx-auto p-8 rounded-3xl bg-white/50 dark:bg-white/5 backdrop-blur-xl border border-cyan-100 dark:border-white/10 shadow-2xl",
+        hero: "max-w-xl mx-auto p-8 rounded-3xl bg-white/50 dark:bg-white/5 backdrop-blur-xl border border-primary-100 dark:border-white/10 shadow-2xl",
         footer: "w-full space-y-4",
         inline: "w-full p-4 rounded-xl border border-slate-200 dark:border-white/5"
     }[variant];
@@ -81,9 +81,9 @@ export const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
-                        className={`w-full px-0 py-3 bg-transparent border-b border-slate-700 dark:border-white/10 text-white focus:border-cyan-500 outline-none transition-all placeholder:text-slate-600 font-medium`}
+                        className={`w-full px-0 py-3 bg-transparent border-b border-slate-700 dark:border-white/10 text-white focus:border-primary-500 outline-none transition-all placeholder:text-slate-600 font-medium`}
                     />
-                    <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-cyan-500 to-purple-500 group-focus-within:w-full transition-all duration-500"></div>
+                    <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-primary-500 to-secondary-500 group-focus-within:w-full transition-all duration-500"></div>
                 </div>
 
                 <Button
@@ -92,7 +92,7 @@ export const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
                     className={`
                         ${variant === 'footer'
                             ? 'h-11 bg-white text-slate-900 hover:bg-slate-100 dark:bg-white dark:text-slate-900 rounded-lg text-xs'
-                            : 'rounded-xl px-6 h-12 bg-cyan-600 hover:bg-cyan-500 text-white'
+                            : 'rounded-xl px-6 h-12 bg-gradient-to-r from-primary-600 to-accent-600 hover:from-primary-500 hover:to-accent-500 text-white'
                         } font-bold whitespace-nowrap transition-all active:scale-95
                     `}
                 >

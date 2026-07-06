@@ -36,7 +36,7 @@ export const AdminMarketing: React.FC = () => {
     if (loading || !data) {
         return (
             <div className="flex items-center justify-center min-h-[60vh]">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-600"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
             </div>
         );
     }
@@ -47,7 +47,7 @@ export const AdminMarketing: React.FC = () => {
         value: s._count.id
     })) || [];
 
-    const COLORS = ['#6366f1', '#a855f7', '#ec4899', '#f59e0b', '#10b981'];
+    const COLORS = ['#06b6d4', '#f59e0b', '#ec4899', '#f59e0b', '#10b981'];
 
     // Process Content Feedback
     const articleGroups: Record<string, { helpful: number; unhelpful: number }> = {};
@@ -90,7 +90,7 @@ export const AdminMarketing: React.FC = () => {
                                 Lifetime capture
                             </p>
                         </div>
-                        <div className="p-3 bg-cyan-50 dark:bg-cyan-900/30 rounded-xl text-cyan-600">
+                        <div className="p-3 bg-primary-50 dark:bg-primary-900/30 rounded-xl text-primary-600">
                             <Mail className="w-6 h-6" />
                         </div>
                     </div>
@@ -103,7 +103,7 @@ export const AdminMarketing: React.FC = () => {
                             <h3 className="text-3xl font-bold mt-1 text-slate-900 dark:text-white">+{data?.leads?.last7Days || 0}</h3>
                             <p className="text-xs text-slate-400 mt-1">New leads this week</p>
                         </div>
-                        <div className="p-3 bg-purple-50 dark:bg-purple-900/30 rounded-xl text-purple-600">
+                        <div className="p-3 bg-secondary-50 dark:bg-secondary-900/30 rounded-xl text-secondary-600">
                             <Users className="w-6 h-6" />
                         </div>
                     </div>
@@ -114,7 +114,7 @@ export const AdminMarketing: React.FC = () => {
                         <div>
                             <p className="text-sm font-medium text-slate-500">Search Visibility</p>
                             <h3 className="text-3xl font-bold mt-1 text-slate-900 dark:text-white">Live</h3>
-                            <p className="text-xs text-cyan-500 mt-1">Technical SEO Active</p>
+                            <p className="text-xs text-primary-500 mt-1">Technical SEO Active</p>
                         </div>
                         <div className="p-3 bg-emerald-50 dark:bg-emerald-900/30 rounded-xl text-emerald-600">
                             <Search className="w-6 h-6" />

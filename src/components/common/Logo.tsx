@@ -51,7 +51,7 @@ export const Logo: React.FC<LogoProps> = ({
                         <stop offset="100%" stopColor="#c084fc" />
                     </linearGradient>
                     <linearGradient id={`${gradId}-right`} x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stopColor="#a855f7" />
+                        <stop offset="0%" stopColor="#f59e0b" />
                         <stop offset="100%" stopColor="#6b21a8" />
                     </linearGradient>
                     {/* Soft glow filter for premium effect */}
@@ -73,7 +73,7 @@ export const Logo: React.FC<LogoProps> = ({
                 />
                 <path
                     d="M 80 15 Q 30 50 60 85"
-                    stroke="#a855f7"
+                    stroke="#f59e0b"
                     strokeWidth="16"
                     strokeLinecap="round"
                     opacity="0.4"

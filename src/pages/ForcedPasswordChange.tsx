@@ -132,7 +132,7 @@ const ForcedPasswordChange: React.FC = () => {
                     <button
                         type="submit"
                         disabled={isLoading}
-                        className="w-full py-4 bg-primary-600 text-white rounded-xl font-bold hover:bg-primary-700 transition-all shadow-xl shadow-primary-600/20 disabled:opacity-50"
+                        className="w-full py-4 bg-gradient-to-r from-primary-600 to-accent-600 text-white rounded-xl font-bold hover:from-primary-700 hover:to-accent-700 transition-all shadow-xl shadow-primary-600/20 disabled:opacity-50"
                     >
                         {isLoading ? 'Updating Security...' : 'Update Password & Access Dashboard'}
                     </button>

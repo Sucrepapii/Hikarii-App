@@ -98,7 +98,7 @@ export const TaskArchive: React.FC = () => {
                                 <div className="flex items-center gap-3 mt-1 text-xs text-slate-500">
                                     <span>Completed {format(new Date(task.createdAt), 'MMM d, yyyy')}</span>
                                     {task.financials && (
-                                        <span className="px-1.5 py-0.5 rounded bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 font-medium">
+                                        <span className="px-1.5 py-0.5 rounded bg-secondary-50 dark:bg-secondary-900/20 text-secondary-600 dark:text-secondary-400 font-medium">
                                             {task.financials.type}
                                         </span>
                                     )}

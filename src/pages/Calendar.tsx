@@ -184,7 +184,7 @@ export const Calendar: React.FC = () => {
                                                         key={t.id}
                                                         className={`
                                                             w-2 h-2 rounded-full 
-                                                            ${isDone ? 'bg-emerald-400' : isOverdue ? 'bg-red-500' : 'bg-blue-400'}
+                                                            ${isDone ? 'bg-emerald-400' : isOverdue ? 'bg-red-500' : 'bg-secondary-400'}
                                                         `}
                                                     />
                                                 );
@@ -197,7 +197,7 @@ export const Calendar: React.FC = () => {
                                         {dayExpenses.length > 0 && (
                                             <div className="mt-1 flex gap-0.5">
                                                 {dayExpenses.map((e, i) => i < 3 && (
-                                                    <div key={e.id} className="w-2 h-0.5 bg-purple-400 rounded-full" />
+                                                    <div key={e.id} className="w-2 h-0.5 bg-secondary-400 rounded-full" />
                                                 ))}
                                             </div>
                                         )}
@@ -253,7 +253,7 @@ export const Calendar: React.FC = () => {
                                             <p className="font-medium text-slate-700 dark:text-slate-200">{expense.title}</p>
                                             <p className="text-xs text-slate-500">{expense.category}</p>
                                         </div>
-                                        <span className="font-bold text-purple-600 dark:text-purple-400">
+                                        <span className="font-bold text-secondary-600 dark:text-secondary-400">
                                             {formatCurrency(useBudgetStore.getState().getConvertedAmount(expense.amount, currency), currency)}
                                         </span>
                                     </div>

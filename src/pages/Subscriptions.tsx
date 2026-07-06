@@ -137,9 +137,9 @@ export const Subscriptions: React.FC = () => {
             </div>
 
             {advice && (
-                <div className="bg-gradient-to-r from-cyan-50 to-purple-50 dark:from-cyan-900/20 dark:to-purple-900/20 border border-cyan-100 dark:border-cyan-800 rounded-xl p-5 mb-6 flex gap-4 animate-fade-in-up">
-                    <div className="bg-white dark:bg-slate-800 p-2 rounded-lg h-fit shadow-sm border border-cyan-50 dark:border-cyan-900">
-                        <Lightbulb className="w-6 h-6 text-cyan-500 fill-cyan-100 dark:fill-cyan-900" />
+                <div className="bg-gradient-to-r from-primary-50 to-secondary-50 dark:from-primary-900/20 dark:to-secondary-900/20 border border-primary-100 dark:border-primary-800 rounded-xl p-5 mb-6 flex gap-4 animate-fade-in-up">
+                    <div className="bg-white dark:bg-slate-800 p-2 rounded-lg h-fit shadow-sm border border-primary-50 dark:border-primary-900">
+                        <Lightbulb className="w-6 h-6 text-primary-500 fill-primary-100 dark:fill-primary-900" />
                     </div>
                     <div>
                         <h3 className="font-semibold text-slate-800 dark:text-slate-200 mb-1">AI Financial Analysis</h3>

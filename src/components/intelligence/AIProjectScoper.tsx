@@ -56,7 +56,7 @@ export const AIProjectScoper: React.FC<AIProjectScoperProps> = ({
             {/* Header */}
             <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
                 <div className="flex items-center gap-2">
-                    <div className="p-2 rounded-xl bg-purple-500/10 text-purple-500 animate-pulse">
+                    <div className="p-2 rounded-xl bg-secondary-500/10 text-secondary-500 animate-pulse">
                         <Sparkles className="w-5 h-5" />
                     </div>
                     <div>
@@ -138,9 +138,9 @@ export const AIProjectScoper: React.FC<AIProjectScoperProps> = ({
                     /* AI Scoping Result View */
                     <div className="space-y-6 animate-fade-in">
                         {/* Summary Description Box */}
-                        <div className="p-4 rounded-2xl bg-cyan-600/5 border border-cyan-500/20 relative overflow-hidden">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/10 rounded-full blur-2xl pointer-events-none" />
-                            <h3 className="text-sm font-bold text-cyan-400 mb-1 flex items-center gap-1.5">
+                        <div className="p-4 rounded-2xl bg-primary-600/5 border border-primary-500/20 relative overflow-hidden">
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-primary-500/10 rounded-full blur-2xl pointer-events-none" />
+                            <h3 className="text-sm font-bold text-primary-400 mb-1 flex items-center gap-1.5">
                                 <Sparkles className="w-4 h-4" />
                                 Gemini Scoped Overview
                             </h3>

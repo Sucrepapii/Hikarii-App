@@ -53,12 +53,12 @@ export const BankSyncPanel: React.FC = () => {
     return (
         <Card className="glass-card overflow-hidden border border-white/10 relative">
             {/* Background absolute glow */}
-            <div className="absolute top-0 right-0 w-48 h-48 bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute top-0 right-0 w-48 h-48 bg-secondary-500/10 rounded-full blur-3xl pointer-events-none" />
 
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center pb-6 border-b border-slate-100 dark:border-slate-800 gap-4">
                 <div>
                     <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                        <CreditCard className="w-5 h-5 text-cyan-500" />
+                        <CreditCard className="w-5 h-5 text-primary-500" />
                         FinOps Open Banking Sync
                     </h3>
                     <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Secure bank reconciliation matching real cashflow directly to tasks</p>
@@ -90,7 +90,7 @@ export const BankSyncPanel: React.FC = () => {
                             size="sm"
                             onClick={handleAutoTriage}
                             disabled={isTriaging}
-                            className="bg-cyan-600/10 hover:bg-cyan-600/20 text-cyan-500 border border-cyan-500/20 hover:scale-105 transition-all text-xs py-2 px-4 font-bold flex items-center gap-1.5"
+                            className="bg-primary-600/10 hover:bg-primary-600/20 text-primary-500 border border-primary-500/20 hover:scale-105 transition-all text-xs py-2 px-4 font-bold flex items-center gap-1.5"
                         >
                             {isTriaging ? (
                                 <>
@@ -128,7 +128,7 @@ export const BankSyncPanel: React.FC = () => {
                 <div className="py-6 grid grid-cols-1 lg:grid-cols-[280px,1fr] gap-8 animate-fade-in">
                     {/* Left Panel: Glassmorphic Credit Card */}
                     <div className="space-y-4">
-                        <div className="relative w-full aspect-[1.58/1] rounded-2xl bg-gradient-to-br from-cyan-500 via-purple-600 to-pink-500 p-5 text-white shadow-xl flex flex-col justify-between overflow-hidden group hover:scale-[1.02] transition-transform duration-300">
+                        <div className="relative w-full aspect-[1.58/1] rounded-2xl bg-gradient-to-br from-primary-500 via-secondary-600 to-pink-500 p-5 text-white shadow-xl flex flex-col justify-between overflow-hidden group hover:scale-[1.02] transition-transform duration-300">
                             {/* Glass overlay */}
                             <div className="absolute inset-0 bg-white/5 backdrop-blur-[1px] pointer-events-none" />
                             {/* Shining glow overlay */}
@@ -180,7 +180,7 @@ export const BankSyncPanel: React.FC = () => {
                     <div className="space-y-4">
                         <div className="flex justify-between items-center">
                             <h4 className="text-sm font-bold text-slate-800 dark:text-white">Imported Transactions</h4>
-                            <span className="text-[10px] px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-500 font-bold">
+                            <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary-500/10 text-primary-500 font-bold">
                                 {transactions.filter(t => t.status === 'pending').length} Action Required
                             </span>
                         </div>
@@ -199,7 +199,7 @@ export const BankSyncPanel: React.FC = () => {
                                         </div>
                                         <div>
                                             <p className="text-sm font-bold text-slate-800 dark:text-slate-100">{t.merchant}</p>
-                                            <p className="text-[10px] text-slate-400 mt-0.5">{t.date} • Suggested Task: <span className="font-semibold text-cyan-400 italic">"{t.suggestedTask}"</span></p>
+                                            <p className="text-[10px] text-slate-400 mt-0.5">{t.date} • Suggested Task: <span className="font-semibold text-primary-400 italic">"{t.suggestedTask}"</span></p>
                                         </div>
                                     </div>
 
@@ -221,7 +221,7 @@ export const BankSyncPanel: React.FC = () => {
                                                 }}
                                                 variant="ghost"
                                                 size="sm"
-                                                className="bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-500 hover:scale-105 transition-all text-[10px] font-bold py-1 px-3"
+                                                className="bg-primary-500/10 hover:bg-primary-500/20 text-primary-500 hover:scale-105 transition-all text-[10px] font-bold py-1 px-3"
                                             >
                                                 Triage
                                             </Button>

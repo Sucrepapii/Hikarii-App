@@ -161,15 +161,15 @@ export const FeedbackSection: React.FC = () => {
     return (
         <section className="py-24 px-6 max-w-5xl mx-auto relative z-20">
             {/* Ambient Background Glow */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-cyan-500/10 rounded-full blur-[100px] pointer-events-none mix-blend-screen"></div>
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-primary-500/10 rounded-full blur-[100px] pointer-events-none mix-blend-screen"></div>
             
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
                 {/* FORM COLUMN */}
                 <div className="lg:col-span-5 relative bg-white/5 dark:bg-[#0B0C15]/50 backdrop-blur-xl border border-slate-200/50 dark:border-white/10 p-8 rounded-[2rem] shadow-2xl h-fit group">
-                    <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-transparent to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none rounded-[2rem]"></div>
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary-500/10 via-transparent to-secondary-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none rounded-[2rem]"></div>
                     
                     <div className="relative z-10 text-center mb-8">
-                        <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-cyan-100 dark:bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 mb-4 shadow-inner ring-1 ring-cyan-500/20">
+                        <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-primary-100 dark:bg-primary-500/20 text-primary-600 dark:text-primary-400 mb-4 shadow-inner ring-1 ring-primary-500/20">
                             <MessageSquare className="w-6 h-6" />
                         </div>
                         <h2 className="text-2xl font-display font-bold text-slate-900 dark:text-white mb-2">
@@ -192,11 +192,11 @@ export const FeedbackSection: React.FC = () => {
                             </div>
                             <Link
                                 to="/login?redirect=/feedback"
-                                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-cyan-600 text-white font-semibold text-sm hover:bg-cyan-500 transition-colors shadow-lg shadow-cyan-600/30"
+                                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-primary-600 to-accent-600 text-white font-semibold text-sm hover:from-primary-500 hover:to-accent-500 transition-colors shadow-lg shadow-primary-600/30"
                             >
                                 <LogIn className="w-4 h-4" /> Sign In to Leave Feedback
                             </Link>
-                            <Link to="/signup" className="text-sm text-cyan-600 dark:text-cyan-400 hover:underline">
+                            <Link to="/signup" className="text-sm text-primary-600 dark:text-primary-400 hover:underline">
                                 Don't have an account? Sign up
                             </Link>
                         </div>
@@ -239,7 +239,7 @@ export const FeedbackSection: React.FC = () => {
                                     <select
                                         value={topic}
                                         onChange={(e) => setTopic(e.target.value)}
-                                        className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500/50 transition-all shadow-sm text-sm appearance-none cursor-pointer"
+                                        className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500/50 transition-all shadow-sm text-sm appearance-none cursor-pointer"
                                     >
                                         {FEATURE_TOPICS.map((t) => (
                                             <option key={t} value={t}>{t}</option>
@@ -260,7 +260,7 @@ export const FeedbackSection: React.FC = () => {
                                                 setFlag(selected.flag);
                                             }
                                         }}
-                                        className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500/50 transition-all shadow-sm text-sm appearance-none cursor-pointer"
+                                        className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500/50 transition-all shadow-sm text-sm appearance-none cursor-pointer"
                                     >
                                         <option value="" disabled>Select your country</option>
                                         {countries.map((c) => (
@@ -277,7 +277,7 @@ export const FeedbackSection: React.FC = () => {
                                     placeholder="Your Name"
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
-                                    className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 transition-all shadow-sm text-sm"
+                                    className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-500/50 transition-all shadow-sm text-sm"
                                 />
                                 <textarea
                                     placeholder="Tell us what you think..."
@@ -285,7 +285,7 @@ export const FeedbackSection: React.FC = () => {
                                     onChange={(e) => setComment(e.target.value)}
                                     required
                                     rows={4}
-                                    className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 transition-all shadow-sm resize-none text-sm"
+                                    className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-500/50 transition-all shadow-sm resize-none text-sm"
                                 ></textarea>
                             </div>
 
@@ -293,7 +293,7 @@ export const FeedbackSection: React.FC = () => {
                             <button
                                 type="submit"
                                 disabled={isSubmitted || rating === 0 || !comment.trim()}
-                                className="w-full relative group overflow-hidden rounded-xl bg-cyan-600 text-white font-semibold py-3.5 px-6 flex items-center justify-center gap-2 transition-all hover:bg-cyan-500 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-cyan-600/30"
+                                className="w-full relative group overflow-hidden rounded-xl bg-gradient-to-r from-primary-600 to-accent-600 text-white font-semibold py-3.5 px-6 flex items-center justify-center gap-2 transition-all hover:from-primary-500 hover:to-accent-500 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-primary-600/30"
                             >
                                 <span className="relative z-10 flex items-center gap-2 text-sm">
                                     {isSubmitted ? (
@@ -317,7 +317,7 @@ export const FeedbackSection: React.FC = () => {
 
                 {/* VISIBLE COMMUNITY COMMENTS COLUMN */}
                 <div className="lg:col-span-7 flex flex-col pt-4 lg:pt-0">
-                    <div className="mb-8 pl-4 border-l-2 border-cyan-500/30">
+                    <div className="mb-8 pl-4 border-l-2 border-primary-500/30">
                         <h3 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">Community Voices</h3>
                         <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">See what others are saying about their experience.</p>
                     </div>
@@ -333,7 +333,7 @@ export const FeedbackSection: React.FC = () => {
                                 <div key={fb.id} className="bg-white/40 dark:bg-white/[0.03] backdrop-blur-sm border border-slate-200/50 dark:border-white/5 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all hover:-translate-y-1 group">
                                     <div className="flex justify-between items-start mb-4">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-100 to-purple-100 dark:from-cyan-900/40 dark:to-purple-900/40 border border-cyan-200 dark:border-cyan-500/20 flex items-center justify-center text-cyan-600 dark:text-cyan-400 shrink-0">
+                                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-100 to-secondary-100 dark:from-primary-900/40 dark:to-secondary-900/40 border border-primary-200 dark:border-primary-500/20 flex items-center justify-center text-primary-600 dark:text-primary-400 shrink-0">
                                                 <User className="w-5 h-5" />
                                             </div>
                                             <div>

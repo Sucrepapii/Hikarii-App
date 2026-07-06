@@ -187,9 +187,9 @@ export const TaskForm: React.FC<TaskFormProps> = ({
     return (
         <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
             {/* AI Quick Fill Section */}
-            <div className="p-4 rounded-2xl border border-cyan-500/20 bg-cyan-500/5 dark:bg-cyan-500/5 mb-6 space-y-3">
-                <div className="flex items-center gap-2 text-cyan-600 dark:text-cyan-400 font-semibold text-sm">
-                    <Sparkles className="w-4 h-4 text-cyan-500" />
+            <div className="p-4 rounded-2xl border border-primary-500/20 bg-primary-500/5 dark:bg-primary-500/5 mb-6 space-y-3">
+                <div className="flex items-center gap-2 text-primary-600 dark:text-primary-400 font-semibold text-sm">
+                    <Sparkles className="w-4 h-4 text-primary-500" />
                     <span>AI Quick Fill</span>
                 </div>
                 <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
@@ -201,12 +201,12 @@ export const TaskForm: React.FC<TaskFormProps> = ({
                         placeholder="Describe your task here..."
                         value={aiInput}
                         onChange={(e) => setAiInput(e.target.value)}
-                        className="flex-1 px-4 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-white/50 dark:bg-slate-800/50 focus:outline-none focus:ring-2 focus:ring-cyan-500 text-slate-900 dark:text-slate-100"
+                        className="flex-1 px-4 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-white/50 dark:bg-slate-800/50 focus:outline-none focus:ring-2 focus:ring-primary-500 text-slate-900 dark:text-slate-100"
                     />
                     <button
                         type="button"
                         onClick={handleAiFill}
-                        className="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded-xl text-sm font-semibold transition-colors flex items-center gap-1.5 shrink-0 shadow-sm shadow-cyan-600/10"
+                        className="px-4 py-2 bg-gradient-to-r from-primary-600 to-accent-600 hover:from-primary-500 hover:to-accent-500 text-white rounded-xl text-sm font-semibold transition-colors flex items-center gap-1.5 shrink-0 shadow-sm shadow-primary-600/10"
                     >
                         <Sparkles className="w-3.5 h-3.5" />
                         Fill Form
@@ -440,12 +440,12 @@ const GoogleSyncCheckbox = ({ register }: { register: any }) => {
     if (!isConnected) return null;
 
     return (
-        <div className="flex items-center gap-3 p-3 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-900/50">
+        <div className="flex items-center gap-3 p-3 rounded-xl bg-secondary-50 dark:bg-secondary-900/20 border border-secondary-100 dark:border-secondary-900/50">
             <div className="relative flex items-center">
                 <input
                     type="checkbox"
                     id="addToCalendar"
-                    className="peer h-5 w-5 cursor-pointer appearance-none rounded-md border border-slate-300 bg-white transition-all checked:border-blue-500 checked:bg-blue-500 hover:border-blue-400 dark:border-slate-600 dark:bg-slate-700 dark:checked:border-blue-500 dark:checked:bg-blue-500"
+                    className="peer h-5 w-5 cursor-pointer appearance-none rounded-md border border-slate-300 bg-white transition-all checked:border-secondary-500 checked:bg-secondary-500 hover:border-secondary-400 dark:border-slate-600 dark:bg-slate-700 dark:checked:border-secondary-500 dark:checked:bg-secondary-500"
                     {...register('addToCalendar')}
                 />
                 <CheckCircle2 className="pointer-events-none absolute left-1/2 top-1/2 h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 text-white opacity-0 transition-opacity peer-checked:opacity-100" />
