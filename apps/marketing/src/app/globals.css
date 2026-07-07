@@ -1,29 +1,29 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary-50: var(--color-cyan-50);
-  --color-primary-100: var(--color-cyan-100);
-  --color-primary-200: var(--color-cyan-200);
-  --color-primary-300: var(--color-cyan-300);
-  --color-primary-400: var(--color-cyan-400);
-  --color-primary-500: var(--color-cyan-500);
-  --color-primary-600: var(--color-cyan-600);
-  --color-primary-700: var(--color-cyan-700);
-  --color-primary-800: var(--color-cyan-800);
-  --color-primary-900: var(--color-cyan-900);
-  --color-primary-950: var(--color-cyan-950);
+  --color-primary-50: #ecfeff;
+  --color-primary-100: #cffafe;
+  --color-primary-200: #a5f3fc;
+  --color-primary-300: #67e8f9;
+  --color-primary-400: #22d3ee;
+  --color-primary-500: #06b6d4;
+  --color-primary-600: #0891b2;
+  --color-primary-700: #0e7490;
+  --color-primary-800: #155e75;
+  --color-primary-900: #164e63;
+  --color-primary-950: #083344;
 
-  --color-accent-50: var(--color-amber-50);
-  --color-accent-100: var(--color-amber-100);
-  --color-accent-200: var(--color-amber-200);
-  --color-accent-300: var(--color-amber-300);
-  --color-accent-400: var(--color-amber-400);
-  --color-accent-500: var(--color-amber-500);
-  --color-accent-600: var(--color-amber-600);
-  --color-accent-700: var(--color-amber-700);
-  --color-accent-800: var(--color-amber-800);
-  --color-accent-900: var(--color-amber-900);
-  --color-accent-950: var(--color-amber-950);
+  --color-accent-50: #fffbeb;
+  --color-accent-100: #fef3c7;
+  --color-accent-200: #fde68a;
+  --color-accent-300: #fcd34d;
+  --color-accent-400: #fbbf24;
+  --color-accent-500: #f59e0b;
+  --color-accent-600: #d97706;
+  --color-accent-700: #b45309;
+  --color-accent-800: #92400e;
+  --color-accent-900: #78350f;
+  --color-accent-950: #451a03;
 
   --font-sans: "Inter", var(--font-geist-sans), sans-serif;
   --font-display: "Outfit", var(--font-geist-sans), sans-serif;
