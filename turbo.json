@@ -3,6 +3,10 @@
   "globalDependencies": [
     "**/.env.*local"
   ],
+  "globalEnv": [
+    "DATABASE_URL",
+    "NEXT_PUBLIC_API_URL"
+  ],
   "tasks": {
     "build": {
       "dependsOn": [
