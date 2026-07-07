@@ -1,8 +1,7 @@
-"use client";
-
 import React, { useState } from 'react';
 import { Send, CheckCircle2 } from 'lucide-react';
-import { Button } from '@hikari/ui';
+import { Button } from './Button';
+import apiClient from '../../api/client';
 import toast from 'react-hot-toast';
 
 interface LeadCaptureFormProps {
@@ -31,22 +30,11 @@ export const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
 
         setIsLoading(true);
         try {
-            const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
-            const res = await fetch(`${API_URL}/leads`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, source })
-            });
-            
-            if (!res.ok) {
-                const data = await res.json();
-                throw new Error(data.error || "Failed to join.");
-            }
-
+            await apiClient.post('/leads', { email, source });
             setIsSubmitted(true);
             toast.success("Welcome to the Hikari Method!");
         } catch (error: any) {
-            toast.error(error.message || "Failed to join. Please try again.");
+            toast.error(error.response?.data?.error || "Failed to join. Please try again.");
         } finally {
             setIsLoading(false);
         }

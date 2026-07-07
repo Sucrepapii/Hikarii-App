@@ -1,5 +1,5 @@
 {
-  "name": "web-app",
+  "name": "task-budget-app",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -10,7 +10,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@hikari/ui": "*",
     "@google/generative-ai": "^0.24.1",
     "@hookform/resolvers": "^3.3.4",
     "@prisma/client": "5.10.2",
