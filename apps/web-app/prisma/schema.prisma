@@ -1,0 +1,366 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator server_client {
+  provider = "prisma-client-js"
+  output   = "../server/node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                      String   @id @default(uuid())
+  name                    String
+  email                   String   @unique
+  password                String?
+  isVerified              Boolean  @default(false)
+  verificationToken       String?
+  verificationTokenExpires DateTime?
+  resetPasswordToken      String?
+  resetPasswordExpires    DateTime?
+  
+  tasks     Task[]
+  budgets   Budget[]
+  expenses          Expense[]
+  recurringExpenses RecurringExpense[]
+
+  projects Project[]
+
+  // Collaboration
+  projectMemberships ProjectMember[] @relation("ProjectMembers")
+  sentInvites        ProjectMember[] @relation("SentInvites")
+  projectComments    ProjectComment[] @relation("ProjectComments")
+
+  // Stripe Subscription Fields
+  stripeCustomerId       String?
+  subscriptionStatus     SubscriptionStatus @default(FREE)
+  subscriptionId         String?
+  currentPeriodEnd       DateTime?
+
+  // Google Calendar Integration
+  googleId               String?  @unique
+  googleAccessToken      String?
+  googleRefreshToken     String?
+  // Admin Tracking
+  role                   Role     @default(USER)
+  lastLoginAt            DateTime?
+  
+  // Suspension
+  isSuspended            Boolean   @default(false)
+  suspensionReason       String?
+  suspensionExpires      DateTime?
+
+  requiresPasswordChange Boolean   @default(false)
+
+  // WhatsApp & Push Notifications
+  phoneNumber             String?
+  pushToken              String?
+  waTasksEnabled         Boolean   @default(false)
+  waBudgetEnabled        Boolean   @default(false)
+  waProjectsEnabled      Boolean   @default(false)
+
+  auditLogs              AuditLog[] @relation("AdminActions")
+  notifications          Notification[] @relation("UserNotifications")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Lead {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  source    String?  // e.g., "NOTION_TEMPLATE", "ROI_CALCULATOR"
+  createdAt DateTime @default(now())
+}
+
+model AuditLog {
+  id          String   @id @default(uuid())
+  adminId     String
+  admin       User     @relation("AdminActions", fields: [adminId], references: [id])
+  action      String   // e.g., "BAN_USER", "DELETE_USER", "BATCH_DELETE"
+  targetId    String?  // The ID of the user/item acted upon
+  targetType  String?  // "USER", "PROJECT", etc.
+  details     Json?    // Any extra metadata
+  ipAddress   String?
+  createdAt   DateTime @default(now())
+
+  @@index([adminId])
+  @@index([targetId])
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum SubscriptionStatus {
+  FREE
+  PRO
+  TRIAL
+}
+
+model Project {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  status      String   @default("ACTIVE") // ACTIVE, ARCHIVED, COMPLETED
+  
+  startDate   DateTime?
+  endDate     DateTime?
+  
+  budgetLimit Float?   // Optional overall budget for the project
+  
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  tasks       Task[]
+  budgets     Budget[] // Budget allocations specific to this project
+  expenses    Expense[]
+
+  // Collaboration
+  members     ProjectMember[]
+  comments    ProjectComment[]
+  lastViewedActivityAt DateTime @default(now())
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
+}
+
+// ── COLLABORATION MODELS ─────────────────────────────────────────────────────
+
+model ProjectMember {
+  id          String             @id @default(uuid())
+  projectId   String
+  project     Project            @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  userId      String?            // null until invite is accepted by a registered user
+  user        User?              @relation("ProjectMembers", fields: [userId], references: [id], onDelete: SetNull)
+  invitedById String
+  invitedBy   User               @relation("SentInvites", fields: [invitedById], references: [id], onDelete: Cascade)
+  invitedEmail String            // Email used for the invite
+  role        CollaborationRole  @default(VIEW_ONLY)
+  status      InviteStatus       @default(PENDING)
+  token       String?            @unique // invite token for email link
+  lastViewedActivityAt DateTime @default(now())
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+
+  @@unique([projectId, invitedEmail])
+  @@index([projectId])
+  @@index([userId])
+  @@index([token])
+}
+
+model ProjectComment {
+  id        String   @id @default(uuid())
+  content   String
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation("ProjectComments", fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([projectId])
+}
+
+enum CollaborationRole {
+  VIEW_ONLY
+  CAN_ADD_EXPENSES
+  CAN_EDIT
+}
+
+enum InviteStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+}
+
+model Task {
+  id             String      @id @default(uuid())
+  title          String
+  description    String?
+  status         TaskStatus  @default(TODO)
+  priority       TaskPriority @default(MEDIUM)
+  dueDate        DateTime?
+  tags           String[]    // Prisma supports array types in Postgres
+  estimatedDuration Int?     // Estimated duration in minutes
+  
+  financials     Json? 
+
+  userId         String
+  user           User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  projectId      String?
+  project        Project?    @relation(fields: [projectId], references: [id], onDelete: SetNull)
+
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  @@index([userId, status])
+  @@index([userId, dueDate])
+
+  blocks         TaskBlock[]
+}
+
+model TaskBlock {
+  id             String    @id @default(uuid())
+  title          String    // e.g. "Research", "Drafting"
+  duration       Int       // Estimated duration in minutes
+  order          Int       // Sequence order
+  
+  taskId         String
+  task           Task      @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  // Calendar Sync
+  googleEventId  String?
+  scheduledStart DateTime?
+  scheduledEnd   DateTime?
+
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@index([taskId])
+}
+
+model Budget {
+  id        String          @id @default(uuid())
+  category  ExpenseCategory
+  limit     Float
+  spent     Float           @default(0)
+  period    BudgetPeriod    @default(MONTHLY)
+
+  userId    String
+  user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  projectId String?
+  project   Project?        @relation(fields: [projectId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+
+  @@unique([userId, category])
+}
+
+model Expense {
+  id             String          @id @default(uuid())
+  title          String
+  amount         Float
+  category       ExpenseCategory
+  date           DateTime        @default(now())
+  description    String?
+  linkedTaskId   String?         // Optional link to a task
+  isAutoCreated  Boolean         @default(false)
+
+  userId         String
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  projectId      String?
+  project        Project?        @relation(fields: [projectId], references: [id], onDelete: SetNull)
+
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  @@index([userId, date])
+  @@index([userId, category])
+}
+
+// Enums
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  COMPLETED
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum TaskType {
+  EXPENSE
+  INCOME
+  NEUTRAL
+}
+
+enum BudgetPeriod {
+  DAILY
+  WEEKLY
+  MONTHLY
+  YEARLY
+}
+
+enum ExpenseCategory {
+  FOOD
+  TRANSPORT
+  ENTERTAINMENT
+  UTILITIES
+  SHOPPING
+  HEALTH
+  TUITION
+  BOOKS
+  GROCERIES
+  OTHER
+}
+
+model RecurringExpense {
+  id              String   @id @default(uuid())
+  merchantName    String
+  amount          Float    // Average amount
+  frequency       String   // "WEEKLY", "MONTHLY", "YEARLY"
+  nextDueDate     DateTime
+  confidenceScore Float    // 0.0 to 1.0
+  isConfirmed     Boolean  @default(false) // User has manually verified
+  isActive        Boolean  @default(true)
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([userId, isActive])
+}
+
+
+
+model Feedback {
+  id        String   @id @default(uuid())
+  name      String
+  rating    Int
+  comment   String
+  topic     String?
+  country   String?
+  flag      String?
+  createdAt DateTime @default(now())
+}
+model ArticleFeedback {
+  id          String   @id @default(uuid())
+  articleSlug String
+  isHelpful   Boolean
+  createdAt   DateTime @default(now())
+
+  @@index([articleSlug])
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  title     String
+  body      String
+  type      String   // e.g., 'BUDGET_ALERT', 'TASK_ASSIGNED', 'PROJECT_INVITE'
+  data      Json?    // Optional payload (e.g. { url: '/budget' })
+  isRead    Boolean  @default(false)
+  
+  userId    String
+  user      User     @relation("UserNotifications", fields: [userId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+
+  @@index([userId, isRead])
+}

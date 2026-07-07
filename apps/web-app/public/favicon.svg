@@ -1,0 +1,8 @@
+<svg viewBox="0 0 100 100" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+  <!-- Deep purple background with rounded corners -->
+  <rect width="100" height="100" rx="25" fill="#4338ca" />
+  
+  <!-- Manually scaled & centered 'H' using absolute coordinates (NO TRANSFORMS) -->
+  <path d="M 71 25.5 Q 36 50 57 74.5" stroke="#ffffff" strokeWidth="18" strokeLinecap="round" fill="none" />
+  <path d="M 43 25.5 Q 64 50 29 74.5" stroke="#ffffff" strokeWidth="18" strokeLinecap="round" fill="none" />
+</svg>
