@@ -2,9 +2,14 @@ import { Request, Response } from "express";
 import Stripe from "stripe";
 import prisma from "../config/db";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
-  apiVersion: "2026-01-28.clover", // Use latest API version available
-});
+let stripe: Stripe;
+if (process.env.STRIPE_SECRET_KEY) {
+  stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+    apiVersion: "2026-01-28.clover", // Use latest API version available
+  });
+} else {
+  console.warn("STRIPE_SECRET_KEY is missing. Stripe features will be disabled.");
+}
 
 const PRO_PRICE_ID = process.env.STRIPE_PRO_PRICE_ID;
 
@@ -23,6 +28,11 @@ export const createCheckoutSession = async (req: any, res: Response) => {
 
     const user = await prisma.user.findUnique({ where: { id: userId } });
     if (!user) return res.status(404).json({ message: "User not found" });
+
+    if (!stripe) {
+      console.error("Stripe is not configured on this server.");
+      return res.status(500).json({ message: "Stripe is not configured" });
+    }
 
     // If user already has stripe customer ID, use it
     let customerId = user.stripeCustomerId;
@@ -121,6 +131,8 @@ export const createPortalSession = async (req: any, res: Response) => {
     if (!user || !user.stripeCustomerId)
       return res.status(400).json({ message: "No subscription found" });
 
+    if (!stripe) return res.status(500).json({ message: "Stripe not configured" });
+
     const clientUrl = process.env.CLIENT_URL || "https://www.hikarii.org";
     const session = await stripe.billingPortal.sessions.create({
       customer: user.stripeCustomerId,
@@ -143,6 +155,8 @@ export const cancelSubscription = async (req: any, res: Response) => {
     if (!user || !user.stripeCustomerId) {
       return res.status(400).json({ message: "No active subscription found" });
     }
+
+    if (!stripe) return res.status(500).json({ message: "Stripe not configured" });
 
     // List subscriptions to find the active one
     const subscriptions = await stripe.subscriptions.list({
