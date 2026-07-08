@@ -3,6 +3,7 @@ import { Bot, User, Send, Sparkles, ChevronDown, MessageSquare } from 'lucide-re
 import apiClient from '../../api/client';
 import { clsx } from 'clsx';
 import toast from 'react-hot-toast';
+import { Link } from 'react-router-dom';
 
 interface Message {
     id: string;
@@ -228,7 +229,41 @@ export const FloatingChatbot: React.FC = () => {
                                             ? "bg-primary-600 text-white rounded-tr-none"
                                             : "bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-100 dark:border-slate-700 rounded-tl-none"
                                     )}>
-                                        {msg.text}
+                                        {(() => {
+                                            const text = msg.text;
+                                            const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+                                            const parts = [];
+                                            let lastIndex = 0;
+                                            let match;
+
+                                            while ((match = linkRegex.exec(text)) !== null) {
+                                                if (match.index > lastIndex) {
+                                                    parts.push(text.substring(lastIndex, match.index));
+                                                }
+                                                // Check if it's an internal or external link
+                                                const url = match[2];
+                                                if (url.startsWith('/')) {
+                                                    parts.push(
+                                                        <Link key={match.index} to={url} className="underline font-semibold text-primary-600 dark:text-primary-400 hover:text-primary-700">
+                                                            {match[1]}
+                                                        </Link>
+                                                    );
+                                                } else {
+                                                    parts.push(
+                                                        <a key={match.index} href={url} target="_blank" rel="noopener noreferrer" className="underline font-semibold text-primary-600 dark:text-primary-400 hover:text-primary-700">
+                                                            {match[1]}
+                                                        </a>
+                                                    );
+                                                }
+                                                lastIndex = match.index + match[0].length;
+                                            }
+                                            
+                                            if (lastIndex < text.length) {
+                                                parts.push(text.substring(lastIndex));
+                                            }
+
+                                            return parts.length > 0 ? <>{parts}</> : text;
+                                        })()}
                                     </div>
                                 </div>
                             ))}
