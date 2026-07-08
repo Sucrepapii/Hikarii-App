@@ -45,6 +45,7 @@ import ForcedPasswordChange from './pages/ForcedPasswordChange';
 import { ResetPassword } from './pages/ResetPassword';
 import { AcceptInvite } from './pages/AcceptInvite';
 import { Method } from './pages/Method';
+import { FloatingChatbot } from './components/intelligence/FloatingChatbot';
 import './index.css';
 
 import { useInactivity } from './hooks/useInactivity';
@@ -344,6 +345,8 @@ function App() {
                     />
                 ) : null;
             })()}
+
+            {isAuthenticated && <FloatingChatbot />}
         </>
     );
 }
