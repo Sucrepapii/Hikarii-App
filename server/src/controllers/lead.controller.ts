@@ -9,7 +9,7 @@ export const createLead = async (
   res: Response,
 ): Promise<void> => {
   try {
-    const { email, source } = req.body;
+    const { name, email, source } = req.body;
 
     if (!email) {
       res.status(400).json({ error: "Email is required" });
@@ -24,16 +24,21 @@ export const createLead = async (
     let lead;
     if (existingLead) {
       lead = existingLead;
-      // Update source if provided
-      if (source && existingLead.source !== source) {
+      // Update source or name if provided
+      const updateData: any = {};
+      if (source && existingLead.source !== source) updateData.source = source;
+      if (name && existingLead.name !== name) updateData.name = name;
+
+      if (Object.keys(updateData).length > 0) {
         lead = await prisma.lead.update({
           where: { email },
-          data: { source },
+          data: updateData,
         });
       }
     } else {
       lead = await prisma.lead.create({
         data: {
+          name: name || null,
           email,
           source: source || "GENERAL_INTEREST",
         },

@@ -11,7 +11,7 @@ export const detectPatterns = async (
 ): Promise<void> => {
   try {
     // This triggers the analysis logic
-    const detectionResult = await patternService.detectPatterns(req.userId);
+    const detectionResult = await patternService.detectPatterns(req.userId as string);
 
     // Also fetch all current patterns to return comprehensive list
     const allPatterns = await prisma.recurringExpense.findMany({

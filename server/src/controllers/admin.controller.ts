@@ -560,7 +560,7 @@ export const deleteFeedback = async (req: Request, res: Response) => {
       return res.status(403).json({ message: "Access Denied" });
     }
 
-    const { id } = req.params;
+    const id = req.params.id as string;
 
     // Check standard feedback first
     const feedback = await prisma.feedback.findUnique({ where: { id } });

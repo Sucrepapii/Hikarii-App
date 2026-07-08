@@ -11,7 +11,7 @@ export const getForecast = async (
   res: Response,
 ): Promise<void> => {
   try {
-    const forecasts = await predictiveService.generateForecast(req.userId);
+    const forecasts = await predictiveService.generateForecast(req.userId as string);
     res.json(forecasts);
   } catch (error: any) {
     res.status(500).json({ error: error.message });

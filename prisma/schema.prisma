@@ -72,8 +72,9 @@ model User {
 
 model Lead {
   id        String   @id @default(uuid())
+  name      String?
   email     String   @unique
-  source    String?  // e.g., "NOTION_TEMPLATE", "ROI_CALCULATOR"
+  source    String?  // e.g., "NOTION_TEMPLATE", "ROI_CALCULATOR", "CHATBOT_LEAD"
   createdAt DateTime @default(now())
 }
 

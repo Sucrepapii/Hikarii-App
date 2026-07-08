@@ -17,7 +17,7 @@ export const connectGoogle = async (
       return;
     }
 
-    const user = await exchangeCodeForToken(req.userId, code);
+    const user = await exchangeCodeForToken(req.userId as string, code as string);
 
     res.json({
       success: true,
@@ -46,7 +46,7 @@ export const syncTaskToCalendar = async (
       return;
     }
 
-    const event = await createCalendarEvent(req.userId, task);
+    const event = await createCalendarEvent(req.userId as string, task);
 
     if (!event) {
       res

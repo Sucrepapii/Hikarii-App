@@ -91,7 +91,7 @@ export const createTask = async (
     // Handle Calendar Sync
     if (addToCalendar && task.dueDate) {
       try {
-        await createCalendarEvent(req.userId, task);
+        await createCalendarEvent(req.userId as string, task);
       } catch (err) {
         console.error("Failed to sync to calendar during creation", err);
         // Don't fail the task creation, just log error

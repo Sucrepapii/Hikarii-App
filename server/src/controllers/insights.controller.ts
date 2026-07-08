@@ -235,7 +235,7 @@ export const getInsights = async (
     // 8. Predictive Forecasting Warnings
     const predictiveService = new PredictiveService();
     try {
-      const forecasts = await predictiveService.generateForecast(req.userId);
+      const forecasts = await predictiveService.generateForecast(req.userId as string);
       forecasts.forEach((forecast) => {
         if (forecast.status === "CRITICAL" || forecast.status === "WARNING") {
           insights.push({
