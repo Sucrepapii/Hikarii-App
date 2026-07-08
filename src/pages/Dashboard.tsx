@@ -21,6 +21,7 @@ import { useAuthStore } from '../stores/authStore';
 import { clsx } from 'clsx';
 import { useUIStore } from '../stores/uiStore';
 import { DashboardGreeting } from '../components/dashboard/DashboardGreeting';
+import { OnboardingChecklist } from '../components/dashboard/OnboardingChecklist';
 
 const NumberCounter: React.FC<{ value: number; prefix?: string; duration?: number }> = ({ value, prefix = '', duration = 1000 }) => {
     const [count, setCount] = useState(0);
@@ -52,7 +53,7 @@ const NumberCounter: React.FC<{ value: number; prefix?: string; duration?: numbe
 
 export const Dashboard: React.FC = () => {
     const { tasks, fetchTasks, toggleTaskStatus, updateTask, deleteTask, isLoading: tasksLoading, error: tasksError } = useTaskStore();
-    const { expenses, fetchExpenses, currency, getConvertedAmount, isLoading: budgetLoading, error: budgetError } = useBudgetStore();
+    const { expenses, budgets, fetchExpenses, fetchBudgets, currency, getConvertedAmount, isLoading: budgetLoading, error: budgetError } = useBudgetStore();
     const { user } = useAuthStore();
 
     // Edit State
@@ -74,7 +75,8 @@ export const Dashboard: React.FC = () => {
     useEffect(() => {
         fetchTasks();
         fetchExpenses();
-    }, [fetchTasks, fetchExpenses]);
+        fetchBudgets();
+    }, [fetchTasks, fetchExpenses, fetchBudgets]);
 
     // Calculate stats
     const totalTasks = tasks.length;
@@ -182,6 +184,14 @@ export const Dashboard: React.FC = () => {
             <DashboardGreeting 
                 userName={user?.name} 
             />
+
+            {!isFocusMode && (
+                <OnboardingChecklist 
+                    hasTasks={tasks.length > 0} 
+                    hasBudgets={budgets.length > 0} 
+                    hasExpenses={expenses.length > 0} 
+                />
+            )}
 
             <div className={clsx(
                 "transition-all duration-700",
