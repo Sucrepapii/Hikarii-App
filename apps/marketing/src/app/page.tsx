@@ -124,7 +124,7 @@ const STATS = [
     { value: "4.9★", label: "Average Rating" },
 ];
 
-export const LandingPage: React.FC = () => {
+export default function LandingPage() {
     const router = useRouter();
     
     const isAuthenticated = false;
@@ -165,7 +165,7 @@ export const LandingPage: React.FC = () => {
     useEffect(() => {
         const fetchFeedback = async () => {
             try {
-                const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+                const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
                 const res = await fetch(`${API_URL}/feedback`);
                 if (res.ok) {
                     const data = await res.json();
@@ -938,13 +938,13 @@ export const LandingPage: React.FC = () => {
                     </p>
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                         <Link
-                            to="/signup"
+                            href="/signup"
                             className="inline-flex items-center gap-3 px-10 py-5 rounded-full bg-gradient-to-r from-primary-600 to-accent-600 text-white font-bold hover:from-primary-500 hover:to-accent-500 transition-all duration-300 hover:scale-105 shadow-xl shadow-primary-600/20"
                         >
                             Get Started Free <ArrowRight className="w-5 h-5" />
                         </Link>
                         <Link
-                            to="/faq"
+                            href="/faq"
                             className="inline-flex items-center gap-3 px-8 py-5 rounded-full bg-white/5 border border-white/10 text-white font-semibold hover:bg-white/10 transition-all"
                         >
                             Have Questions? <ChevronDown className="w-5 h-5 -rotate-90 shrink-0 text-primary-400" />
