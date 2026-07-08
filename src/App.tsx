@@ -346,7 +346,7 @@ function App() {
                 ) : null;
             })()}
 
-            {isAuthenticated && <FloatingChatbot />}
+            <FloatingChatbot />
         </>
     );
 }

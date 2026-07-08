@@ -12,8 +12,8 @@ interface Message {
 }
 
 const QUICK_PROMPTS = [
-    "Can I afford dinner tonight?",
-    "Summarize my finances."
+    "What is the Hikari Method?",
+    "How does the budget feature work?"
 ];
 
 export const FloatingChatbot: React.FC = () => {
@@ -22,7 +22,7 @@ export const FloatingChatbot: React.FC = () => {
         {
             id: 'welcome',
             sender: 'bot',
-            text: "Hi there! I'm Hikari, your AI assistant. Ask me anything about your budgets or tasks!",
+            text: "Hi! I'm Hikari Support. I don't have access to your private data, but I can answer any general questions about the app, features, or the Hikari Method!",
             timestamp: new Date()
         }
     ]);
@@ -55,7 +55,7 @@ export const FloatingChatbot: React.FC = () => {
         setIsLoading(true);
 
         try {
-            const response = await apiClient.post('/predictive/coach', { query: textToSend });
+            const response = await apiClient.post('/predictive/support-bot', { query: textToSend });
             const botMsg: Message = {
                 id: `bot-${Date.now()}`,
                 sender: 'bot',

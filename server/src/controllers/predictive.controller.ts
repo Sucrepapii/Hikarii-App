@@ -1,4 +1,4 @@
-import { Response } from "express";
+import { Request, Response } from "express";
 import { AuthRequest } from "../middleware/auth.middleware";
 import { PredictiveService } from "../services/predictive.service";
 import prisma from "../config/db";
@@ -66,6 +66,52 @@ Instructions:
 2. Give practical, short answers. If they ask "Can I afford dinner?", give a quick "Yes/No" and a 1-2 sentence reason based on their FOOD or ENTERTAINMENT budget.
 3. Keep formatting simple. Use bullet points only if necessary, and avoid long, multi-paragraph essays.
 4. Do not invent data. If they ask about something not in their budgets/tasks, tell them it's not currently tracked.
+
+User Query: "${query}"
+    `;
+
+    const result = await model.generateContent(systemPrompt);
+    const reply = result.response.text();
+
+    res.json({ reply });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const getSupportBotResponse = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  try {
+    const { query } = req.body;
+    if (!query) {
+      res.status(400).json({ error: "Query is required" });
+      return;
+    }
+
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      res.status(500).json({ error: "AI Features are currently disabled (missing API key)" });
+      return;
+    }
+
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
+
+    const systemPrompt = `
+You are Hikari Support, the friendly, concise, and helpful public AI assistant for the Hikari Task & Budget application.
+
+CRITICAL RULE: You do NOT have access to the user's personal budgets, tasks, or financial data. 
+If the user asks personal financial questions (e.g., "Can I afford dinner?", "What is my budget?"), politely inform them that you are a public support assistant and cannot view their private data, and direct them to log in and use the AI Coach inside the app for personalized insights.
+
+CRITICAL RULE 2: You MUST ONLY answer questions related to the Hikari application (features, pricing, the Hikari Method, how to use the app) or general productivity/financial advice. If they ask about unrelated topics (e.g., coding, trivia, history), politely decline.
+
+Instructions:
+1. Be highly concise, welcoming, and conversational. 
+2. Give practical, short answers. 
+3. Keep formatting simple. Use bullet points only if necessary.
+4. Do not invent features that don't exist. Hikari is a premium productivity and financial management app with features like AI Smart Split, Budgets, and Tasks.
 
 User Query: "${query}"
     `;
