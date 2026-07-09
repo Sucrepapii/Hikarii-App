@@ -187,17 +187,23 @@ const PORT_NUM = Number(PORT) || 5005;
 app.listen(PORT_NUM, () => {
   // Check if we need to start cron jobs
   if (process.env.NODE_ENV === "production" && !process.env.VERCEL) {
-    import("./jobs/reminder.job.js")
-      .then(({ startReminderJob }) => {
-        startReminderJob();
+    import("./jobs/queue.js")
+      .then(({ setupRepeatableJobs }) => {
+        setupRepeatableJobs();
       })
-      .catch((err) => console.error("Failed to load reminder job:", err));
+      .catch((err) => console.error("Failed to setup queue:", err));
+
+    import("./jobs/reminder.job.js")
+      .then(({ startReminderWorker }) => {
+        startReminderWorker();
+      })
+      .catch((err) => console.error("Failed to load reminder worker:", err));
 
     import("./jobs/monthly.job.js")
-      .then(({ startMonthlyGreetingJob }) => {
-        startMonthlyGreetingJob();
+      .then(({ startMonthlyGreetingWorker }) => {
+        startMonthlyGreetingWorker();
       })
-      .catch((err) => console.error("Failed to load monthly job:", err));
+      .catch((err) => console.error("Failed to load monthly worker:", err));
   }
   console.log(`\n🚀 Server is running on port ${PORT_NUM}`);
 });

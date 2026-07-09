@@ -1,18 +1,23 @@
-import cron from "node-cron";
+import { Worker, Job } from 'bullmq';
+import redisClient from '../config/redis';
 import prisma from "../config/db";
 import { notifyUser } from "../services/notification.service";
 
-export const startMonthlyGreetingJob = () => {
+export const startMonthlyGreetingWorker = () => {
   if (process.env.VERCEL) {
     console.log(
-      "Cron jobs are not supported on Vercel Serverless. Skipping...",
+      "Workers are not supported on Vercel Serverless. Skipping...",
     );
     return;
   }
   
-  // Run at 9:00 AM on the 1st of every month
-  cron.schedule("0 9 1 * *", async () => {
-    console.log("Running monthly greeting job...");
+  if (!redisClient) {
+    console.warn("Redis is not configured. Monthly Worker skipped.");
+    return;
+  }
+
+  const worker = new Worker('monthly-queue', async (job: Job) => {
+    console.log("Running monthly greeting job via BullMQ...");
     try {
       const users = await prisma.user.findMany({
         where: { pushToken: { not: null } },
@@ -33,6 +38,11 @@ export const startMonthlyGreetingJob = () => {
       }
     } catch (error) {
       console.error("Error in monthly greeting job:", error);
+      throw error;
     }
+  }, { connection: redisClient });
+
+  worker.on('failed', (job, err) => {
+    console.error(`Monthly Job ${job?.id} failed:`, err);
   });
 };

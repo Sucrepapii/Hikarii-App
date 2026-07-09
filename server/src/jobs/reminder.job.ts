@@ -1,4 +1,5 @@
-import cron from "node-cron";
+import { Worker, Job } from 'bullmq';
+import redisClient from '../config/redis';
 import prisma from "../config/db";
 // import { TaskStatus } from "../models/types";
 import { sendEmail } from "../services/email.service";
@@ -6,16 +7,21 @@ import { sendWhatsAppMessage } from "../services/whatsapp.service";
 import { getOverdueReminderTemplate } from "../utils/emailTemplates";
 import { notifyUser } from "../services/notification.service";
 
-export const startReminderJob = () => {
+export const startReminderWorker = () => {
   if (process.env.VERCEL) {
     console.log(
-      "Cron jobs are not supported on Vercel Serverless. Skipping...",
+      "Workers are not supported on Vercel Serverless. Skipping...",
     );
     return;
   }
-  // Run every day at 10:00 AM '0 10 * * *'
-  cron.schedule("0 10 * * *", async () => {
-    console.log("Running daily reminder and cleanup job...");
+  
+  if (!redisClient) {
+    console.warn("Redis is not configured. Reminder Worker skipped.");
+    return;
+  }
+
+  const worker = new Worker('reminder-queue', async (job: Job) => {
+    console.log("Running daily reminder and cleanup job via BullMQ...");
     try {
       // 1. Cleanup Old Chats (Keep 30 days for completed projects)
       const thirtyDaysAgo = new Date();
@@ -152,6 +158,11 @@ export const startReminderJob = () => {
         }
     } catch (error) {
       console.error("Error in reminder job:", error);
+      throw error; // Let BullMQ handle retries
     }
+  }, { connection: redisClient });
+
+  worker.on('failed', (job, err) => {
+    console.error(`Reminder Job ${job?.id} failed:`, err);
   });
 };

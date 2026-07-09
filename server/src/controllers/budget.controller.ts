@@ -2,6 +2,7 @@ import { Response } from "express";
 import prisma from "../config/db";
 import { AuthRequest } from "../middleware/auth.middleware";
 import { sendWhatsAppMessage } from "../services/whatsapp.service";
+import redisClient from "../config/redis";
 
 async function canAccessProject(projectId: string, userId: string, requireEdit = false) {
   const project = await prisma.project.findUnique({
@@ -54,7 +55,16 @@ export const getBudgets = async (
     const sharedProjectIds = await (prisma as any).projectMember.findMany({
       where: { userId, status: "ACCEPTED" },
       select: { projectId: true },
-    }).then((memberships: any[]) => memberships.map(m => m.projectId));
+    }).then((memberships: any[]) => memberships.map((m: any) => m.projectId));
+
+    const cacheKey = `user:${userId}:budgets`;
+    if (redisClient) {
+      const cachedBudgets = await redisClient.get(cacheKey);
+      if (cachedBudgets) {
+        res.json(JSON.parse(cachedBudgets));
+        return;
+      }
+    }
 
     const budgets = await prisma.budget.findMany({
       where: {
@@ -64,6 +74,11 @@ export const getBudgets = async (
         ]
       },
     });
+
+    if (redisClient) {
+      await redisClient.set(cacheKey, JSON.stringify(budgets), 'EX', 300);
+    }
+
     res.json(budgets);
   } catch (error: any) {
     res.status(500).json({ error: error.message });
@@ -128,6 +143,10 @@ export const createBudget = async (
       });
     }
 
+    if (redisClient) {
+      await redisClient.del(`user:${req.userId}:budgets`);
+    }
+
     res.status(201).json(budget);
   } catch (error: any) {
     res.status(500).json({ error: error.message });
@@ -151,7 +170,9 @@ export const deleteBudget = async (
 
     await prisma.budget.delete({ where: { id: req.params.id as string } });
 
-    // Handled above
+    if (redisClient) {
+      await redisClient.del(`user:${req.userId}:budgets`);
+    }
 
     res.json({ message: "Budget deleted successfully" });
   } catch (error: any) {
@@ -170,7 +191,16 @@ export const getExpenses = async (
     const sharedProjectIds = await (prisma as any).projectMember.findMany({
       where: { userId, status: "ACCEPTED" },
       select: { projectId: true },
-    }).then((memberships: any[]) => memberships.map(m => m.projectId));
+    }).then((memberships: any[]) => memberships.map((m: any) => m.projectId));
+
+    const cacheKey = `user:${userId}:expenses`;
+    if (redisClient) {
+      const cachedExpenses = await redisClient.get(cacheKey);
+      if (cachedExpenses) {
+        res.json(JSON.parse(cachedExpenses));
+        return;
+      }
+    }
 
     const expenses = await prisma.expense.findMany({
       where: {
@@ -181,6 +211,11 @@ export const getExpenses = async (
       },
       orderBy: { date: "desc" },
     });
+
+    if (redisClient) {
+      await redisClient.set(cacheKey, JSON.stringify(expenses), 'EX', 300);
+    }
+
     res.json(expenses);
   } catch (error: any) {
     res.status(500).json({ error: error.message });
@@ -247,6 +282,11 @@ export const createExpense = async (
           );
         }
       }
+    }
+
+    if (redisClient) {
+      await redisClient.del(`user:${req.userId}:expenses`);
+      await redisClient.del(`user:${req.userId}:budgets`);
     }
 
     res.status(201).json(expense);
@@ -329,6 +369,11 @@ export const updateExpense = async (
       }
     }
 
+    if (redisClient) {
+      await redisClient.del(`user:${req.userId}:expenses`);
+      await redisClient.del(`user:${req.userId}:budgets`);
+    }
+
     res.json(updatedExpense);
   } catch (error: any) {
     res.status(500).json({ error: error.message });
@@ -366,6 +411,11 @@ export const deleteExpense = async (
         where: { id: budget.id },
         data: { spent: { decrement: deletedExpense.amount } },
       });
+    }
+
+    if (redisClient) {
+      await redisClient.del(`user:${req.userId}:expenses`);
+      await redisClient.del(`user:${req.userId}:budgets`);
     }
 
     res.json({ message: "Expense deleted successfully" });

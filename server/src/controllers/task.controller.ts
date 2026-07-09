@@ -3,8 +3,8 @@ import prisma from "../config/db";
 import { TaskStatus } from "../models/types";
 import { AuthRequest } from "../middleware/auth.middleware";
 import { createCalendarEvent } from "../services/google.calendar.service";
-
 import { taskSplitterService } from "../services/task.splitter.service";
+import redisClient from "../config/redis";
 
 async function canAccessTask(taskId: string, userId: string, requireEdit = false) {
   const task = await prisma.task.findUnique({
@@ -40,7 +40,16 @@ export const getTasks = async (
     const sharedProjectIds = await (prisma as any).projectMember.findMany({
       where: { userId, status: "ACCEPTED" },
       select: { projectId: true },
-    }).then((memberships: any[]) => memberships.map(m => m.projectId));
+    }).then((memberships: any[]) => memberships.map((m: any) => m.projectId));
+
+    const cacheKey = `user:${userId}:tasks`;
+    if (redisClient) {
+      const cachedTasks = await redisClient.get(cacheKey);
+      if (cachedTasks) {
+        res.json(JSON.parse(cachedTasks));
+        return;
+      }
+    }
 
     const tasks = await prisma.task.findMany({
       where: {
@@ -51,6 +60,11 @@ export const getTasks = async (
       },
       orderBy: { createdAt: "desc" },
     });
+
+    if (redisClient) {
+      await redisClient.set(cacheKey, JSON.stringify(tasks), 'EX', 300);
+    }
+
     res.json(tasks);
   } catch (error: any) {
     res.status(500).json({ error: error.message });
@@ -98,6 +112,10 @@ export const createTask = async (
       }
     }
 
+    if (redisClient) {
+      await redisClient.del(`user:${userId}:tasks`);
+    }
+
     res.status(201).json(task);
   } catch (error: any) {
     res.status(500).json({ error: error.message });
@@ -143,6 +161,10 @@ export const updateTask = async (
       },
     });
 
+    if (redisClient) {
+      await redisClient.del(`user:${req.userId}:tasks`);
+    }
+
     res.json(task);
   } catch (error: any) {
     res.status(500).json({ error: error.message });
@@ -164,6 +186,10 @@ export const deleteTask = async (
     await prisma.task.delete({
       where: { id: req.params.id as string },
     });
+
+    if (redisClient) {
+      await redisClient.del(`user:${req.userId}:tasks`);
+    }
 
     res.json({ message: "Task deleted successfully" });
   } catch (error: any) {
@@ -204,6 +230,10 @@ export const toggleTaskStatus = async (
           { url: "/tasks" }
         );
       });
+    }
+
+    if (redisClient) {
+      await redisClient.del(`user:${req.userId}:tasks`);
     }
 
     res.json(updatedTask);
@@ -266,6 +296,10 @@ export const analyzeTaskSplit = async (
       ),
     );
 
+    if (redisClient) {
+      await redisClient.del(`user:${req.userId}:tasks`);
+    }
+
     res.json({
       blocks: createdBlocks,
       message: "Blocks generated successfully",
@@ -324,6 +358,10 @@ export const scheduleBlocks = async (
           }),
         ),
       );
+    }
+
+    if (redisClient) {
+      await redisClient.del(`user:${req.userId}:tasks`);
     }
 
     res.json({ message: "Blocks scheduled", results });
