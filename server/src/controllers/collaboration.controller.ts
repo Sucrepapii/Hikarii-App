@@ -90,7 +90,7 @@ export const inviteMember = async (req: AuthRequest, res: Response) => {
     });
 
     // Send email invite
-    const clientUrl = process.env.CLIENT_URL || "https://www.hikarii.org";
+    const clientUrl = process.env.CLIENT_URL || "https://www.Hikariii.org";
     const inviteLink = `${clientUrl}/invites/${token}`;
 
     try {
@@ -98,7 +98,7 @@ export const inviteMember = async (req: AuthRequest, res: Response) => {
         email,
         `Invitation to collaborate on "${project.title}"`,
         getInviteTemplate(currentUser!.name, project.title, inviteLink),
-        { fromName: "Hikari Collaboration" }
+        { fromName: "Hikarii Collaboration" }
       );
     } catch (emailErr) {
       console.error("Failed to send invite email:", emailErr);

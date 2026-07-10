@@ -19,7 +19,7 @@ export const submitContactForm = async (
 
     // 1. Send Notification to Admin (You)
     // Ideally, this email should be in .env, checking env or defaulting
-    const adminEmail = process.env.ADMIN_EMAIL || "support@hikarii.org"; // Fallback or use a specific env var
+    const adminEmail = process.env.ADMIN_EMAIL || "support@Hikariii.org"; // Fallback or use a specific env var
 
     // Format the admin email
     const adminHtml = getContactFormTemplate(
@@ -33,7 +33,7 @@ export const submitContactForm = async (
     // We'll send to the configured sender or a specific admin inbox.
     // For now, let's assume we send TO the address defined as admin,
     // using the functionality of sendEmail which sends FROM the system address.
-    // NOTE: If you haven't verified support@hikarii.org in Resend yet,
+    // NOTE: If you haven't verified support@Hikariii.org in Resend yet,
     // you might need to send TO your personal email for testing if in sandbox mode.
     // However, the user asked to connect it, implying they might have a domain.
     // We'll use a safe fallback if ADMIN_EMAIL isn't set, likely matching the sender for now to avoid errors if verify needed.
@@ -46,7 +46,7 @@ export const submitContactForm = async (
     console.log(`Sending auto-reply to user: ${email}`);
     await sendEmail(
       email,
-      "We received your message - Hikari Support",
+      "We received your message - Hikarii Support",
       userHtml,
     );
 

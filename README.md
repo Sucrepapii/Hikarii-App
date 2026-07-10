@@ -1,14 +1,14 @@
-# Hikari (Light & Clarity)
+# Hikarii (Light & Clarity)
 
-**Hikari** is a premium, productivity-focused web application designed to bring light and clarity to your tasks and finances. It combines a robust task tracker with an intuitive budget manager, powered by intelligent insights to help you stay on top of your game.
+**Hikarii** is a premium, productivity-focused web application designed to bring light and clarity to your tasks and finances. It combines a robust task tracker with an intuitive budget manager, powered by intelligent insights to help you stay on top of your game.
 
-![Hikari Dashboard Preview](public/hero_dashboard_v2.png)
+![Hikarii Dashboard Preview](public/hero_dashboard_v2.png)
 
 ---
 
-## 💡 Why Hikari Stands Out
+## 💡 Why Hikarii Stands Out
 
-Hikari isn't just another budget tracker. It is built for **Project-Centric Users** who need clarity on specific goals—whether it's a home renovation, a wedding, or a startup launch.
+Hikarii isn't just another budget tracker. It is built for **Project-Centric Users** who need clarity on specific goals—whether it's a home renovation, a wedding, or a startup launch.
 
 ### 🎯 1. Project-Centric Focus
 
@@ -20,7 +20,7 @@ A "Light & Clarity" theme that goes beyond aesthetics. Accessible color coding, 
 
 ### 🤖 3. Intelligence & Actionable Insights
 
-We don't just say "Spend less". Hikari gives you proactive, AI-driven guidance.
+We don't just say "Spend less". Hikarii gives you proactive, AI-driven guidance.
 
 |                     **Financial Intelligence**                     |                      **Smart Task Management**                       |
 | :----------------------------------------------------------------: | :------------------------------------------------------------------: |
@@ -58,7 +58,7 @@ We don't just say "Spend less". Hikari gives you proactive, AI-driven guidance.
 ### Frontend
 
 - **Framework**: React 18 (Vite) / TypeScript
-- **Styling**: Tailwind CSS (Custom "Hikari" Design System)
+- **Styling**: Tailwind CSS (Custom "Hikarii" Design System)
 - **State**: Zustand
 - **Icons**: Lucide React / Recharts
 
@@ -85,8 +85,8 @@ We don't just say "Spend less". Hikari gives you proactive, AI-driven guidance.
 1. **Clone & Install**:
 
    ```bash
-   git clone https://github.com/yourusername/hikari.git
-   cd hikari
+   git clone https://github.com/yourusername/Hikarii.git
+   cd Hikarii
    npm install && cd server && npm install && cd ..
    ```
 
@@ -95,7 +95,7 @@ We don't just say "Spend less". Hikari gives you proactive, AI-driven guidance.
 
    ```env
    PORT=5000
-   DATABASE_URL="mongodb://localhost:27017/hikari"
+   DATABASE_URL="mongodb://localhost:27017/Hikarii"
    JWT_SECRET="your_secret"
    RESEND_API_KEY="re_..."
    STRIPE_SECRET_KEY="sk_..."

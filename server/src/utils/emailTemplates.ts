@@ -1,5 +1,5 @@
 /**
- * Base email layout for Hikari system emails with vibrant styling.
+ * Base email layout for Hikarii system emails with vibrant styling.
  */
 export const getBaseTemplate = (
   title: string,
@@ -58,8 +58,8 @@ export const getBaseTemplate = (
           <!-- Colorful Header -->
           <div class="header" style="text-align: center;">
             <div style="display: inline-flex; align-items: center; justify-content: center; gap: 12px;">
-              <img src="${process.env.CLIENT_URL || "https://www.hikarii.org"}/logo.png" width="45" height="45" alt="Hikari Logo" style="display: block; border: 0; outline: none; text-decoration: none;" />
-              <div class="header-logo">HIKARI</div>
+              <img src="${process.env.CLIENT_URL || "https://www.Hikariii.org"}/logo.png" width="45" height="45" alt="Hikarii Logo" style="display: block; border: 0; outline: none; text-decoration: none;" />
+              <div class="header-logo">Hikarii</div>
             </div>
             <div class="header-subtitle">Light & Clarity</div>
           </div>
@@ -73,13 +73,13 @@ export const getBaseTemplate = (
             <div class="divider"></div>
             <p style="margin: 0; font-size: 14px; color: #64748b;">
               Shine bright,<br>
-              <strong>The Hikari Team</strong>
+              <strong>The Hikarii Team</strong>
             </p>
           </div>
           
           <!-- Footer -->
           <div class="footer">
-            <p style="margin-bottom: 8px;">&copy; ${new Date().getFullYear()} Hikari App. All rights reserved.</p>
+            <p style="margin-bottom: 8px;">&copy; ${new Date().getFullYear()} Hikarii App. All rights reserved.</p>
             <p style="margin: 0;">${footerText || defaultFooter}</p>
           </div>
         </div>
@@ -95,7 +95,7 @@ export const getBaseTemplate = (
 export const getVerificationTemplate = (name: string, otp: string) => {
   const content = `
     <p>Hello <strong>${name}</strong>,</p>
-    <p>Welcome to <strong>Hikari</strong>! You are stepping into a world of clarity and productivity. To activate your account, please verify your email address.</p>
+    <p>Welcome to <strong>Hikarii</strong>! You are stepping into a world of clarity and productivity. To activate your account, please verify your email address.</p>
     
     <div class="otp-container">
       <div class="otp-label">Verification Code</div>
@@ -116,10 +116,10 @@ export const getPasswordResetTemplate = (
   otp: string,
   email: string,
 ) => {
-  const resetLink = `${process.env.CLIENT_URL || "https://www.hikarii.org"}/forgot-password?email=${encodeURIComponent(email)}&code=${otp}`;
+  const resetLink = `${process.env.CLIENT_URL || "https://www.Hikariii.org"}/forgot-password?email=${encodeURIComponent(email)}&code=${otp}`;
   const content = `
     <p>Hello <strong>${name}</strong>,</p>
-    <p>We received a request to reset the password for your Hikari account. No worries, we're here to help you get back on track.</p>
+    <p>We received a request to reset the password for your Hikarii account. No worries, we're here to help you get back on track.</p>
     
     <div class="otp-container" style="background-color: #fff1f2; border-color: #fda4af;">
       <div class="otp-label" style="color: #e11d48;">Password Reset Code</div>
@@ -153,17 +153,17 @@ export const getOverdueReminderTemplate = (name: string, tasksHtml: string) => {
       </ul>
     </div>
     
-    <p>Keeping your workspace clean helps the Hikari intelligence engine give you better insights!</p>
+    <p>Keeping your workspace clean helps the Hikarii intelligence engine give you better insights!</p>
   `;
 
-  const clientUrl = process.env.CLIENT_URL || "https://www.hikarii.org/";
+  const clientUrl = process.env.CLIENT_URL || "https://www.Hikariii.org/";
 
   return getBaseTemplate(
     "Action Required: Overdue Tasks",
     content,
     "Go to Workspace",
     clientUrl,
-    "You received this email because you have pending tasks in your Hikari workspace.",
+    "You received this email because you have pending tasks in your Hikarii workspace.",
   );
 };
 
@@ -178,7 +178,7 @@ export const getContactFormTemplate = (
   message: string,
 ) => {
   const content = `
-    <p>You received a new message from the <strong>Hikari Contact Form</strong>.</p>
+    <p>You received a new message from the <strong>Hikarii Contact Form</strong>.</p>
     
     <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 24px; border-radius: 16px; margin: 24px 0;">
       <p style="margin: 0 0 12px 0;"><strong>Name:</strong> ${firstName} ${lastName}</p>
@@ -202,7 +202,7 @@ export const getContactFormTemplate = (
     content,
     undefined,
     undefined,
-    "This message was sent via the Hikari website contact form.",
+    "This message was sent via the Hikarii website contact form.",
   );
 };
 
@@ -212,8 +212,8 @@ export const getContactFormTemplate = (
 export const getContactAutoReplyTemplate = (firstName: string) => {
   const content = `
     <p>Hello <strong>${firstName}</strong>,</p>
-    <p>Thanks for reaching out to Hikari! We've received your message and our team is reviewing it.</p>
-    <p>We typically reply within 24-48 hours. In the meantime, you might find answers in our <a href="https://www.hikarii.org/help" style="color: #6366f1;">Help Center</a>.</p>
+    <p>Thanks for reaching out to Hikarii! We've received your message and our team is reviewing it.</p>
+    <p>We typically reply within 24-48 hours. In the meantime, you might find answers in our <a href="https://www.Hikariii.org/help" style="color: #6366f1;">Help Center</a>.</p>
     
     <p>Talk soon,</p>
   `;
@@ -222,8 +222,8 @@ export const getContactAutoReplyTemplate = (firstName: string) => {
     "We received your message",
     content,
     "Visit Help Center",
-    "https://www.hikarii.org/help",
-    "You received this because you contacted Hikari Support.",
+    "https://www.Hikariii.org/help",
+    "You received this because you contacted Hikarii Support.",
   );
 };
 
@@ -237,7 +237,7 @@ export const getSuspensionTemplate = (
 ) => {
   const content = `
     <p>Hello <strong>${name}</strong>,</p>
-    <p>Your Hikari account has been <strong style="color: #e11d48;">suspended</strong> due to a violation of our terms or suspicious activity.</p>
+    <p>Your Hikarii account has been <strong style="color: #e11d48;">suspended</strong> due to a violation of our terms or suspicious activity.</p>
     
     <div style="background-color: #fff1f2; border: 1px solid #fecaca; padding: 24px; border-radius: 16px; margin: 24px 0;">
       <p style="margin: 0 0 12px 0;"><strong>Reason:</strong> ${reason || "Terms of Service Violation"}</p>
@@ -251,7 +251,7 @@ export const getSuspensionTemplate = (
     "Account Suspended",
     content,
     "Contact Support",
-    "mailto:support@hikarii.org",
+    "mailto:support@Hikariii.org",
     "This is a mandatory security notification regarding your account status.",
   );
 };
@@ -262,7 +262,7 @@ export const getSuspensionTemplate = (
 export const getReactivationTemplate = (name: string) => {
   const content = `
     <p>Hello <strong>${name}</strong>,</p>
-    <p>Great news! Your Hikari account has been <strong style="color: #059669;">reactivated</strong>. You now have full access to all your features and data.</p>
+    <p>Great news! Your Hikarii account has been <strong style="color: #059669;">reactivated</strong>. You now have full access to all your features and data.</p>
     
     <p>We're glad to have you back. Shine bright!</p>
   `;
@@ -271,8 +271,8 @@ export const getReactivationTemplate = (name: string) => {
     "Account Reactivated",
     content,
     "Go to Dashboard",
-    process.env.CLIENT_URL || "https://www.hikarii.org/",
-    "Welcome back to Hikari!",
+    process.env.CLIENT_URL || "https://www.Hikariii.org/",
+    "Welcome back to Hikarii!",
   );
 };
 /**
@@ -283,11 +283,11 @@ export const getAdminOnboardingTemplate = (
   email: string,
   temporaryPassword: string,
 ) => {
-  const loginUrl = process.env.CLIENT_URL || "https://www.hikarii.org/";
+  const loginUrl = process.env.CLIENT_URL || "https://www.Hikariii.org/";
 
   const content = `
     <p>Hello <strong>${name}</strong>,</p>
-    <p>You have been added as an <strong>Administrator</strong> for the Hikari Platform. This role grants you access to manage users, view system analytics, and maintain platform health.</p>
+    <p>You have been added as an <strong>Administrator</strong> for the Hikarii Platform. This role grants you access to manage users, view system analytics, and maintain platform health.</p>
     
     <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 24px; border-radius: 16px; margin: 24px 0;">
       <p style="margin: 0 0 12px 0;"><strong>Email:</strong> ${email}</p>
@@ -309,15 +309,15 @@ export const getAdminOnboardingTemplate = (
 };
 
 /**
- * Template for Lead Magnet (Hikari Method Notion Template).
+ * Template for Lead Magnet (Hikarii Method Notion Template).
  */
 export const getLeadMagnetTemplate = (email: string) => {
   const content = `
     <p>Success! You're one step closer to radical clarity.</p>
-    <p>As promised, here is your access to the <strong>Hikari Method Guide</strong>. This is the exact system we use to bridge the gap between tasks and finances.</p>
+    <p>As promised, here is your access to the <strong>Hikarii Method Guide</strong>. This is the exact system we use to bridge the gap between tasks and finances.</p>
     
     <div style="background-color: #f0fdf4; border: 1px solid #bbf7d0; padding: 24px; border-radius: 16px; margin: 24px 0; text-align: center;">
-      <h3 style="margin-top: 0; color: #166534; font-size: 18px; margin-bottom: 8px;">🎁 Your Hikari Method Guide is Ready</h3>
+      <h3 style="margin-top: 0; color: #166534; font-size: 18px; margin-bottom: 8px;">🎁 Your Hikarii Method Guide is Ready</h3>
       <p style="color: #15803d; margin-bottom: 0;">Clarity. Focus. Freedom. The guide to mastering your life & money.</p>
     </div>
     
@@ -332,15 +332,15 @@ export const getLeadMagnetTemplate = (email: string) => {
   `;
 
   const leadMagnetUrl =
-    (process.env.CLIENT_URL || "https://www.hikarii.org") +
-    "/help/article/ultimate-guide-hikari-method";
+    (process.env.CLIENT_URL || "https://www.Hikariii.org") +
+    "/help/article/ultimate-guide-Hikarii-method";
 
   return getBaseTemplate(
-    "Your Hikari Method Guide Inside!",
+    "Your Hikarii Method Guide Inside!",
     content,
-    "Read the Hikari Method Guide",
+    "Read the Hikarii Method Guide",
     leadMagnetUrl,
-    "You received this because you requested the Hikari Method magnet on our website.",
+    "You received this because you requested the Hikarii Method magnet on our website.",
   );
 };
 
@@ -354,11 +354,11 @@ export const getInviteTemplate = (
 ) => {
   const content = `
     <p>Hello,</p>
-    <p><strong>${inviterName}</strong> has invited you to collaborate on the project <strong>"${projectTitle}"</strong> on Hikari.</p>
+    <p><strong>${inviterName}</strong> has invited you to collaborate on the project <strong>"${projectTitle}"</strong> on Hikarii.</p>
     
     <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 24px; border-radius: 16px; margin: 24px 0;">
       <p style="margin: 0; text-align: center; color: #64748b; font-size: 14px;">
-        Collaborating on Hikari allows you to co-manage tasks, track shared budgets, and stay in sync in real-time.
+        Collaborating on Hikarii allows you to co-manage tasks, track shared budgets, and stay in sync in real-time.
       </p>
     </div>
     
@@ -370,6 +370,6 @@ export const getInviteTemplate = (
     content,
     "Accept Invitation",
     inviteLink,
-    "You received this because someone invited you to a project on Hikari.",
+    "You received this because someone invited you to a project on Hikarii.",
   );
 };

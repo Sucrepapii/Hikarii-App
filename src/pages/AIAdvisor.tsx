@@ -24,7 +24,7 @@ export const AIAdvisor: React.FC = () => {
         {
             id: 'welcome',
             sender: 'bot',
-            text: "Hello! I am Hikari, your AI productivity & financial coach. I have loaded your active tasks and budgets to give you radical clarity. Ask me anything about your cash flow, upcoming bills, or task prioritization!",
+            text: "Hello! I am Hikarii, your AI productivity & financial coach. I have loaded your active tasks and budgets to give you radical clarity. Ask me anything about your cash flow, upcoming bills, or task prioritization!",
             timestamp: new Date()
         }
     ]);
@@ -65,7 +65,7 @@ export const AIAdvisor: React.FC = () => {
             setMessages(prev => [...prev, botMsg]);
         } catch (error: any) {
             console.error("AI Coach Error:", error);
-            const errMsg = error.response?.data?.error || "Connection issues with Hikari AI. Please check your setup.";
+            const errMsg = error.response?.data?.error || "Connection issues with Hikarii AI. Please check your setup.";
             toast.error(errMsg);
             setMessages(prev => [
                 ...prev,
@@ -181,7 +181,7 @@ export const AIAdvisor: React.FC = () => {
                     >
                         <input
                             type="text"
-                            placeholder="Ask Hikari about budgets, task priority, or savings..."
+                            placeholder="Ask Hikarii about budgets, task priority, or savings..."
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
                             disabled={isLoading}

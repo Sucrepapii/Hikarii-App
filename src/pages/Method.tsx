@@ -30,7 +30,7 @@ const RULES = [
     {
         rule: "Rule 4",
         title: "Age Your Productivity",
-        description: "Gain peace of mind by tracking the ROI of your time. Spend against clarity, not your current stress level. The longer you use Hikari, the more predictable your success becomes.",
+        description: "Gain peace of mind by tracking the ROI of your time. Spend against clarity, not your current stress level. The longer you use Hikarii, the more predictable your success becomes.",
         icon: <Star className="w-8 h-8" />,
         color: "emerald"
     },
@@ -51,9 +51,9 @@ export const Method: React.FC = () => {
             <main className="pt-32 pb-20 px-6 max-w-5xl mx-auto">
                 <div className="text-center mb-20 animate-fade-in">
                     <span className="inline-block px-4 py-1.5 rounded-full bg-primary-500/10 border border-primary-500/20 text-primary-300 text-sm font-semibold mb-6 tracking-wide">Our Philosophy</span>
-                    <h1 className="text-4xl md:text-6xl font-display font-bold mb-6 tracking-tight">The Hikari Method</h1>
+                    <h1 className="text-4xl md:text-6xl font-display font-bold mb-6 tracking-tight">The Hikarii Method</h1>
                     <p className="text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed">
-                        Clarity is not a state of being; it's a practice. We built Hikari on five foundational rules that transform how you manage your most precious resources: time and money.
+                        Clarity is not a state of being; it's a practice. We built Hikarii on five foundational rules that transform how you manage your most precious resources: time and money.
                     </p>
                 </div>
 
@@ -80,7 +80,7 @@ export const Method: React.FC = () => {
                 <div className="bg-gradient-to-br from-primary-600 to-accent-700 rounded-[2.5rem] p-12 text-center relative overflow-hidden">
                     <div className="relative z-10">
                         <h2 className="text-3xl font-bold mb-6 italic">"The secret to wealth is simple: Spend less than you earn. The secret to peace is simpler: Know exactly why you're spending."</h2>
-                        <p className="text-primary-100 mb-8 font-medium">— The Hikari Philosophy</p>
+                        <p className="text-primary-100 mb-8 font-medium">— The Hikarii Philosophy</p>
                         <Link 
                             to="/signup" 
                             className="inline-flex items-center gap-2 px-8 py-4 bg-white text-primary-600 font-bold rounded-full hover:scale-105 transition-transform shadow-xl"

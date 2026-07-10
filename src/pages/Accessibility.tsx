@@ -17,7 +17,7 @@ export const Accessibility: React.FC = () => {
                         Inclusive Design
                     </h1>
                     <p className="text-xl md:text-2xl text-slate-400 leading-relaxed max-w-3xl">
-                        At Hikari, we believe digital sovereignty and productivity should be accessible to everyone. We are committed to ensuring that our platform is usable by all individuals, regardless of ability.
+                        At Hikarii, we believe digital sovereignty and productivity should be accessible to everyone. We are committed to ensuring that our platform is usable by all individuals, regardless of ability.
                     </p>
                 </div>
 
@@ -27,7 +27,7 @@ export const Accessibility: React.FC = () => {
                         <h2 className="text-3xl font-bold text-white mb-8 tracking-tight">Accessibility Statement</h2>
                         <div className="space-y-6 text-slate-400 leading-relaxed text-lg">
                             <p>
-                                Hikari is committed to facilitating the accessibility and usability of its digital properties for all people with disabilities. We strive to implement the relevant portions of the <strong>Web Content Accessibility Guidelines (WCAG) 2.1 Level AA</strong> as our web accessibility standard.
+                                Hikarii is committed to facilitating the accessibility and usability of its digital properties for all people with disabilities. We strive to implement the relevant portions of the <strong>Web Content Accessibility Guidelines (WCAG) 2.1 Level AA</strong> as our web accessibility standard.
                             </p>
                             <p>
                                 Our efforts are ongoing as we incorporate accessibility into every phase of our design and development lifecycle. We conduct regular manual and automated testing to identify and remediate potential barriers.
@@ -74,9 +74,9 @@ export const Accessibility: React.FC = () => {
                     <div className="relative z-10">
                         <h2 className="text-3xl font-bold text-white mb-6 tracking-tight">Feedback and Barriers</h2>
                         <p className="text-slate-400 mb-10 max-w-2xl text-lg leading-relaxed">
-                            If you encounter any accessibility barriers while using Hikari, please let us know. We take all feedback seriously and will work to provide an alternative or remediate the issue promptly.
+                            If you encounter any accessibility barriers while using Hikarii, please let us know. We take all feedback seriously and will work to provide an alternative or remediate the issue promptly.
                         </p>
-                        <a href="mailto:accessibility@hikarii.org" className="inline-flex items-center justify-center px-12 py-5 rounded-2xl bg-pink-600 text-white font-black tracking-[0.2em] uppercase text-xs hover:bg-pink-500 transition-all shadow-xl shadow-pink-500/20">
+                        <a href="mailto:accessibility@Hikariii.org" className="inline-flex items-center justify-center px-12 py-5 rounded-2xl bg-pink-600 text-white font-black tracking-[0.2em] uppercase text-xs hover:bg-pink-500 transition-all shadow-xl shadow-pink-500/20">
                             Contact Accessibility Support
                         </a>
                     </div>

@@ -46,7 +46,7 @@ content = content.replace(testRegex, `const ONBOARDING_STEPS = [
 const TESTIMONIALS = [
     {
         topic: "FINANCIAL GOALS",
-        quote: "Hikari helped me save my first ₦500,000 in 3 months. Having my tasks and budget perfectly synchronized changed the way I work.",
+        quote: "Hikarii helped me save my first ₦500,000 in 3 months. Having my tasks and budget perfectly synchronized changed the way I work.",
         name: "OLUWASEUN ADEYEMI",
         location: "Lagos",
         initials: "OA",
@@ -88,7 +88,7 @@ content = content.replace(carouselRegex, `
             <section className="py-24 px-6 max-w-7xl mx-auto relative z-20">
                 <div className="text-center mb-16">
                     <h2 className="text-3xl md:text-5xl font-display font-bold text-slate-900 dark:text-white mb-4">Four simple steps to get started</h2>
-                    <p className="text-lg text-slate-500 dark:text-slate-400">Join Hikari and take control of your tasks and finances in minutes.</p>
+                    <p className="text-lg text-slate-500 dark:text-slate-400">Join Hikarii and take control of your tasks and finances in minutes.</p>
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">

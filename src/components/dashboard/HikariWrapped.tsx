@@ -16,13 +16,13 @@ interface WrappedData {
     year: number;
 }
 
-interface HikariWrappedProps {
+interface HikariiWrappedProps {
     onClose: () => void;
 }
 
 const STORY_DURATION_MS = 6000;
 
-export const HikariWrapped: React.FC<HikariWrappedProps> = ({ onClose }) => {
+export const HikariiWrapped: React.FC<HikariiWrappedProps> = ({ onClose }) => {
     const [data, setData] = useState<WrappedData | null>(null);
     const [loading, setLoading] = useState(true);
     const [activeSlide, setActiveSlide] = useState(0);
@@ -138,7 +138,7 @@ export const HikariWrapped: React.FC<HikariWrappedProps> = ({ onClose }) => {
             ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
             ctx.font = '900 36px sans-serif';
             ctx.textAlign = 'left';
-            ctx.fillText('HIKARI', 60, 90);
+            ctx.fillText('Hikarii', 60, 90);
 
             // Draw Trophy Icon (visual trophy shape)
             ctx.fillStyle = '#facc15'; // yellow-400
@@ -205,12 +205,12 @@ export const HikariWrapped: React.FC<HikariWrappedProps> = ({ onClose }) => {
             ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
             ctx.font = 'bold 22px sans-serif';
             ctx.textAlign = 'center';
-            ctx.fillText('Organized & pre-funded via www.hikarii.org', 400, 890);
+            ctx.fillText('Organized & pre-funded via www.Hikariii.org', 400, 890);
 
             // Trigger Browser Download
             const dataUrl = canvas.toDataURL('image/png');
             const link = document.createElement('a');
-            link.download = `Hikari_Wrapped_${data?.month}_${data?.year}.png`;
+            link.download = `Hikarii_Wrapped_${data?.month}_${data?.year}.png`;
             link.href = dataUrl;
             link.click();
             toast.success("Wrapped Card saved to your device!");
@@ -358,7 +358,7 @@ export const HikariWrapped: React.FC<HikariWrappedProps> = ({ onClose }) => {
                             </div>
                         </div>
 
-                        <div className="text-xs text-slate-500 mt-4 text-center">Organized via Hikari</div>
+                        <div className="text-xs text-slate-500 mt-4 text-center">Organized via Hikarii</div>
                     </div>
 
                     <div className="mt-10 flex flex-col gap-3 w-full z-50 relative">

@@ -87,7 +87,7 @@ export const PRICING_PLANS: PricingPlan[] = [
   {
     id: "pro",
     name: "Pro",
-    displayName: "Hikari Pro",
+    displayName: "Hikarii Pro",
     price: 8.99,
     billingPeriod: "month",
     description: "Advanced insights & limitless potential.",

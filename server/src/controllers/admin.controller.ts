@@ -60,7 +60,7 @@ export const createAdmin = async (req: Request, res: Response) => {
     try {
       await sendEmail(
         email,
-        "Welcome to the Admin Team - Hikari",
+        "Welcome to the Admin Team - Hikarii",
         getAdminOnboardingTemplate(name, email, password),
       );
     } catch (emailError) {
@@ -318,7 +318,7 @@ export const suspendUser = async (req: Request, res: Response) => {
       );
       await sendEmail(
         userToSuspend.email,
-        "Account Suspended - Hikari",
+        "Account Suspended - Hikarii",
         emailHtml,
       );
     } catch (emailError) {
@@ -371,7 +371,7 @@ export const reactivateUser = async (req: Request, res: Response) => {
       const emailHtml = getReactivationTemplate(reactivatedUser.name);
       await sendEmail(
         reactivatedUser.email,
-        "Account Reactivated - Hikari",
+        "Account Reactivated - Hikarii",
         emailHtml,
       );
     } catch (emailError) {

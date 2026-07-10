@@ -1,4 +1,4 @@
-# Connecting Stripe to Hikari 💳
+# Connecting Stripe to Hikarii 💳
 
 To make functionality real, you need to connect your **Stripe Account** by adding API keys to your environment files.
 
@@ -12,7 +12,7 @@ To make functionality real, you need to connect your **Stripe Account** by addin
 ## 2. Create the Pro Product
 
 1.  Go to **Products** > **Add Product**.
-2.  Name: **Hikari Pro**.
+2.  Name: **Hikarii Pro**.
 3.  Price: **$8.99** / **Recurring** / **Monthly**.
 4.  Save and copy the **API ID** for the price (starts with `price_...`).
 
@@ -71,11 +71,11 @@ Go to your project settings in Railway and add these variables:
 - `STRIPE_PRO_PRICE_ID`
 - `STRIPE_PRO_YEARLY_PRICE_ID`
 - `RESEND_API_KEY`
-- `CLIENT_URL` (Set to your production frontend URL, e.g., `https://hikari-app.vercel.app`)
+- `CLIENT_URL` (Set to your production frontend URL, e.g., `https://Hikarii-app.vercel.app`)
 
 ### 2. Vercel (Frontend)
 
 Go to your project settings in Vercel and add:
 
 - `VITE_STRIPE_PUBLISHABLE_KEY`
-- `VITE_API_URL` (Set to your production backend URL, e.g., `https://hikari-server.up.railway.app`)
+- `VITE_API_URL` (Set to your production backend URL, e.g., `https://Hikarii-server.up.railway.app`)

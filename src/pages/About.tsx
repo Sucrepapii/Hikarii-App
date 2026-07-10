@@ -13,10 +13,10 @@ export const About: React.FC = () => {
     return (
         <div className="min-h-screen bg-[#080910] font-sans text-slate-100 flex flex-col selection:bg-accent-500/30 overflow-x-hidden deep-dark">
             <Helmet>
-                <title>About Us | Hikari - Radical Clarity in Tasks & Budgeting</title>
-                <meta name="description" content="Discover the Hikari Method. We build tools for the Focused Few to bring radical clarity to the intersection of life's work and costs." />
-                <meta name="keywords" content="hikari mission, hikariiapp, tasks, budget, AI, collaboration, focused few" />
-                <link rel="canonical" href="https://www.hikarii.org/about" />
+                <title>About Us | Hikarii - Radical Clarity in Tasks & Budgeting</title>
+                <meta name="description" content="Discover the Hikarii Method. We build tools for the Focused Few to bring radical clarity to the intersection of life's work and costs." />
+                <meta name="keywords" content="Hikarii mission, Hikariiiapp, tasks, budget, AI, collaboration, focused few" />
+                <link rel="canonical" href="https://www.Hikariii.org/about" />
             </Helmet>
             <Navbar />
 
@@ -29,7 +29,7 @@ export const About: React.FC = () => {
                         <span className="bg-gradient-to-r from-primary-400 via-accent-400 to-pink-400 bg-clip-text text-transparent">Focused Few.</span>
                     </h1>
                     <p className="text-xl md:text-2xl text-slate-400 leading-relaxed max-w-2xl mx-auto">
-                        Hikari means <span className="text-white font-semibold">"Light"</span>. We exist to bring radical clarity to the chaotic intersection of your life's work and your life's costs.
+                        Hikarii means <span className="text-white font-semibold">"Light"</span>. We exist to bring radical clarity to the chaotic intersection of your life's work and your life's costs.
                     </p>
                 </div>
 
@@ -65,7 +65,7 @@ export const About: React.FC = () => {
                 {/* Targeted Niche Section */}
                 <section className="max-w-7xl mx-auto mb-40">
                     <div className="text-center mb-20">
-                        <h2 className="text-3xl md:text-5xl font-display font-bold mb-6 tracking-tight">Who is Hikari For?</h2>
+                        <h2 className="text-3xl md:text-5xl font-display font-bold mb-6 tracking-tight">Who is Hikarii For?</h2>
                         <p className="text-slate-500 text-lg max-w-2xl mx-auto">We're not trying to be everything to everyone. We build specific tools for specific problems.</p>
                     </div>
 
@@ -76,7 +76,7 @@ export const About: React.FC = () => {
                             </div>
                             <h3 className="text-2xl font-bold mb-4 text-white">Freelancers</h3>
                             <p className="text-slate-400 leading-relaxed">
-                                Stop losing track of billable time vs. actual expenses. Hikari links your tasks directly to your receipts, ensuring every hour worked accounts for every dollar spent.
+                                Stop losing track of billable time vs. actual expenses. Hikarii links your tasks directly to your receipts, ensuring every hour worked accounts for every dollar spent.
                             </p>
                         </div>
 
@@ -94,7 +94,7 @@ export const About: React.FC = () => {
                             <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center mb-8 text-emerald-400 group-hover:bg-emerald-600 group-hover:text-white transition-all shadow-lg group-hover:shadow-emerald-500/20">
                                 <Target className="w-7 h-7" />
                             </div>
-                            <h3 className="text-2xl font-bold mb-4 text-white">Small Biz Owners</h3>
+                            <h3 className="text-2xl font-bold mb-4 text-white">Small Business Owners</h3>
                             <p className="text-slate-400 leading-relaxed">
                                 Bridge the gap between operations and finance. See the ROI of your team's tasks and forecast your cash flow without the spreadsheet nightmare.
                             </p>
@@ -116,7 +116,7 @@ export const About: React.FC = () => {
                             </div>
                             <h3 className="text-xl font-bold mb-4 text-white">Ruthless Focus</h3>
                             <p className="text-slate-400 leading-relaxed">
-                                We don't add features for the sake of it. If it doesn't help you enter a flow state or gain financial clarity, it doesn't belong in Hikari.
+                                We don't add features for the sake of it. If it doesn't help you enter a flow state or gain financial clarity, it doesn't belong in Hikarii.
                             </p>
                         </div>
                         <div className="p-10 rounded-[2rem] bg-white/[0.02] border border-white/[0.06] hover:bg-white/[0.04] transition-all duration-300">

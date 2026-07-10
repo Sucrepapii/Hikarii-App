@@ -78,7 +78,7 @@ export const createCheckoutSession = async (req: any, res: Response) => {
       `Stripe: Trial period set to ${trialDays} days (Promo active: ${isPromoActive})`,
     );
 
-    const clientUrl = process.env.CLIENT_URL || "https://www.hikarii.org";
+    const clientUrl = process.env.CLIENT_URL || "https://www.Hikariii.org";
     console.log("Stripe: Using Client URL:", clientUrl);
 
     const session = await stripe.checkout.sessions.create({
@@ -121,7 +121,7 @@ export const createPortalSession = async (req: any, res: Response) => {
     if (!user || !user.stripeCustomerId)
       return res.status(400).json({ message: "No subscription found" });
 
-    const clientUrl = process.env.CLIENT_URL || "https://www.hikarii.org";
+    const clientUrl = process.env.CLIENT_URL || "https://www.Hikariii.org";
     const session = await stripe.billingPortal.sessions.create({
       customer: user.stripeCustomerId,
       return_url: `${clientUrl}/settings`,

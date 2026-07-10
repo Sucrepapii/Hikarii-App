@@ -210,7 +210,7 @@ export const Analytics: React.FC = () => {
 
             {/* AI Insights Section */}
             <div className="pt-4 border-t border-slate-200 dark:border-slate-800">
-                <h2 className="text-2xl font-bold gradient-text mb-6">Hikari Intelligence Insights</h2>
+                <h2 className="text-2xl font-bold gradient-text mb-6">Hikarii Intelligence Insights</h2>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div className="relative">
                         {!isPro && (

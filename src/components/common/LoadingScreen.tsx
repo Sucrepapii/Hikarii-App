@@ -15,7 +15,7 @@ export const LoadingScreen: React.FC = () => {
                 
                 <div className="flex flex-col items-center gap-2">
                     <h2 className="text-2xl font-display font-bold gradient-text animate-pulse">
-                        Hikari
+                        Hikarii
                     </h2>
                     <div className="flex gap-1.5">
                         {[0, 1, 2].map((i) => (

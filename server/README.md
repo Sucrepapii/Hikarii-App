@@ -1,6 +1,6 @@
-# HikariBackend API
+# HikariiBackend API
 
-Backend server for the Hikaritask and budget management application.
+Backend server for the Hikariitask and budget management application.
 
 ## Features
 
@@ -21,7 +21,7 @@ npm install
 
 2. **Set up MongoDB:**
    - Install MongoDB locally or use MongoDB Atlas
-   - Default URI: `mongodb://localhost:27017/hikari`
+   - Default URI: `mongodb://localhost:27017/Hikarii`
 
 3. **Configure environment variables:**
    - Copy `.env.example` to `.env`
@@ -70,7 +70,7 @@ Server will run on `http://localhost:5000`
 ```env
 PORT=5000
 NODE_ENV=development
-MONGODB_URI=mongodb://localhost:27017/hikari
+MONGODB_URI=mongodb://localhost:27017/Hikarii
 JWT_SECRET=your-secret-key
 JWT_EXPIRES_IN=7d
 CLIENT_URL=http://localhost:5174

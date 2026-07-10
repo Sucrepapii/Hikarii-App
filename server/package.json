@@ -1,7 +1,7 @@
 {
-  "name": "hikari-server",
+  "name": "Hikarii-server",
   "version": "1.0.0",
-  "description": "Backend API server for Hikaritask and budget app",
+  "description": "Backend API server for Hikariitask and budget app",
   "main": "dist/server.js",
   "scripts": {
     "dev": "nodemon src/app.ts",

@@ -30,7 +30,7 @@ export const startMonthlyGreetingWorker = () => {
           await notifyUser(
             user.id,
             "Happy New Month! 🌟",
-            `Wishing you a productive and successful ${currentMonth}! Let's crush your goals on Hikari.`,
+            `Wishing you a productive and successful ${currentMonth}! Let's crush your goals on Hikarii.`,
             "SYSTEM_ANNOUNCEMENT",
             { url: "/" }
           );

@@ -9,7 +9,7 @@ interface SyncItem {
   payload: any;
 }
 
-const SYNC_QUEUE_KEY = "hikari-sync-queue";
+const SYNC_QUEUE_KEY = "Hikarii-sync-queue";
 
 export const getSyncQueue = (): SyncItem[] => {
   try {

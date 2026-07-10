@@ -7,7 +7,7 @@ export interface Article {
     | "Account & Billing"
     | "Troubleshooting"
     | "Features & Integrations"
-    | "The Hikari Method";
+    | "The Hikarii Method";
   content: string; // HTML or Markdown string
   excerpt: string;
 }
@@ -137,7 +137,7 @@ export const helpArticles: Article[] = [
     category: "Getting Started",
     excerpt: "Take your tasks on the go with our iOS and Android apps.",
     content: `
-            <h2>Hikari on Mobile</h2>
+            <h2>Hikarii on Mobile</h2>
             <p>Coming soon...</p>
         `,
   },
@@ -159,7 +159,7 @@ export const helpArticles: Article[] = [
     slug: "using-ai-smart-split",
     category: "Getting Started",
     excerpt:
-      "Let Hikari break down complex tasks into manageable steps for you.",
+      "Let Hikarii break down complex tasks into manageable steps for you.",
     content: `
         <h2>Work Smarter, Not Harder</h2>
         <p>Large tasks can be overwhelming. The <strong>AI Smart Split</strong> feature analyzes your task description and automatically generates a checklist of subtasks.</p>
@@ -223,7 +223,7 @@ export const helpArticles: Article[] = [
     excerpt: "Learn how to track spending and stay within your limits.",
     content: `
         <h2>Take Control of Your Spending</h2>
-        <p>Hikari's budgeting tools help you visualize where your money is going and ensure you stay on track.</p>
+        <p>Hikarii's budgeting tools help you visualize where your money is going and ensure you stay on track.</p>
         <h3>1. Create a Budget</h3>
         <p>Go to the <strong>Budget</strong> page and click "Create Budget". Choose a category (like Food or Utilities) and set a monthly limit.</p>
         <h3>2. Log Expenses</h3>
@@ -240,7 +240,7 @@ export const helpArticles: Article[] = [
     excerpt: "Insights into your productivity and budget performance.",
     content: `
         <h2>Data-Driven Decisions</h2>
-        <p>Hikari provides visual reports to help you understand your performance over time.</p>
+        <p>Hikarii provides visual reports to help you understand your performance over time.</p>
         <h3>Task Velocity</h3>
         <p>View how many tasks you complete each week. This helps you estimate future projects more accurately.</p>
         <h3>Budget Burn Rate</h3>
@@ -251,13 +251,13 @@ export const helpArticles: Article[] = [
   },
   {
     id: "16",
-    title: "The Ultimate Guide to the Hikari Method",
-    slug: "ultimate-guide-hikari-method",
-    category: "The Hikari Method",
+    title: "The Ultimate Guide to the Hikarii Method",
+    slug: "ultimate-guide-Hikarii-method",
+    category: "The Hikarii Method",
     excerpt: "Master the philosophy of linking your tasks to your budget for radical clarity and intentional productivity.",
     content: `
         <div class="mb-12 rounded-3xl overflow-hidden shadow-2xl border border-slate-200 dark:border-white/10">
-            <img src="/marketing/hikari_method_philosophy_v2_1778356186586.png" alt="Hikari Method Philosophy" class="w-full h-auto" />
+            <img src="/marketing/Hikarii_method_philosophy_v2_1778356186586.png" alt="Hikarii Method Philosophy" class="w-full h-auto" />
         </div>
 
         <div class="prose prose-slate dark:prose-invert max-w-none">
@@ -316,7 +316,7 @@ export const helpArticles: Article[] = [
                     </div>
                     <h3 class="text-2xl font-bold text-white mb-4">The Unified Financial Ledger</h3>
                     <p class="text-slate-400 text-lg leading-relaxed mb-6">
-                        The ultimate realization of the Hikari Method is our Unified Financial Ledger. It tracks daily expenditures and income across all your projects in real-time. Calculate totals instantly, filter by active tasks, and seamlessly connect every transaction with your daily workflow to eliminate financial chaos.
+                        The ultimate realization of the Hikarii Method is our Unified Financial Ledger. It tracks daily expenditures and income across all your projects in real-time. Calculate totals instantly, filter by active tasks, and seamlessly connect every transaction with your daily workflow to eliminate financial chaos.
                     </p>
                     <a href="/tracker" class="inline-flex items-center text-emerald-400 font-bold hover:text-emerald-300 transition-colors">
                         Explore the Ledger <svg class="ml-2 w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
@@ -326,7 +326,7 @@ export const helpArticles: Article[] = [
 
             <div class="bg-primary-600/10 border border-primary-500/20 rounded-3xl p-10 text-center text-white shadow-xl">
                 <h2 class="text-2xl font-bold mb-4">Ready to achieve Radical Clarity?</h2>
-                <p class="text-slate-400 mb-8 max-w-lg mx-auto">Mastering the Hikari Method is about moving from reactive stress toward proactive control.</p>
+                <p class="text-slate-400 mb-8 max-w-lg mx-auto">Mastering the Hikarii Method is about moving from reactive stress toward proactive control.</p>
                 <a href="/dashboard" class="inline-flex items-center px-8 py-4 rounded-2xl bg-gradient-to-r from-primary-600 to-accent-600 hover:from-primary-500 hover:to-accent-500 text-white font-bold transition-all shadow-lg shadow-primary-600/20">
                     Get Started Now
                 </a>

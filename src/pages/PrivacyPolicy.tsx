@@ -25,7 +25,7 @@ export const PrivacyPolicy: React.FC = () => {
                         <div className="absolute top-0 left-0 w-2 h-full bg-primary-500/50 group-hover:from-primary-500 hover:to-accent-500 transition-colors" />
                         <h2 className="text-3xl font-bold text-white mb-8 tracking-tight">1. Scope of Data Processing</h2>
                         <p className="text-slate-400 leading-relaxed text-lg mb-6">
-                            This Privacy Policy describes the policies and procedures of Hikari World Ltd ("Company," "we," "us," or "our") on the collection, use, and disclosure of your information when you use the Service and tells you about your privacy rights and how the law protects you.
+                            This Privacy Policy describes the policies and procedures of Hikarii World Ltd ("Company," "we," "us," or "our") on the collection, use, and disclosure of your information when you use the Service and tells you about your privacy rights and how the law protects you.
                         </p>
                         <p className="text-slate-400 leading-relaxed text-lg">
                             We use your Personal Data to provide and improve the Service. By using the Service, you agree to the collection and use of information in accordance with this Privacy Policy. This document is drafted to comply with the General Data Protection Regulation (GDPR) and the California Consumer Privacy Act (CCPA).
@@ -67,7 +67,7 @@ export const PrivacyPolicy: React.FC = () => {
                         <div className="absolute top-0 left-0 w-2 h-full bg-emerald-500/50 group-hover:bg-emerald-500 transition-colors" />
                         <h2 className="text-3xl font-bold text-white mb-8 tracking-tight">3. Data Subject Rights (GDPR/CCPA)</h2>
                         <p className="text-slate-400 leading-relaxed text-lg mb-10">
-                            Regardless of your residency, Hikari extends enterprise-grade privacy rights to all users globally:
+                            Regardless of your residency, Hikarii extends enterprise-grade privacy rights to all users globally:
                         </p>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                             {[
@@ -108,7 +108,7 @@ export const PrivacyPolicy: React.FC = () => {
                         <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-transparent to-primary-500/10" />
                         <h2 className="text-3xl font-bold text-white mb-6 tracking-tight relative">Data Protection Officer</h2>
                         <p className="text-slate-400 mb-10 max-w-2xl mx-auto relative text-lg">For all inquiries regarding data processing, cross-border transfers, or to exercise your statutory rights, please contact our DPO.</p>
-                        <a href="mailto:privacy@hikarii.org" className="relative inline-flex items-center justify-center px-12 py-5 rounded-2xl bg-white text-black font-black tracking-[0.2em] uppercase text-xs hover:bg-slate-200 transition-all shadow-xl shadow-white/5">
+                        <a href="mailto:privacy@Hikariii.org" className="relative inline-flex items-center justify-center px-12 py-5 rounded-2xl bg-white text-black font-black tracking-[0.2em] uppercase text-xs hover:bg-slate-200 transition-all shadow-xl shadow-white/5">
                             Contact DPO
                         </a>
                     </div>

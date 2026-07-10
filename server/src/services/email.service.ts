@@ -20,14 +20,14 @@ export const sendEmail = async (
 
     const resend = new Resend(apiKey);
 
-    const defaultDomain = process.env.EMAIL_DOMAIN || "hikarii.org";
+    const defaultDomain = process.env.EMAIL_DOMAIN || "Hikariii.org";
     const emailDomain = options?.fromDomain || defaultDomain;
-    const fromName = options?.fromName || "Hikari";
+    const fromName = options?.fromName || "Hikarii";
     const fromEmail = `${fromName} <noreply@${emailDomain}>`;
 
     if (!process.env.EMAIL_DOMAIN && !options?.fromDomain) {
       console.log(
-        "Using default email domain: hikarii.org (EMAIL_DOMAIN not set)",
+        "Using default email domain: Hikariii.org (EMAIL_DOMAIN not set)",
       );
     }
 

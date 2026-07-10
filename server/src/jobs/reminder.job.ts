@@ -61,7 +61,7 @@ export const startReminderWorker = () => {
 
           await sendEmail(
             user.email,
-            `Action Required: ${overdueTasks.length} Overdue Tasks on Hikari`,
+            `Action Required: ${overdueTasks.length} Overdue Tasks on Hikarii`,
             getOverdueReminderTemplate(user.name, taskListHtml),
           );
 

@@ -60,7 +60,7 @@ export const createLead = async (
       );
       await sendEmail(
         email,
-        "Your Hikari Method Template Inside!",
+        "Your Hikarii Method Template Inside!",
         getLeadMagnetTemplate(email),
         emailOptions,
       );
@@ -71,7 +71,7 @@ export const createLead = async (
 
     res.status(201).json({
       message:
-        "Success! You've been added to our interest list. Check your inbox for the Hikari Method magnet!",
+        "Success! You've been added to our interest list. Check your inbox for the Hikarii Method magnet!",
       lead,
     });
   } catch (error: any) {

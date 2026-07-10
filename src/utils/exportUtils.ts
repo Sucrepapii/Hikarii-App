@@ -68,7 +68,7 @@ export const exportTasks = (tasks: Task[]) => {
   const csv = convertToCSV(data);
   downloadCSV(
     csv,
-    `hikari_tasks_${new Date().toISOString().split("T")[0]}.csv`,
+    `Hikarii_tasks_${new Date().toISOString().split("T")[0]}.csv`,
   );
 };
 
@@ -87,6 +87,6 @@ export const exportExpenses = (expenses: Expense[]) => {
   const csv = convertToCSV(data);
   downloadCSV(
     csv,
-    `hikari_expenses_${new Date().toISOString().split("T")[0]}.csv`,
+    `Hikarii_expenses_${new Date().toISOString().split("T")[0]}.csv`,
   );
 };

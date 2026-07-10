@@ -76,7 +76,7 @@ export const Signup: React.FC = () => {
                 setEmailToVerify(signupData.email);
                 setVerificationMode(true);
             } else {
-                toast.success('Welcome to Hikari!');
+                toast.success('Welcome to Hikarii!');
                 const searchParams = new URLSearchParams(window.location.search);
                 const redirectTo = searchParams.get('redirect');
                 navigate(redirectTo || '/dashboard');
@@ -95,7 +95,7 @@ export const Signup: React.FC = () => {
         setError('');
         try {
             await verifyEmail(emailToVerify, otp);
-            toast.success('Email verified successfully! Welcome to Hikari.');
+            toast.success('Email verified successfully! Welcome to Hikarii.');
             
             const searchParams = new URLSearchParams(window.location.search);
             const redirectTo = searchParams.get('redirect');

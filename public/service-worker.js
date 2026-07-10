@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hikari-offline-cache-v1';
+const CACHE_NAME = 'Hikarii-offline-cache-v1';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html'

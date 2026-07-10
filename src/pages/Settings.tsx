@@ -184,7 +184,7 @@ export const Settings: React.FC = () => {
                                             Have an idea or spotted a bug?
                                         </h2>
                                         <p className="text-sm text-slate-500 dark:text-slate-400">
-                                            We'd love to hear from you. Help us shape the future of Hikari.
+                                            We'd love to hear from you. Help us shape the future of Hikarii.
                                         </p>
                                     </div>
                                 </div>
@@ -614,7 +614,7 @@ export const Settings: React.FC = () => {
                             <h2 className="text-xl font-semibold mb-4 text-slate-800 dark:text-slate-200">Frequently Asked Questions</h2>
                             <div className="space-y-4">
                                 <div className="border border-slate-200 dark:border-slate-700 rounded-xl p-4">
-                                    <h3 className="font-medium text-slate-800 dark:text-white">Is Hikari really free?</h3>
+                                    <h3 className="font-medium text-slate-800 dark:text-white">Is Hikarii really free?</h3>
                                     <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">Yes, the core features are free forever. Pro offers advanced AI and unlimited history.</p>
                                 </div>
                                 <div className="border border-slate-200 dark:border-slate-700 rounded-xl p-4">

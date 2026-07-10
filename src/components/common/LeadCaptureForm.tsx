@@ -14,7 +14,7 @@ interface LeadCaptureFormProps {
 export const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
     source = 'GENERAL_INTEREST',
     variant = 'hero',
-    title = "Get the 'Hikari Method' Notion Template",
+    title = "Get the 'Hikarii Method' Notion Template",
     description = "Master your life and money with our proven system. Join 1,000+ others gaining radical clarity."
 }) => {
     const [email, setEmail] = useState('');
@@ -32,7 +32,7 @@ export const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
         try {
             await apiClient.post('/leads', { email, source });
             setIsSubmitted(true);
-            toast.success("Welcome to the Hikari Method!");
+            toast.success("Welcome to the Hikarii Method!");
         } catch (error: any) {
             toast.error(error.response?.data?.error || "Failed to join. Please try again.");
         } finally {
@@ -45,7 +45,7 @@ export const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
             <div className={`py-4 space-y-2 animate-fade-in ${variant === 'footer' ? '' : 'text-center max-w-lg mx-auto'}`}>
                 <div className="flex items-center gap-2 text-emerald-500 font-bold tracking-tight">
                     <CheckCircle2 className="w-5 h-5" />
-                    <span>Welcome to Hikari.</span>
+                    <span>Welcome to Hikarii.</span>
                 </div>
                 <p className="text-sm text-slate-500 dark:text-slate-400">
                     Check your inbox. Radical clarity is on its way.

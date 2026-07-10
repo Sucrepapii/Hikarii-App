@@ -9,7 +9,7 @@ import { TaskItem } from '../components/tasks/TaskItem';
 import { BudgetProgress } from '../components/budget/Charts/BudgetProgress';
 import { SpendingChart } from '../components/budget/Charts/SpendingChart';
 import { startOfDay, endOfMonth, isSameDay } from 'date-fns';
-import { HikariWrapped } from '../components/dashboard/HikariWrapped';
+import { HikariiWrapped } from '../components/dashboard/HikariiWrapped';
 import { Modal } from '../components/common/Modal';
 import { ConfirmModal } from '../components/common/ConfirmModal';
 import { TaskForm } from '../components/tasks/TaskForm';
@@ -66,7 +66,7 @@ export const Dashboard: React.FC = () => {
 
     const { refreshInsights } = useIntelligenceStore();
 
-    // Hikari Wrapped State
+    // Hikarii Wrapped State
     const [isWrappedOpen, setIsWrappedOpen] = useState(false);
     const today = new Date();
     const isLastDayOfMonth = isSameDay(today, endOfMonth(today));
@@ -228,7 +228,7 @@ export const Dashboard: React.FC = () => {
                 </button>
             </div>
 
-            {/* Hikari Wrapped Trigger (Only visible on last day of month) */}
+            {/* Hikarii Wrapped Trigger (Only visible on last day of month) */}
             {isLastDayOfMonth && (
                 <div className="mb-6 p-1 rounded-2xl bg-gradient-to-r from-primary-500 via-accent-500 to-pink-500 animate-pulse-slow">
                     <div className="bg-[#0B0C15] rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -511,9 +511,9 @@ export const Dashboard: React.FC = () => {
                 onClose={() => setShowUpgradeModal(false)}
             />
 
-            {/* Fullscreen Hikari Wrapped Overlay */}
+            {/* Fullscreen Hikarii Wrapped Overlay */}
             {isWrappedOpen && (
-                <HikariWrapped onClose={() => setIsWrappedOpen(false)} />
+                <HikariiWrapped onClose={() => setIsWrappedOpen(false)} />
             )}
 
             </div>

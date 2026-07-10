@@ -79,7 +79,7 @@ export const Security: React.FC = () => {
                     <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/10 via-transparent to-primary-500/10" />
                     <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 tracking-tight relative">Responsible Disclosure</h2>
                     <p className="text-slate-400 mb-12 max-w-2xl mx-auto relative text-lg">If you are a security researcher and believe you have discovered a vulnerability, please reach out via our secure channel. We operate a private bug bounty program.</p>
-                    <a href="mailto:security@hikarii.org" className="relative inline-flex items-center justify-center px-16 py-6 rounded-2xl bg-white text-black font-black tracking-[0.2em] uppercase text-xs hover:bg-slate-200 transition-all shadow-xl">
+                    <a href="mailto:security@Hikariii.org" className="relative inline-flex items-center justify-center px-16 py-6 rounded-2xl bg-white text-black font-black tracking-[0.2em] uppercase text-xs hover:bg-slate-200 transition-all shadow-xl">
                         Contact Security Operations
                     </a>
                 </div>

@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hikarii Launch - We Are Live!</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-dark: #090514;
+      --primary: #8a2be2;
+      --primary-glow: rgba(138, 43, 226, 0.4);
+      --accent: #00f0ff;
+      --accent-glow: rgba(0, 240, 255, 0.3);
+      --text-main: #f3f0ff;
+      --text-muted: #a59fc4;
+      --card-bg: rgba(20, 15, 38, 0.7);
+      --card-border: rgba(138, 43, 226, 0.2);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(138, 43, 226, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(0, 240, 255, 0.1) 0%, transparent 40%);
+      color: var(--text-main);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+      padding: 2rem 1rem;
+    }
+
+    .poster-container {
+      max-width: 1000px;
+      width: 100%;
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 2.5rem;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 40px var(--primary-glow);
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 3rem;
+      align-items: center;
+      position: relative;
+    }
+
+    /* Glow effect on the container */
+    .poster-container::after {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      z-index: -1;
+      border-radius: 26px;
+      opacity: 0.2;
+      filter: blur(10px);
+    }
+
+    /* Left Side: Image container */
+    .image-wrapper {
+      position: relative;
+      width: 100%;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      aspect-ratio: 4/5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .image-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .poster-container:hover .image-wrapper img {
+      transform: scale(1.03);
+    }
+
+    /* Badge on top of image */
+    .live-badge {
+      position: absolute;
+      top: 1.5rem;
+      left: 1.5rem;
+      background: linear-gradient(135deg, #ff007f, var(--primary));
+      padding: 0.5rem 1.2rem;
+      border-radius: 50px;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 0.9rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      box-shadow: 0 4px 15px rgba(255, 0, 127, 0.4);
+      z-index: 2;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); box-shadow: 0 4px 15px rgba(255, 0, 127, 0.4); }
+      50% { transform: scale(1.05); box-shadow: 0 4px 25px rgba(255, 0, 127, 0.7); }
+      100% { transform: scale(1); box-shadow: 0 4px 15px rgba(255, 0, 127, 0.4); }
+    }
+
+    /* Right Side: Copy & Launch Details */
+    .content-wrapper {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .brand-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .brand-title::after {
+      content: '';
+      display: inline-block;
+      width: 40px;
+      height: 2px;
+      background: var(--accent);
+    }
+
+    .main-heading {
+      font-family: 'Outfit', sans-serif;
+      font-size: 3rem;
+      font-weight: 900;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(135deg, var(--text-main) 30%, #c3b4ff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .description {
+      font-size: 1rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+    }
+
+    /* Key features */
+    .features-list {
+      list-style: none;
+      margin-bottom: 2.5rem;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .feature-icon {
+      background: rgba(138, 43, 226, 0.2);
+      border: 1px solid var(--primary);
+      color: var(--accent);
+      border-radius: 8px;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .feature-text h4 {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      font-size: 1.05rem;
+      color: var(--text-main);
+      margin-bottom: 0.2rem;
+    }
+
+    .feature-text p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* Call to action */
+    .cta-container {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .btn {
+      display: inline-block;
+      text-decoration: none;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), #a04ef6);
+      color: #fff;
+      box-shadow: 0 10px 20px rgba(138, 43, 226, 0.3);
+      border: none;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 30px rgba(138, 43, 226, 0.5), 0 0 15px var(--accent);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: var(--text-main);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
+    }
+
+    /* Footer branding */
+    .footer-brand {
+      margin-top: 3rem;
+      font-size: 0.85rem;
+      color: rgba(165, 159, 196, 0.5);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      text-align: center;
+      width: 100%;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .poster-container {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+        padding: 2rem;
+      }
+      
+      .main-heading {
+        font-size: 2.5rem;
+      }
+    }
+
+    @media (max-width: 500px) {
+      .main-heading {
+        font-size: 2rem;
+      }
+
+      .cta-container {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .btn {
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="poster-container">
+    <!-- Image Area -->
+    <div class="image-wrapper">
+      <div class="live-badge">WE ARE LIVE</div>
+      <img src="Hikarii_football_live.png" alt="Hikarii Launch Stadium Concept">
+    </div>
+
+    <!-- Details Area -->
+    <div class="content-wrapper">
+      <div class="brand-title">Hikarii APP</div>
+      <h1 class="main-heading">Level Up Your Project Game</h1>
+      <p class="description">
+        Manage your tasks, coordinate your team, and track your budgets with the precision of a championship playbook. Hikarii brings stadium-grade clarity to your projects and finances.
+      </p>
+
+      <ul class="features-list">
+        <li class="feature-item">
+          <div class="feature-icon">✓</div>
+          <div class="feature-text">
+            <h4>Tactical Task Tracking</h4>
+            <p>Decompose complex objectives into actionable plays using Gemini AI.</p>
+          </div>
+        </li>
+        <li class="feature-item">
+          <div class="feature-icon">✓</div>
+          <div class="feature-text">
+            <h4>Real-Time Expense Linking</h4>
+            <p>Never run out of bounds. Connect tasks directly to your budget category logs.</p>
+          </div>
+        </li>
+        <li class="feature-item">
+          <div class="feature-icon">✓</div>
+          <div class="feature-text">
+            <h4>Premium Clarity Dashboard</h4>
+            <p>A beautiful visual control center built for professional builders and creators.</p>
+          </div>
+        </li>
+      </ul>
+
+      <div class="cta-container">
+        <a href="../index.html" class="btn btn-primary">Start Free Trial</a>
+        <a href="https://www.Hikariii.org" class="btn btn-secondary" target="_blank">Learn More</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-brand">
+    Hikarii (Light & Clarity) © 2026. All Rights Reserved.
+  </div>
+
+</body>
+</html>

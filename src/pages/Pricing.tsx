@@ -49,7 +49,7 @@ export const Pricing: React.FC = () => {
 
     const plans = [
         {
-            name: "Hikari Basic",
+            name: "Hikarii Basic",
             price: billingPeriod === 'monthly' ? "0" : "0",
             description: "Essential tools for personal clarity and focus.",
             features: [
@@ -63,7 +63,7 @@ export const Pricing: React.FC = () => {
             color: "slate"
         },
         {
-            name: "Hikari Pro",
+            name: "Hikarii Pro",
             price: billingPeriod === 'monthly' ? "10" : "99",
             description: "Advanced intelligence for high-performance professionals.",
             features: [
@@ -82,7 +82,7 @@ export const Pricing: React.FC = () => {
     return (
         <div className="min-h-screen bg-[#080910] text-slate-100 selection:bg-accent-500/30 overflow-x-hidden flex flex-col deep-dark">
             <Helmet>
-                <title>Pricing | Hikari</title>
+                <title>Pricing | Hikarii</title>
                 <meta name="description" content="Choose the plan that fits your growth. Affordable, institutional-grade tools for personal and professional clarity." />
             </Helmet>
 

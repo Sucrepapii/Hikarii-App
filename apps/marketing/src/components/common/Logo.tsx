@@ -1,6 +1,6 @@
 import React from 'react';
 import { clsx } from 'clsx';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 
 interface LogoProps {
     className?: string;
@@ -123,7 +123,7 @@ export const Logo: React.FC<LogoProps> = ({
         return suppressLink ? (
             <div className={className}>{content}</div>
         ) : (
-            <Link to="/" className={clsx("inline-flex hover:opacity-90 transition-opacity", className)}>
+            <Link href="/" className={clsx("inline-flex hover:opacity-90 transition-opacity", className)}>
                 {content}
             </Link>
         );
@@ -134,7 +134,7 @@ export const Logo: React.FC<LogoProps> = ({
         return suppressLink ? (
             <div className={className}>{content}</div>
         ) : (
-            <Link to="/" className={clsx("inline-flex hover:opacity-90 transition-opacity", className)}>
+            <Link href="/" className={clsx("inline-flex hover:opacity-90 transition-opacity", className)}>
                 {content}
             </Link>
         );
@@ -152,7 +152,7 @@ export const Logo: React.FC<LogoProps> = ({
             {content}
         </div>
     ) : (
-        <Link to="/" className={clsx("flex items-center gap-3 hover:opacity-90 transition-opacity group", className)}>
+        <Link href="/" className={clsx("flex items-center gap-3 hover:opacity-90 transition-opacity group", className)}>
             {content}
         </Link>
     );

@@ -47,7 +47,7 @@ function getInitials(name: string): string {
     return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
 }
 
-const HIKARI_METHOD_RULES = [
+const Hikarii_METHOD_RULES = [
     {
         rule: "Rule 1",
         title: "Give Every Task a Job",
@@ -130,7 +130,7 @@ export const LandingPage: React.FC = () => {
     const [testimonials, setTestimonials] = useState<any[]>([
         {
             topic: "FREELANCE GROWTH",
-            quote: "Hikari changed how I view my billable hours. I finally see exactly where my time turns into profit.",
+            quote: "Hikarii changed how I view my billable hours. I finally see exactly where my time turns into profit.",
             name: "Sarah Chen",
             location: "Singapore",
             flag: "🇸🇬",
@@ -208,21 +208,21 @@ export const LandingPage: React.FC = () => {
     return (
         <div className="min-h-screen bg-gradient-to-b from-[#060814] to-[#04060a] font-sans text-slate-100 overflow-x-hidden selection:bg-amber-500/30 deep-dark">
             <Helmet>
-                <link rel="canonical" href="https://www.hikarii.org/" />
-                <title>Hikari | Radical Clarity in Tasks & Budgeting</title>
-                <meta name="description" content="Master the Hikari Method: A revolutionary approach to linking your tasks with your budget for ultimate financial and professional clarity." />
-                <meta name="keywords" content="hikari, hikariiapp, tasks, budget, AI, collaboration, productivity app Nigeria, AI task manager, project budget tracker, financial clarity Lagos, Hikari method, task budget linking, best task app West Africa" />
-                <meta name="thumbnail" content="https://www.hikarii.org/marketing/hikari_chaos_to_clarity_1778160537687.png" />
+                <link rel="canonical" href="https://www.Hikariii.org/" />
+                <title>Hikarii | Radical Clarity in Tasks & Budgeting</title>
+                <meta name="description" content="Master the Hikarii Method: A revolutionary approach to linking your tasks with your budget for ultimate financial and professional clarity." />
+                <meta name="keywords" content="Hikarii, Hikariiiapp, tasks, budget, AI, collaboration, productivity app Nigeria, AI task manager, project budget tracker, financial clarity Lagos, Hikarii method, task budget linking, best task app West Africa" />
+                <meta name="thumbnail" content="https://www.Hikariii.org/marketing/Hikarii_chaos_to_clarity_1778160537687.png" />
 
                 {/* Structured Data */}
                 <script type="application/ld+json">
                     {JSON.stringify({
                         "@context": "https://schema.org",
                         "@type": "SoftwareApplication",
-                        "name": "Hikari",
+                        "name": "Hikarii",
                         "operatingSystem": "All",
                         "applicationCategory": "ProductivityApplication",
-                        "description": "Master the Hikari Method: A revolutionary approach to linking your tasks with your budget for ultimate financial and professional clarity.",
+                        "description": "Master the Hikarii Method: A revolutionary approach to linking your tasks with your budget for ultimate financial and professional clarity.",
                         "offers": {
                             "@type": "Offer",
                             "price": "0",
@@ -234,26 +234,26 @@ export const LandingPage: React.FC = () => {
                             "reviewCount": "100"
                         },
                         "sameAs": [
-                            "https://www.instagram.com/hikariiapp",
-                            "https://x.com/hikariiapp",
-                            "https://www.linkedin.com/company/hikari-world/"
+                            "https://www.instagram.com/Hikariiiapp",
+                            "https://x.com/Hikariiiapp",
+                            "https://www.linkedin.com/company/Hikarii-world/"
                         ]
                     })}
                 </script>
 
                 {/* Open Graph / Facebook */}
                 <meta property="og:type" content="website" />
-                <meta property="og:url" content="https://www.hikarii.org/" />
-                <meta property="og:title" content="Hikari | Radical Clarity in Tasks & Budgeting" />
-                <meta property="og:description" content="Master the Hikari Method: Link your tasks to your budget for ultimate clarity." />
-                <meta property="og:image" content="https://www.hikarii.org/marketing/hikari_chaos_to_clarity_1778160537687.png" />
+                <meta property="og:url" content="https://www.Hikariii.org/" />
+                <meta property="og:title" content="Hikarii | Radical Clarity in Tasks & Budgeting" />
+                <meta property="og:description" content="Master the Hikarii Method: Link your tasks to your budget for ultimate clarity." />
+                <meta property="og:image" content="https://www.Hikariii.org/marketing/Hikarii_chaos_to_clarity_1778160537687.png" />
 
                 {/* Twitter */}
                 <meta property="twitter:card" content="summary_large_image" />
-                <meta property="twitter:url" content="https://www.hikarii.org/" />
-                <meta property="twitter:title" content="Hikari | Radical Clarity in Tasks & Budgeting" />
-                <meta property="twitter:description" content="Master the Hikari Method: Link your tasks to your budget for ultimate clarity." />
-                <meta property="twitter:image" content="https://www.hikarii.org/marketing/hikari_chaos_to_clarity_1778160537687.png" />
+                <meta property="twitter:url" content="https://www.Hikariii.org/" />
+                <meta property="twitter:title" content="Hikarii | Radical Clarity in Tasks & Budgeting" />
+                <meta property="twitter:description" content="Master the Hikarii Method: Link your tasks to your budget for ultimate clarity." />
+                <meta property="twitter:image" content="https://www.Hikariii.org/marketing/Hikarii_chaos_to_clarity_1778160537687.png" />
             </Helmet>
 
             {/* ── NAVBAR ─────────────────────────────────────────────── */}
@@ -322,21 +322,21 @@ export const LandingPage: React.FC = () => {
                 </div>
             </div>
 
-            {/* ── HIKARI METHOD ──────────────────────────────────────── */}
+            {/* ── Hikarii METHOD ──────────────────────────────────────── */}
             <section className="py-16 px-6 max-w-7xl mx-auto relative z-20">
                 <div className="grid grid-cols-1 md:grid-cols-[420px,1fr] lg:grid-cols-[480px,1fr] gap-16 lg:gap-24 items-center">
                     {/* Left: text */}
                     <div className="space-y-10">
                         <div>
                             <span className="inline-block px-4 py-1.5 rounded-full bg-primary-500/10 border border-primary-500/20 text-primary-300 text-sm font-semibold mb-6 tracking-wide">The Philosophy</span>
-                            <h2 className="text-3xl md:text-5xl font-display font-bold text-white mb-5 leading-tight tracking-tight">The Hikari Method</h2>
+                            <h2 className="text-3xl md:text-5xl font-display font-bold text-white mb-5 leading-tight tracking-tight">The Hikarii Method</h2>
                             <p className="text-base md:text-lg text-slate-400 leading-relaxed">
-                                92% of Hikari users feel more in control of their time and money within the first week. Our method is built on clarity and intentionality. <Link to="/help/article/ultimate-guide-hikari-method" className="text-primary-400 font-semibold hover:underline">Read the Guide &rarr;</Link>
+                                92% of Hikarii users feel more in control of their time and money within the first week. Our method is built on clarity and intentionality. <Link to="/help/article/ultimate-guide-Hikarii-method" className="text-primary-400 font-semibold hover:underline">Read the Guide &rarr;</Link>
                             </p>
                         </div>
 
                         <div className="space-y-6">
-                            {HIKARI_METHOD_RULES.slice(0, 3).map((rule, idx) => (
+                            {Hikarii_METHOD_RULES.slice(0, 3).map((rule, idx) => (
                                 <div key={idx} className={`group flex gap-5 p-5 rounded-2xl border border-transparent hover:border-white/10 hover:bg-white/[0.03] transition-all duration-300 cursor-default`}>
                                     <div className={`shrink-0 w-12 h-12 rounded-xl ${rule.styles.bg} flex items-center justify-center ${rule.styles.text} group-hover:scale-110 transition-transform duration-400`}>
                                         {rule.icon}
@@ -359,7 +359,7 @@ export const LandingPage: React.FC = () => {
                         <div className="absolute -inset-8 bg-gradient-to-r from-primary-500/8 via-amber-500/8 to-pink-500/8 rounded-3xl blur-[80px] opacity-60 group-hover:opacity-100 transition-opacity duration-1000" />
                         <div className="relative w-full aspect-[16/10] bg-[#0F111A] rounded-2xl overflow-hidden border border-white/[0.08] shadow-[0_40px_80px_-20px_rgba(0,0,0,0.5)] transform perspective-[2000px] rotate-y-[-5deg] rotate-x-[2deg] group-hover:rotate-y-0 group-hover:rotate-x-0 transition-all duration-700 ease-out">
                             <div className="h-full bg-[#0B0C15]">
-                                <img src="/hikari_hero_desk.png" alt="Hikari Desktop Dashboard" loading="lazy" className="w-full h-full object-cover" />
+                                <img src="/Hikarii_hero_desk.png" alt="Hikarii Desktop Dashboard" loading="lazy" className="w-full h-full object-cover" />
                             </div>
                         </div>
 
@@ -368,7 +368,7 @@ export const LandingPage: React.FC = () => {
                             <div className="relative rounded-[2.5rem] bg-[#1C1C1E] p-[8px] shadow-2xl border border-white/10">
                                 <div className="absolute top-4 left-1/2 -translate-x-1/2 z-30 w-[60px] h-[16px] bg-black rounded-full" />
                                 <div className="relative rounded-[2rem] overflow-hidden bg-black aspect-[9/19.5]">
-                                    <img src="/step4_realistic_1774274876575.png" alt="Hikari Mobile App" loading="lazy" className="w-full h-full object-cover" />
+                                    <img src="/step4_realistic_1774274876575.png" alt="Hikarii Mobile App" loading="lazy" className="w-full h-full object-cover" />
                                     <div className="absolute inset-0 bg-gradient-to-tr from-white/[0.04] via-transparent to-transparent pointer-events-none" />
                                 </div>
                             </div>
@@ -388,7 +388,7 @@ export const LandingPage: React.FC = () => {
                     <span className="inline-block px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-black tracking-widest uppercase mb-6">A Global Movement</span>
                     <h2 className="text-4xl md:text-7xl font-display font-bold text-white mb-6 tracking-tight">Radical Clarity is a <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-accent-400">Choice.</span></h2>
                     <p className="text-lg md:text-2xl text-slate-400 max-w-3xl mx-auto leading-relaxed">
-                        Built for the <span className="text-white font-bold">Global Professional</span>. From Lagos to London, Nairobi to New York—Hikari empowers you to architect your growth with institutional precision.
+                        Built for the <span className="text-white font-bold">Global Professional</span>. From Lagos to London, Nairobi to New York—Hikarii empowers you to architect your growth with institutional precision.
                     </p>
                 </div>
 
@@ -401,7 +401,7 @@ export const LandingPage: React.FC = () => {
                                 <div className="w-8 h-8 rounded-lg bg-rose-500/10 flex items-center justify-center text-rose-500">
                                     <X className="w-5 h-5" />
                                 </div>
-                                Before Hikari
+                                Before Hikarii
                             </h3>
                             <ul className="space-y-6">
                                 {["Task: \"Fix website\" — no budget, no deadline.", "Expense: \"$200 Hosting\" — where does the money go?", "Stress: \"Is this project even profitable?\"", "Chaos: Fragmented focus across 5 disconnected apps."].map((item, i) => (
@@ -422,7 +422,7 @@ export const LandingPage: React.FC = () => {
                                 <div className="w-8 h-8 rounded-lg bg-primary-500/10 flex items-center justify-center text-primary-500">
                                     <Check className="w-5 h-5" />
                                 </div>
-                                After Hikari
+                                After Hikarii
                             </h3>
                             <ul className="space-y-6">
                                 {["Task: \"Fix website\" — budget $300 allocated.", "Expense linked to task — remaining $100 tracked.", "Clarity: ROI automatically calculated per milestone.", "Peace: One institutional workspace for everything."].map((item, i) => (
@@ -451,7 +451,7 @@ export const LandingPage: React.FC = () => {
                         </div>
                         <div className="lg:col-span-2">
                             <p className="text-lg md:text-xl text-slate-400 leading-relaxed italic relative pl-8 border-l border-primary-500/30">
-                                "Hikari is the first tool that understands the complex interplay between my time in London and my business in Nairobi."
+                                "Hikarii is the first tool that understands the complex interplay between my time in London and my business in Nairobi."
                             </p>
                         </div>
                     </div>
@@ -512,7 +512,7 @@ export const LandingPage: React.FC = () => {
                 <div className="text-center mb-12 md:mb-20 relative z-10">
                     <span className="inline-block px-4 py-1.5 rounded-full bg-primary-500/10 border border-primary-500/20 text-primary-300 text-sm font-semibold mb-5 tracking-wide">How It Works</span>
                     <h2 className="text-3xl md:text-5xl font-display font-bold text-white mb-4 tracking-tight">Four simple steps to get started</h2>
-                    <p className="text-base md:text-lg text-slate-400 max-w-xl mx-auto px-4">Join Hikari and take control of your tasks and finances in minutes.</p>
+                    <p className="text-base md:text-lg text-slate-400 max-w-xl mx-auto px-4">Join Hikarii and take control of your tasks and finances in minutes.</p>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-16 relative z-10">
@@ -538,7 +538,7 @@ export const LandingPage: React.FC = () => {
                                                 <div className="w-[8px] h-[8px] rounded-full bg-[#1a1a2e] border border-[#2a2a3e] mr-3" />
                                             </div>
                                             <div className="absolute top-0 left-0 right-0 h-12 z-20 flex items-end justify-between px-6 pb-1">
-                                                <span className="text-[9px] font-semibold text-white/80">Hikari</span>
+                                                <span className="text-[9px] font-semibold text-white/80">Hikarii</span>
                                                 <div className="flex items-center gap-1">
                                                     <div className="flex gap-[2px]">
                                                         <div className="w-[3px] h-[4px] bg-white/70 rounded-[0.5px]" />
@@ -768,7 +768,7 @@ export const LandingPage: React.FC = () => {
                                         <WifiOff className="w-6 h-6" />
                                     </div>
                                     <h3 className="text-2xl font-bold mb-3 text-white tracking-tight">Offline Synchronization</h3>
-                                    <p className="text-primary-100/70 leading-relaxed text-sm">Keep working, tracking projects, and logging expenses even without internet connection. Hikari queues your updates locally and automatically syncs them to the cloud the moment you reconnect.</p>
+                                    <p className="text-primary-100/70 leading-relaxed text-sm">Keep working, tracking projects, and logging expenses even without internet connection. Hikarii queues your updates locally and automatically syncs them to the cloud the moment you reconnect.</p>
                                 </div>
                                 <div className="mt-8 bg-black/50 rounded-xl border border-white/[0.08] relative h-[120px] overflow-hidden flex items-center justify-between p-6">
                                     <div className="flex items-center gap-3">
@@ -867,7 +867,7 @@ export const LandingPage: React.FC = () => {
             {/* ── MEET THE TEAM ──────────────────────────────────────── */}
             {/* <section className="py-28 px-6 max-w-7xl mx-auto relative z-20">
                 <div className="text-center mb-20">
-                    <span className="inline-block px-4 py-1.5 rounded-full bg-primary-50 dark:bg-primary-500/10 border border-primary-100 dark:border-primary-500/20 text-primary-600 dark:text-primary-300 text-sm font-semibold mb-5 tracking-wide">Behind Hikari</span>
+                    <span className="inline-block px-4 py-1.5 rounded-full bg-primary-50 dark:bg-primary-500/10 border border-primary-100 dark:border-primary-500/20 text-primary-600 dark:text-primary-300 text-sm font-semibold mb-5 tracking-wide">Behind Hikarii</span>
                     <h2 className="text-4xl md:text-5xl font-display font-bold text-slate-900 dark:text-white mb-4 tracking-tight">Meet the Founder</h2>
                     <p className="text-lg text-slate-500 dark:text-slate-400 max-w-xl mx-auto">The human building the methodology for your radical clarity.</p>
                 </div>
@@ -878,7 +878,7 @@ export const LandingPage: React.FC = () => {
                             name: "Samuel O. Akinboro",
                             role: "Founder & Software Developer",
                             image: "/samuel_akinboro_professional.png",
-                            bio: "Passionate about building high-performance systems that turn chaos into clarity. Samuel is the architect behind the Hikari Method, dedicated to helping individuals master their life and money through intentional design."
+                            bio: "Passionate about building high-performance systems that turn chaos into clarity. Samuel is the architect behind the Hikarii Method, dedicated to helping individuals master their life and money through intentional design."
                         }
                     ].map((member, idx) => (
                         <div key={idx} className="group relative text-center">
@@ -914,7 +914,7 @@ export const LandingPage: React.FC = () => {
                             </span>
                         </h2>
                         <p className="text-lg text-slate-400 mb-8 max-w-xl mx-auto lg:mx-0 leading-relaxed">
-                            Take the Hikari Method wherever you go. Track expenses on the fly, manage tasks seamlessly, and get real-time ROI notifications directly to your phone.
+                            Take the Hikarii Method wherever you go. Track expenses on the fly, manage tasks seamlessly, and get real-time ROI notifications directly to your phone.
                         </p>
                         
                         <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
@@ -932,8 +932,8 @@ export const LandingPage: React.FC = () => {
                         <div className="absolute inset-0 bg-gradient-to-tr from-primary-500/10 to-amber-500/10 blur-3xl rounded-full" />
                         <div className="relative z-10 w-full max-w-[320px] mx-auto">
                             <img 
-                                src="/hikari_mobile_mockup.png" 
-                                alt="Hikari Mobile App Interface" 
+                                src="/Hikarii_mobile_mockup.png" 
+                                alt="Hikarii Mobile App Interface" 
                                 className="w-full h-auto object-contain drop-shadow-2xl mix-blend-lighten group-hover:scale-105 transition-transform duration-700 ease-out [mask-image:linear-gradient(to_bottom,white_70%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_bottom,white_70%,transparent_100%)]"
                             />
                         </div>

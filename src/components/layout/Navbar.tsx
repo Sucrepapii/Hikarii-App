@@ -28,9 +28,9 @@ export const Navbar: React.FC = () => {
                         Pricing
                     </Link>
                     <Link to="/about" className="text-sm font-medium text-slate-400 hover:text-white transition-colors">
-                        Who is Hikari For?
+                        Who is Hikarii For?
                     </Link>
-                    <Link to="/help/article/ultimate-guide-hikari-method" className="text-sm font-medium text-primary-400 hover:text-primary-300 transition-colors">
+                    <Link to="/help/article/ultimate-guide-Hikarii-method" className="text-sm font-medium text-primary-400 hover:text-primary-300 transition-colors">
                         The Ultimate Guide
                     </Link>
                     {!isAuthenticated && (
@@ -57,9 +57,9 @@ export const Navbar: React.FC = () => {
                         Pricing
                     </Link>
                     <Link to="/about" className="text-lg font-medium text-slate-300 py-2 border-b border-white/5" onClick={() => setIsMenuOpen(false)}>
-                        Who is Hikari For?
+                        Who is Hikarii For?
                     </Link>
-                    <Link to="/help/article/ultimate-guide-hikari-method" className="text-lg font-medium text-primary-400 py-2 border-b border-white/5" onClick={() => setIsMenuOpen(false)}>
+                    <Link to="/help/article/ultimate-guide-Hikarii-method" className="text-lg font-medium text-primary-400 py-2 border-b border-white/5" onClick={() => setIsMenuOpen(false)}>
                         The Ultimate Guide
                     </Link>
                     {!isAuthenticated && (

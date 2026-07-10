@@ -1,6 +1,6 @@
-# Contributing to Hikari
+# Contributing to Hikarii
 
-Thank you for your interest in contributing to **Hikari**! We welcome contributions from everyone to help make this project better.
+Thank you for your interest in contributing to **Hikarii**! We welcome contributions from everyone to help make this project better.
 
 ## How to Contribute
 
@@ -20,7 +20,7 @@ Thank you for your interest in contributing to **Hikari**! We welcome contributi
 1.  **Fork the repository** on GitHub.
 2.  **Clone your fork** locally:
     ```bash
-    git clone https://github.com/your-username/hikari.git
+    git clone https://github.com/your-username/Hikarii.git
     ```
 3.  **Create a branch** for your feature or fix:
     ```bash

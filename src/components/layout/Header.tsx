@@ -59,17 +59,17 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
                             </span>
                         ) : (
                             <span className="font-display font-bold gradient-text text-xl md:text-2xl tracking-tight hidden sm:block">
-                                Hikari
+                                Hikarii
                             </span>
                         )}
                     </div>
                 </div>
 
                 <div className="flex items-center gap-4">
-                    {/* User Profile - Simplified to potentially remove name since it's in header now, but keeping for now or removing duplicate info? User asked to remove Hikari and put Hi User. */}
-                    {/* Keeping the avatar but maybe removing the name block if it feels redundant, but user specifically asked to remove Hikari brand text. 
+                    {/* User Profile - Simplified to potentially remove name since it's in header now, but keeping for now or removing duplicate info? User asked to remove Hikarii and put Hi User. */}
+                    {/* Keeping the avatar but maybe removing the name block if it feels redundant, but user specifically asked to remove Hikarii brand text. 
                         Let's keep the right side profile as is for now, or simplify it.
-                        User said "when you login at the top, remove the hikari and put Hi, users name".
+                        User said "when you login at the top, remove the Hikarii and put Hi, users name".
                     */}
                     {user && (
                         <div className="hidden sm:flex items-center gap-3 px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800/50 shadow-sm">

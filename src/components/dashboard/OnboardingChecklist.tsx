@@ -16,7 +16,7 @@ export const OnboardingChecklist: React.FC<OnboardingChecklistProps> = ({
     hasExpenses
 }) => {
     const [isDismissed, setIsDismissed] = useState(() => {
-        return localStorage.getItem('hikari_onboarding_dismissed') === 'true';
+        return localStorage.getItem('Hikarii_onboarding_dismissed') === 'true';
     });
 
     const [isSuccess, setIsSuccess] = useState(false);
@@ -61,7 +61,7 @@ export const OnboardingChecklist: React.FC<OnboardingChecklistProps> = ({
 
     const handleDismiss = () => {
         setIsDismissed(true);
-        localStorage.setItem('hikari_onboarding_dismissed', 'true');
+        localStorage.setItem('Hikarii_onboarding_dismissed', 'true');
     };
 
     if (isDismissed) return null;
@@ -77,7 +77,7 @@ export const OnboardingChecklist: React.FC<OnboardingChecklistProps> = ({
                         </div>
                         <div>
                             <h3 className="text-xl font-bold mb-1">You're all set!</h3>
-                            <p className="text-emerald-50 text-sm">Your Hikari foundation is built. Time to achieve radical clarity.</p>
+                            <p className="text-emerald-50 text-sm">Your Hikarii foundation is built. Time to achieve radical clarity.</p>
                         </div>
                     </div>
                     <button onClick={handleDismiss} className="p-2 hover:bg-white/20 rounded-full transition-colors">
@@ -95,8 +95,8 @@ export const OnboardingChecklist: React.FC<OnboardingChecklistProps> = ({
             <div className="relative z-10">
                 <div className="flex items-start justify-between mb-6">
                     <div>
-                        <h2 className="text-xl font-display font-bold gradient-text mb-2">Getting Started with Hikari</h2>
-                        <p className="text-sm text-slate-500 dark:text-slate-400">Complete these steps to unlock the full power of the Hikari Method.</p>
+                        <h2 className="text-xl font-display font-bold gradient-text mb-2">Getting Started with Hikarii</h2>
+                        <p className="text-sm text-slate-500 dark:text-slate-400">Complete these steps to unlock the full power of the Hikarii Method.</p>
                     </div>
                     <button onClick={handleDismiss} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors p-1">
                         <X className="w-5 h-5" />

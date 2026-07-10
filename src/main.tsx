@@ -17,7 +17,7 @@ Sentry.init({
     // Tracing
     tracesSampleRate: 1.0, //  Capture 100% of the transactions
     // Set 'tracePropagationTargets' to control for which URLs distributed tracing should be enabled
-    tracePropagationTargets: ["localhost", /^https:\/\/hikarii\.org\/api/, /^https:\/\/checkmate-production.*\.up\.railway\.app\/api/]
+    tracePropagationTargets: ["localhost", /^https:\/\/Hikariii\.org\/api/, /^https:\/\/checkmate-production.*\.up\.railway\.app\/api/]
 });
 
 import { GoogleOAuthProvider } from '@react-oauth/google';

@@ -47,8 +47,8 @@ const allowedOrigins = [
   "http://localhost:3000",
   "http://localhost:8081",
   "http://127.0.0.1:8081",
-  "https://www.hikarii.org",
-  "https://hikarii.org",
+  "https://www.Hikariii.org",
+  "https://Hikariii.org",
   "https://checkmate-production-7067.up.railway.app",
 ];
 

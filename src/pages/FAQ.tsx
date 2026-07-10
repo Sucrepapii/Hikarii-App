@@ -14,7 +14,7 @@ export const FAQ: React.FC = () => {
 
     const faqs = [
         {
-            q: "Do I really get to use Hikari for free?",
+            q: "Do I really get to use Hikarii for free?",
             a: "Yes! We give you the core features—like task management, basic budgeting, and the calendar view—completely free, forever. We believe in proving our value to you first. When you're ready, our Pro plan unlocks advanced AI insights and unlimited history."
         },
         {
@@ -23,15 +23,15 @@ export const FAQ: React.FC = () => {
         },
         {
             q: "How does your AI Smart Split actually help me?",
-            a: "Think of it as your personal assistant. When you give Hikari a massive, overwhelming project (like 'Plan a wedding'), our AI analyzes it and instantly breaks it down into bite-sized, actionable tasks. We take the mental load of planning off your shoulders."
+            a: "Think of it as your personal assistant. When you give Hikarii a massive, overwhelming project (like 'Plan a wedding'), our AI analyzes it and instantly breaks it down into bite-sized, actionable tasks. We take the mental load of planning off your shoulders."
         },
         {
             q: "Can I sync my schedule with Google Calendar?",
             a: "Absolutely! You can securely connect your Google account in Settings > Integrations. Once you're linked up, you can seamlessly push individual tasks or entire projects straight to your Google Calendar."
         },
         {
-            q: "Is Hikari a good fit for my freelance business?",
-            a: "Definitely. We have tons of freelancers and small business owners using Hikari to manage client projects and track business expenses. Plus, our data export feature makes it a breeze to hand everything over to your accountant."
+            q: "Is Hikarii a good fit for my freelance business?",
+            a: "Definitely. We have tons of freelancers and small business owners using Hikarii to manage client projects and track business expenses. Plus, our data export feature makes it a breeze to hand everything over to your accountant."
         },
         {
             q: "How do you keep my financial data secure?",
@@ -50,10 +50,10 @@ export const FAQ: React.FC = () => {
     return (
         <div className="min-h-screen bg-[#080910] text-slate-100 selection:bg-accent-500/30 overflow-x-hidden deep-dark">
             <Helmet>
-                <title>FAQ | Hikari Support & Help Center</title>
-                <meta name="description" content="Find answers to frequently asked questions about Hikari. Learn about AI Smart Split, WhatsApp notifications, and how to master your budget." />
-                <meta name="keywords" content="hikari faq, hikariiapp support, help center, AI task manager help, budget app nigeria, whatsapp notifications" />
-                <link rel="canonical" href="https://www.hikarii.org/faq" />
+                <title>FAQ | Hikarii Support & Help Center</title>
+                <meta name="description" content="Find answers to frequently asked questions about Hikarii. Learn about AI Smart Split, WhatsApp notifications, and how to master your budget." />
+                <meta name="keywords" content="Hikarii faq, Hikariiiapp support, help center, AI task manager help, budget app nigeria, whatsapp notifications" />
+                <link rel="canonical" href="https://www.Hikariii.org/faq" />
             </Helmet>
             <Navbar />
 
@@ -72,7 +72,7 @@ export const FAQ: React.FC = () => {
                         <span className="bg-gradient-to-r from-primary-400 via-accent-400 to-pink-400 bg-clip-text text-transparent">Questions</span>
                     </h1>
                     <p className="text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed">
-                        Find answers to common questions about Hikari and learn how to make the most of our tools.
+                        Find answers to common questions about Hikarii and learn how to make the most of our tools.
                     </p>
                 </div>
             </section>

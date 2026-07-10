@@ -13,7 +13,7 @@ interface Message {
 }
 
 const QUICK_PROMPTS = [
-    "What is the Hikari Method?",
+    "What is the Hikarii Method?",
     "How does the budget feature work?"
 ];
 
@@ -22,7 +22,7 @@ export const FloatingChatbot: React.FC = () => {
     
     // Lead Capture State
     const [isIdentified, setIsIdentified] = useState(() => {
-        return localStorage.getItem('hikari_chatbot_lead') === 'true';
+        return localStorage.getItem('Hikarii_chatbot_lead') === 'true';
     });
     const [leadName, setLeadName] = useState('');
     const [leadEmail, setLeadEmail] = useState('');
@@ -32,7 +32,7 @@ export const FloatingChatbot: React.FC = () => {
         {
             id: 'welcome',
             sender: 'bot',
-            text: "Hi! I'm Hikari Support. I can answer any general questions about the app, features, or the Hikari Method!",
+            text: "Hi! I'm Hikarii Support. I can answer any general questions about the app, features, or the Hikarii Method!",
             timestamp: new Date()
         }
     ]);
@@ -75,7 +75,7 @@ export const FloatingChatbot: React.FC = () => {
             setMessages(prev => [...prev, botMsg]);
         } catch (error: any) {
             console.error("AI Coach Error:", error);
-            const errMsg = error.response?.data?.error || "Connection issues with Hikari AI. Please check your setup.";
+            const errMsg = error.response?.data?.error || "Connection issues with Hikarii AI. Please check your setup.";
             toast.error(errMsg);
             setMessages(prev => [
                 ...prev,
@@ -107,14 +107,14 @@ export const FloatingChatbot: React.FC = () => {
             });
             
             setIsIdentified(true);
-            localStorage.setItem('hikari_chatbot_lead', 'true');
+            localStorage.setItem('Hikarii_chatbot_lead', 'true');
             
             // Personalize the welcome message if it hasn't been modified by a conversation yet
             if (messages.length === 1) {
                 setMessages([{
                     id: 'welcome',
                     sender: 'bot',
-                    text: `Hi ${leadName.split(' ')[0]}! I'm Hikari Support. How can I help you today?`,
+                    text: `Hi ${leadName.split(' ')[0]}! I'm Hikarii Support. How can I help you today?`,
                     timestamp: new Date()
                 }]);
             }
@@ -154,7 +154,7 @@ export const FloatingChatbot: React.FC = () => {
                         </div>
                         <div>
                             <h3 className="font-semibold flex items-center gap-1.5 text-sm">
-                                <Sparkles className="w-3.5 h-3.5 text-amber-300" /> Hikari AI
+                                <Sparkles className="w-3.5 h-3.5 text-amber-300" /> Hikarii AI
                             </h3>
                             <p className="text-[11px] text-white/80">Always here to help</p>
                         </div>
@@ -173,7 +173,7 @@ export const FloatingChatbot: React.FC = () => {
                         <div className="w-16 h-16 bg-primary-100 dark:bg-primary-900/30 text-primary-600 rounded-full flex items-center justify-center mb-4">
                             <Bot className="w-8 h-8" />
                         </div>
-                        <h4 className="font-bold text-slate-900 dark:text-white mb-2">Welcome to Hikari Support</h4>
+                        <h4 className="font-bold text-slate-900 dark:text-white mb-2">Welcome to Hikarii Support</h4>
                         <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">Before we begin, please introduce yourself.</p>
                         
                         <form onSubmit={handleLeadSubmit} className="w-full space-y-3">
@@ -307,7 +307,7 @@ export const FloatingChatbot: React.FC = () => {
                             >
                                 <input
                                     type="text"
-                                    placeholder="Ask Hikari..."
+                                    placeholder="Ask Hikarii..."
                                     value={input}
                                     onChange={(e) => setInput(e.target.value)}
                                     disabled={isLoading}

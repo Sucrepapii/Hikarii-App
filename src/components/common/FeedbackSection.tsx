@@ -176,7 +176,7 @@ export const FeedbackSection: React.FC = () => {
                             Leave Feedback
                         </h2>
                         <p className="text-slate-500 dark:text-slate-400 text-sm">
-                            Help us shape the future of Hikari.
+                            Help us shape the future of Hikarii.
                         </p>
                     </div>
 
