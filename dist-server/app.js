@@ -219,6 +219,34 @@ var init_google_calendar_service = __esm({
   }
 });
 
+// server/src/config/redis.ts
+import Redis from "ioredis";
+import dotenv from "dotenv";
+var redisUrl, redisClient, redis_default;
+var init_redis = __esm({
+  "server/src/config/redis.ts"() {
+    dotenv.config();
+    redisUrl = process.env.REDIS_URL;
+    redisClient = null;
+    if (redisUrl && !redisUrl.includes("YOUR_PASSWORD")) {
+      redisClient = new Redis(redisUrl, {
+        maxRetriesPerRequest: null,
+        // Required by BullMQ
+        enableReadyCheck: false
+      });
+      redisClient.on("error", (err) => {
+        console.error("Redis Client Error:", err);
+      });
+      redisClient.on("connect", () => {
+        console.log("Connected to Redis Cache successfully.");
+      });
+    } else {
+      console.warn("\u26A0\uFE0F REDIS_URL is missing or invalid in .env. Caching and Background Jobs will be disabled.");
+    }
+    redis_default = redisClient;
+  }
+});
+
 // server/src/utils/notifications.ts
 import { Expo } from "expo-server-sdk";
 var expo, sendPushNotification;
@@ -355,8 +383,8 @@ var init_task_splitter_service = __esm({
         if (this.isInitialized) return;
         if (!process.env.GEMINI_API_KEY) {
           try {
-            const dotenv3 = __require("dotenv");
-            dotenv3.config();
+            const dotenv4 = __require("dotenv");
+            dotenv4.config();
           } catch (e) {
           }
         }
@@ -490,11 +518,11 @@ var init_task_splitter_service = __esm({
 
 // server/src/services/whatsapp.service.ts
 import twilio from "twilio";
-import dotenv from "dotenv";
+import dotenv2 from "dotenv";
 var accountSid, authToken, fromNumber, sendWhatsAppMessage;
 var init_whatsapp_service = __esm({
   "server/src/services/whatsapp.service.ts"() {
-    dotenv.config();
+    dotenv2.config();
     accountSid = process.env.TWILIO_ACCOUNT_SID;
     authToken = process.env.TWILIO_AUTH_TOKEN;
     fromNumber = process.env.TWILIO_WHATSAPP_FROM || "whatsapp:+14155238886";
@@ -523,11 +551,11 @@ var init_whatsapp_service = __esm({
 
 // server/src/services/email.service.ts
 import { Resend } from "resend";
-import dotenv2 from "dotenv";
+import dotenv3 from "dotenv";
 var sendEmail;
 var init_email_service = __esm({
   "server/src/services/email.service.ts"() {
-    dotenv2.config();
+    dotenv3.config();
     sendEmail = async (to, subject, html, options) => {
       try {
         const apiKey = process.env.RESEND_API_KEY;
@@ -536,13 +564,13 @@ var init_email_service = __esm({
           return;
         }
         const resend = new Resend(apiKey);
-        const defaultDomain = process.env.EMAIL_DOMAIN || "hikarii.org";
+        const defaultDomain = process.env.EMAIL_DOMAIN || "Hikariii.org";
         const emailDomain = options?.fromDomain || defaultDomain;
-        const fromName = options?.fromName || "Hikari";
+        const fromName = options?.fromName || "Hikarii";
         const fromEmail = `${fromName} <noreply@${emailDomain}>`;
         if (!process.env.EMAIL_DOMAIN && !options?.fromDomain) {
           console.log(
-            "Using default email domain: hikarii.org (EMAIL_DOMAIN not set)"
+            "Using default email domain: Hikariii.org (EMAIL_DOMAIN not set)"
           );
         }
         console.log(`Sending email from: ${fromEmail} to: ${to}`);
@@ -615,8 +643,8 @@ var init_emailTemplates = __esm({
           <!-- Colorful Header -->
           <div class="header" style="text-align: center;">
             <div style="display: inline-flex; align-items: center; justify-content: center; gap: 12px;">
-              <img src="${process.env.CLIENT_URL || "https://www.hikarii.org"}/logo.png" width="45" height="45" alt="Hikari Logo" style="display: block; border: 0; outline: none; text-decoration: none;" />
-              <div class="header-logo">HIKARI</div>
+              <img src="${process.env.CLIENT_URL || "https://www.Hikariii.org"}/logo.png" width="45" height="45" alt="Hikarii Logo" style="display: block; border: 0; outline: none; text-decoration: none;" />
+              <div class="header-logo">Hikarii</div>
             </div>
             <div class="header-subtitle">Light & Clarity</div>
           </div>
@@ -630,13 +658,13 @@ var init_emailTemplates = __esm({
             <div class="divider"></div>
             <p style="margin: 0; font-size: 14px; color: #64748b;">
               Shine bright,<br>
-              <strong>The Hikari Team</strong>
+              <strong>The Hikarii Team</strong>
             </p>
           </div>
           
           <!-- Footer -->
           <div class="footer">
-            <p style="margin-bottom: 8px;">&copy; ${(/* @__PURE__ */ new Date()).getFullYear()} Hikari App. All rights reserved.</p>
+            <p style="margin-bottom: 8px;">&copy; ${(/* @__PURE__ */ new Date()).getFullYear()} Hikarii App. All rights reserved.</p>
             <p style="margin: 0;">${footerText || defaultFooter}</p>
           </div>
         </div>
@@ -657,20 +685,20 @@ var init_emailTemplates = __esm({
       </ul>
     </div>
     
-    <p>Keeping your workspace clean helps the Hikari intelligence engine give you better insights!</p>
+    <p>Keeping your workspace clean helps the Hikarii intelligence engine give you better insights!</p>
   `;
-      const clientUrl = process.env.CLIENT_URL || "https://www.hikarii.org/";
+      const clientUrl = process.env.CLIENT_URL || "https://www.Hikariii.org/";
       return getBaseTemplate(
         "Action Required: Overdue Tasks",
         content,
         "Go to Workspace",
         clientUrl,
-        "You received this email because you have pending tasks in your Hikari workspace."
+        "You received this email because you have pending tasks in your Hikarii workspace."
       );
     };
     getContactFormTemplate = (firstName, lastName, email, subject, message) => {
       const content = `
-    <p>You received a new message from the <strong>Hikari Contact Form</strong>.</p>
+    <p>You received a new message from the <strong>Hikarii Contact Form</strong>.</p>
     
     <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 24px; border-radius: 16px; margin: 24px 0;">
       <p style="margin: 0 0 12px 0;"><strong>Name:</strong> ${firstName} ${lastName}</p>
@@ -693,14 +721,14 @@ var init_emailTemplates = __esm({
         content,
         void 0,
         void 0,
-        "This message was sent via the Hikari website contact form."
+        "This message was sent via the Hikarii website contact form."
       );
     };
     getContactAutoReplyTemplate = (firstName) => {
       const content = `
     <p>Hello <strong>${firstName}</strong>,</p>
-    <p>Thanks for reaching out to Hikari! We've received your message and our team is reviewing it.</p>
-    <p>We typically reply within 24-48 hours. In the meantime, you might find answers in our <a href="https://www.hikarii.org/help" style="color: #6366f1;">Help Center</a>.</p>
+    <p>Thanks for reaching out to Hikarii! We've received your message and our team is reviewing it.</p>
+    <p>We typically reply within 24-48 hours. In the meantime, you might find answers in our <a href="https://www.Hikariii.org/help" style="color: #6366f1;">Help Center</a>.</p>
     
     <p>Talk soon,</p>
   `;
@@ -708,14 +736,14 @@ var init_emailTemplates = __esm({
         "We received your message",
         content,
         "Visit Help Center",
-        "https://www.hikarii.org/help",
-        "You received this because you contacted Hikari Support."
+        "https://www.Hikariii.org/help",
+        "You received this because you contacted Hikarii Support."
       );
     };
     getSuspensionTemplate = (name, reason, expires) => {
       const content = `
     <p>Hello <strong>${name}</strong>,</p>
-    <p>Your Hikari account has been <strong style="color: #e11d48;">suspended</strong> due to a violation of our terms or suspicious activity.</p>
+    <p>Your Hikarii account has been <strong style="color: #e11d48;">suspended</strong> due to a violation of our terms or suspicious activity.</p>
     
     <div style="background-color: #fff1f2; border: 1px solid #fecaca; padding: 24px; border-radius: 16px; margin: 24px 0;">
       <p style="margin: 0 0 12px 0;"><strong>Reason:</strong> ${reason || "Terms of Service Violation"}</p>
@@ -728,14 +756,14 @@ var init_emailTemplates = __esm({
         "Account Suspended",
         content,
         "Contact Support",
-        "mailto:support@hikarii.org",
+        "mailto:support@Hikariii.org",
         "This is a mandatory security notification regarding your account status."
       );
     };
     getReactivationTemplate = (name) => {
       const content = `
     <p>Hello <strong>${name}</strong>,</p>
-    <p>Great news! Your Hikari account has been <strong style="color: #059669;">reactivated</strong>. You now have full access to all your features and data.</p>
+    <p>Great news! Your Hikarii account has been <strong style="color: #059669;">reactivated</strong>. You now have full access to all your features and data.</p>
     
     <p>We're glad to have you back. Shine bright!</p>
   `;
@@ -743,15 +771,15 @@ var init_emailTemplates = __esm({
         "Account Reactivated",
         content,
         "Go to Dashboard",
-        process.env.CLIENT_URL || "https://www.hikarii.org/",
-        "Welcome back to Hikari!"
+        process.env.CLIENT_URL || "https://www.Hikariii.org/",
+        "Welcome back to Hikarii!"
       );
     };
     getAdminOnboardingTemplate = (name, email, temporaryPassword) => {
-      const loginUrl = process.env.CLIENT_URL || "https://www.hikarii.org/";
+      const loginUrl = process.env.CLIENT_URL || "https://www.Hikariii.org/";
       const content = `
     <p>Hello <strong>${name}</strong>,</p>
-    <p>You have been added as an <strong>Administrator</strong> for the Hikari Platform. This role grants you access to manage users, view system analytics, and maintain platform health.</p>
+    <p>You have been added as an <strong>Administrator</strong> for the Hikarii Platform. This role grants you access to manage users, view system analytics, and maintain platform health.</p>
     
     <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 24px; border-radius: 16px; margin: 24px 0;">
       <p style="margin: 0 0 12px 0;"><strong>Email:</strong> ${email}</p>
@@ -773,10 +801,10 @@ var init_emailTemplates = __esm({
     getLeadMagnetTemplate = (email) => {
       const content = `
     <p>Success! You're one step closer to radical clarity.</p>
-    <p>As promised, here is your access to the <strong>Hikari Method Guide</strong>. This is the exact system we use to bridge the gap between tasks and finances.</p>
+    <p>As promised, here is your access to the <strong>Hikarii Method Guide</strong>. This is the exact system we use to bridge the gap between tasks and finances.</p>
     
     <div style="background-color: #f0fdf4; border: 1px solid #bbf7d0; padding: 24px; border-radius: 16px; margin: 24px 0; text-align: center;">
-      <h3 style="margin-top: 0; color: #166534; font-size: 18px; margin-bottom: 8px;">\u{1F381} Your Hikari Method Guide is Ready</h3>
+      <h3 style="margin-top: 0; color: #166534; font-size: 18px; margin-bottom: 8px;">\u{1F381} Your Hikarii Method Guide is Ready</h3>
       <p style="color: #15803d; margin-bottom: 0;">Clarity. Focus. Freedom. The guide to mastering your life & money.</p>
     </div>
     
@@ -789,23 +817,23 @@ var init_emailTemplates = __esm({
     
     <p>Once you've had a look, we'd love to hear how it helps your workflow!</p>
   `;
-      const leadMagnetUrl = (process.env.CLIENT_URL || "https://www.hikarii.org") + "/help/article/ultimate-guide-hikari-method";
+      const leadMagnetUrl = (process.env.CLIENT_URL || "https://www.Hikariii.org") + "/help/article/ultimate-guide-Hikarii-method";
       return getBaseTemplate(
-        "Your Hikari Method Guide Inside!",
+        "Your Hikarii Method Guide Inside!",
         content,
-        "Read the Hikari Method Guide",
+        "Read the Hikarii Method Guide",
         leadMagnetUrl,
-        "You received this because you requested the Hikari Method magnet on our website."
+        "You received this because you requested the Hikarii Method magnet on our website."
       );
     };
     getInviteTemplate = (inviterName, projectTitle, inviteLink) => {
       const content = `
     <p>Hello,</p>
-    <p><strong>${inviterName}</strong> has invited you to collaborate on the project <strong>"${projectTitle}"</strong> on Hikari.</p>
+    <p><strong>${inviterName}</strong> has invited you to collaborate on the project <strong>"${projectTitle}"</strong> on Hikarii.</p>
     
     <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 24px; border-radius: 16px; margin: 24px 0;">
       <p style="margin: 0; text-align: center; color: #64748b; font-size: 14px;">
-        Collaborating on Hikari allows you to co-manage tasks, track shared budgets, and stay in sync in real-time.
+        Collaborating on Hikarii allows you to co-manage tasks, track shared budgets, and stay in sync in real-time.
       </p>
     </div>
     
@@ -816,8 +844,38 @@ var init_emailTemplates = __esm({
         content,
         "Accept Invitation",
         inviteLink,
-        "You received this because someone invited you to a project on Hikari."
+        "You received this because someone invited you to a project on Hikarii."
       );
+    };
+  }
+});
+
+// server/src/jobs/queue.ts
+var queue_exports = {};
+__export(queue_exports, {
+  monthlyQueue: () => monthlyQueue,
+  reminderQueue: () => reminderQueue,
+  setupRepeatableJobs: () => setupRepeatableJobs
+});
+import { Queue } from "bullmq";
+var reminderQueue, monthlyQueue, setupRepeatableJobs;
+var init_queue = __esm({
+  "server/src/jobs/queue.ts"() {
+    init_redis();
+    reminderQueue = null;
+    monthlyQueue = null;
+    if (redis_default) {
+      reminderQueue = new Queue("reminder-queue", { connection: redis_default });
+      monthlyQueue = new Queue("monthly-queue", { connection: redis_default });
+    }
+    setupRepeatableJobs = async () => {
+      if (!redis_default) return;
+      await reminderQueue?.add("daily-reminder", {}, {
+        repeat: { pattern: "0 10 * * *" }
+      });
+      await monthlyQueue?.add("monthly-greeting", {}, {
+        repeat: { pattern: "0 9 1 * *" }
+      });
     };
   }
 });
@@ -825,26 +883,31 @@ var init_emailTemplates = __esm({
 // server/src/jobs/reminder.job.ts
 var reminder_job_exports = {};
 __export(reminder_job_exports, {
-  startReminderJob: () => startReminderJob
+  startReminderWorker: () => startReminderWorker
 });
-import cron from "node-cron";
-var startReminderJob;
+import { Worker as Worker2 } from "bullmq";
+var startReminderWorker;
 var init_reminder_job = __esm({
   "server/src/jobs/reminder.job.ts"() {
+    init_redis();
     init_db();
     init_email_service();
     init_whatsapp_service();
     init_emailTemplates();
     init_notification_service();
-    startReminderJob = () => {
+    startReminderWorker = () => {
       if (process.env.VERCEL) {
         console.log(
-          "Cron jobs are not supported on Vercel Serverless. Skipping..."
+          "Workers are not supported on Vercel Serverless. Skipping..."
         );
         return;
       }
-      cron.schedule("0 10 * * *", async () => {
-        console.log("Running daily reminder and cleanup job...");
+      if (!redis_default) {
+        console.warn("Redis is not configured. Reminder Worker skipped.");
+        return;
+      }
+      const worker = new Worker2("reminder-queue", async (job) => {
+        console.log("Running daily reminder and cleanup job via BullMQ...");
         try {
           const thirtyDaysAgo = /* @__PURE__ */ new Date();
           thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
@@ -876,7 +939,7 @@ var init_reminder_job = __esm({
               ).join("");
               await sendEmail(
                 user.email,
-                `Action Required: ${overdueTasks.length} Overdue Tasks on Hikari`,
+                `Action Required: ${overdueTasks.length} Overdue Tasks on Hikarii`,
                 getOverdueReminderTemplate(user.name, taskListHtml)
               );
               if (user.waTasksEnabled && user.phoneNumber) {
@@ -954,7 +1017,11 @@ ${projectList}`
           }
         } catch (error) {
           console.error("Error in reminder job:", error);
+          throw error;
         }
+      }, { connection: redis_default });
+      worker.on("failed", (job, err) => {
+        console.error(`Reminder Job ${job?.id} failed:`, err);
       });
     };
   }
@@ -963,23 +1030,28 @@ ${projectList}`
 // server/src/jobs/monthly.job.ts
 var monthly_job_exports = {};
 __export(monthly_job_exports, {
-  startMonthlyGreetingJob: () => startMonthlyGreetingJob
+  startMonthlyGreetingWorker: () => startMonthlyGreetingWorker
 });
-import cron2 from "node-cron";
-var startMonthlyGreetingJob;
+import { Worker as Worker3 } from "bullmq";
+var startMonthlyGreetingWorker;
 var init_monthly_job = __esm({
   "server/src/jobs/monthly.job.ts"() {
+    init_redis();
     init_db();
     init_notification_service();
-    startMonthlyGreetingJob = () => {
+    startMonthlyGreetingWorker = () => {
       if (process.env.VERCEL) {
         console.log(
-          "Cron jobs are not supported on Vercel Serverless. Skipping..."
+          "Workers are not supported on Vercel Serverless. Skipping..."
         );
         return;
       }
-      cron2.schedule("0 9 1 * *", async () => {
-        console.log("Running monthly greeting job...");
+      if (!redis_default) {
+        console.warn("Redis is not configured. Monthly Worker skipped.");
+        return;
+      }
+      const worker = new Worker3("monthly-queue", async (job) => {
+        console.log("Running monthly greeting job via BullMQ...");
         try {
           const users = await db_default.user.findMany({
             where: { pushToken: { not: null } }
@@ -990,7 +1062,7 @@ var init_monthly_job = __esm({
               await notifyUser(
                 user.id,
                 "Happy New Month! \u{1F31F}",
-                `Wishing you a productive and successful ${currentMonth}! Let's crush your goals on Hikari.`,
+                `Wishing you a productive and successful ${currentMonth}! Let's crush your goals on Hikarii.`,
                 "SYSTEM_ANNOUNCEMENT",
                 { url: "/" }
               );
@@ -998,7 +1070,11 @@ var init_monthly_job = __esm({
           }
         } catch (error) {
           console.error("Error in monthly greeting job:", error);
+          throw error;
         }
+      }, { connection: redis_default });
+      worker.on("failed", (job, err) => {
+        console.error(`Monthly Job ${job?.id} failed:`, err);
       });
     };
   }
@@ -1230,6 +1306,7 @@ import { Router as Router2 } from "express";
 // server/src/controllers/task.controller.ts
 init_db();
 init_google_calendar_service();
+init_redis();
 async function canAccessTask(taskId, userId, requireEdit = false) {
   const task = await db_default.task.findUnique({
     where: { id: taskId },
@@ -1254,6 +1331,14 @@ var getTasks = async (req, res) => {
       where: { userId, status: "ACCEPTED" },
       select: { projectId: true }
     }).then((memberships) => memberships.map((m) => m.projectId));
+    const cacheKey = `user:${userId}:tasks`;
+    if (redis_default) {
+      const cachedTasks = await redis_default.get(cacheKey);
+      if (cachedTasks) {
+        res.json(JSON.parse(cachedTasks));
+        return;
+      }
+    }
     const tasks = await db_default.task.findMany({
       where: {
         OR: [
@@ -1263,6 +1348,9 @@ var getTasks = async (req, res) => {
       },
       orderBy: { createdAt: "desc" }
     });
+    if (redis_default) {
+      await redis_default.set(cacheKey, JSON.stringify(tasks), "EX", 300);
+    }
     res.json(tasks);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -1298,6 +1386,9 @@ var createTask = async (req, res) => {
         console.error("Failed to sync to calendar during creation", err);
       }
     }
+    if (redis_default) {
+      await redis_default.del(`user:${userId}:tasks`);
+    }
     res.status(201).json(task);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -1329,6 +1420,9 @@ var updateTask = async (req, res) => {
         projectId: req.body.projectId || (req.body.projectId === "" ? null : void 0)
       }
     });
+    if (redis_default) {
+      await redis_default.del(`user:${req.userId}:tasks`);
+    }
     res.json(task);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -1344,6 +1438,9 @@ var deleteTask = async (req, res) => {
     await db_default.task.delete({
       where: { id: req.params.id }
     });
+    if (redis_default) {
+      await redis_default.del(`user:${req.userId}:tasks`);
+    }
     res.json({ message: "Task deleted successfully" });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -1371,6 +1468,9 @@ var toggleTaskStatus = async (req, res) => {
           { url: "/tasks" }
         );
       });
+    }
+    if (redis_default) {
+      await redis_default.del(`user:${req.userId}:tasks`);
     }
     res.json(updatedTask);
   } catch (error) {
@@ -1413,6 +1513,9 @@ var analyzeTaskSplit = async (req, res) => {
         })
       )
     );
+    if (redis_default) {
+      await redis_default.del(`user:${req.userId}:tasks`);
+    }
     res.json({
       blocks: createdBlocks,
       message: "Blocks generated successfully"
@@ -1457,6 +1560,9 @@ var scheduleBlocks = async (req, res) => {
           })
         )
       );
+    }
+    if (redis_default) {
+      await redis_default.del(`user:${req.userId}:tasks`);
     }
     res.json({ message: "Blocks scheduled", results });
   } catch (error) {
@@ -1759,6 +1865,7 @@ import { Router as Router3 } from "express";
 // server/src/controllers/budget.controller.ts
 init_db();
 init_whatsapp_service();
+init_redis();
 async function canAccessProject2(projectId, userId, requireEdit = false) {
   const project = await db_default.project.findUnique({
     where: { id: projectId }
@@ -1795,6 +1902,14 @@ var getBudgets = async (req, res) => {
       where: { userId, status: "ACCEPTED" },
       select: { projectId: true }
     }).then((memberships) => memberships.map((m) => m.projectId));
+    const cacheKey = `user:${userId}:budgets`;
+    if (redis_default) {
+      const cachedBudgets = await redis_default.get(cacheKey);
+      if (cachedBudgets) {
+        res.json(JSON.parse(cachedBudgets));
+        return;
+      }
+    }
     const budgets = await db_default.budget.findMany({
       where: {
         OR: [
@@ -1803,6 +1918,9 @@ var getBudgets = async (req, res) => {
         ]
       }
     });
+    if (redis_default) {
+      await redis_default.set(cacheKey, JSON.stringify(budgets), "EX", 300);
+    }
     res.json(budgets);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -1852,6 +1970,9 @@ var createBudget = async (req, res) => {
         }
       });
     }
+    if (redis_default) {
+      await redis_default.del(`user:${req.userId}:budgets`);
+    }
     res.status(201).json(budget);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -1867,6 +1988,9 @@ var deleteBudget = async (req, res) => {
       return;
     }
     await db_default.budget.delete({ where: { id: req.params.id } });
+    if (redis_default) {
+      await redis_default.del(`user:${req.userId}:budgets`);
+    }
     res.json({ message: "Budget deleted successfully" });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -1879,6 +2003,14 @@ var getExpenses = async (req, res) => {
       where: { userId, status: "ACCEPTED" },
       select: { projectId: true }
     }).then((memberships) => memberships.map((m) => m.projectId));
+    const cacheKey = `user:${userId}:expenses`;
+    if (redis_default) {
+      const cachedExpenses = await redis_default.get(cacheKey);
+      if (cachedExpenses) {
+        res.json(JSON.parse(cachedExpenses));
+        return;
+      }
+    }
     const expenses = await db_default.expense.findMany({
       where: {
         OR: [
@@ -1888,6 +2020,9 @@ var getExpenses = async (req, res) => {
       },
       orderBy: { date: "desc" }
     });
+    if (redis_default) {
+      await redis_default.set(cacheKey, JSON.stringify(expenses), "EX", 300);
+    }
     res.json(expenses);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -1941,6 +2076,10 @@ var createExpense = async (req, res) => {
           );
         }
       }
+    }
+    if (redis_default) {
+      await redis_default.del(`user:${req.userId}:expenses`);
+      await redis_default.del(`user:${req.userId}:budgets`);
     }
     res.status(201).json(expense);
   } catch (error) {
@@ -2003,6 +2142,10 @@ var updateExpense = async (req, res) => {
         }
       }
     }
+    if (redis_default) {
+      await redis_default.del(`user:${req.userId}:expenses`);
+      await redis_default.del(`user:${req.userId}:budgets`);
+    }
     res.json(updatedExpense);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -2031,6 +2174,10 @@ var deleteExpense = async (req, res) => {
         where: { id: budget.id },
         data: { spent: { decrement: deletedExpense.amount } }
       });
+    }
+    if (redis_default) {
+      await redis_default.del(`user:${req.userId}:expenses`);
+      await redis_default.del(`user:${req.userId}:budgets`);
     }
     res.json({ message: "Expense deleted successfully" });
   } catch (error) {
@@ -2435,7 +2582,10 @@ var getCoachResponse = async (req, res) => {
     const budgetsContext = budgets.map((b) => `- Category: ${b.category}, Limit: ${b.limit}, Spent: ${b.spent}`).join("\n");
     const tasksContext = tasks.map((t) => `- Title: ${t.title}, Priority: ${t.priority}, Status: ${t.status}, Type: ${t.financials?.type || "NEUTRAL"}, Cost: ${t.financials?.estimatedCost || 0}, Income: ${t.financials?.estimatedIncome || 0}, Due: ${t.dueDate ? new Date(t.dueDate).toLocaleDateString() : "N/A"}`).join("\n");
     const systemPrompt = `
-You are Hikari, a financial and productivity assistant. You analyze the user's tasks and budgets to give them "radical clarity", in a hope-driven, premium, encouraging way.
+You are Hikarii, the friendly, concise, and helpful AI assistant built directly into the Hikarii Task & Budget application.
+
+CRITICAL RULE: You MUST ONLY answer questions related to the Hikarii application, the user's tasks, the user's budgets, or general productivity and financial advice. If the user asks about anything outside of this scope (e.g., coding, general history, weather, trivia), politely decline and remind them you are here to help with their tasks and budget.
+
 Use the following user data to provide context for their query:
 
 Active Budgets:
@@ -2445,9 +2595,57 @@ Active Tasks:
 ${tasksContext || "No tasks created yet."}
 
 Instructions:
-- Give concise, smart, actionable recommendations based on the user's query and their data.
-- Keep responses friendly but focused on time and money optimization (e.g. spending habits, saving opportunities, prioritizing high-value or overdue tasks).
-- Do not make up information. If they ask about something not in their data, politely answer that you don't track it, but relate it back to how they can manage their finances in Hikari.
+1. Be highly concise and conversational. Do not use overly formal buzzwords like "radical clarity," "financial mastery," or "elite execution." 
+2. Give practical, short answers. If they ask "Can I afford dinner?", give a quick "Yes/No" and a 1-2 sentence reason based on their FOOD or ENTERTAINMENT budget.
+3. Keep formatting simple. Use bullet points only if necessary, and avoid long, multi-paragraph essays.
+4. Do not invent data. If they ask about something not in their budgets/tasks, tell them it's not currently tracked.
+
+User Query: "${query}"
+    `;
+    const result = await model.generateContent(systemPrompt);
+    const reply = result.response.text();
+    res.json({ reply });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+var getSupportBotResponse = async (req, res) => {
+  try {
+    const { query } = req.body;
+    if (!query) {
+      res.status(400).json({ error: "Query is required" });
+      return;
+    }
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      res.status(500).json({ error: "AI Features are currently disabled (missing API key)" });
+      return;
+    }
+    const genAI = new GoogleGenerativeAI2(apiKey);
+    const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
+    const systemPrompt = `
+You are Hikarii Support, the friendly, concise, and helpful public AI assistant for the Hikarii Task & Budget application.
+
+CRITICAL RULE: You do NOT have access to the user's personal budgets, tasks, or financial data. 
+If the user asks personal financial questions (e.g., "Can I afford dinner?", "What is my budget?"), politely inform them that you are a public support assistant and cannot view their private data, and direct them to log in and use the AI Coach inside the app for personalized insights.
+
+CRITICAL RULE 2: You MUST ONLY answer questions related to the Hikarii application (features, pricing, the Hikarii Method, how to use the app) or general productivity/financial advice. If they ask about unrelated topics (e.g., coding, trivia, history), politely decline.
+
+Instructions:
+1. Be highly concise, welcoming, and conversational. 
+2. Give practical, short answers. 
+3. Keep formatting simple. Use bullet points only if necessary.
+4. Do not invent features that don't exist. Hikarii is a premium productivity and financial management app with features like AI Smart Split, Budgets, and Tasks. (Note: there is no "New List" feature, just Tasks and Projects).
+
+CRITICAL INSTRUCTION: If you mention a specific feature that has a page in the app, you MUST provide a markdown link to it using this exact format: [Page Name](/path). 
+Valid paths are:
+- Tasks page: [Tasks](/tasks)
+- Budget page: [Budget](/budget)
+- AI Coach: [AI Coach](/ai-coach)
+- Dashboard: [Dashboard](/dashboard)
+- Pricing/Billing: [Pro Plan](/pro)
+
+Do not invent other paths. If they ask how to create a task, say something like: "You can create a task by visiting the [Tasks](/tasks) page and clicking 'Add Task'."
 
 User Query: "${query}"
     `;
@@ -2463,6 +2661,7 @@ User Query: "${query}"
 var router6 = Router5();
 router6.get("/forecast", authenticate, getForecast);
 router6.post("/coach", authenticate, getCoachResponse);
+router6.post("/support-bot", getSupportBotResponse);
 var predictive_routes_default = router6;
 
 // server/src/routes/pattern.routes.ts
@@ -2753,7 +2952,7 @@ var createCheckoutSession = async (req, res) => {
     console.log(
       `Stripe: Trial period set to ${trialDays} days (Promo active: ${isPromoActive})`
     );
-    const clientUrl = process.env.CLIENT_URL || "https://www.hikarii.org";
+    const clientUrl = process.env.CLIENT_URL || "https://www.Hikariii.org";
     console.log("Stripe: Using Client URL:", clientUrl);
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
@@ -2791,7 +2990,7 @@ var createPortalSession = async (req, res) => {
     const user = await db_default.user.findUnique({ where: { id: userId } });
     if (!user || !user.stripeCustomerId)
       return res.status(400).json({ message: "No subscription found" });
-    const clientUrl = process.env.CLIENT_URL || "https://www.hikarii.org";
+    const clientUrl = process.env.CLIENT_URL || "https://www.Hikariii.org";
     const session = await stripe.billingPortal.sessions.create({
       customer: user.stripeCustomerId,
       return_url: `${clientUrl}/settings`
@@ -2943,7 +3142,7 @@ var submitContactForm = async (req, res) => {
       res.status(400).json({ error: "Missing required fields" });
       return;
     }
-    const adminEmail = process.env.ADMIN_EMAIL || "support@hikarii.org";
+    const adminEmail = process.env.ADMIN_EMAIL || "support@Hikariii.org";
     const adminHtml = getContactFormTemplate(
       firstName,
       lastName,
@@ -2957,7 +3156,7 @@ var submitContactForm = async (req, res) => {
     console.log(`Sending auto-reply to user: ${email}`);
     await sendEmail(
       email,
-      "We received your message - Hikari Support",
+      "We received your message - Hikarii Support",
       userHtml
     );
     res.status(200).json({ message: "Message sent successfully" });
@@ -3024,7 +3223,7 @@ var createAdmin = async (req, res) => {
     try {
       await sendEmail(
         email,
-        "Welcome to the Admin Team - Hikari",
+        "Welcome to the Admin Team - Hikarii",
         getAdminOnboardingTemplate(name, email, password)
       );
     } catch (emailError) {
@@ -3232,7 +3431,7 @@ var suspendUser = async (req, res) => {
       );
       await sendEmail(
         userToSuspend.email,
-        "Account Suspended - Hikari",
+        "Account Suspended - Hikarii",
         emailHtml
       );
     } catch (emailError) {
@@ -3276,7 +3475,7 @@ var reactivateUser = async (req, res) => {
       const emailHtml = getReactivationTemplate(reactivatedUser.name);
       await sendEmail(
         reactivatedUser.email,
-        "Account Reactivated - Hikari",
+        "Account Reactivated - Hikarii",
         emailHtml
       );
     } catch (emailError) {
@@ -3433,7 +3632,7 @@ var deleteFeedback = async (req, res) => {
     if (!requestor || requestor.role !== "ADMIN") {
       return res.status(403).json({ message: "Access Denied" });
     }
-    const { id } = req.params;
+    const id = req.params.id;
     const feedback = await db_default.feedback.findUnique({ where: { id } });
     if (!feedback) {
       const articleFeedback = await db_default.articleFeedback.findUnique({ where: { id } });
@@ -3474,7 +3673,7 @@ init_email_service();
 init_emailTemplates();
 var createLead = async (req, res) => {
   try {
-    const { email, source } = req.body;
+    const { name, email, source } = req.body;
     if (!email) {
       res.status(400).json({ error: "Email is required" });
       return;
@@ -3485,15 +3684,19 @@ var createLead = async (req, res) => {
     let lead;
     if (existingLead) {
       lead = existingLead;
-      if (source && existingLead.source !== source) {
+      const updateData = {};
+      if (source && existingLead.source !== source) updateData.source = source;
+      if (name && existingLead.name !== name) updateData.name = name;
+      if (Object.keys(updateData).length > 0) {
         lead = await db_default.lead.update({
           where: { email },
-          data: { source }
+          data: updateData
         });
       }
     } else {
       lead = await db_default.lead.create({
         data: {
+          name: name || null,
           email,
           source: source || "GENERAL_INTEREST"
         }
@@ -3512,7 +3715,7 @@ var createLead = async (req, res) => {
       );
       await sendEmail(
         email,
-        "Your Hikari Method Template Inside!",
+        "Your Hikarii Method Template Inside!",
         getLeadMagnetTemplate(email),
         emailOptions
       );
@@ -3521,7 +3724,7 @@ var createLead = async (req, res) => {
       console.error("Lead magnet email failed to send:", emailError);
     }
     res.status(201).json({
-      message: "Success! You've been added to our interest list. Check your inbox for the Hikari Method magnet!",
+      message: "Success! You've been added to our interest list. Check your inbox for the Hikarii Method magnet!",
       lead
     });
   } catch (error) {
@@ -3646,14 +3849,14 @@ var inviteMember = async (req, res) => {
         token
       }
     });
-    const clientUrl = process.env.CLIENT_URL || "https://www.hikarii.org";
+    const clientUrl = process.env.CLIENT_URL || "https://www.Hikariii.org";
     const inviteLink = `${clientUrl}/invites/${token}`;
     try {
       await sendEmail(
         email,
         `Invitation to collaborate on "${project.title}"`,
         getInviteTemplate(currentUser.name, project.title, inviteLink),
-        { fromName: "Hikari Collaboration" }
+        { fromName: "Hikarii Collaboration" }
       );
     } catch (emailErr) {
       console.error("Failed to send invite email:", emailErr);
@@ -4039,8 +4242,8 @@ var allowedOrigins = [
   "http://localhost:3000",
   "http://localhost:8081",
   "http://127.0.0.1:8081",
-  "https://www.hikarii.org",
-  "https://hikarii.org",
+  "https://www.Hikariii.org",
+  "https://Hikariii.org",
   "https://checkmate-production-7067.up.railway.app"
 ];
 app.use(
@@ -4149,12 +4352,15 @@ var PORT = process.env.PORT || 5005;
 var PORT_NUM = Number(PORT) || 5005;
 app.listen(PORT_NUM, () => {
   if (process.env.NODE_ENV === "production" && !process.env.VERCEL) {
-    Promise.resolve().then(() => (init_reminder_job(), reminder_job_exports)).then(({ startReminderJob: startReminderJob2 }) => {
-      startReminderJob2();
-    }).catch((err) => console.error("Failed to load reminder job:", err));
-    Promise.resolve().then(() => (init_monthly_job(), monthly_job_exports)).then(({ startMonthlyGreetingJob: startMonthlyGreetingJob2 }) => {
-      startMonthlyGreetingJob2();
-    }).catch((err) => console.error("Failed to load monthly job:", err));
+    Promise.resolve().then(() => (init_queue(), queue_exports)).then(({ setupRepeatableJobs: setupRepeatableJobs2 }) => {
+      setupRepeatableJobs2();
+    }).catch((err) => console.error("Failed to setup queue:", err));
+    Promise.resolve().then(() => (init_reminder_job(), reminder_job_exports)).then(({ startReminderWorker: startReminderWorker2 }) => {
+      startReminderWorker2();
+    }).catch((err) => console.error("Failed to load reminder worker:", err));
+    Promise.resolve().then(() => (init_monthly_job(), monthly_job_exports)).then(({ startMonthlyGreetingWorker: startMonthlyGreetingWorker2 }) => {
+      startMonthlyGreetingWorker2();
+    }).catch((err) => console.error("Failed to load monthly worker:", err));
   }
   console.log(`
 \u{1F680} Server is running on port ${PORT_NUM}`);
