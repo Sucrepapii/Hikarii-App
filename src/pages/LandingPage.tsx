@@ -158,6 +158,23 @@ export const LandingPage: React.FC = () => {
     ]);
     const [isHovered, setIsHovered] = useState(false);
     const testimonialRef = React.useRef<HTMLDivElement>(null);
+    const [statsData, setStatsData] = useState({ users: 3000, countries: 20 });
+
+    useEffect(() => {
+        const fetchStats = async () => {
+            try {
+                const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+                const res = await fetch(`${API_URL}/stats`);
+                if (res.ok) {
+                    const data = await res.json();
+                    setStatsData(data);
+                }
+            } catch {
+                // Keep default
+            }
+        };
+        fetchStats();
+    }, []);
 
     // Fetch real feedback from the API
     useEffect(() => {
@@ -359,7 +376,7 @@ export const LandingPage: React.FC = () => {
                         <div className="absolute -inset-8 bg-gradient-to-r from-primary-500/8 via-amber-500/8 to-pink-500/8 rounded-3xl blur-[80px] opacity-60 group-hover:opacity-100 transition-opacity duration-1000" />
                         <div className="relative w-full aspect-[16/10] bg-[#0F111A] rounded-2xl overflow-hidden border border-white/[0.08] shadow-[0_40px_80px_-20px_rgba(0,0,0,0.5)] transform perspective-[2000px] rotate-y-[-5deg] rotate-x-[2deg] group-hover:rotate-y-0 group-hover:rotate-x-0 transition-all duration-700 ease-out">
                             <div className="h-full bg-[#0B0C15]">
-                                <img src="/Hikarii_hero_desk.png" alt="Hikarii Desktop Dashboard" loading="lazy" className="w-full h-full object-cover" />
+                                <img src="/hikari_hero_desk.png" alt="Hikarii Desktop Dashboard" loading="lazy" className="w-full h-full object-cover" />
                             </div>
                         </div>
 
@@ -441,11 +458,13 @@ export const LandingPage: React.FC = () => {
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center bg-white/[0.02] border border-white/5 p-8 md:p-12 rounded-[2.5rem]">
                         <div className="flex gap-12">
                             <div>
-                                <div className="text-4xl font-black text-white mb-1 tracking-tighter">20+</div>
+                                <div className="text-4xl font-black text-white mb-1 tracking-tighter">{statsData.countries}+</div>
                                 <div className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Countries</div>
                             </div>
                             <div>
-                                <div className="text-4xl font-black text-white mb-1 tracking-tighter">3K+</div>
+                                <div className="text-4xl font-black text-white mb-1 tracking-tighter">
+                                    {statsData.users > 3000 ? new Intl.NumberFormat('en-US').format(statsData.users) : '3K+'}
+                                </div>
                                 <div className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Global Users</div>
                             </div>
                         </div>

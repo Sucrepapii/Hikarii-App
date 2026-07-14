@@ -35,6 +35,7 @@ import feedbackRoutes from "./routes/feedback.routes";
 import collaborationRoutes from "./routes/collaboration.routes";
 import articleFeedbackRoutes from "./routes/articleFeedback.routes";
 import notificationRoutes from "./routes/notification.routes";
+import statsRoutes from "./routes/stats.routes";
 
 const app = express();
 
@@ -145,6 +146,7 @@ app.use("/api/feedback", feedbackRoutes);
 app.use("/api/collaboration", collaborationRoutes);
 app.use("/api/article-feedback", articleFeedbackRoutes);
 app.use("/api/notifications", notificationRoutes);
+app.use("/api/stats", statsRoutes);
 
 // Health check
 app.get("/health", (req, res) => {
