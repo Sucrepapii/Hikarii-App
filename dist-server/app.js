@@ -4226,6 +4226,34 @@ router16.delete("/clear-all", authenticate, clearAllNotifications);
 router16.delete("/:id", authenticate, deleteNotification);
 var notification_routes_default = router16;
 
+// server/src/routes/stats.routes.ts
+init_db();
+import { Router as Router13 } from "express";
+var router17 = Router13();
+router17.get("/", async (req, res) => {
+  try {
+    const userCount = await db_default.user.count();
+    const countries = await db_default.feedback.groupBy({
+      by: ["country"],
+      where: {
+        country: {
+          not: null
+        }
+      }
+    });
+    const countryCount = countries.length;
+    const baseUsers = 3e3;
+    const baseCountries = 20;
+    res.json({
+      users: baseUsers + userCount,
+      countries: baseCountries + countryCount
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+var stats_routes_default = router17;
+
 // server/src/app.ts
 Sentry.init({
   dsn: process.env.SENTRY_DSN || process.env.VITE_SENTRY_DSN,
@@ -4244,6 +4272,8 @@ var allowedOrigins = [
   "http://127.0.0.1:8081",
   "https://www.Hikariii.org",
   "https://Hikariii.org",
+  "https://www.hikarii.org",
+  "https://hikarii.org",
   "https://checkmate-production-7067.up.railway.app"
 ];
 app.use(
@@ -4325,6 +4355,7 @@ app.use("/api/feedback", feedback_routes_default);
 app.use("/api/collaboration", collaboration_routes_default);
 app.use("/api/article-feedback", articleFeedback_routes_default);
 app.use("/api/notifications", notification_routes_default);
+app.use("/api/stats", stats_routes_default);
 app.get("/health", (req, res) => {
   res.json({ status: "ok" });
 });
