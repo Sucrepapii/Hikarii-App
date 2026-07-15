@@ -6,8 +6,8 @@ let reminderQueue: Queue | null = null;
 let monthlyQueue: Queue | null = null;
 
 if (redisClient) {
-    reminderQueue = new Queue('reminder-queue', { connection: redisClient });
-    monthlyQueue = new Queue('monthly-queue', { connection: redisClient });
+    reminderQueue = new Queue('reminder-queue', { connection: redisClient as any });
+    monthlyQueue = new Queue('monthly-queue', { connection: redisClient as any });
 }
 
 export const setupRepeatableJobs = async () => {

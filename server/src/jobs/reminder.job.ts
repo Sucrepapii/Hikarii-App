@@ -160,7 +160,7 @@ export const startReminderWorker = () => {
       console.error("Error in reminder job:", error);
       throw error; // Let BullMQ handle retries
     }
-  }, { connection: redisClient });
+  }, { connection: redisClient as any });
 
   worker.on('failed', (job, err) => {
     console.error(`Reminder Job ${job?.id} failed:`, err);

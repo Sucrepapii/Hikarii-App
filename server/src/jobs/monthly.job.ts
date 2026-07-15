@@ -40,7 +40,7 @@ export const startMonthlyGreetingWorker = () => {
       console.error("Error in monthly greeting job:", error);
       throw error;
     }
-  }, { connection: redisClient });
+  }, { connection: redisClient as any });
 
   worker.on('failed', (job, err) => {
     console.error(`Monthly Job ${job?.id} failed:`, err);
