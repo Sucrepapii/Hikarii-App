@@ -37,7 +37,11 @@ apiClient.interceptors.response.use(
   async (error) => {
     if (error.response?.status === 401) {
       // Token expired or invalid
-      await supabase.auth.signOut();
+      try {
+        await supabase.auth.signOut();
+      } catch (e) {
+        console.error("SignOut error in interceptor:", e);
+      }
       localStorage.removeItem("auth-user");
       window.location.href = "/login";
     }

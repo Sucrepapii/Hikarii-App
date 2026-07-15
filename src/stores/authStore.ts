@@ -255,7 +255,11 @@ export const useAuthStore = create<AuthState>((set, get) => {
         set({ user, token: session.access_token, isLoading: false });
       } catch (error) {
         // Clear session on error
-        await supabase.auth.signOut();
+        try {
+          await supabase.auth.signOut();
+        } catch (e) {
+          console.error("SignOut error:", e);
+        }
         localStorage.removeItem("auth-user");
         set({ user: null, token: null, isLoading: false });
       }
