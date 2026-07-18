@@ -55,6 +55,11 @@ const allowedOrigins = [
   "https://checkmate-production-7067.up.railway.app",
 ];
 
+if (process.env.FRONTEND_URL) {
+  const additionalOrigins = process.env.FRONTEND_URL.split(",").map(url => url.trim());
+  allowedOrigins.push(...additionalOrigins);
+}
+
 app.use(
   cors({
     origin: (origin, callback) => {
