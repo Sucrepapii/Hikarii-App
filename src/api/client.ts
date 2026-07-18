@@ -4,7 +4,7 @@ import { supabase } from "../supabase/client";
 const API_BASE_URL =
   import.meta.env.VITE_API_URL || 
   (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1' 
-    ? "https://checkmate-production-7067.up.railway.app/api" 
+    ? "https://hikarii.onrender.com/api" 
     : "http://127.0.0.1:5005/api");
 
 // Create axios instance
