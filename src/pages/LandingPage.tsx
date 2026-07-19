@@ -463,7 +463,7 @@ export const LandingPage: React.FC = () => {
                             </div>
                             <div>
                                 <div className="text-4xl font-black text-white mb-1 tracking-tighter">
-                                    {statsData.users > 3000 ? new Intl.NumberFormat('en-US').format(statsData.users) : '3K+'}
+                                    {new Intl.NumberFormat('en-US').format(statsData.users)}
                                 </div>
                                 <div className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Global Users</div>
                             </div>
