@@ -376,7 +376,7 @@ export const LandingPage: React.FC = () => {
                         <div className="absolute -inset-8 bg-gradient-to-r from-primary-500/8 via-amber-500/8 to-pink-500/8 rounded-3xl blur-[80px] opacity-60 group-hover:opacity-100 transition-opacity duration-1000" />
                         <div className="relative w-full aspect-[16/10] bg-[#0F111A] rounded-2xl overflow-hidden border border-white/[0.08] shadow-[0_40px_80px_-20px_rgba(0,0,0,0.5)] transform perspective-[2000px] rotate-y-[-5deg] rotate-x-[2deg] group-hover:rotate-y-0 group-hover:rotate-x-0 transition-all duration-700 ease-out">
                             <div className="h-full bg-[#0B0C15]">
-                                <img src="/hero_dashboard_v2.png" alt="Hikarii Desktop Dashboard" loading="lazy" className="w-full h-full object-cover" />
+                                <img src="/hikari_hero_desk.png" alt="Hikarii Desktop Dashboard" loading="lazy" className="w-full h-full object-cover" />
                             </div>
                         </div>
 
