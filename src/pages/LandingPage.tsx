@@ -376,7 +376,7 @@ export const LandingPage: React.FC = () => {
                         <div className="absolute -inset-8 bg-gradient-to-r from-primary-500/8 via-amber-500/8 to-pink-500/8 rounded-3xl blur-[80px] opacity-60 group-hover:opacity-100 transition-opacity duration-1000" />
                         <div className="relative w-full aspect-[16/10] bg-[#0F111A] rounded-2xl overflow-hidden border border-white/[0.08] shadow-[0_40px_80px_-20px_rgba(0,0,0,0.5)] transform perspective-[2000px] rotate-y-[-5deg] rotate-x-[2deg] group-hover:rotate-y-0 group-hover:rotate-x-0 transition-all duration-700 ease-out">
                             <div className="h-full bg-[#0B0C15]">
-                                <img src="/hikari_hero_desk.png" alt="Hikarii Desktop Dashboard" loading="lazy" className="w-full h-full object-cover" />
+                                <img src="/hero_dashboard_v2.png" alt="Hikarii Desktop Dashboard" loading="lazy" className="w-full h-full object-cover" />
                             </div>
                         </div>
 
@@ -384,8 +384,51 @@ export const LandingPage: React.FC = () => {
                         <div className="absolute -bottom-12 -right-6 md:-right-10 w-[170px] md:w-[200px] z-30 transform perspective-[2000px] rotate-y-[5deg] rotate-x-[-2deg] group-hover:rotate-y-0 group-hover:rotate-x-0 transition-all duration-700 ease-out group-hover:translate-x-3 group-hover:-translate-y-4">
                             <div className="relative rounded-[2.5rem] bg-[#1C1C1E] p-[8px] shadow-2xl border border-white/10">
                                 <div className="absolute top-4 left-1/2 -translate-x-1/2 z-30 w-[60px] h-[16px] bg-black rounded-full" />
-                                <div className="relative rounded-[2rem] overflow-hidden bg-black aspect-[9/19.5]">
-                                    <img src="/step4_realistic_1774274876575.png" alt="Hikarii Mobile App" loading="lazy" className="w-full h-full object-cover" />
+                                <div className="relative rounded-[2rem] overflow-hidden bg-[#0B0C15] aspect-[9/19.5]">
+                                    {/* Native Vector Crisp App Screen */}
+                                    <div className="w-full h-full bg-[#0B0C15] p-3 text-left flex flex-col justify-between pt-8 pb-3 select-none">
+                                        <div>
+                                            <div className="flex items-center justify-between mb-2.5 pb-1.5 border-b border-white/10">
+                                                <div className="flex items-center gap-1.5">
+                                                    <Logo variant="icon" size="sm" suppressLink />
+                                                    <span className="font-extrabold text-white text-xs tracking-tight">Hikarii</span>
+                                                </div>
+                                                <span className="text-[7px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300">PRO ACTIVE</span>
+                                            </div>
+
+                                            <div className="p-2 rounded-xl bg-gradient-to-br from-emerald-500/15 via-primary-500/10 to-transparent border border-emerald-500/30 mb-2.5">
+                                                <div className="text-[7px] text-emerald-400 font-bold uppercase tracking-wider">Net Profit Momentum</div>
+                                                <div className="text-base font-black text-white flex items-center gap-1 mt-0.5">
+                                                    <span>+$1,250</span>
+                                                    <span className="text-[8px] font-bold px-1 py-0.5 rounded bg-emerald-500/20 text-emerald-300">↗ +34%</span>
+                                                </div>
+                                                <p className="text-[7px] text-slate-400 mt-0.5">Tasks-to-budget trajectory: Strong</p>
+                                            </div>
+
+                                            <div className="space-y-1.5 mb-2">
+                                                <div className="text-[8px] font-bold text-slate-400 uppercase tracking-wider">Active Milestones</div>
+                                                <div className="p-1.5 rounded-lg bg-white/5 border border-white/10 flex items-center justify-between text-[8px]">
+                                                    <div className="flex items-center gap-1.5 text-white font-medium">
+                                                        <Check className="w-3 h-3 text-emerald-400" />
+                                                        <span>Payment Integration</span>
+                                                    </div>
+                                                    <span className="text-amber-400 font-bold">$450</span>
+                                                </div>
+                                                <div className="p-1.5 rounded-lg bg-white/5 border border-white/10 flex items-center justify-between text-[8px]">
+                                                    <div className="flex items-center gap-1.5 text-white font-medium">
+                                                        <Check className="w-3 h-3 text-emerald-400" />
+                                                        <span>Launch Campaign</span>
+                                                    </div>
+                                                    <span className="text-primary-400 font-bold">$1,200</span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="p-1.5 rounded-lg bg-white/5 border border-white/10 flex items-center justify-between text-[8px]">
+                                            <span className="text-slate-400">Total Budget Managed</span>
+                                            <span className="font-extrabold text-white">$4,850</span>
+                                        </div>
+                                    </div>
                                     <div className="absolute inset-0 bg-gradient-to-tr from-white/[0.04] via-transparent to-transparent pointer-events-none" />
                                 </div>
                             </div>
