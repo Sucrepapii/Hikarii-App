@@ -107,6 +107,19 @@ export const authenticate = async (
       }
     }
 
+    const PERMANENT_PRO_EMAILS = ["akinboroo@gmail.com"];
+    if (user && PERMANENT_PRO_EMAILS.includes(user.email.toLowerCase()) && user.subscriptionStatus !== "PRO") {
+      await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          subscriptionStatus: "PRO",
+          subscriptionId: "PERMANENT_PRO_VIP",
+          currentPeriodEnd: new Date("2099-12-31T23:59:59Z"),
+        },
+      });
+      user.subscriptionStatus = "PRO";
+    }
+
     if (user.isSuspended) {
       res
         .status(403)

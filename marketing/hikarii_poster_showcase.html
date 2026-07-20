@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hikarii — Bring Light & Clarity to Your Work & Life</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-warm: #faf7f2;
+            --card-white: #ffffff;
+            --text-dark: #1e1926;
+            --text-muted: #575361;
+            --purple-brand: #9333ea;
+            --orange-brand: #ea580c;
+            --border-soft: rgba(0, 0, 0, 0.08);
+            --shadow-subtle: 0 20px 40px rgba(30, 25, 38, 0.06);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-warm);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .poster-card {
+            width: 100%;
+            max-width: 860px;
+            background: var(--card-white);
+            border-radius: 24px;
+            box-shadow: var(--shadow-subtle), 0 1px 3px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-soft);
+            padding: 50px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Top Brand Bar */
+        .brand-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 36px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-soft);
+        }
+
+        .logo-box {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .logo-svg {
+            width: 52px;
+            height: 38px;
+        }
+
+        .brand-title {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: var(--text-dark);
+        }
+
+        .brand-tag {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--purple-brand);
+            background: rgba(147, 51, 234, 0.08);
+            padding: 6px 14px;
+            border-radius: 100px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        /* Editorial Header */
+        .poster-header {
+            margin-bottom: 36px;
+        }
+
+        .poster-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 46px;
+            line-height: 1.15;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+            letter-spacing: -0.5px;
+        }
+
+        .poster-title span.accent-purple {
+            color: var(--purple-brand);
+            font-style: italic;
+        }
+
+        .poster-title span.accent-orange {
+            color: var(--orange-brand);
+        }
+
+        .poster-sub {
+            font-size: 18px;
+            line-height: 1.6;
+            color: var(--text-muted);
+            max-width: 680px;
+        }
+
+        /* Main Lifestyle Image Feature */
+        .hero-image-wrap {
+            width: 100%;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+            margin-bottom: 40px;
+            border: 1px solid var(--border-soft);
+        }
+
+        .hero-image-wrap img {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
+        }
+
+        /* Dual Human Showcase Grid */
+        .secondary-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .human-card {
+            background: #faf7f2;
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid var(--border-soft);
+        }
+
+        .human-card h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .human-card p {
+            font-size: 14px;
+            line-height: 1.55;
+            color: var(--text-muted);
+        }
+
+        /* Editorial Footer CTA */
+        .poster-cta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--text-dark);
+            color: #ffffff;
+            border-radius: 16px;
+            padding: 28px 36px;
+        }
+
+        .cta-content h4 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .cta-content p {
+            font-size: 14px;
+            color: #a19da8;
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, #9333ea, #ea580c);
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 15px;
+            padding: 12px 26px;
+            border-radius: 10px;
+            transition: opacity 0.2s ease;
+        }
+
+        .cta-button:hover {
+            opacity: 0.9;
+        }
+
+        @media (max-width: 768px) {
+            .poster-card {
+                padding: 30px 20px;
+            }
+            .poster-title {
+                font-size: 34px;
+            }
+            .secondary-grid {
+                grid-template-columns: 1fr;
+            }
+            .poster-cta {
+                flex-direction: column;
+                gap: 16px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="poster-card">
+        <!-- Top Brand Navigation -->
+        <div class="brand-nav">
+            <div class="logo-box">
+                <svg class="logo-svg" viewBox="0 0 140 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="human-grad-left" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#9333ea" />
+                            <stop offset="100%" stop-color="#6b21a8" />
+                        </linearGradient>
+                        <linearGradient id="human-grad-right" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#fb923c" />
+                            <stop offset="100%" stop-color="#c2410c" />
+                        </linearGradient>
+                    </defs>
+                    <path d="M 75 30 L 35 30 A 20 20 0 0 0 35 70 L 40 70" stroke="url(#human-grad-left)" stroke-width="16" stroke-linecap="round" />
+                    <path d="M 65 70 L 105 70 A 20 20 0 0 0 105 30 L 100 30" stroke="url(#human-grad-right)" stroke-width="16" stroke-linecap="round" />
+                </svg>
+                <span class="brand-title">Hikarii</span>
+            </div>
+            <div class="brand-tag">Work & Life Clarity</div>
+        </div>
+
+        <!-- Editorial Header -->
+        <div class="poster-header">
+            <h1 class="poster-title">
+                Bring real <span class="accent-purple">light</span> & <span class="accent-orange">clarity</span> to your everyday work.
+            </h1>
+            <p class="poster-sub">
+                Designed for real people with real goals. Hikarii combines intuitive task planning with clear budget tracking so you can focus on what truly matters.
+            </p>
+        </div>
+
+        <!-- Main Lifestyle Human Desk Image Feature -->
+        <div class="hero-image-wrap">
+            <img src="./hikarii_desk_lifestyle_poster.png" alt="Hikarii Desk Lifestyle Marketing Poster with Logo">
+        </div>
+
+        <!-- Secondary Human Desk Lifestyle Cards -->
+        <div class="secondary-grid">
+            <div class="human-card">
+                <h3><span>📋</span> Purposeful Planning</h3>
+                <p>Break down complex projects into simple, manageable sub-tasks with intelligent assistance that feels natural and clear.</p>
+            </div>
+            <div class="human-card">
+                <h3><span>☕</span> Financial Peace of Mind</h3>
+                <p>Connect your expenses directly to milestones. Always know where your resources go without spreadsheet headache.</p>
+            </div>
+        </div>
+
+        <!-- Editorial CTA -->
+        <div class="poster-cta">
+            <div class="cta-content">
+                <h4>Experience True Task & Budget Clarity</h4>
+                <p>Start your free 14-day trial today and simplify your workspace.</p>
+            </div>
+            <a href="#" class="cta-button">Try Hikarii Free</a>
+        </div>
+    </div>
+
+</body>
+</html>

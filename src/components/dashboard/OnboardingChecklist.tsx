@@ -51,11 +51,8 @@ export const OnboardingChecklist: React.FC<OnboardingChecklistProps> = ({
 
     useEffect(() => {
         if (isAllCompleted && !isDismissed) {
-            setIsSuccess(true);
-            const timer = setTimeout(() => {
-                handleDismiss();
-            }, 5000); // Auto dismiss after 5 seconds of success
-            return () => clearTimeout(timer);
+            localStorage.setItem('Hikarii_onboarding_dismissed', 'true');
+            setIsDismissed(true);
         }
     }, [isAllCompleted, isDismissed]);
 
@@ -64,7 +61,7 @@ export const OnboardingChecklist: React.FC<OnboardingChecklistProps> = ({
         localStorage.setItem('Hikarii_onboarding_dismissed', 'true');
     };
 
-    if (isDismissed) return null;
+    if (isDismissed || isAllCompleted) return null;
 
     if (isSuccess) {
         return (
