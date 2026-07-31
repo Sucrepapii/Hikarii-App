@@ -26,7 +26,7 @@ export const ProjectCarousel: React.FC = () => {
 
     const handleNewProjectClick = (e: React.MouseEvent) => {
         e.preventDefault();
-        const isPro = user?.subscriptionStatus === 'PRO';
+        const isPro = user?.role === 'ADMIN' || user?.subscriptionStatus === 'PRO';
 
         if (!isPro && activeProjects.length >= 1) {
             setShowUpgradeModal(true);
@@ -89,7 +89,7 @@ export const ProjectCarousel: React.FC = () => {
                     </div>
                     <h3 className="font-semibold text-slate-700 dark:text-slate-200">New Project</h3>
                     <p className="text-xs text-slate-500 mt-1">
-                        {user?.subscriptionStatus === 'PRO' ? 'Start a new goal' : `${activeProjects.length}/1 Free Project Used`}
+                        {user?.role === 'ADMIN' || user?.subscriptionStatus === 'PRO' ? 'Start a new goal' : `${activeProjects.length}/1 Free Project Used`}
                     </p>
                 </div>
 

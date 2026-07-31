@@ -24,7 +24,7 @@ export const Calendar: React.FC = () => {
 
     const [showUpgradeModal, setShowUpgradeModal] = useState(false);
     const { user } = useAuthStore();
-    const isPro = user?.subscriptionStatus === 'PRO';
+    const isPro = user?.role === 'ADMIN' || user?.subscriptionStatus === 'PRO';
 
     // Navigation
     const nextMonth = () => {

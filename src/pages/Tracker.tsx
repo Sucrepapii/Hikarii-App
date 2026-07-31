@@ -19,7 +19,7 @@ export const Tracker = () => {
     const { projects, fetchProjects } = useProjectStore();
     const { user } = useAuthStore();
     
-    const isPro = user?.subscriptionStatus === 'PRO';
+    const isPro = user?.role === 'ADMIN' || user?.subscriptionStatus === 'PRO';
     
     const [expenseToDelete, setExpenseToDelete] = useState<string | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);

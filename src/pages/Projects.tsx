@@ -108,7 +108,7 @@ export const Projects: React.FC = () => {
                             variant="primary"
                             className="gap-2 whitespace-nowrap touch-manipulation min-w-fit"
                             onClick={() => {
-                                const isFree = !user?.subscriptionStatus || user?.subscriptionStatus === 'FREE';
+                                const isFree = user?.role !== 'ADMIN' && (!user?.subscriptionStatus || user?.subscriptionStatus === 'FREE');
                                 if (isFree && projects.length >= 1) {
                                     setIsUpgradeModalOpen(true);
                                 } else {

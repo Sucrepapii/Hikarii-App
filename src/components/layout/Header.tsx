@@ -87,27 +87,31 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
                         </div>
                     )}
 
-                    {/* Subscription Status Badge */}
-                    {user && user.role !== 'ADMIN' && (
+                    {/* Subscription Status / Admin Badge */}
+                    {user && (
                         <div className={`
                             hidden sm:flex items-center justify-center px-3 py-1 rounded-full text-xs font-bold
-                            ${user.subscriptionStatus === 'PRO'
-                                ? 'bg-gradient-brand text-white shadow-sm'
-                                : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'}
+                            ${user.role === 'ADMIN'
+                                ? 'bg-gradient-to-r from-red-500 to-rose-500 text-white shadow-sm'
+                                : user.subscriptionStatus === 'PRO'
+                                    ? 'bg-gradient-brand text-white shadow-sm'
+                                    : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'}
                         `}>
-                            {user.subscriptionStatus === 'PRO' ? 'PRO' : 'FREE'}
+                            {user.role === 'ADMIN' ? 'ADMIN' : user.subscriptionStatus === 'PRO' ? 'PRO' : 'FREE'}
                         </div>
                     )}
 
-                    {/* Mobile Subscription Status */}
-                    {user && user.role !== 'ADMIN' && (
+                    {/* Mobile Subscription Status / Admin Badge */}
+                    {user && (
                         <div className={`
                             sm:hidden flex items-center justify-center px-2 py-1 rounded-md text-[10px] font-bold
-                             ${user.subscriptionStatus === 'PRO'
-                                ? 'bg-gradient-brand text-white'
-                                : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'}
+                            ${user.role === 'ADMIN'
+                                ? 'bg-gradient-to-r from-red-500 to-rose-500 text-white'
+                                : user.subscriptionStatus === 'PRO'
+                                    ? 'bg-gradient-brand text-white'
+                                    : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'}
                         `}>
-                            {user.subscriptionStatus === 'PRO' ? 'PRO' : 'FREE'}
+                            {user.role === 'ADMIN' ? 'ADMIN' : user.subscriptionStatus === 'PRO' ? 'PRO' : 'FREE'}
                         </div>
                     )}
 

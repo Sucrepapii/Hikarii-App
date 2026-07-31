@@ -17,7 +17,6 @@ async function main() {
       password: hashedPassword,
       role: "ADMIN",
       isVerified: true,
-      subscriptionStatus: "PRO",
     },
   });
 

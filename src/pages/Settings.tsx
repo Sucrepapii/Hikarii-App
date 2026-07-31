@@ -350,90 +350,92 @@ export const Settings: React.FC = () => {
                             </div>
                         </Card>
 
-                        <Card>
-                            {/* ... Subscription ... */}
-                            {/* Re-using existing subscription code but I need to make sure I don't lose it. 
-                                The previous replace block for Settings.tsx showed the subscription logic. 
-                                I need to include it here or replace carefully.
-                                Since I am replacing the 'profile' block, I should output the subscription card content too.
-                            */}
-                            <div className="flex items-center gap-4 mb-6">
-                                <div className="p-3 rounded-xl bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400">
-                                    <CreditCard className="w-6 h-6" />
-                                </div>
-                                <div>
-                                    <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
-                                        Subscription Plan
-                                    </h2>
-                                    <p className="text-sm text-slate-500">
-                                        Manage your plan and billing
-                                    </p>
-                                </div>
-                                <div className="ml-auto">
-                                    {user?.subscriptionStatus === 'PRO' || user?.subscriptionStatus === 'TRIAL' ? (
-                                        <span className="px-3 py-1 rounded-full text-xs font-bold bg-gradient-brand text-white shadow-sm">
-                                            {user?.subscriptionStatus}
-                                        </span>
-                                    ) : (
-                                        <span className="px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300">
-                                            FREE
-                                        </span>
-                                    )}
-                                </div>
-                            </div>
-
-                            <div className="space-y-4">
-                                {user?.subscriptionStatus === 'PRO' || user?.subscriptionStatus === 'TRIAL' ? (
-                                    <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
-                                        <div className="flex flex-col sm:flex-row justify-between gap-4">
-                                            <div>
-                                                <h3 className="font-semibold text-slate-900 dark:text-white">
-                                                    {user?.subscriptionStatus === 'TRIAL' ? 'Pro (Trial)' : 'Pro Plan'}
-                                                </h3>
-                                                <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
-                                                    {user?.currentPeriodEnd
-                                                        ? `Renews/Expires on ${new Date(user.currentPeriodEnd).toLocaleDateString()}`
-                                                        : "Active"}
-                                                </p>
-                                            </div>
-                                            <Button
-                                                variant="danger"
-                                                onClick={() => setShowCancelModal(true)}
-                                                isLoading={isCanceling}
-                                            >
-                                                Cancel Subscription
-                                            </Button>
-                                        </div>
-                                        <p className="text-xs text-slate-500 mt-3">
-                                            Your subscription will remain active until the end of the billing period.
+                        {user?.role !== 'ADMIN' && (
+                            <Card>
+                                {/* ... Subscription ... */}
+                                {/* Re-using existing subscription code but I need to make sure I don't lose it. 
+                                    The previous replace block for Settings.tsx showed the subscription logic. 
+                                    I need to include it here or replace carefully.
+                                    Since I am replacing the 'profile' block, I should output the subscription card content too.
+                                */}
+                                <div className="flex items-center gap-4 mb-6">
+                                    <div className="p-3 rounded-xl bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400">
+                                        <CreditCard className="w-6 h-6" />
+                                    </div>
+                                    <div>
+                                        <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
+                                            Subscription Plan
+                                        </h2>
+                                        <p className="text-sm text-slate-500">
+                                            Manage your plan and billing
                                         </p>
                                     </div>
-                                ) : (
-                                    <div className="flex items-center justify-between p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
-                                        <div>
-                                            <h3 className="font-semibold text-slate-900 dark:text-white">Free Plan</h3>
-                                            <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
-                                                Upgrade to unlock advanced insights and features.
+                                    <div className="ml-auto">
+                                        {user?.subscriptionStatus === 'PRO' || user?.subscriptionStatus === 'TRIAL' ? (
+                                            <span className="px-3 py-1 rounded-full text-xs font-bold bg-gradient-brand text-white shadow-sm">
+                                                {user?.subscriptionStatus}
+                                            </span>
+                                        ) : (
+                                            <span className="px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300">
+                                                FREE
+                                            </span>
+                                        )}
+                                    </div>
+                                </div>
+
+                                <div className="space-y-4">
+                                    {user?.subscriptionStatus === 'PRO' || user?.subscriptionStatus === 'TRIAL' ? (
+                                        <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
+                                            <div className="flex flex-col sm:flex-row justify-between gap-4">
+                                                <div>
+                                                    <h3 className="font-semibold text-slate-900 dark:text-white">
+                                                        {user?.subscriptionStatus === 'TRIAL' ? 'Pro (Trial)' : 'Pro Plan'}
+                                                    </h3>
+                                                    <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                                                        {user?.currentPeriodEnd
+                                                            ? `Renews/Expires on ${new Date(user.currentPeriodEnd).toLocaleDateString()}`
+                                                            : "Active"}
+                                                    </p>
+                                                </div>
+                                                <Button
+                                                    variant="danger"
+                                                    onClick={() => setShowCancelModal(true)}
+                                                    isLoading={isCanceling}
+                                                >
+                                                    Cancel Subscription
+                                                </Button>
+                                            </div>
+                                            <p className="text-xs text-slate-500 mt-3">
+                                                Your subscription will remain active until the end of the billing period.
                                             </p>
                                         </div>
-                                        <Button variant="primary" onClick={() => window.location.href = '/pricing'}>
-                                            Upgrade to Pro
-                                        </Button>
-                                    </div>
-                                )}
-                            </div>
+                                    ) : (
+                                        <div className="flex items-center justify-between p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
+                                            <div>
+                                                <h3 className="font-semibold text-slate-900 dark:text-white">Free Plan</h3>
+                                                <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                                                    Upgrade to unlock advanced insights and features.
+                                                </p>
+                                            </div>
+                                            <Button variant="primary" onClick={() => window.location.href = '/pricing'}>
+                                                Upgrade to Pro
+                                            </Button>
+                                        </div>
+                                    )}
+                                </div>
 
-                            <ConfirmModal
-                                isOpen={showCancelModal}
-                                onClose={() => !isCanceling && setShowCancelModal(false)}
-                                onConfirm={handleCancelSubscription}
-                                title="Cancel Pro Subscription"
-                                message="Are you sure you want to cancel your Pro subscription? You will lose access to premium features (AI insights, unlimited projects) at the end of your billing period."
-                                confirmText="Yes, Cancel Subscription"
-                                variant="danger"
-                                isLoading={isCanceling}
-                            />
-                        </Card>
+                                <ConfirmModal
+                                    isOpen={showCancelModal}
+                                    onClose={() => !isCanceling && setShowCancelModal(false)}
+                                    onConfirm={handleCancelSubscription}
+                                    title="Cancel Pro Subscription"
+                                    message="Are you sure you want to cancel your Pro subscription? You will lose access to premium features (AI insights, unlimited projects) at the end of your billing period."
+                                    confirmText="Yes, Cancel Subscription"
+                                    variant="danger"
+                                    isLoading={isCanceling}
+                                />
+                            </Card>
+                        )}
                     </>
                 )}
 

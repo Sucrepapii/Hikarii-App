@@ -28,7 +28,7 @@ export const Analytics: React.FC = () => {
     const { tasks } = useTaskStore();
     const { expenses, budgets, currency, getConvertedAmount } = useBudgetStore();
     const { user } = useAuthStore();
-    const isPro = user?.subscriptionStatus === 'PRO';
+    const isPro = user?.role === 'ADMIN' || user?.subscriptionStatus === 'PRO';
     const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
 

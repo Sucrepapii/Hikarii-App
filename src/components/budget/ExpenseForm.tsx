@@ -24,7 +24,7 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
 }) => {
     const { tasks } = useTaskStore();
     const { user } = useAuthStore();
-    const isPro = user?.subscriptionStatus === 'PRO';
+    const isPro = user?.role === 'ADMIN' || user?.subscriptionStatus === 'PRO';
     const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
     const {

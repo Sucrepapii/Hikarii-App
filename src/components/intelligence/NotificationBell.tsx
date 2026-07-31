@@ -56,7 +56,7 @@ export const NotificationBell: React.FC = () => {
     const { fetchProjects } = useProjectStore();
     const { isFocusMode } = useUIStore();
     const navigate = useNavigate();
-    const isPro = user?.subscriptionStatus === 'PRO';
+    const isPro = user?.role === 'ADMIN' || user?.subscriptionStatus === 'PRO';
     const isAdmin = user?.role === 'ADMIN';
     const [isAccepting, setIsAccepting] = useState<string | null>(null);
 
