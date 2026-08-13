@@ -152,7 +152,10 @@ export const ForgotPassword: React.FC = () => {
                 </div>
 
                 {/* Form (Right Side) */}
-                <div className="w-full md:w-[50%] lg:w-[45%] h-full bg-white flex flex-col justify-center items-center p-8 sm:p-12">
+                <div className="w-full md:w-[50%] lg:w-[45%] h-full bg-white flex flex-col justify-center items-center p-8 sm:p-12 overflow-y-auto">
+                    <div className="block md:hidden mb-10 mt-4 text-center">
+                        <Logo size="xl" suppressLink className="text-slate-900 drop-shadow-md" />
+                    </div>
                     <div className="w-full max-w-sm text-slate-800">
                         <h2 className="text-3xl font-display font-bold text-slate-900 mb-8 tracking-tight text-center">
                             {step === 'email' ? 'Forgot Password' : 'Reset Password'}

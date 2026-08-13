@@ -81,13 +81,19 @@ export const Auth: React.FC<AuthProps> = ({ defaultMode = 'login' }) => {
                     Left side: Signup Form
                     Right side: Login Form
                 */}
-                <div className="absolute inset-0 flex">
+                <div className={`absolute inset-0 flex w-[200%] md:w-full transition-transform duration-500 ease-in-out md:!transform-none ${mode === 'login' ? 'max-md:-translate-x-1/2' : 'max-md:translate-x-0'}`}>
                     {/* LEFT SIDE (Signup Form Space) */}
-                    <div className="w-1/2 h-full bg-white flex flex-col justify-center items-center p-12">
+                    <div className="w-1/2 md:w-1/2 h-full bg-white flex flex-col justify-center items-center p-6 sm:p-12 overflow-y-auto">
+                        <div className="block md:hidden mb-10 mt-8">
+                            <Logo size="xl" suppressLink className="text-slate-900 drop-shadow-md" />
+                        </div>
                         <SignupComponent redirectTo={redirectTo} onSwitch={toggleMode} isActive={mode === 'signup'} />
                     </div>
                     {/* RIGHT SIDE (Login Form Space) */}
-                    <div className="w-1/2 h-full bg-white flex flex-col justify-center items-center p-12">
+                    <div className="w-1/2 md:w-1/2 h-full bg-white flex flex-col justify-center items-center p-6 sm:p-12 overflow-y-auto">
+                        <div className="block md:hidden mb-10 mt-8">
+                            <Logo size="xl" suppressLink className="text-slate-900 drop-shadow-md" />
+                        </div>
                         <LoginComponent redirectTo={redirectTo} onSwitch={toggleMode} isActive={mode === 'login'} />
                     </div>
                 </div>
@@ -100,7 +106,7 @@ export const Auth: React.FC<AuthProps> = ({ defaultMode = 'login' }) => {
                     When mode is 'signup', blade covers right side (Login).
                 */}
                 <div 
-                    className="absolute top-0 bottom-0 w-[55%] overflow-hidden bg-gradient-to-br from-primary-900 via-primary-800 to-accent-900 z-20 shadow-[-20px_0_50px_rgba(0,0,0,0.5)] transition-transform duration-1000 ease-in-out origin-center"
+                    className="hidden md:block absolute top-0 bottom-0 w-[55%] overflow-hidden bg-gradient-to-br from-primary-900 via-primary-800 to-accent-900 z-20 shadow-[-20px_0_50px_rgba(0,0,0,0.5)] transition-transform duration-1000 ease-in-out origin-center"
                     style={{
                         transform: `translateX(${mode === 'login' ? '-5%' : '90%'}) skewX(-12deg)`,
                         left: 0,
