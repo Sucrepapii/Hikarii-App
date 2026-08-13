@@ -11,8 +11,7 @@ import { Tasks } from './pages/Tasks';
 import { Budget } from './pages/Budget';
 import { Tracker } from './pages/Tracker';
 import { Calendar } from './pages/Calendar';
-import { Login } from './pages/Login';
-import { Signup } from './pages/Signup';
+import { Auth } from './pages/Auth';
 import { ForgotPassword } from './pages/ForgotPassword';
 import { Settings } from './pages/Settings';
 import { Analytics } from './pages/Analytics';
@@ -104,11 +103,11 @@ function App() {
                 />
                 <Route
                     path="/login"
-                    element={<AuthRoute><Login /></AuthRoute>}
+                    element={<AuthRoute><Auth defaultMode="login" /></AuthRoute>}
                 />
                 <Route
                     path="/signup"
-                    element={<AuthRoute><Signup /></AuthRoute>}
+                    element={<AuthRoute><Auth defaultMode="signup" /></AuthRoute>}
                 />
                 <Route
                     path="/forgot-password"

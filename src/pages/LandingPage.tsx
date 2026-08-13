@@ -376,7 +376,7 @@ export const LandingPage: React.FC = () => {
                         <div className="absolute -inset-8 bg-gradient-to-r from-primary-500/8 via-amber-500/8 to-pink-500/8 rounded-3xl blur-[80px] opacity-60 group-hover:opacity-100 transition-opacity duration-1000" />
                         <div className="relative w-full aspect-[16/10] bg-[#0F111A] rounded-2xl overflow-hidden border border-white/[0.08] shadow-[0_40px_80px_-20px_rgba(0,0,0,0.5)] transform perspective-[2000px] rotate-y-[-5deg] rotate-x-[2deg] group-hover:rotate-y-0 group-hover:rotate-x-0 transition-all duration-700 ease-out">
                             <div className="h-full bg-[#0B0C15]">
-                                <img src="/hikari_hero_desk.png" alt="Hikarii Desktop Dashboard" loading="lazy" className="w-full h-full object-cover" />
+                                <img src="/hikari_hero_desk.png?v=2" alt="Hikarii Desktop Dashboard" loading="lazy" className="w-full h-full object-cover" />
                             </div>
                         </div>
 
@@ -1145,7 +1145,7 @@ export const LandingPage: React.FC = () => {
                         <div className="absolute inset-0 bg-gradient-to-tr from-primary-500/10 to-amber-500/10 blur-3xl rounded-full" />
                         <div className="relative z-10 w-full max-w-[320px] mx-auto">
                             <img 
-                                src="/Hikarii_mobile_mockup.png" 
+                                src="/hikari_mobile_mockup.png?v=2" 
                                 alt="Hikarii Mobile App Interface" 
                                 className="w-full h-auto object-contain drop-shadow-2xl mix-blend-lighten group-hover:scale-105 transition-transform duration-700 ease-out [mask-image:linear-gradient(to_bottom,white_70%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_bottom,white_70%,transparent_100%)]"
                             />
