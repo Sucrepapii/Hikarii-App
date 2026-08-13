@@ -3,10 +3,15 @@ import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { Navbar } from '../components/layout/Navbar';
 import { Footer } from '../components/layout/Footer';
+import { Helmet } from 'react-helmet-async';
 
 export const PrivacyPolicy: React.FC = () => {
     return (
         <div className="min-h-screen bg-[#080910] text-slate-100 selection:bg-accent-500/30 overflow-x-hidden flex flex-col deep-dark">
+            <Helmet>
+                <title>Privacy Policy - Hikarii</title>
+                <meta name="description" content="Read the Privacy Policy of Hikarii to understand how we collect, use, and protect your data." />
+            </Helmet>
             <Navbar />
 
             {/* Content */}

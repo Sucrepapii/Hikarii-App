@@ -36,6 +36,7 @@ export const Contact: React.FC = () => {
 
             toast.success("Message sent! Check your inbox for confirmation.");
             (e.target as HTMLFormElement).reset();
+            navigate('/thank-you');
         } catch (error) {
             console.error(error);
             toast.error("Failed to send message. Please try again.");
@@ -56,7 +57,8 @@ export const Contact: React.FC = () => {
                         <h1 className="text-4xl md:text-7xl font-display font-bold mb-8 tracking-tight">Get in touch</h1>
                         <p className="text-xl text-slate-400 mb-12 leading-relaxed max-w-lg">
                             Have a question about the platform? Interested in enterprise plans?
-                            Just want to say hello? We're listening.
+                            Just want to say hello? We're listening. <br/><br/>
+                            <span className="text-emerald-400 font-semibold">Our promise: We respond to all inquiries within 24 hours.</span>
                         </p>
 
                         <div className="space-y-6 mb-12">

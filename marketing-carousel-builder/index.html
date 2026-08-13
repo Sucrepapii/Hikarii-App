@@ -1,0 +1,1557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hikarii — Marketing Carousel Builder</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Dependencies for high-res PNG rendering and ZIP export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+    <style>
+        :root {
+            /* General App Theme (Dark Slate interface) */
+            --app-bg: #0b0f19;
+            --app-sidebar-bg: #111827;
+            --app-border: #1f2937;
+            --app-text: #f3f4f6;
+            --app-text-muted: #9ca3af;
+            --app-accent: #9333ea;
+            --app-accent-glow: rgba(147, 51, 234, 0.4);
+            
+            /* Slides Gradients/Themes */
+            --grad-hikari-dark: radial-gradient(circle at 50% 50%, #1e1136 0%, #090514 100%);
+            --grad-midnight-teal: linear-gradient(135deg, #0b151e 0%, #022329 100%);
+            --grad-sunset-aurora: linear-gradient(135deg, #1f0b24 0%, #3b0764 50%, #7c2d12 100%);
+            --grad-ocean-blue: linear-gradient(135deg, #090e24 0%, #031e42 60%, #004e7c 100%);
+            --grad-nordic-light: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--app-bg);
+            color: var(--app-text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* Top Header */
+        header {
+            background-color: var(--app-sidebar-bg);
+            border-bottom: 1px solid var(--app-border);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-symbol {
+            width: 32px;
+            height: auto;
+        }
+
+        .header-title h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #f3f4f6, #9ca3af);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-badge {
+            background: rgba(147, 51, 234, 0.2);
+            border: 1px solid rgba(147, 51, 234, 0.4);
+            color: #c084fc;
+            padding: 4px 10px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        /* App Layout Container */
+        .app-container {
+            display: flex;
+            flex: 1;
+            height: calc(100vh - 65px);
+            position: relative;
+        }
+
+        /* Left Control Sidebar */
+        .sidebar {
+            width: 420px;
+            background-color: var(--app-sidebar-bg);
+            border-right: 1px solid var(--app-border);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            flex-shrink: 0;
+            padding: 1.5rem;
+            gap: 1.5rem;
+        }
+
+        /* Right Preview Area */
+        .preview-area {
+            flex: 1;
+            background-color: var(--app-bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            overflow-y: auto;
+            position: relative;
+            background-image: 
+                radial-gradient(circle at 30% 30%, rgba(147, 51, 234, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 70% 70%, rgba(252, 140, 3, 0.03) 0%, transparent 50%);
+        }
+
+        /* Section Panels */
+        .panel-section {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            border-bottom: 1px solid var(--app-border);
+            padding-bottom: 1.25rem;
+        }
+
+        .panel-section:last-child {
+            border-bottom: none;
+        }
+
+        .section-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+
+        .section-title span {
+            opacity: 0.7;
+        }
+
+        /* Nav Slide Selector List */
+        .slide-selector-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
+        }
+
+        .slide-btn {
+            background-color: #1f2937;
+            border: 1px solid var(--app-border);
+            color: var(--app-text-muted);
+            padding: 8px 0;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .slide-btn.active {
+            background-color: var(--app-accent);
+            border-color: var(--app-accent);
+            color: white;
+            box-shadow: 0 0 10px rgba(147, 51, 234, 0.5);
+        }
+
+        .slide-btn:hover:not(.active) {
+            border-color: var(--app-text-muted);
+            color: white;
+        }
+
+        /* Control Inputs */
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .input-group label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--app-text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .input-group input, .input-group textarea, .input-group select {
+            background-color: #1f2937;
+            border: 1px solid var(--app-border);
+            border-radius: 8px;
+            color: white;
+            padding: 10px 12px;
+            font-size: 0.9rem;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+        .input-group input:focus, .input-group textarea:focus, .input-group select:focus {
+            border-color: var(--app-accent);
+        }
+
+        .input-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        /* Preset Gradients Selector */
+        .gradient-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+
+        .grad-preset {
+            height: 40px;
+            border-radius: 8px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: border-color 0.2s ease, transform 0.1s ease;
+            position: relative;
+        }
+
+        .grad-preset.active {
+            border-color: white;
+            transform: scale(1.05);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .grad-preset:hover {
+            transform: scale(1.05);
+        }
+
+        .grad-preset[data-theme="hikari-dark"] { background: var(--grad-hikari-dark); }
+        .grad-preset[data-theme="midnight-teal"] { background: var(--grad-midnight-teal); }
+        .grad-preset[data-theme="sunset-aurora"] { background: var(--grad-sunset-aurora); }
+        .grad-preset[data-theme="ocean-blue"] { background: var(--grad-ocean-blue); }
+        .grad-preset[data-theme="nordic-light"] { background: var(--grad-nordic-light); }
+
+        /* Format controls */
+        .format-toggle {
+            display: flex;
+            background-color: #1f2937;
+            border-radius: 8px;
+            padding: 4px;
+            border: 1px solid var(--app-border);
+        }
+
+        .format-btn {
+            flex: 1;
+            background: none;
+            border: none;
+            color: var(--app-text-muted);
+            padding: 8px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .format-btn.active {
+            background-color: var(--app-sidebar-bg);
+            color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Action Buttons */
+        .btn-action {
+            background: linear-gradient(135deg, var(--app-accent), #a855f7);
+            border: none;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 4px 12px var(--app-accent-glow);
+        }
+
+        .btn-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(147, 51, 234, 0.6);
+        }
+
+        .btn-action:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary-action {
+            background: #1f2937;
+            border: 1px solid var(--app-border);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-secondary-action:hover {
+            background-color: #374151;
+        }
+
+        /* Slide Viewport / Aspect Ratio Controllers */
+        .slide-viewport-container {
+            position: relative;
+            background: rgba(0,0,0,0.4);
+            border: 1px dashed var(--app-border);
+            padding: 20px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.6);
+        }
+
+        /* Actual Slide Card (designed to be snapshotted at 1080x1080 or 1080x1350) */
+        .slide-card {
+            width: 500px;
+            height: 500px;
+            background: var(--grad-hikari-dark);
+            border-radius: 0px; /* LinkedIn/Instagram templates usually square corners */
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 40px;
+            overflow: hidden;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+            font-family: 'Outfit', sans-serif;
+            color: #ffffff;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            user-select: none;
+        }
+
+        .slide-card.light-mode {
+            color: #0f172a !important;
+        }
+
+        /* Aspect ratio modifiers */
+        .slide-card.vertical {
+            height: 625px; /* Represents 4:5 aspect ratio (1080 x 1350) */
+        }
+
+        /* Slide Decorative Background Accents */
+        .slide-bg-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .slide-card.light-mode .slide-bg-grid {
+            background-image: linear-gradient(rgba(0,0,0,0.02) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(0,0,0,0.02) 1px, transparent 1px);
+        }
+
+        .slide-bg-blob {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(147, 51, 234, 0.25) 0%, rgba(0, 240, 255, 0) 70%);
+            filter: blur(40px);
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .slide-bg-blob-2 {
+            position: absolute;
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(252, 140, 3, 0.2) 0%, rgba(252, 140, 3, 0) 70%);
+            filter: blur(40px);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Slide Content Structure */
+        .slide-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 2;
+        }
+
+        .slide-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .slide-logo-icon {
+            width: 28px;
+            height: auto;
+        }
+
+        .slide-logo-text {
+            font-weight: 800;
+            font-size: 1.15rem;
+            letter-spacing: -0.5px;
+        }
+
+        .slide-card.light-mode .slide-logo-text {
+            color: #0f172a;
+        }
+
+        .slide-category {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #c084fc;
+            background: rgba(147, 51, 234, 0.15);
+            padding: 4px 12px;
+            border-radius: 50px;
+            border: 1px solid rgba(147, 51, 234, 0.3);
+        }
+
+        .slide-card.light-mode .slide-category {
+            color: #7e22ce;
+            background: rgba(147, 51, 234, 0.08);
+            border-color: rgba(147, 51, 234, 0.2);
+        }
+
+        .slide-body {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            z-index: 2;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        .slide-title {
+            font-size: 2.15rem;
+            font-weight: 900;
+            line-height: 1.2;
+            letter-spacing: -0.5px;
+            color: #ffffff;
+        }
+
+        .slide-card.light-mode .slide-title {
+            color: #0f172a;
+        }
+
+        /* Custom Highlight/Accent Text inside Title */
+        .slide-title span.accent-grad {
+            background: linear-gradient(135deg, #c084fc, #fb923c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .slide-title span.accent-teal {
+            background: linear-gradient(135deg, #34d399, #60a5fa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .slide-desc {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: #cbd5e1;
+            font-weight: 400;
+        }
+
+        .slide-card.light-mode .slide-desc {
+            color: #475569;
+        }
+
+        /* Slide Graphic / Mockup Area */
+        .slide-graphic-box {
+            height: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 8px;
+            z-index: 2;
+        }
+
+        .slide-card.vertical .slide-graphic-box {
+            height: 220px; /* More vertical space for assets */
+        }
+
+        .slide-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 2;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding-top: 16px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75rem;
+            color: #94a3b8;
+        }
+
+        .slide-card.light-mode .slide-footer {
+            border-top-color: rgba(0,0,0,0.06);
+            color: #64748b;
+        }
+
+        .slide-index {
+            font-weight: 700;
+            color: #9333ea;
+        }
+
+        .slide-footer-cta {
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Navigation Arrows on Viewport */
+        .nav-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background-color: var(--app-sidebar-bg);
+            border: 1px solid var(--app-border);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            z-index: 5;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .nav-arrow:hover {
+            background-color: #374151;
+            border-color: var(--app-text-muted);
+        }
+
+        .nav-arrow-left {
+            left: -60px;
+        }
+
+        .nav-arrow-right {
+            right: -60px;
+        }
+
+        /* Interactive status message banner */
+        .status-banner {
+            background-color: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            color: #34d399;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            margin-bottom: 1.5rem;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+        }
+
+        /* Toggle switches */
+        .toggle-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #374151;
+            transition: .3s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--app-accent);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+
+        /* Responsive UI layout */
+        @media (max-width: 1024px) {
+            .app-container {
+                flex-direction: column;
+                height: auto;
+            }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                border-right: none;
+                border-bottom: 1px solid var(--app-border);
+            }
+            .preview-area {
+                padding: 4rem 2rem;
+            }
+            .nav-arrow-left { left: 10px; }
+            .nav-arrow-right { right: 10px; }
+        }
+
+        /* High quality vector graphics stylings inside slides */
+        .glass-element {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 10px 14px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .light-mode .glass-element {
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        /* High-quality graphic HTML elements */
+        .graphic-flex-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            padding: 0 1.25em;
+            box-sizing: border-box;
+            z-index: 2;
+        }
+
+        .graphic-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 0.06em solid rgba(255, 255, 255, 0.12);
+            border-radius: 0.75em;
+            padding: 0.9em;
+            box-shadow: 0 0.6em 1.8em rgba(0, 0, 0, 0.25);
+            box-sizing: border-box;
+        }
+
+        .light-mode .graphic-card {
+            background: rgba(255, 255, 255, 0.7);
+            border-color: rgba(0, 0, 0, 0.08);
+            box-shadow: 0 0.6em 1.8em rgba(0, 0, 0, 0.05);
+        }
+
+        .graphic-card-mini {
+            background: rgba(255, 255, 255, 0.03);
+            border: 0.06em solid rgba(255, 255, 255, 0.08);
+            border-radius: 0.5em;
+            padding: 0.5em 0.75em;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 0.25em 0.9em rgba(0, 0, 0, 0.15);
+            box-sizing: border-box;
+            width: 9.5em;
+            text-align: left;
+        }
+
+        .light-mode .graphic-card-mini {
+            background: rgba(255, 255, 255, 0.6);
+            border-color: rgba(0, 0, 0, 0.06);
+            box-shadow: 0 0.25em 0.9em rgba(0, 0, 0, 0.03);
+        }
+
+        .graphic-card-currency {
+            background: rgba(255, 255, 255, 0.03);
+            border: 0.06em solid rgba(255, 255, 255, 0.08);
+            border-radius: 0.5em;
+            padding: 0.4em 0.6em;
+            display: flex;
+            align-items: center;
+            gap: 0.5em;
+            box-shadow: 0 0.25em 0.6em rgba(0, 0, 0, 0.15);
+            box-sizing: border-box;
+        }
+
+        .light-mode .graphic-card-currency {
+            background: rgba(255, 255, 255, 0.6);
+            border-color: rgba(0, 0, 0, 0.06);
+            box-shadow: 0 0.25em 0.6em rgba(0, 0, 0, 0.03);
+        }
+
+        .currency-symbol {
+            width: 1.25em;
+            height: 1.25em;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+        }
+
+        .graphic-divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+            box-sizing: border-box;
+        }
+
+        .graphic-glow-line-horizontal {
+            height: 0.125em;
+            background: linear-gradient(90deg, #9333ea, #ea580c);
+            width: 100%;
+            position: relative;
+        }
+
+        .graphic-badge-center {
+            position: absolute;
+            background: #111827;
+            border: 0.06em solid rgba(255,255,255,0.1);
+            width: 1.75em;
+            height: 1.75em;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8em;
+            box-shadow: 0 0 0.9em rgba(147, 51, 234, 0.5);
+        }
+
+        .light-mode .graphic-badge-center {
+            background: #ffffff;
+            border-color: rgba(0,0,0,0.08);
+            box-shadow: 0 0 0.9em rgba(147, 51, 234, 0.2);
+        }
+
+        .graphic-mini-badge {
+            font-size: 0.5em;
+            font-weight: 700;
+            padding: 0.2em 0.5em;
+            border-radius: 0.25em;
+            display: inline-block;
+            width: max-content;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-logo">
+            <svg class="logo-symbol" viewBox="0 0 140 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="header-logo-grad-left" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#9333ea" />
+                        <stop offset="100%" stop-color="#6b21a8" />
+                    </linearGradient>
+                    <linearGradient id="header-logo-grad-right" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#fb923c" />
+                        <stop offset="100%" stop-color="#c2410c" />
+                    </linearGradient>
+                </defs>
+                <path d="M 75 30 L 35 30 A 20 20 0 0 0 35 70 L 40 70" stroke="url(#header-logo-grad-left)" stroke-width="16" stroke-linecap="round" />
+                <path d="M 65 70 L 105 70 A 20 20 0 0 0 105 30 L 100 30" stroke="url(#header-logo-grad-right)" stroke-width="16" stroke-linecap="round" />
+            </svg>
+            <div class="header-title">
+                <h1>Hikarii Marketing Suite</h1>
+            </div>
+            <div class="header-badge">LinkedIn Carousel Builder</div>
+        </div>
+        <div style="font-size: 0.85rem; color: var(--app-text-muted);">
+            Create & Export High-Res Swipable Slide Decks
+        </div>
+    </header>
+
+    <div class="app-container">
+        
+        <!-- Left Editor and Controls Sidebar -->
+        <aside class="sidebar">
+            
+            <div class="status-banner" id="status-banner">
+                <span style="font-weight: 700;">✓</span> 
+                <span id="status-text">Export successfully generated!</span>
+            </div>
+
+            <!-- Slide Selection Section -->
+            <div class="panel-section">
+                <div class="section-title">
+                    <span>📝</span> Select Slide to Edit
+                </div>
+                <div class="slide-selector-grid" id="slide-selector">
+                    <button class="slide-btn active" onclick="selectSlide(0)">1</button>
+                    <button class="slide-btn" onclick="selectSlide(1)">2</button>
+                    <button class="slide-btn" onclick="selectSlide(2)">3</button>
+                    <button class="slide-btn" onclick="selectSlide(3)">4</button>
+                    <button class="slide-btn" onclick="selectSlide(4)">5</button>
+                    <button class="slide-btn" onclick="selectSlide(5)">6</button>
+                </div>
+            </div>
+
+            <!-- Live Copy Editor Section -->
+            <div class="panel-section">
+                <div class="section-title">
+                    <span>✍️</span> Edit Slide Content
+                </div>
+                
+                <div class="input-group">
+                    <label for="edit-category">Category / Tag</label>
+                    <input type="text" id="edit-category" oninput="updateCurrentSlide()">
+                </div>
+                
+                <div class="input-group">
+                    <label for="edit-title">Title (Wrap emphasis with &lt;span class="accent-grad"&gt;text&lt;/span&gt;)</label>
+                    <textarea id="edit-title" oninput="updateCurrentSlide()"></textarea>
+                </div>
+                
+                <div class="input-group">
+                    <label for="edit-desc">Description</label>
+                    <textarea id="edit-desc" oninput="updateCurrentSlide()"></textarea>
+                </div>
+
+                <div class="input-group">
+                    <label for="edit-footer">Footer Action / CTA</label>
+                    <input type="text" id="edit-footer" oninput="updateCurrentSlide()">
+                </div>
+            </div>
+
+            <!-- Visual Design Customs -->
+            <div class="panel-section">
+                <div class="section-title">
+                    <span>🎨</span> Appearance & Theme
+                </div>
+                
+                <div class="input-group">
+                    <label>Background Gradient</label>
+                    <div class="gradient-grid">
+                        <div class="grad-preset active" data-theme="hikari-dark" onclick="selectTheme('hikari-dark')" title="Hikarii Dark"></div>
+                        <div class="grad-preset" data-theme="midnight-teal" onclick="selectTheme('midnight-teal')" title="Midnight Teal"></div>
+                        <div class="grad-preset" data-theme="sunset-aurora" onclick="selectTheme('sunset-aurora')" title="Sunset Aurora"></div>
+                        <div class="grad-preset" data-theme="ocean-blue" onclick="selectTheme('ocean-blue')" title="Ocean Blue"></div>
+                        <div class="grad-preset" data-theme="nordic-light" onclick="selectTheme('nordic-light')" title="Nordic Light"></div>
+                    </div>
+                </div>
+
+                <div class="toggle-group">
+                    <span style="font-size: 0.85rem; font-weight: 600; color: var(--app-text-muted);">LIGHT MODE (EDITORIAL)</span>
+                    <label class="switch">
+                        <input type="checkbox" id="theme-light-toggle" onchange="toggleLightMode()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="toggle-group">
+                    <span style="font-size: 0.85rem; font-weight: 600; color: var(--app-text-muted);">DECORATIVE GRID LINES</span>
+                    <label class="switch">
+                        <input type="checkbox" id="toggle-grid" checked onchange="toggleGrid()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                
+                <div class="toggle-group">
+                    <span style="font-size: 0.85rem; font-weight: 600; color: var(--app-text-muted);">DECORATIVE BLOB GLOWS</span>
+                    <label class="switch">
+                        <input type="checkbox" id="toggle-blobs" checked onchange="toggleBlobs()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Layout Format Settings -->
+            <div class="panel-section">
+                <div class="section-title">
+                    <span>📐</span> Post Aspect Ratio
+                </div>
+                <div class="format-toggle">
+                    <button class="format-btn active" id="btn-ratio-square" onclick="setAspectRatio('square')">SQUARE (1:1)</button>
+                    <button class="format-btn" id="btn-ratio-vertical" onclick="setAspectRatio('vertical')">VERTICAL (4:5)</button>
+                </div>
+            </div>
+
+            <!-- Export Engines Section -->
+            <div class="panel-section" style="gap: 10px; margin-top: auto;">
+                <button class="btn-action" onclick="exportCurrentSlide()">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                    Download Current Slide
+                </button>
+                <button class="btn-secondary-action" onclick="exportAllSlides()">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path></svg>
+                    Download Carousel ZIP
+                </button>
+            </div>
+
+        </aside>
+
+        <!-- Right Side Preview Workspace -->
+        <main class="preview-area">
+            
+            <div class="slide-viewport-container">
+                <!-- Navigation Arrows -->
+                <button class="nav-arrow nav-arrow-left" onclick="navigateSlide(-1)">◀</button>
+                <button class="nav-arrow nav-arrow-right" onclick="navigateSlide(1)">▶</button>
+                
+                <!-- The Slide Card Render Container -->
+                <div class="slide-card" id="slide-card">
+                    <!-- Background Elements -->
+                    <div class="slide-bg-grid" id="slide-bg-grid"></div>
+                    <div class="slide-bg-blob" id="slide-blob-1" style="top: -50px; right: -50px;"></div>
+                    <div class="slide-bg-blob-2" id="slide-blob-2" style="bottom: -50px; left: -50px;"></div>
+                    
+                    <!-- Header -->
+                    <div class="slide-header">
+                        <div class="slide-brand">
+                            <svg class="slide-logo-icon" viewBox="0 0 140 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <defs>
+                                    <linearGradient id="slide-logo-grad-left" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#9333ea" />
+                                        <stop offset="100%" stop-color="#6b21a8" />
+                                    </linearGradient>
+                                    <linearGradient id="slide-logo-grad-right" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#fb923c" />
+                                        <stop offset="100%" stop-color="#c2410c" />
+                                    </linearGradient>
+                                </defs>
+                                <path d="M 75 30 L 35 30 A 20 20 0 0 0 35 70 L 40 70" stroke="url(#slide-logo-grad-left)" stroke-width="16" stroke-linecap="round" />
+                                <path d="M 65 70 L 105 70 A 20 20 0 0 0 105 30 L 100 30" stroke="url(#slide-logo-grad-right)" stroke-width="16" stroke-linecap="round" />
+                            </svg>
+                            <div class="slide-logo-text">Hikarii</div>
+                        </div>
+                        <div class="slide-category" id="slide-category">PRODUCTIVITY</div>
+                    </div>
+
+                    <!-- Body -->
+                    <div class="slide-body">
+                        <h2 class="slide-title" id="slide-title">
+                            Bring <span class="accent-grad">Light & Clarity</span> to your Tasks and Budget.
+                        </h2>
+                        <p class="slide-desc" id="slide-desc">
+                            Hikarii integrates smart planning with clean finance limits so you stay focused on your specific projects without spreadsheet overhead.
+                        </p>
+                    </div>
+
+                    <!-- Custom SVG Feature Representation Graphics -->
+                    <div class="slide-graphic-box" id="slide-graphic-container">
+                        <!-- Dynamic SVG gets injected here -->
+                    </div>
+
+                    <!-- Footer -->
+                    <div class="slide-footer">
+                        <div class="slide-index" id="slide-index">01 / 06</div>
+                        <div class="slide-footer-cta" id="slide-footer">
+                            <span id="slide-footer-text">Swipe to begin</span> ➔
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Keyboard shortcut indicator -->
+            <p style="margin-top: 1.5rem; font-size: 0.8rem; color: var(--app-text-muted); display: flex; gap: 15px;">
+                <span>💡 Tip: Click in fields to edit copy live. Use Left/Right keys on your keyboard to navigate slides.</span>
+            </p>
+
+        </main>
+    </div>
+
+    <!-- Script Block -->
+    <script>
+        const slidesData = [
+            {
+                category: "Hikarii Launch",
+                title: "Tasks & finances.<br>In <span class='accent-grad'>perfect harmony.</span>",
+                desc: "Most tools split what you do from what you spend. Hikarii brings them together to give you ultimate project-centric clarity.",
+                footer: "Swipe to see how it works",
+                graphic: `
+                    <div class="graphic-flex-row">
+                        <div class="graphic-card font-outfit" style="width: 9em; text-align: left;">
+                            <div style="font-size: 0.6em; font-weight: 700; color: #a855f7; margin-bottom: 0.5em; letter-spacing: 0.05em;">📋 TASKS</div>
+                            <div style="height: 0.4em; width: 80%; background: #9333ea; border-radius: 0.2em; margin-bottom: 0.6em;"></div>
+                            <div style="height: 0.4em; width: 60%; background: rgba(255,255,255,0.15); border-radius: 0.2em; margin-bottom: 0.4em;"></div>
+                            <div style="height: 0.4em; width: 70%; background: rgba(255,255,255,0.15); border-radius: 0.2em; margin-bottom: 0.4em;"></div>
+                        </div>
+                        
+                        <div class="graphic-divider">
+                            <div class="graphic-glow-line-horizontal"></div>
+                            <div class="graphic-badge-center">💡</div>
+                        </div>
+                        
+                        <div class="graphic-card font-outfit" style="width: 9em; text-align: left;">
+                            <div style="font-size: 0.6em; font-weight: 700; color: #fb923c; margin-bottom: 0.5em; letter-spacing: 0.05em;">💰 BUDGET</div>
+                            <div style="height: 0.4em; width: 90%; background: #ea580c; border-radius: 0.2em; margin-bottom: 0.6em;"></div>
+                            <div style="height: 0.4em; width: 70%; background: rgba(255,255,255,0.15); border-radius: 0.2em; margin-bottom: 0.4em;"></div>
+                            <div style="height: 0.4em; width: 50%; background: rgba(255,255,255,0.15); border-radius: 0.2em; margin-bottom: 0.4em;"></div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                category: "Smart AI Split",
+                title: "Break down complex goals<br>with <span class='accent-grad'>Gemini AI.</span>",
+                desc: "Stuck on a massive project? Our built-in Gemini AI splits large tasks into simple, bite-sized, chronological sub-tasks instantly.",
+                footer: "AI-Powered Productivity",
+                graphic: `
+                    <div class="graphic-flex-row">
+                        <div class="graphic-card font-outfit" style="width: 9em; text-align: left; border-color: #9333ea;">
+                            <div style="font-size: 0.7em; font-weight: 700; color: white; margin-bottom: 0.25em;">🚀 Main Project</div>
+                            <div style="font-size: 0.5em; color: rgba(255,255,255,0.4);">Complex Goal</div>
+                            <div style="height: 0.25em; width: 100%; background: rgba(255,255,255,0.1); border-radius: 0.125em; margin-top: 0.5em; overflow: hidden;">
+                                <div style="height: 100%; width: 30%; background: #9333ea;"></div>
+                            </div>
+                        </div>
+
+                        <div class="graphic-divider" style="width: 3.5em;">
+                            <div style="border-top: 0.125em dashed rgba(168, 85, 247, 0.4); width: 100%; position: relative;">
+                                <div style="position: absolute; right: 0; top: -0.35em; color: #c084fc; font-size: 0.5em;">✦</div>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; flex-direction: column; gap: 0.4em;">
+                            <div class="graphic-card-mini font-outfit">
+                                <span style="display: inline-block; width: 0.4em; height: 0.4em; background: #34d399; border-radius: 50%; margin-right: 0.4em;"></span>
+                                <span style="font-size: 0.55em; font-weight: 600; color: white;">Step 1: Set milestones</span>
+                            </div>
+                            <div class="graphic-card-mini font-outfit">
+                                <span style="display: inline-block; width: 0.4em; height: 0.4em; background: #60a5fa; border-radius: 50%; margin-right: 0.4em;"></span>
+                                <span style="font-size: 0.55em; font-weight: 600; color: white;">Step 2: Assign budget</span>
+                            </div>
+                            <div class="graphic-card-mini font-outfit">
+                                <span style="display: inline-block; width: 0.4em; height: 0.4em; background: #c084fc; border-radius: 50%; margin-right: 0.4em;"></span>
+                                <span style="font-size: 0.55em; font-weight: 600; color: white;">Step 3: Track cost logs</span>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                category: "Integrated Budgeting",
+                title: "Link costs directly to your<br><span class='accent-grad'>operational tasks.</span>",
+                desc: "Don't guess where project money goes. Link tasks directly to specific expense categories. When you finish a task, its logged cost rolls up to your budget.",
+                footer: "Precision Project Costing",
+                graphic: `
+                    <div class="graphic-flex-row">
+                        <div class="graphic-card font-outfit" style="width: 9em; text-align: left; display: flex; flex-direction: column; justify-content: space-between; height: 5.5em;">
+                            <div>
+                                <div style="font-size: 0.7em; font-weight: 700; color: white; margin-bottom: 0.25em;">Task: Build UI Landing</div>
+                                <div style="height: 0.25em; width: 90%; background: rgba(255,255,255,0.1); border-radius: 0.125em; margin-top: 0.4em;"></div>
+                            </div>
+                            <div class="graphic-mini-badge" style="background: rgba(147, 51, 234, 0.15); color: #c084fc; border: 1px solid rgba(147, 51, 234, 0.3);">IN PROGRESS</div>
+                        </div>
+
+                        <div class="graphic-divider" style="width: 3.5em; position: relative;">
+                            <div style="border-top: 0.125em solid #ea580c; width: 100%;"></div>
+                            <div class="graphic-mini-badge" style="position: absolute; top: -0.7em; left: 50%; transform: translateX(-50%); background: #111827; border: 1px solid rgba(255,255,255,0.1); font-size: 0.45em; color: #ea580c; padding: 0.1em 0.4em;">LINK</div>
+                            <div style="position: absolute; right: 0; top: -0.3em; color: #ea580c; font-size: 0.6em; font-weight: 700;">➔</div>
+                        </div>
+
+                        <div class="graphic-card font-outfit" style="width: 9em; text-align: left; border-color: #ea580c; display: flex; flex-direction: column; justify-content: space-between; height: 5.5em;">
+                            <div style="font-size: 0.5em; font-weight: 700; color: rgba(255,255,255,0.4); letter-spacing: 0.05em;">ALLOCATED EXPENSE</div>
+                            <div style="font-size: 1.1em; font-weight: 800; color: white; margin: 0.25em 0;">$1,450.00</div>
+                            <div style="font-size: 0.55em; font-weight: 600; color: #ea580c;">● Marketing Budget</div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                category: "Multi-Currency Support",
+                title: "Scale your workflow. In<br><span class='accent-grad'>any currency.</span>",
+                desc: "Builders operate globally. Hikarii lets you switch between NGN, USD, GBP, and EUR in real-time. Input costs in pounds and report in dollars, rate-synced instantly.",
+                footer: "Global Multi-Currency Engine",
+                graphic: `
+                    <div class="graphic-flex-row">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5em; width: 12em;">
+                            <div class="graphic-card-currency">
+                                <span class="currency-symbol" style="color: #60a5fa; background: rgba(59,130,246,0.15); font-size: 0.7em;">$</span>
+                                <div style="text-align: left;">
+                                    <div style="font-size: 0.55em; font-weight: 700; color: white;">USD</div>
+                                    <div style="font-size: 0.4em; color: rgba(255,255,255,0.4);">Dollar</div>
+                                </div>
+                            </div>
+                            <div class="graphic-card-currency">
+                                <span class="currency-symbol" style="color: #34d399; background: rgba(16,185,129,0.15); font-size: 0.7em;">€</span>
+                                <div style="text-align: left;">
+                                    <div style="font-size: 0.55em; font-weight: 700; color: white;">EUR</div>
+                                    <div style="font-size: 0.4em; color: rgba(255,255,255,0.4);">Euro</div>
+                                </div>
+                            </div>
+                            <div class="graphic-card-currency">
+                                <span class="currency-symbol" style="color: #c084fc; background: rgba(168,85,247,0.15); font-size: 0.7em;">₦</span>
+                                <div style="text-align: left;">
+                                    <div style="font-size: 0.55em; font-weight: 700; color: white;">NGN</div>
+                                    <div style="font-size: 0.4em; color: rgba(255,255,255,0.4);">Naira</div>
+                                </div>
+                            </div>
+                            <div class="graphic-card-currency">
+                                <span class="currency-symbol" style="color: #fb923c; background: rgba(251,146,60,0.15); font-size: 0.7em;">£</span>
+                                <div style="text-align: left;">
+                                    <div style="font-size: 0.55em; font-weight: 700; color: white;">GBP</div>
+                                    <div style="font-size: 0.4em; color: rgba(255,255,255,0.4);">Pound</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="graphic-divider" style="width: 2.5em; font-size: 1em; color: rgba(255,255,255,0.2);">⇄</div>
+
+                        <div class="graphic-card font-outfit" style="width: 6em; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 5.5em;">
+                            <div style="width: 2em; height: 2em; border-radius: 50%; border: 0.125em dashed #c084fc; display: flex; align-items: center; justify-content: center; color: #c084fc; font-weight: 700; font-size: 0.75em; margin-bottom: 0.25em;">↻</div>
+                            <div style="font-size: 0.45em; color: rgba(255,255,255,0.5); font-weight: 700; letter-spacing: 0.05em; text-align: center; text-transform: uppercase;">Real-Time Rates</div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                category: "Alerts & Nudges",
+                title: "Never miss a deadline or<br><span class='accent-grad'>overrun a budget.</span>",
+                desc: "Hikarii automatically tracks timelines and spending thresholds. Get clear visual warnings and email nudges when tasks are overdue or budget caps are near.",
+                footer: "Proactive Guardrails",
+                graphic: `
+                    <div class="graphic-flex-row">
+                        <div class="graphic-card font-outfit" style="width: 6em; padding: 0; overflow: hidden; height: 5.5em; border-color: rgba(239, 68, 68, 0.4);">
+                            <div style="background: #ef4444; height: 1.5em; display: flex; align-items: center; justify-content: center; font-size: 0.55em; font-weight: 900; color: white; letter-spacing: 0.05em;">JULY</div>
+                            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 4em;">
+                                <div style="font-size: 1.5em; font-weight: 900; color: white; line-height: 1;">28</div>
+                                <div style="font-size: 0.4em; font-weight: 700; color: #ef4444; margin-top: 0.1em;">OVERDUE</div>
+                            </div>
+                        </div>
+
+                        <div class="graphic-divider" style="width: 2.5em;">
+                            <div style="width: 1.25em; height: 1.25em; border: 0.125em dashed #ef4444; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #ef4444; font-size: 0.55em;">⚠️</div>
+                        </div>
+
+                        <div class="graphic-card font-outfit" style="width: 11em; text-align: left; border-color: rgba(239, 68, 68, 0.4); display: flex; gap: 0.6em; align-items: center; background: #111827; height: 5.5em;">
+                            <div style="width: 1.8em; height: 1.8em; border-radius: 50%; background: rgba(239, 68, 68, 0.2); display: flex; align-items: center; justify-content: center; font-size: 0.9em; flex-shrink: 0;">🔔</div>
+                            <div>
+                                <div style="font-size: 0.65em; font-weight: 700; color: white;">Budget Warning</div>
+                                <div style="font-size: 0.5em; color: rgba(255,255,255,0.5); margin-top: 0.1em; line-height: 1.2;">Marketing budget crossed 85% limit ($850)</div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                category: "14-Day Free Trial",
+                title: "Bring ultimate <span class='accent-grad'>light & clarity</span><br>to your project workflow.",
+                desc: "Stop jumping between task lists, banking apps, and spreadsheets. Hikarii is the cohesive, beautiful workspace built for creators. Try it free today.",
+                footer: "Try Hikarii Free Now",
+                graphic: `
+                    <div class="graphic-flex-row" style="justify-content: center; width: 100%;">
+                        <div style="display: flex; align-items: center; justify-content: center; width: 4.5em; height: 4.5em; background: radial-gradient(circle, rgba(147, 51, 234, 0.3) 0%, rgba(252, 140, 3, 0) 70%);">
+                            <svg viewBox="0 0 100 100" style="width: 3.5em; height: 3.5em;">
+                                <path d="M 50 10 L 53 40 L 80 43 L 53 46 L 50 76 L 47 46 L 20 43 L 47 40 Z" fill="#fb923c"/>
+                                <text x="36" y="62" fill="white" font-family="Outfit" font-size="44" font-weight="900" style="text-shadow: 0 0 10px rgba(147, 51, 234, 0.8);">H</text>
+                            </svg>
+                        </div>
+                    </div>
+                `
+            }
+        ];
+
+        // Active State variables
+        let currentSlideIndex = 0;
+        let activeTheme = 'hikari-dark';
+        let isLightMode = false;
+        let showGrid = true;
+        let showBlobs = true;
+        let aspectSquare = true;
+
+        // Initialize App UI
+        function initApp() {
+            loadSlideData(currentSlideIndex);
+            
+            // Listen for keyboard arrows
+            document.addEventListener('keydown', (e) => {
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+                    return; // Don't trigger shortcuts while typing
+                }
+                if (e.key === 'ArrowLeft') {
+                    navigateSlide(-1);
+                } else if (e.key === 'ArrowRight') {
+                    navigateSlide(1);
+                }
+            });
+        }
+
+        // Load Slide Data into Inputs and Preview Card
+        function loadSlideData(index) {
+            const data = slidesData[index];
+            
+            // Set input values
+            document.getElementById('edit-category').value = data.category;
+            // Clean up titles for input field (replace <br> with newlines)
+            document.getElementById('edit-title').value = data.title.replace(/<br>/g, '\n');
+            document.getElementById('edit-desc').value = data.desc;
+            document.getElementById('edit-footer').value = data.footer;
+            
+            // Update active selector state
+            const buttons = document.querySelectorAll('#slide-selector button');
+            buttons.forEach((btn, i) => {
+                if (i === index) btn.classList.add('active');
+                else btn.classList.remove('active');
+            });
+
+            renderSlidePreview(index);
+        }
+
+        // Render preview card elements using state
+        function renderSlidePreview(index) {
+            const data = slidesData[index];
+
+            document.getElementById('slide-category').innerText = document.getElementById('edit-category').value;
+            
+            // Format input value back to HTML title
+            const rawTitle = document.getElementById('edit-title').value;
+            document.getElementById('slide-title').innerHTML = rawTitle.replace(/\n/g, '<br>');
+            
+            document.getElementById('slide-desc').innerText = document.getElementById('edit-desc').value;
+            document.getElementById('slide-footer-text').innerText = document.getElementById('edit-footer').value;
+            document.getElementById('slide-index').innerText = `${String(index + 1).padStart(2, '0')} / 06`;
+            
+            // Load SVG Graphic
+            document.getElementById('slide-graphic-container').innerHTML = data.graphic;
+        }
+
+        // Live input triggers
+        function updateCurrentSlide() {
+            renderSlidePreview(currentSlideIndex);
+            // Save state back to in-memory db
+            slidesData[currentSlideIndex].category = document.getElementById('edit-category').value;
+            slidesData[currentSlideIndex].title = document.getElementById('edit-title').value.replace(/\n/g, '<br>');
+            slidesData[currentSlideIndex].desc = document.getElementById('edit-desc').value;
+            slidesData[currentSlideIndex].footer = document.getElementById('edit-footer').value;
+        }
+
+        // Carousel Navigation
+        function selectSlide(index) {
+            currentSlideIndex = index;
+            loadSlideData(index);
+        }
+
+        function navigateSlide(direction) {
+            let nextIndex = currentSlideIndex + direction;
+            if (nextIndex < 0) nextIndex = 5;
+            if (nextIndex > 5) nextIndex = 0;
+            selectSlide(nextIndex);
+        }
+
+        // Theme and Background Settings
+        function selectTheme(themeName) {
+            activeTheme = themeName;
+            
+            // Update selector button styles
+            const presets = document.querySelectorAll('.grad-preset');
+            presets.forEach(p => {
+                if (p.getAttribute('data-theme') === themeName) p.classList.add('active');
+                else p.classList.remove('active');
+            });
+
+            applySlideStyle();
+        }
+
+        function toggleLightMode() {
+            isLightMode = document.getElementById('theme-light-toggle').checked;
+            applySlideStyle();
+        }
+
+        function toggleGrid() {
+            showGrid = document.getElementById('toggle-grid').checked;
+            document.getElementById('slide-bg-grid').style.display = showGrid ? 'block' : 'none';
+        }
+
+        function toggleBlobs() {
+            showBlobs = document.getElementById('toggle-blobs').checked;
+            document.getElementById('slide-blob-1').style.display = showBlobs ? 'block' : 'none';
+            document.getElementById('slide-blob-2').style.display = showBlobs ? 'block' : 'none';
+        }
+
+        function applySlideStyle() {
+            const card = document.getElementById('slide-card');
+            
+            // 1. Apply background gradient
+            if (isLightMode) {
+                card.style.background = 'var(--grad-nordic-light)';
+                card.classList.add('light-mode');
+            } else {
+                card.style.background = `var(--grad-${activeTheme})`;
+                card.classList.remove('light-mode');
+            }
+        }
+
+        // Aspect Ratio
+        function setAspectRatio(ratio) {
+            const card = document.getElementById('slide-card');
+            const btnSquare = document.getElementById('btn-ratio-square');
+            const btnVertical = document.getElementById('btn-ratio-vertical');
+            
+            if (ratio === 'square') {
+                aspectSquare = true;
+                card.classList.remove('vertical');
+                btnSquare.classList.add('active');
+                btnVertical.classList.remove('active');
+            } else {
+                aspectSquare = false;
+                card.classList.add('vertical');
+                btnSquare.classList.remove('active');
+                btnVertical.classList.add('active');
+            }
+        }
+
+        // Utility to temporarily scale up card for high-resolution output snapshots
+        function generateHighResCanvas(cardElement, callback) {
+            // LinkedIn / Instagram High Resolution Standard (1080px wide)
+            const targetWidth = 1080;
+            const targetHeight = aspectSquare ? 1080 : 1350;
+            
+            // Create a clone of the card
+            const clone = cardElement.cloneNode(true);
+            
+            // Position the clone way off-screen
+            clone.style.position = 'absolute';
+            clone.style.top = '-9999px';
+            clone.style.left = '-9999px';
+            clone.style.width = targetWidth + 'px';
+            clone.style.height = targetHeight + 'px';
+            clone.style.transform = 'none';
+            clone.style.display = 'flex'; // Ensure flex layout works
+            
+            // Append clone to body to let html2canvas render it
+            document.body.appendChild(clone);
+            
+            // Scale clone children sizes up proportionally (approx 2.16x increase)
+            const cloneTitle = clone.querySelector('#slide-title');
+            const cloneDesc = clone.querySelector('#slide-desc');
+            const cloneCategory = clone.querySelector('#slide-category');
+            const cloneFooter = clone.querySelector('.slide-footer');
+            const cloneLogoText = clone.querySelector('.slide-logo-text');
+            const cloneLogoIcon = clone.querySelector('.slide-logo-icon');
+            const cloneGraphicBox = clone.querySelector('#slide-graphic-container');
+            const cloneBgGrid = clone.querySelector('#slide-bg-grid');
+            const cloneBlob1 = clone.querySelector('#slide-blob-1');
+            const cloneBlob2 = clone.querySelector('#slide-blob-2');
+
+            // Apply scaled sizes
+            clone.style.padding = '80px';
+            cloneTitle.style.fontSize = '4.6rem';
+            cloneDesc.style.fontSize = '2.1rem';
+            cloneCategory.style.fontSize = '1.6rem';
+            cloneFooter.style.fontSize = '1.6rem';
+            cloneLogoText.style.fontSize = '2.4rem';
+            
+            if (cloneLogoIcon) {
+                cloneLogoIcon.style.width = '60px';
+                cloneLogoIcon.style.height = '43px';
+            }
+            
+            if (cloneGraphicBox) {
+                cloneGraphicBox.style.height = aspectSquare ? '300px' : '450px';
+                cloneGraphicBox.style.fontSize = '34px'; // Scale EM layouts properly
+            }
+
+            // Adjust backgrounds and blob locations for 1080px
+            if (cloneBgGrid) {
+                cloneBgGrid.style.backgroundSize = '100px 100px';
+            }
+            if (cloneBlob1) {
+                cloneBlob1.style.width = '600px';
+                cloneBlob1.style.height = '600px';
+                cloneBlob1.style.top = '-100px';
+                cloneBlob1.style.right = '-100px';
+            }
+            if (cloneBlob2) {
+                cloneBlob2.style.width = '500px';
+                cloneBlob2.style.height = '500px';
+                cloneBlob2.style.bottom = '-100px';
+                cloneBlob2.style.left = '-100px';
+            }
+
+            // Fix potential html2canvas gradient text issue by making text color solid purple/teal in clone
+            clone.querySelectorAll('.accent-grad').forEach(el => {
+                el.style.background = 'none';
+                el.style.webkitBackgroundClip = 'initial';
+                el.style.webkitTextFillColor = 'initial';
+                el.style.color = isLightMode ? '#7e22ce' : '#d8b4fe'; // Solid color
+            });
+            clone.querySelectorAll('.accent-teal').forEach(el => {
+                el.style.background = 'none';
+                el.style.webkitBackgroundClip = 'initial';
+                el.style.webkitTextFillColor = 'initial';
+                el.style.color = isLightMode ? '#0d9488' : '#34d399'; // Solid color
+            });
+
+            // Wait a moment for rendering and fonts
+            setTimeout(() => {
+                html2canvas(clone, {
+                    scale: 1, // Render at the 1080x1080 size we set on the clone
+                    useCORS: true,
+                    allowTaint: true,
+                    backgroundColor: null,
+                    logging: false
+                }).then(canvas => {
+                    // Remove clone from document
+                    document.body.removeChild(clone);
+                    callback(canvas);
+                });
+            }, 300);
+        }
+
+        // Export Current Slide PNG
+        function exportCurrentSlide() {
+            const card = document.getElementById('slide-card');
+            
+            showBanner('Generating high-resolution slide...', 'info');
+            
+            generateHighResCanvas(card, (canvas) => {
+                const imgURL = canvas.toDataURL("image/png");
+                const dlLink = document.createElement('a');
+                dlLink.download = `Hikarii_Slide_${currentSlideIndex + 1}.png`;
+                dlLink.href = imgURL;
+                dlLink.dataset.downloadurl = ["image/png", dlLink.download, dlLink.href].join(":");
+                document.body.appendChild(dlLink);
+                dlLink.click();
+                document.body.removeChild(dlLink);
+                
+                showBanner(`Slide ${currentSlideIndex + 1} downloaded successfully!`, 'success');
+            });
+        }
+
+        // Export All Slides in a ZIP File
+        function exportAllSlides() {
+            const card = document.getElementById('slide-card');
+            const zip = new JSZip();
+            const totalSlides = 6;
+            let currentProcessing = 0;
+            
+            // Backup initial active slide to return to later
+            const initialSlide = currentSlideIndex;
+            
+            showBanner(`Preparing all slides for batch export. Please wait...`, 'info');
+
+            function processNext() {
+                if (currentProcessing < totalSlides) {
+                    selectSlide(currentProcessing);
+                    
+                    // Allow UI to update before snapshotting
+                    setTimeout(() => {
+                        generateHighResCanvas(card, (canvas) => {
+                            const imgURL = canvas.toDataURL("image/png").split(',')[1];
+                            zip.file(`Hikarii_Slide_${currentProcessing + 1}.png`, imgURL, {base64: true});
+                            
+                            currentProcessing++;
+                            showBanner(`Processed ${currentProcessing} of ${totalSlides} slides...`, 'info');
+                            processNext();
+                        });
+                    }, 400);
+                } else {
+                    // All files loaded, package the ZIP
+                    zip.generateAsync({type:"blob"}).then(function(content) {
+                        saveAs(content, "Hikarii_LinkedIn_Carousel.zip");
+                        
+                        // Return to the slide user was editing
+                        selectSlide(initialSlide);
+                        showBanner("All slides exported successfully in ZIP format!", "success");
+                    });
+                }
+            }
+            
+            // Start the batch queue
+            processNext();
+        }
+
+        // Banner messaging helper
+        function showBanner(text, type) {
+            const banner = document.getElementById('status-banner');
+            const bannerText = document.getElementById('status-text');
+            
+            banner.style.display = 'flex';
+            bannerText.innerText = text;
+            
+            if (type === 'success') {
+                banner.style.backgroundColor = 'rgba(16, 185, 129, 0.15)';
+                banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+                banner.style.color = '#34d399';
+                setTimeout(() => {
+                    banner.style.display = 'none';
+                }, 5000);
+            } else if (type === 'info') {
+                banner.style.backgroundColor = 'rgba(59, 130, 246, 0.15)';
+                banner.style.borderColor = 'rgba(59, 130, 246, 0.4)';
+                banner.style.color = '#60a5fa';
+            }
+        }
+
+        // Start
+        window.onload = initApp;
+    </script>
+</body>
+</html>

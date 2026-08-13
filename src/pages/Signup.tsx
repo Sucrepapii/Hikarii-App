@@ -79,7 +79,7 @@ export const Signup: React.FC = () => {
                 toast.success('Welcome to Hikarii!');
                 const searchParams = new URLSearchParams(window.location.search);
                 const redirectTo = searchParams.get('redirect');
-                navigate(redirectTo || '/dashboard');
+                navigate(redirectTo || '/thank-you');
             }
         } catch (err: any) {
             const msg = err.message || 'Signup failed';
@@ -99,7 +99,7 @@ export const Signup: React.FC = () => {
             
             const searchParams = new URLSearchParams(window.location.search);
             const redirectTo = searchParams.get('redirect');
-            navigate(redirectTo || '/dashboard');
+            navigate(redirectTo || '/thank-you');
         } catch (err: any) {
             const msg = err.message || 'Verification failed';
             setError(msg);

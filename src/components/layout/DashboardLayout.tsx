@@ -3,6 +3,7 @@ import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import { CanvasParticleOverlay } from '../common/CanvasParticleOverlay';
 import { useAmbientTheme } from '../../hooks/useAmbientTheme';
+import { Breadcrumbs } from '../common/Breadcrumbs';
 
 interface DashboardLayoutProps {
     children: React.ReactNode;
@@ -24,6 +25,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
                 <Sidebar isOpen={isSidebarOpen} onClose={closeSidebar} />
 
                 <main className="flex-1 p-4 md:px-6 md:pt-2 md:pb-8 lg:px-8 lg:pt-2 lg:pb-12 overflow-auto">
+                    <Breadcrumbs />
                     {children}
                 </main>
             </div>

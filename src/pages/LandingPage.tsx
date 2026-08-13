@@ -1214,6 +1214,20 @@ export const LandingPage: React.FC = () => {
             {/* Footer */}
             <Footer />
 
+            {/* Sticky Mobile CTA */}
+            <div className="fixed bottom-0 left-0 right-0 p-4 bg-[#0B0C15]/90 backdrop-blur-md border-t border-white/10 z-50 md:hidden flex items-center justify-between shadow-2xl">
+                <div>
+                    <div className="text-white font-bold text-sm">Start for free</div>
+                    <div className="text-slate-400 text-xs">No credit card required</div>
+                </div>
+                <Button 
+                    size="sm" 
+                    className="rounded-full bg-gradient-to-r from-primary-600 to-accent-600 text-white font-bold px-6 shadow-lg shadow-primary-500/20"
+                    onClick={() => navigate('/signup')}
+                >
+                    Get Started
+                </Button>
+            </div>
         </div>
     );
 };

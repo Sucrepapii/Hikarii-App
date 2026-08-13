@@ -46,6 +46,8 @@ import { ResetPassword } from './pages/ResetPassword';
 import { AcceptInvite } from './pages/AcceptInvite';
 import { Method } from './pages/Method';
 import { FloatingChatbot } from './components/intelligence/FloatingChatbot';
+import { NotFound } from './pages/NotFound';
+import { ThankYou } from './pages/ThankYou';
 import './index.css';
 
 import { useInactivity } from './hooks/useInactivity';
@@ -333,6 +335,9 @@ function App() {
                         </ProtectedRoute>
                     }
                 />
+                <Route path="/thank-you" element={<ThankYou />} />
+                {/* 404 Route */}
+                <Route path="*" element={<NotFound />} />
             </Routes >
 
             {activeSplitTaskId && (() => {
