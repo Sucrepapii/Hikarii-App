@@ -13,6 +13,7 @@ ModuleRegistry.registerModules([AllCommunityModule, ClientSideRowModelModule]);
 import { Plus, Wallet, FolderOpen } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { ConfirmModal } from '../components/common/ConfirmModal';
+import { Modal } from '../components/common/Modal';
 
 export const Tracker = () => {
     const { expenses, fetchExpenses, updateExpense, addExpense, deleteExpense, isLoading } = useBudgetStore();
@@ -24,6 +25,16 @@ export const Tracker = () => {
     const [expenseToDelete, setExpenseToDelete] = useState<string | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
     const [selectedProjectId, setSelectedProjectId] = useState<string>('ALL');
+
+    // Add Record Modal State
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+    const [title, setTitle] = useState('');
+    const [amount, setAmount] = useState<number | ''>('');
+    const [category, setCategory] = useState<ExpenseCategory>(ExpenseCategory.OTHER);
+    const [date, setDate] = useState<string>(new Date().toISOString().split('T')[0]);
+    const [projectId, setProjectId] = useState<string>('');
+    const [description, setDescription] = useState('');
+    const [isSaving, setIsSaving] = useState(false);
 
     useEffect(() => {
         fetchExpenses();
@@ -62,21 +73,15 @@ export const Tracker = () => {
         }
     };
 
-    const handleAddRow = async () => {
-        const newExpense = {
-            title: 'New Item',
-            amount: 1,
-            category: ExpenseCategory.OTHER,
-            date: new Date(),
-            projectId: selectedProjectId !== 'ALL' ? selectedProjectId : undefined
-        };
-        try {
-            // @ts-ignore
-            await addExpense(newExpense);
-            toast.success("Record added");
-        } catch (error: any) {
-            toast.error(error?.response?.data?.error || "Failed to add record. Ensure you are online or the server is running.");
-        }
+    const handleAddRow = () => {
+        setTitle('');
+        setAmount('');
+        setCategory(ExpenseCategory.OTHER);
+        setDate(new Date().toISOString().split('T')[0]);
+        setProjectId(selectedProjectId !== 'ALL' ? selectedProjectId : '');
+        setDescription('');
+        setIsSaving(false);
+        setIsAddModalOpen(true);
     };
 
     const handleDeleteClick = (id: string) => {
@@ -231,6 +236,161 @@ export const Tracker = () => {
                     overlayLoadingTemplate={'<span class="ag-overlay-loading-center">Please wait while your rows are loading</span>'}
                 />
             </div>
+
+            <Modal
+                isOpen={isAddModalOpen}
+                onClose={() => !isSaving && setIsAddModalOpen(false)}
+                title="Add Ledger Record"
+            >
+                <form
+                    onSubmit={async (e) => {
+                        e.preventDefault();
+                        if (!title.trim()) {
+                            toast.error("Description/Title is required");
+                            return;
+                        }
+                        if (amount === '' || Number(amount) <= 0) {
+                            toast.error("Amount must be a positive number");
+                            return;
+                        }
+                        setIsSaving(true);
+                        try {
+                            await addExpense({
+                                title: title.trim(),
+                                amount: Number(amount),
+                                category,
+                                date: new Date(date),
+                                projectId: projectId || undefined,
+                                description: description.trim() || undefined
+                            } as any);
+                            toast.success("Record added successfully");
+                            setIsAddModalOpen(false);
+                        } catch (error: any) {
+                            toast.error(error?.response?.data?.error || "Failed to add record.");
+                        } finally {
+                            setIsSaving(false);
+                        }
+                    }}
+                    className="p-6 space-y-4"
+                >
+                    <div>
+                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
+                            Description / Title
+                        </label>
+                        <input
+                            type="text"
+                            required
+                            placeholder="Enter description..."
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                            className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                        />
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
+                                Amount (NGN)
+                            </label>
+                            <input
+                                type="number"
+                                required
+                                step="0.01"
+                                placeholder="0.00"
+                                value={amount}
+                                onChange={(e) => setAmount(e.target.value === '' ? '' : Number(e.target.value))}
+                                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
+                                Date
+                            </label>
+                            <input
+                                type="date"
+                                required
+                                value={date}
+                                onChange={(e) => setDate(e.target.value)}
+                                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
+                                Category
+                            </label>
+                            <select
+                                value={category}
+                                onChange={(e) => setCategory(e.target.value as ExpenseCategory)}
+                                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                            >
+                                <option value={ExpenseCategory.FOOD}>Food</option>
+                                <option value={ExpenseCategory.TRANSPORT}>Transport</option>
+                                <option value={ExpenseCategory.ENTERTAINMENT}>Entertainment</option>
+                                <option value={ExpenseCategory.UTILITIES}>Utilities</option>
+                                <option value={ExpenseCategory.SHOPPING}>Shopping</option>
+                                <option value={ExpenseCategory.HEALTH}>Health</option>
+                                <option value={ExpenseCategory.OTHER}>Other</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
+                                Project (Optional)
+                            </label>
+                            <select
+                                value={projectId}
+                                onChange={(e) => setProjectId(e.target.value)}
+                                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                            >
+                                <option value="">None / General</option>
+                                {projects.map((p, index) => {
+                                    const isDisabled = !isPro && index > 0;
+                                    return (
+                                        <option key={p.id} value={p.id} disabled={isDisabled}>
+                                            {p.title} {isDisabled ? ' 🔒 PRO' : ''}
+                                        </option>
+                                    );
+                                })}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
+                            Description (Optional)
+                        </label>
+                        <textarea
+                            placeholder="Enter extra details..."
+                            rows={3}
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                            className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-primary-500 resize-none"
+                        />
+                    </div>
+
+                    <div className="flex gap-3 pt-4 border-t border-slate-100 dark:border-slate-700">
+                        <button
+                            type="submit"
+                            disabled={isSaving}
+                            className="flex-1 px-5 py-2.5 rounded-xl bg-gradient-to-r from-primary-600 to-accent-600 hover:from-primary-500 hover:to-accent-500 text-white font-semibold shadow-md transition-all flex items-center justify-center gap-1.5 disabled:opacity-50"
+                        >
+                            {isSaving ? "Saving..." : "Save Record"}
+                        </button>
+                        <button
+                            type="button"
+                            disabled={isSaving}
+                            onClick={() => setIsAddModalOpen(false)}
+                            className="px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium transition-all"
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </Modal>
 
             <ConfirmModal
                 isOpen={!!expenseToDelete}
