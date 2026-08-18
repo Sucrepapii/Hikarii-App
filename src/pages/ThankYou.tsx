@@ -31,7 +31,7 @@ export function ThankYou() {
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Button 
-            variant="outline" 
+            variant="secondary" 
             onClick={() => window.location.href = '/'}
             className="flex-1"
           >

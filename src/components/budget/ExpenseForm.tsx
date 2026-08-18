@@ -125,11 +125,13 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
                         )}
                     >
                         <option value="">None</option>
-                        {tasks.map(task => (
-                            <option key={task.id} value={task.id}>
-                                {task.title}
-                            </option>
-                        ))}
+                        {tasks
+                            .filter(task => task.status !== 'COMPLETED' || task.id === defaultValues?.linkedTaskId)
+                            .map(task => (
+                                <option key={task.id} value={task.id}>
+                                    {task.title}
+                                </option>
+                            ))}
                     </select>
                     {!isPro && (
                         <div
