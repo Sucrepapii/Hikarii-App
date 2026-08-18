@@ -3,6 +3,7 @@ import prisma from "../config/db";
 import { TaskStatus } from "../models/types";
 import { AuthRequest } from "../middleware/auth.middleware";
 import { createCalendarEvent } from "../services/google.calendar.service";
+import { getFriendlyAIError } from "../utils/aiError";
 import { taskSplitterService } from "../services/task.splitter.service";
 import redisClient from "../config/redis";
 
@@ -305,8 +306,7 @@ export const analyzeTaskSplit = async (
       message: "Blocks generated successfully",
     });
   } catch (error: any) {
-    console.error("Split analysis failed:", error);
-    res.status(500).json({ error: error.message || "Failed to analyze task" });
+    res.status(500).json({ error: getFriendlyAIError(error) });
   }
 };
 

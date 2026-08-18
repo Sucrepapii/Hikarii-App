@@ -1,6 +1,7 @@
 import { Response } from "express";
 import prisma from "../config/db";
 import { AuthRequest } from "../middleware/auth.middleware";
+import { getFriendlyAIError } from "../utils/aiError";
 
 // Helper to check access
 async function canAccessProject(projectId: string, userId: string, requireEdit = false) {
@@ -272,7 +273,7 @@ export const scopeProject = async (req: AuthRequest, res: Response) => {
     console.log(`[ProjectScoper] Prompt received: "${prompt}" with budget: $${totalBudget}`);
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({
-      model: "gemini-flash-latest",
+      model: "gemini-3.6-flash",
       generationConfig: { responseMimeType: "application/json" },
     });
 
@@ -318,7 +319,6 @@ export const scopeProject = async (req: AuthRequest, res: Response) => {
     const parsedScoping = JSON.parse(responseText);
     res.json(parsedScoping);
   } catch (error: any) {
-    console.error("[ProjectScoper] Scoping failed:", error);
-    res.status(500).json({ error: error.message || "Failed to scope project using AI" });
+    res.status(500).json({ error: getFriendlyAIError(error) });
   }
 };

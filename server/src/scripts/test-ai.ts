@@ -22,9 +22,9 @@ async function testGemini() {
   const genAI = new GoogleGenerativeAI(apiKey);
 
   try {
-    const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
+    const model = genAI.getGenerativeModel({ model: "gemini-3.6-flash" });
     const prompt = "Explain how AI works in one sentence.";
-    console.log(`Sending prompt to gemini-flash-latest: "${prompt}"`);
+    console.log(`Sending prompt to gemini-3.6-flash: "${prompt}"`);
 
     const result = await model.generateContent(prompt);
     const response = await result.response;

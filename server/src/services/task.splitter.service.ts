@@ -86,7 +86,7 @@ export class TaskSplitterService {
       try {
         this.genAI = new GoogleGenerativeAI(apiKey);
         this.model = this.genAI.getGenerativeModel({
-          model: "gemini-flash-latest",
+          model: "gemini-3.6-flash",
           generationConfig: { responseMimeType: "application/json" },
         });
         console.log("[TaskSplitter] Gemini model initialized successfully.");

@@ -3,6 +3,7 @@ import { AuthRequest } from "../middleware/auth.middleware";
 import { PredictiveService } from "../services/predictive.service";
 import prisma from "../config/db";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { getFriendlyAIError } from "../utils/aiError";
 
 const predictiveService = new PredictiveService();
 
@@ -42,7 +43,7 @@ export const getCoachResponse = async (
     ]);
 
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
+    const model = genAI.getGenerativeModel({ model: "gemini-3.6-flash" });
 
     // Format context
     const budgetsContext = budgets.map(b => `- Category: ${b.category}, Limit: ${b.limit}, Spent: ${b.spent}`).join("\n");
@@ -75,7 +76,7 @@ User Query: "${query}"
 
     res.json({ reply });
   } catch (error: any) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: getFriendlyAIError(error) });
   }
 };
 
@@ -97,7 +98,7 @@ export const getSupportBotResponse = async (
     }
 
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
+    const model = genAI.getGenerativeModel({ model: "gemini-3.6-flash" });
 
     const systemPrompt = `
 You are Hikarii Support, the friendly, concise, and helpful public AI assistant for the Hikarii Task & Budget application.
@@ -131,6 +132,6 @@ User Query: "${query}"
 
     res.json({ reply });
   } catch (error: any) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: getFriendlyAIError(error) });
   }
 };
