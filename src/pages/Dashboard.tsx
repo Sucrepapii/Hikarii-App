@@ -99,8 +99,10 @@ export const Dashboard: React.FC = () => {
     const recentExpenses = expenses.slice(-3).reverse();
 
     // MOMENTUM CALCULATION (The "One-Click Profit" Insight)
-    const netMomentum = tasks.reduce((sum, t) => sum + (t.financials?.cashFlowImpact || 0), 0) - totalSpent;
-    const isPositiveMomentum = netMomentum >= 0;
+    const netMomentumBase = tasks.reduce((sum, t) => sum + (t.financials?.cashFlowImpact || 0), 0) - totalSpent;
+    const netMomentum = getConvertedAmount(netMomentumBase, currency);
+    const isPositiveMomentum = netMomentumBase >= 0;
+    const currencySymbol = new Intl.NumberFormat('en-US', { style: 'currency', currency }).formatToParts(0).find(x => x.type === 'currency')?.value || '$';
 
     const handleEditTask = (task: Task) => {
         setEditingTask(task);
@@ -392,7 +394,7 @@ export const Dashboard: React.FC = () => {
                             )}>
                                 <NumberCounter 
                                     value={Math.abs(netMomentum)} 
-                                    prefix={netMomentum < 0 ? `-${currency === 'NGN' ? '₦' : '$'}` : (currency === 'NGN' ? '₦' : '$')} 
+                                    prefix={netMomentum < 0 ? `-${currencySymbol}` : currencySymbol} 
                                 />
                             </div>
                             <p className="text-xs text-slate-500 dark:text-slate-400 font-medium tracking-tight">
