@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Card } from '../common/Card';
 import { Button } from '../common/Button';
 import toast from 'react-hot-toast';
-import { useAuthStore } from '../../stores/authStore';
+import { useAuthStore, hasProAccess } from '../../stores/authStore';
 import { useProjectStore } from '../../stores/projectStore';
 import { UpgradeModal } from '../modals/UpgradeModal';
 import { ConfirmModal } from '../common/ConfirmModal';
@@ -26,7 +26,7 @@ export const ProjectCarousel: React.FC = () => {
 
     const handleNewProjectClick = (e: React.MouseEvent) => {
         e.preventDefault();
-        const isPro = user?.role === 'ADMIN' || user?.subscriptionStatus === 'PRO';
+        const isPro = hasProAccess(user);
 
         if (!isPro && activeProjects.length >= 1) {
             setShowUpgradeModal(true);
@@ -89,7 +89,7 @@ export const ProjectCarousel: React.FC = () => {
                     </div>
                     <h3 className="font-semibold text-slate-700 dark:text-slate-200">New Project</h3>
                     <p className="text-xs text-slate-500 mt-1">
-                        {user?.role === 'ADMIN' || user?.subscriptionStatus === 'PRO' ? 'Start a new goal' : `${activeProjects.length}/1 Free Project Used`}
+                        {hasProAccess(user) ? 'Start a new goal' : `${activeProjects.length}/1 Free Project Used`}
                     </p>
                 </div>
 

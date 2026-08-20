@@ -58,13 +58,13 @@ export const Auth: React.FC<AuthProps> = ({ defaultMode = 'login' }) => {
     const redirectTo = searchParams.get('redirect') || '/dashboard';
     
     return (
-        <div className="relative min-h-screen bg-[#05060A] overflow-hidden flex items-center justify-center p-4 sm:p-8 font-sans text-slate-100">
+        <div className="relative min-h-screen bg-white overflow-hidden flex font-sans text-slate-100">
             <Helmet>
                 <title>{mode === 'login' ? 'Log In' : 'Sign Up'} | Hikarii</title>
             </Helmet>
 
             {/* The Main Container */}
-            <div className="relative w-full max-w-6xl aspect-video min-h-[700px] bg-white rounded-3xl overflow-hidden shadow-2xl flex items-stretch">
+            <div className="relative w-full h-screen flex items-stretch">
                 
                 {/* Global Back Button (Now inside flush with the container) */}
                 <Link
@@ -121,12 +121,13 @@ export const Auth: React.FC<AuthProps> = ({ defaultMode = 'login' }) => {
                     >
                         {/* Blade Content Left (Shown when mode is Login, so blade covers Signup form) */}
                         <div className="relative w-1/2 h-full flex flex-col items-center justify-center p-16 text-center">
+                            <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop')] bg-cover bg-center opacity-40 mix-blend-overlay" />
                             <div className="absolute inset-0 bg-black/40" />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                            <div className="relative z-10 w-full max-w-sm">
-                                <Logo size="xl" className="mx-auto mb-8 text-white drop-shadow-lg" suppressLink />
-                                <h2 className="text-5xl font-display font-bold text-white mb-6">New here?</h2>
-                                <p className="text-slate-300 text-lg mb-10 leading-relaxed">
+                            <div className="absolute inset-0 bg-gradient-to-t from-[#080910]/90 via-transparent to-[#080910]/80" />
+                            <div className="relative z-10 w-full max-w-md">
+                                <Logo size="xl" className="mx-auto mb-8 text-white drop-shadow-2xl" suppressLink />
+                                <h2 className="text-5xl md:text-6xl font-display font-bold text-white mb-6 tracking-tight">New here?</h2>
+                                <p className="text-slate-200 text-lg md:text-xl mb-12 leading-relaxed font-light">
                                     Join Hikarii and discover a completely new way to merge your task tracking with financial clarity.
                                 </p>
                                 <Button 
@@ -141,12 +142,13 @@ export const Auth: React.FC<AuthProps> = ({ defaultMode = 'login' }) => {
 
                         {/* Blade Content Right (Shown when mode is Signup, so blade covers Login form) */}
                         <div className="relative w-1/2 h-full flex flex-col items-center justify-center p-16 text-center">
+                            <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop')] bg-cover bg-center opacity-40 mix-blend-overlay" />
                             <div className="absolute inset-0 bg-black/40" />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                            <div className="relative z-10 w-full max-w-sm">
-                                <Logo size="xl" className="mx-auto mb-8 text-white drop-shadow-lg" suppressLink />
-                                <h2 className="text-5xl font-display font-bold text-white mb-6">Welcome back!</h2>
-                                <p className="text-slate-300 text-lg mb-10 leading-relaxed">
+                            <div className="absolute inset-0 bg-gradient-to-t from-[#080910]/90 via-transparent to-[#080910]/80" />
+                            <div className="relative z-10 w-full max-w-md">
+                                <Logo size="xl" className="mx-auto mb-8 text-white drop-shadow-2xl" suppressLink />
+                                <h2 className="text-5xl md:text-6xl font-display font-bold text-white mb-6 tracking-tight">Welcome back!</h2>
+                                <p className="text-slate-200 text-lg md:text-xl mb-12 leading-relaxed font-light">
                                     To keep connected with us please login with your personal info.
                                 </p>
                                 <Button 

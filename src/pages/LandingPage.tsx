@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Check, Zap, Link2, FileText, Split, ArrowRight, Menu, X, ChevronDown, Star, Calendar, Users, MessageSquare, Bell, Shield, Sun, Trophy, WifiOff, Wallet, Smartphone } from 'lucide-react';
+import { Check, Zap, Link2, FileText, Split, ArrowRight, Menu, X, ChevronDown, Star, Calendar, Users, MessageSquare, Bell, Shield, Sun, Trophy, WifiOff, Wallet, Smartphone, Sparkles, Flame } from 'lucide-react';
 import { Button } from '../components/common/Button';
 import { Logo } from '../components/common/Logo';
 import { Footer } from '../components/layout/Footer';
@@ -158,23 +158,8 @@ export const LandingPage: React.FC = () => {
     ]);
     const [isHovered, setIsHovered] = useState(false);
     const testimonialRef = React.useRef<HTMLDivElement>(null);
-    const [statsData, setStatsData] = useState({ users: 3000, countries: 20 });
+    const [statsData] = useState({ users: 900, countries: 5 });
 
-    useEffect(() => {
-        const fetchStats = async () => {
-            try {
-                const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
-                const res = await fetch(`${API_URL}/stats`);
-                if (res.ok) {
-                    const data = await res.json();
-                    setStatsData(data);
-                }
-            } catch {
-                // Keep default
-            }
-        };
-        fetchStats();
-    }, []);
 
     // Fetch real feedback from the API
     useEffect(() => {
@@ -318,9 +303,14 @@ export const LandingPage: React.FC = () => {
 
                     {/* Floating social-proof pills */}
                     <div className="flex flex-wrap items-center justify-center gap-3 animate-fade-in-up delay-300">
-                        {["⭐ 4.9 rating", "🔒 Bank-grade security", "⚡ Free to start"].map((pill) => (
-                            <span key={pill} className="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-semibold text-slate-400 bg-white/5 border border-white/[0.07] backdrop-blur-sm shadow-sm">
-                                {pill}
+                        {[
+                            { text: "Productivity Meets Finance", icon: Sparkles, color: "text-amber-400" },
+                            { text: "The Hikarii Method", icon: Flame, color: "text-orange-500" },
+                            { text: "Free to start", icon: Zap, color: "text-yellow-400" }
+                        ].map((pill) => (
+                            <span key={pill.text} className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold text-slate-400 bg-white/5 border border-white/[0.07] backdrop-blur-sm shadow-sm hover:bg-white/10 transition-colors cursor-default">
+                                <pill.icon className={`w-3.5 h-3.5 ${pill.color}`} />
+                                {pill.text}
                             </span>
                         ))}
                     </div>
@@ -328,7 +318,7 @@ export const LandingPage: React.FC = () => {
             </section>
 
             {/* ── STATS STRIP ────────────────────────────────────────── */}
-            <div className="border-y border-white/[0.06] bg-[#0D0F1A] py-10">
+            {/* <div className="border-y border-white/[0.06] bg-[#0D0F1A] py-10">
                 <div className="max-w-5xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8">
                     {STATS.map((s) => (
                         <div key={s.label} className="text-center">
@@ -337,7 +327,7 @@ export const LandingPage: React.FC = () => {
                         </div>
                     ))}
                 </div>
-            </div>
+            </div> */}
 
             {/* ── Hikarii METHOD ──────────────────────────────────────── */}
             <section className="py-16 px-6 max-w-7xl mx-auto relative z-20">

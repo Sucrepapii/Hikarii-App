@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Card } from '../components/common/Card';
-import { useAuthStore } from '../stores/authStore';
+import { useAuthStore, hasProAccess } from '../stores/authStore';
 import { UpgradeModal } from '../components/modals/UpgradeModal';
 import { Button } from '../components/common/Button';
 import { Lock } from 'lucide-react';
@@ -28,7 +28,7 @@ export const Analytics: React.FC = () => {
     const { tasks } = useTaskStore();
     const { expenses, budgets, currency, getConvertedAmount } = useBudgetStore();
     const { user } = useAuthStore();
-    const isPro = user?.role === 'ADMIN' || user?.subscriptionStatus === 'PRO';
+    const isPro = hasProAccess(user);
     const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
 

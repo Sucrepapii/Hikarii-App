@@ -257,7 +257,7 @@ export const helpArticles: Article[] = [
     excerpt: "Master the philosophy of linking your tasks to your budget for radical clarity and intentional productivity.",
     content: `
         <div class="mb-12 rounded-3xl overflow-hidden shadow-2xl border border-slate-200 dark:border-white/10">
-            <img src="/marketing/Hikarii_method_philosophy_v2_1778356186586.png" alt="Hikarii Method Philosophy" class="w-full h-auto" />
+            <img src="/marketing/hikarii_method_philosophy.jpg" alt="Hikarii Method Philosophy" class="w-full h-auto" />
         </div>
 
         <div class="prose prose-slate dark:prose-invert max-w-none">

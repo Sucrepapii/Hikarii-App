@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useProjectStore } from '../stores/projectStore';
 import { useCollaborationStore } from '../stores/collaborationStore';
-import { useAuthStore } from '../stores/authStore';
+import { useAuthStore, hasProAccess } from '../stores/authStore';
 import { Card } from '../components/common/Card';
 import { Plus, Briefcase, Calendar, Edit2, Trash2, CheckCircle2, Users, MessageSquare, X } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
@@ -108,7 +108,7 @@ export const Projects: React.FC = () => {
                             variant="primary"
                             className="gap-2 whitespace-nowrap touch-manipulation min-w-fit"
                             onClick={() => {
-                                const isFree = user?.role !== 'ADMIN' && (!user?.subscriptionStatus || user?.subscriptionStatus === 'FREE');
+                                const isFree = !hasProAccess(user);
                                 if (isFree && projects.length >= 1) {
                                     setIsUpgradeModalOpen(true);
                                 } else {

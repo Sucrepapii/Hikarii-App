@@ -44,6 +44,7 @@ import ForcedPasswordChange from './pages/ForcedPasswordChange';
 import { ResetPassword } from './pages/ResetPassword';
 import { AcceptInvite } from './pages/AcceptInvite';
 import { Method } from './pages/Method';
+import { Team } from './pages/Team';
 import { FloatingChatbot } from './components/intelligence/FloatingChatbot';
 import { NotFound } from './pages/NotFound';
 import { ThankYou } from './pages/ThankYou';
@@ -259,6 +260,7 @@ function App() {
                 <Route path="/help" element={<HelpCenter />} />
                 <Route path="/help/category/:category" element={<CategoryPage />} />
                 <Route path="/help/article/:slug" element={<ArticlePage />} />
+                <Route path="/team" element={<Team />} />
                 <Route path="/faq" element={<FAQ />} />
                 <Route path="/feedback" element={<Feedback />} />
                 <Route path="/pricing" element={<Pricing />} />

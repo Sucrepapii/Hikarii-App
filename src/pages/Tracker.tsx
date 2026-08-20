@@ -4,7 +4,7 @@ import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-quartz.css'; // Premium theme
 import { useBudgetStore } from '../stores/budgetStore';
 import { useProjectStore } from '../stores/projectStore';
-import { useAuthStore } from '../stores/authStore';
+import { useAuthStore, hasProAccess } from '../stores/authStore';
 import { ExpenseCategory } from '../types/budget.types';
 import { ColDef, ModuleRegistry, AllCommunityModule, ClientSideRowModelModule } from 'ag-grid-community';
 
@@ -20,7 +20,7 @@ export const Tracker = () => {
     const { projects, fetchProjects } = useProjectStore();
     const { user } = useAuthStore();
     
-    const isPro = user?.role === 'ADMIN' || user?.subscriptionStatus === 'PRO';
+    const isPro = hasProAccess(user);
     
     const [expenseToDelete, setExpenseToDelete] = useState<string | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);

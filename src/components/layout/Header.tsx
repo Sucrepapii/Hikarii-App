@@ -95,9 +95,11 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
                                 ? 'bg-gradient-to-r from-red-500 to-rose-500 text-white shadow-sm'
                                 : user.subscriptionStatus === 'PRO'
                                     ? 'bg-gradient-brand text-white shadow-sm'
-                                    : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'}
+                                    : user.subscriptionStatus === 'TRIAL'
+                                        ? 'bg-gradient-to-r from-teal-400 to-emerald-500 text-white shadow-sm'
+                                        : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'}
                         `}>
-                            {user.role === 'ADMIN' ? 'ADMIN' : user.subscriptionStatus === 'PRO' ? 'PRO' : 'FREE'}
+                            {user.role === 'ADMIN' ? 'ADMIN' : user.subscriptionStatus === 'PRO' ? 'PRO' : user.subscriptionStatus === 'TRIAL' ? 'TRIAL' : 'FREE'}
                         </div>
                     )}
 
@@ -109,9 +111,11 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
                                 ? 'bg-gradient-to-r from-red-500 to-rose-500 text-white'
                                 : user.subscriptionStatus === 'PRO'
                                     ? 'bg-gradient-brand text-white'
-                                    : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'}
+                                    : user.subscriptionStatus === 'TRIAL'
+                                        ? 'bg-gradient-to-r from-teal-400 to-emerald-500 text-white'
+                                        : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'}
                         `}>
-                            {user.role === 'ADMIN' ? 'ADMIN' : user.subscriptionStatus === 'PRO' ? 'PRO' : 'FREE'}
+                            {user.role === 'ADMIN' ? 'ADMIN' : user.subscriptionStatus === 'PRO' ? 'PRO' : user.subscriptionStatus === 'TRIAL' ? 'TRIAL' : 'FREE'}
                         </div>
                     )}
 

@@ -58,6 +58,7 @@ export const Footer: React.FC = () => {
                         <h4 className="text-[10px] font-black tracking-[0.3em] text-slate-500 uppercase mb-8">Company</h4>
                         <ul className="space-y-4 text-sm text-slate-400">
                             <li><Link to="/about" className="hover:text-primary-400 transition-colors">About Us</Link></li>
+                            <li><Link to="/team" className="hover:text-primary-400 transition-colors">Team</Link></li>
                             <li><Link to="/contact" className="hover:text-primary-400 transition-colors">Contact</Link></li>
                             <li className="pt-2">
                                 <span className="block text-[10px] font-black text-slate-600 uppercase tracking-[0.2em] mb-2">Support</span>

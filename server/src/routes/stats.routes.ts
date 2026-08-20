@@ -18,8 +18,8 @@ router.get("/", async (req: Request, res: Response) => {
     
     const countryCount = countries.length;
 
-    const baseUsers = 3000;
-    const baseCountries = 20;
+    const baseUsers = 900;
+    const baseCountries = 5;
 
     res.json({
       users: baseUsers + userCount,

@@ -4,10 +4,12 @@ import redisClient from '../config/redis';
 // Define Queues
 let reminderQueue: Queue | null = null;
 let monthlyQueue: Queue | null = null;
+let trialQueue: Queue | null = null;
 
 if (redisClient) {
     reminderQueue = new Queue('reminder-queue', { connection: redisClient as any });
     monthlyQueue = new Queue('monthly-queue', { connection: redisClient as any });
+    trialQueue = new Queue('trial-queue', { connection: redisClient as any });
 }
 
 export const setupRepeatableJobs = async () => {
@@ -22,6 +24,12 @@ export const setupRepeatableJobs = async () => {
     await monthlyQueue?.add('monthly-greeting', {}, {
         repeat: { pattern: '0 9 1 * *' }
     });
+
+    // Run every day at Midnight to clean up expired trials
+    await trialQueue?.add('trial-expiration', {}, {
+        repeat: { pattern: '0 0 * * *' }
+    });
 };
 
-export { reminderQueue, monthlyQueue };
+export { reminderQueue, monthlyQueue, trialQueue };
+

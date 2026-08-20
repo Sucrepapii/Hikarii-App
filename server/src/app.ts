@@ -213,6 +213,12 @@ app.listen(PORT_NUM, () => {
         startMonthlyGreetingWorker();
       })
       .catch((err) => console.error("Failed to load monthly worker:", err));
+
+    import("./jobs/trialExpiration.job.js")
+      .then(({ startTrialExpirationWorker }) => {
+        startTrialExpirationWorker();
+      })
+      .catch((err) => console.error("Failed to load trial expiration worker:", err));
   }
   console.log(`\n🚀 Server is running on port ${PORT_NUM}`);
 });

@@ -79,6 +79,7 @@ export const authenticate = async (
           subscriptionStatus: true,
           stripeCustomerId: true,
           isSuspended: true,
+          currentPeriodEnd: true,
         },
       });
 
@@ -87,14 +88,20 @@ export const authenticate = async (
         user = existingByEmail;
         req.userId = existingByEmail.id;
       } else {
-        // Truly new user — create with Supabase UUID
+        // Truly new user — create with Supabase UUID and a 14-day free trial
         const name = decoded.user_metadata?.name || decoded.email?.split("@")[0] || "User";
+        
+        const trialEndDate = new Date();
+        trialEndDate.setDate(trialEndDate.getDate() + 14);
+
         user = await prisma.user.create({
           data: {
             id: decoded.sub,
             email: decoded.email || "",
             name: name,
             isVerified: true,
+            subscriptionStatus: "TRIAL",
+            currentPeriodEnd: trialEndDate,
           },
           select: {
             id: true,
@@ -102,6 +109,7 @@ export const authenticate = async (
             subscriptionStatus: true,
             stripeCustomerId: true,
             isSuspended: true,
+            currentPeriodEnd: true,
           },
         });
       }
@@ -118,6 +126,16 @@ export const authenticate = async (
         },
       });
       user.subscriptionStatus = "PRO";
+    }
+
+    if (user && user.subscriptionStatus === "TRIAL" && user.currentPeriodEnd && new Date() > user.currentPeriodEnd) {
+      await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          subscriptionStatus: "FREE",
+        },
+      });
+      user.subscriptionStatus = "FREE";
     }
 
     if (user.isSuspended) {

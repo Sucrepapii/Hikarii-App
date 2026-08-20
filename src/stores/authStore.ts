@@ -18,6 +18,11 @@ export interface User {
   requiresPasswordChange?: boolean;
 }
 
+export const hasProAccess = (user?: User | null): boolean => {
+  if (!user) return false;
+  return user.role === "ADMIN" || user.subscriptionStatus === "PRO" || user.subscriptionStatus === "TRIAL";
+};
+
 interface AuthState {
   user: User | null;
   token: string | null;

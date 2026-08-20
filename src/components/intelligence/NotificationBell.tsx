@@ -7,7 +7,7 @@ import { useProjectStore } from "../../stores/projectStore";
 import { Bell, X, AlertTriangle, Lightbulb, TrendingUp, CreditCard, Calendar, DollarSign, Shield, Users, CheckCircle2, MessageSquare } from "lucide-react";
 import { InsightType, InsightPriority } from "../../types/intelligence.types";
 import { clsx } from "clsx";
-import { useAuthStore } from "../../stores/authStore";
+import { useAuthStore, hasProAccess } from "../../stores/authStore";
 import { useBudgetStore } from "../../stores/budgetStore";
 import { formatCurrency } from "../../utils/currencyFormatter";
 import { useUIStore } from "../../stores/uiStore";
@@ -56,7 +56,7 @@ export const NotificationBell: React.FC = () => {
     const { fetchProjects } = useProjectStore();
     const { isFocusMode } = useUIStore();
     const navigate = useNavigate();
-    const isPro = user?.role === 'ADMIN' || user?.subscriptionStatus === 'PRO';
+    const isPro = hasProAccess(user);
     const isAdmin = user?.role === 'ADMIN';
     const [isAccepting, setIsAccepting] = useState<string | null>(null);
 

@@ -12,7 +12,7 @@ import { formatCurrency } from '../utils/currencyFormatter';
 import { TaskItem } from '../components/tasks/TaskItem';
 import { Modal } from '../components/common/Modal';
 import { ConfirmModal } from '../components/common/ConfirmModal';
-import { useAuthStore } from '../stores/authStore';
+import { useAuthStore, hasProAccess } from '../stores/authStore';
 import { UpgradeModal } from '../components/modals/UpgradeModal';
 
 export const Calendar: React.FC = () => {
@@ -24,7 +24,7 @@ export const Calendar: React.FC = () => {
 
     const [showUpgradeModal, setShowUpgradeModal] = useState(false);
     const { user } = useAuthStore();
-    const isPro = user?.role === 'ADMIN' || user?.subscriptionStatus === 'PRO';
+    const isPro = hasProAccess(user);
 
     // Navigation
     const nextMonth = () => {

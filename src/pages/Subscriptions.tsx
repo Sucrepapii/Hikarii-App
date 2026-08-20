@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { format } from 'date-fns';
 import { toast } from 'react-hot-toast';
-import { useAuthStore } from '../stores/authStore';
+import { useAuthStore, hasProAccess } from '../stores/authStore';
 import { UpgradeModal } from '../components/modals/UpgradeModal';
 import { ConfirmModal } from '../components/common/ConfirmModal';
 import { useBudgetStore } from '../stores/budgetStore';
@@ -40,7 +40,7 @@ export const Subscriptions: React.FC = () => {
     const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
     const handleScanClick = () => {
-        if (user?.subscriptionStatus === 'PRO') {
+        if (hasProAccess(user)) {
             handleScan();
         } else {
             setShowUpgradeModal(true);
@@ -125,6 +125,12 @@ export const Subscriptions: React.FC = () => {
                     <p className="text-slate-600 dark:text-slate-400">
                         Manage your predicted recurring expenses and bills
                     </p>
+                    {user?.subscriptionStatus === 'TRIAL' && user?.currentPeriodEnd && (
+                        <div className="mt-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-teal-500/10 border border-teal-500/20 text-teal-600 dark:text-teal-400 text-sm font-medium">
+                            <CheckCircle className="w-4 h-4" />
+                            14-Day Free Trial ends on {format(new Date(user.currentPeriodEnd), 'MMM dd, yyyy')}
+                        </div>
+                    )}
                 </div>
                 <button
                     onClick={handleScanClick}

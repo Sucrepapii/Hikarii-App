@@ -7,7 +7,7 @@ import { Input } from '../common/Input';
 import { Button } from '../common/Button';
 import { DollarSign, Calendar } from 'lucide-react';
 import { useTaskStore } from '../../stores/taskStore';
-import { useAuthStore } from '../../stores/authStore';
+import { useAuthStore, hasProAccess } from '../../stores/authStore';
 import { UpgradeModal } from '../modals/UpgradeModal';
 import { clsx } from "clsx";
 
@@ -24,7 +24,7 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
 }) => {
     const { tasks } = useTaskStore();
     const { user } = useAuthStore();
-    const isPro = user?.role === 'ADMIN' || user?.subscriptionStatus === 'PRO';
+    const isPro = hasProAccess(user);
     const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
     const {
