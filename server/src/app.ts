@@ -95,7 +95,9 @@ app.use(
 );
 
 // 1. Security Headers (Helmet)
-app.use(helmet());
+app.use(helmet({
+  crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" }
+}));
 
 // 2. HTTP Parameter Pollution protection
 app.use(hpp());
