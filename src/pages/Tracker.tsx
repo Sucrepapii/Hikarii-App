@@ -5,6 +5,7 @@ import 'ag-grid-community/styles/ag-theme-quartz.css'; // Premium theme
 import { useBudgetStore } from '../stores/budgetStore';
 import { useProjectStore } from '../stores/projectStore';
 import { useAuthStore, hasProAccess } from '../stores/authStore';
+import { formatCurrency } from '../utils/currencyFormatter';
 import { ExpenseCategory } from '../types/budget.types';
 import { ColDef, ModuleRegistry, AllCommunityModule, ClientSideRowModelModule } from 'ag-grid-community';
 
@@ -16,7 +17,7 @@ import { ConfirmModal } from '../components/common/ConfirmModal';
 import { Modal } from '../components/common/Modal';
 
 export const Tracker = () => {
-    const { expenses, fetchExpenses, updateExpense, addExpense, deleteExpense, isLoading } = useBudgetStore();
+    const { expenses, fetchExpenses, updateExpense, addExpense, deleteExpense, isLoading, currency, getConvertedAmount, getAmountInBaseCurrency } = useBudgetStore();
     const { projects, fetchProjects } = useProjectStore();
     const { user } = useAuthStore();
     
@@ -56,7 +57,7 @@ export const Tracker = () => {
         try {
             const cleanData = {
                 title: params.data.title || "Untitled Item",
-                amount: Number(params.data.amount) || 0,
+                amount: params.data.amount || 0,
                 category: params.data.category,
                 date: params.data.date ? new Date(params.data.date) : new Date(),
                 description: params.data.description,
@@ -146,10 +147,15 @@ export const Tracker = () => {
             sortable: true,
             filter: 'agNumberColumnFilter',
             valueParser: (params) => {
-                return Number(params.newValue);
+                const num = Number(params.newValue);
+                if (isNaN(num)) return params.oldValue;
+                // Convert input from display currency back to base currency (NGN)
+                return getAmountInBaseCurrency(num, currency);
             },
             valueFormatter: (params) => {
-                return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'NGN' }).format(params.value || 0);
+                // Convert from base currency (NGN) to display currency for viewing
+                const converted = getConvertedAmount(params.value || 0, currency);
+                return formatCurrency(converted, currency);
             },
             minWidth: 120
         },
@@ -208,7 +214,7 @@ export const Tracker = () => {
                         <div className="flex flex-col">
                             <span className="text-xs text-white/80 font-medium uppercase tracking-wider">Total Amount</span>
                             <span className="text-white font-bold text-lg">
-                                {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'NGN' }).format(totalAmount)}
+                                {formatCurrency(getConvertedAmount(totalAmount, currency), currency)}
                             </span>
                         </div>
                     </div>
@@ -257,7 +263,7 @@ export const Tracker = () => {
                         try {
                             await addExpense({
                                 title: title.trim(),
-                                amount: Number(amount),
+                                amount: getAmountInBaseCurrency(Number(amount), currency),
                                 category,
                                 date: new Date(date),
                                 projectId: projectId || undefined,
@@ -290,7 +296,7 @@ export const Tracker = () => {
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
-                                Amount (NGN)
+                                Amount ({currency})
                             </label>
                             <input
                                 type="number"
