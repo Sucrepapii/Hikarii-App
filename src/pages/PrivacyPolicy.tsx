@@ -69,8 +69,23 @@ export const PrivacyPolicy: React.FC = () => {
                     </section>
 
                     <section className="bg-[#0D0F1A] p-10 md:p-16 rounded-[3rem] border border-white/[0.06] shadow-2xl relative overflow-hidden group">
+                        <div className="absolute top-0 left-0 w-2 h-full bg-violet-500/50 group-hover:bg-violet-500 transition-colors" />
+                        <h2 className="text-3xl font-bold text-white mb-8 tracking-tight">3. Third-Party Service Providers</h2>
+                        <div className="space-y-10">
+                            <div className="p-8 rounded-2xl bg-white/5 border border-white/5">
+                                <h3 className="text-xl font-bold text-white mb-4">Google Gemini AI (Task Decomposition)</h3>
+                                <p className="text-slate-400 mb-6">To provide automated task splitting and predictive intelligence, we share minimal, anonymized task descriptions with Google Gemini API. Personal identifiable information is stripped before processing. <a href="https://policies.google.com/privacy" className="text-primary-400 hover:underline" target="_blank" rel="noreferrer">Google Privacy Policy</a>.</p>
+                            </div>
+                            <div className="p-8 rounded-2xl bg-white/5 border border-white/5">
+                                <h3 className="text-xl font-bold text-white mb-4">Stripe (Payment Processing)</h3>
+                                <p className="text-slate-400 mb-6">All payment transactions are handled securely by Stripe. We do not store or process your full credit card information on our servers. <a href="https://stripe.com/privacy" className="text-accent-400 hover:underline" target="_blank" rel="noreferrer">Stripe Privacy Policy</a>.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section className="bg-[#0D0F1A] p-10 md:p-16 rounded-[3rem] border border-white/[0.06] shadow-2xl relative overflow-hidden group">
                         <div className="absolute top-0 left-0 w-2 h-full bg-emerald-500/50 group-hover:bg-emerald-500 transition-colors" />
-                        <h2 className="text-3xl font-bold text-white mb-8 tracking-tight">3. Data Subject Rights (GDPR/CCPA)</h2>
+                        <h2 className="text-3xl font-bold text-white mb-8 tracking-tight">4. Data Subject Rights (GDPR/CCPA)</h2>
                         <p className="text-slate-400 leading-relaxed text-lg mb-10">
                             Regardless of your residency, Hikarii extends enterprise-grade privacy rights to all users globally:
                         </p>
@@ -93,7 +108,7 @@ export const PrivacyPolicy: React.FC = () => {
 
                     <section className="bg-[#0D0F1A] p-10 md:p-16 rounded-[3rem] border border-white/[0.06] shadow-2xl relative overflow-hidden group">
                         <div className="absolute top-0 left-0 w-2 h-full bg-accent-500/50 group-hover:bg-accent-500 transition-colors" />
-                        <h2 className="text-3xl font-bold text-white mb-8 tracking-tight">4. International Transfers and Security</h2>
+                        <h2 className="text-3xl font-bold text-white mb-8 tracking-tight">5. International Transfers and Security</h2>
                         <p className="text-slate-400 leading-relaxed text-lg mb-8">
                             Your information may be transferred to, and maintained on, computers located outside of your state, province, or country. We utilize <strong>Standard Contractual Clauses (SCCs)</strong> approved by the European Commission to ensure a high level of data protection.
                         </p>

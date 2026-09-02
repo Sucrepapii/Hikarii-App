@@ -2,8 +2,27 @@ import { Request, Response } from "express";
 import { AuthRequest } from "../middleware/auth.middleware";
 import { PredictiveService } from "../services/predictive.service";
 import prisma from "../config/db";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from "@google/generative-ai";
 import { getFriendlyAIError } from "../utils/aiError";
+
+const safetySettings = [
+  {
+    category: HarmCategory.HARM_CATEGORY_HARASSMENT,
+    threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+  },
+  {
+    category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+    threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+  },
+  {
+    category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+    threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+  },
+  {
+    category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+    threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+  },
+];
 
 const predictiveService = new PredictiveService();
 
@@ -43,7 +62,7 @@ export const getCoachResponse = async (
     ]);
 
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-3.6-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-3.6-flash", safetySettings });
 
     // Format context
     const budgetsContext = budgets.map(b => `- Category: ${b.category}, Limit: ${b.limit}, Spent: ${b.spent}`).join("\n");
@@ -98,7 +117,7 @@ export const getSupportBotResponse = async (
     }
 
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-3.6-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-3.6-flash", safetySettings });
 
     const systemPrompt = `
 You are Hikarii Support, the friendly, concise, and helpful public AI assistant for the Hikarii Task & Budget application.

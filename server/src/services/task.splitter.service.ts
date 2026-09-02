@@ -1,5 +1,5 @@
 import { Task } from "@prisma/client";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from "@google/generative-ai";
 
 interface SplitTemplate {
   keywords: string[];
@@ -85,9 +85,28 @@ export class TaskSplitterService {
     if (apiKey) {
       try {
         this.genAI = new GoogleGenerativeAI(apiKey);
+        const safetySettings = [
+          {
+            category: HarmCategory.HARM_CATEGORY_HARASSMENT,
+            threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+          },
+          {
+            category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+            threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+          },
+          {
+            category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+            threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+          },
+          {
+            category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+            threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+          },
+        ];
         this.model = this.genAI.getGenerativeModel({
           model: "gemini-3.6-flash",
           generationConfig: { responseMimeType: "application/json" },
+          safetySettings,
         });
         console.log("[TaskSplitter] Gemini model initialized successfully.");
       } catch (error) {

@@ -269,12 +269,31 @@ export const scopeProject = async (req: AuthRequest, res: Response) => {
       return res.status(503).json({ error: "AI Scoping Service is currently unavailable (no API Key configured)" });
     }
 
-    const { GoogleGenerativeAI } = require("@google/generative-ai");
+    const { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } = require("@google/generative-ai");
     console.log(`[ProjectScoper] Prompt received: "${prompt}" with budget: $${totalBudget}`);
     const genAI = new GoogleGenerativeAI(apiKey);
+    const safetySettings = [
+      {
+        category: HarmCategory.HARM_CATEGORY_HARASSMENT,
+        threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+      },
+      {
+        category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+        threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+      },
+      {
+        category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+        threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+      },
+      {
+        category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+        threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+      },
+    ];
     const model = genAI.getGenerativeModel({
       model: "gemini-3.6-flash",
       generationConfig: { responseMimeType: "application/json" },
+      safetySettings,
     });
 
     const aiPrompt = `
