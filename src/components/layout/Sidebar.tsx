@@ -184,8 +184,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                 </div>
             </aside>
 
-            {/* Desktop Sidebar - Static */}
-            <aside className="hidden lg:block w-72 glass-card p-6 h-[calc(100vh-6rem)] sticky top-24 animate-slide-up overflow-hidden">
+            {/* Desktop Sidebar - Sticky Pinned */}
+            <aside className="hidden lg:flex flex-col w-72 glass-card hover:transform-none p-6 h-full flex-shrink-0 animate-slide-up overflow-hidden">
                 <NavContent />
             </aside>
         </>
