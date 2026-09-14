@@ -13,22 +13,22 @@ import { clsx } from 'clsx';
 const ONBOARDING_STEPS = [
     {
         title: "Create Account",
-        body: "Sign up easily and get instant access to your centralized dashboard.",
+        body: "Sign up in seconds to access your personalized workspace.",
         image: "/step1_flat.png?v=3"
     },
     {
-        title: "Link the Money",
-        body: "Assign a dollar value to every milestone. See the real cost of your time.",
+        title: "Link Tasks to Budget",
+        body: "Assign a budget to each task so you know the financial cost of every milestone.",
         image: "/step2_flat.png?v=3"
     },
     {
-        title: "Split with AI",
-        body: "Our AI breaks massive projects into pre-funded, bite-sized blocks automatically.",
+        title: "Break Down Goals",
+        body: "Easily break big projects into bite-sized tasks with realistic budget limits.",
         image: "/step3_flat.png?v=3"
     },
     {
-        title: "Execute with ROI",
-        body: "Check off tasks and watch your financial progress update with absolute ROI clarity.",
+        title: "Track Spending & Progress",
+        body: "Check off tasks and watch your live budget and spending update in real time.",
         image: "/step4_flat.png?v=3"
     }
 ];
@@ -50,8 +50,8 @@ function getInitials(name: string): string {
 const Hikarii_METHOD_RULES = [
     {
         rule: "Rule 1",
-        title: "Give Every Task a Job",
-        description: "Directly connect your spending to your productivity. Stop guessing where your money goes and start seeing what it achieves.",
+        title: "Give Every Task a Budget",
+        description: "Stop managing tasks in one app and budgets in another. Connect your task checklist directly to your budget.",
         icon: <Link2 className="w-6 h-6" />,
         color: "cyan",
         styles: {
@@ -63,8 +63,8 @@ const Hikarii_METHOD_RULES = [
     },
     {
         rule: "Rule 2",
-        title: "Embrace Your True Expenses",
-        description: "Large project costs shouldn't be surprises. Break down massive goals into manageable, pre-funded milestones.",
+        title: "Plan Project Expenses",
+        description: "Never get surprised by unexpected costs. Set clear budget limits before you start executing your goals.",
         icon: <Calendar className="w-6 h-6" />,
         color: "amber",
         styles: {
@@ -76,8 +76,8 @@ const Hikarii_METHOD_RULES = [
     },
     {
         rule: "Rule 3",
-        title: "Roll With the Punches",
-        description: "Life happens, and plans change. Move budget between tasks in real-time without losing track of your overall goals.",
+        title: "Adjust As You Go",
+        description: "Life happens and plans change. Move budget between tasks smoothly as project priorities shift.",
         icon: <Zap className="w-6 h-6" />,
         color: "sky",
         styles: {
@@ -89,8 +89,8 @@ const Hikarii_METHOD_RULES = [
     },
     {
         rule: "Rule 4",
-        title: "Age Your Productivity",
-        description: "Gain peace of mind by tracking the ROI of your time. Spend against clarity, not your current stress level.",
+        title: "See Real-Time Progress",
+        description: "Know exactly how much money you have spent versus how many tasks you have completed.",
         icon: <Star className="w-6 h-6" />,
         color: "emerald",
         styles: {
@@ -102,8 +102,8 @@ const Hikarii_METHOD_RULES = [
     },
     {
         rule: "Rule 5",
-        title: "Scale with Collaboration",
-        description: "Success is better when shared. Invite teammates to projects, discuss tasks in real-time, and manage permissions with absolute precision.",
+        title: "Team Collaboration",
+        description: "Invite teammates to projects, discuss tasks in real time, and keep everyone aligned on budget goals.",
         icon: <Users className="w-6 h-6" />,
         color: "blue",
         styles: {
@@ -285,7 +285,7 @@ export const LandingPage: React.FC = () => {
                     </h1>
 
                     <p className="text-lg md:text-xl text-slate-400 mb-10 max-w-2xl mx-auto leading-relaxed">
-                        Stop juggling Todoist and Mint. Track projects and expenses side-by-side. Gain total clarity on where your time and money actually go.
+                        Stop managing tasks in one app and budgets in another. Hikarii connects your project tasks directly to your budget and spending in one visual view.
                     </p>
 
                     <div className="flex justify-center mb-6">
@@ -298,7 +298,7 @@ export const LandingPage: React.FC = () => {
                         </Button>
                     </div>
                     <p className="text-sm text-slate-500 font-medium mb-12">
-                        Connect every task to its budget – from daily errands to $1M projects.
+                        Connect every task to its budget – from small personal goals to full team projects.
                     </p>
 
                     {/* Floating social-proof pills */}
@@ -454,7 +454,7 @@ export const LandingPage: React.FC = () => {
                                 Before Hikarii
                             </h3>
                             <ul className="space-y-6">
-                                {["Task: \"Fix website\" — no budget, no deadline.", "Expense: \"$200 Hosting\" — where does the money go?", "Stress: \"Is this project even profitable?\"", "Chaos: Fragmented focus across 5 disconnected apps."].map((item, i) => (
+                                {["Task: \"Redesign homepage\" — no budget or cost limits.", "Expenses in Excel — lost receipts and hidden costs.", "Confusion: Are we staying within our budget?", "Chaos: Switching between 5 separate tools."].map((item, i) => (
                                     <li key={i} className="flex gap-4 text-slate-500">
                                         <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-slate-700 shrink-0" />
                                         <span className="text-sm leading-relaxed">{item}</span>
@@ -475,7 +475,7 @@ export const LandingPage: React.FC = () => {
                                 After Hikarii
                             </h3>
                             <ul className="space-y-6">
-                                {["Task: \"Fix website\" — budget $300 allocated.", "Expense linked to task — remaining $100 tracked.", "Clarity: ROI automatically calculated per milestone.", "Peace: One institutional workspace for everything."].map((item, i) => (
+                                {["Task: \"Redesign homepage\" — $300 budget linked directly.", "Expense linked to task — remaining $100 tracked automatically.", "Clarity: Real-time budget vs. spending progress on every task.", "Peace: All project tasks and finances in one workspace."].map((item, i) => (
                                     <li key={i} className="flex gap-4 text-white">
                                         <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-primary-500 shrink-0 shadow-[0_0_8px_rgba(99,102,241,0.8)]" />
                                         <span className="text-sm font-medium leading-relaxed">{item}</span>

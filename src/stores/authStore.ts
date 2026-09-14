@@ -43,6 +43,7 @@ interface AuthState {
     code: string,
     newPassword: string,
   ) => Promise<void>;
+  loginWithGoogle: () => Promise<void>;
   logout: () => void;
   checkAuth: () => Promise<void>;
 }
@@ -232,6 +233,23 @@ export const useAuthStore = create<AuthState>((set, get) => {
         set({ isLoading: false });
       } catch (error: any) {
         const message = error.message || "Reset password failed";
+        set({ error: message, isLoading: false });
+        throw new Error(message);
+      }
+    },
+
+    loginWithGoogle: async () => {
+      try {
+        set({ isLoading: true, error: null });
+        const { error } = await supabase.auth.signInWithOAuth({
+          provider: "google",
+          options: {
+            redirectTo: `${window.location.origin}/dashboard`,
+          },
+        });
+        if (error) throw error;
+      } catch (error: any) {
+        const message = error.message || "Google sign-in failed";
         set({ error: message, isLoading: false });
         throw new Error(message);
       }
