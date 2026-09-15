@@ -73,7 +73,7 @@ export const useAuthStore = create<AuthState>((set, get) => {
   return {
     user: JSON.parse(localStorage.getItem("auth-user") || "null"),
     token: null,
-    isLoading: false,
+    isLoading: true,
     error: null,
 
     login: async (email: string, password: string) => {
@@ -85,9 +85,14 @@ export const useAuthStore = create<AuthState>((set, get) => {
         });
 
         if (error) {
-          if (error.message.includes("Email not confirmed")) {
+          const isUnconfirmed =
+            error.message?.toLowerCase().includes("email not confirmed") ||
+            error.message?.toLowerCase().includes("not confirmed") ||
+            (error as any).code === "email_not_confirmed";
+
+          if (isUnconfirmed) {
             throw {
-              message: "Email not confirmed. Please verify your email.",
+              message: "Email not confirmed. Please verify your email before signing in.",
               requiresVerification: true,
               email,
             };
@@ -120,11 +125,13 @@ export const useAuthStore = create<AuthState>((set, get) => {
       try {
         set({ isLoading: true, error: null });
         
-        // Register in Supabase and send user metadata for database triggers to consume
+        // Register in Supabase with explicit emailRedirectTo callback URL
+        const redirectUrl = typeof window !== 'undefined' ? `${window.location.origin}/auth/callback` : undefined;
         const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
+            emailRedirectTo: redirectUrl,
             data: {
               name,
               phone_number: phoneNumber,
@@ -181,9 +188,13 @@ export const useAuthStore = create<AuthState>((set, get) => {
     resendCode: async (email: string) => {
       try {
         set({ isLoading: true, error: null });
+        const redirectUrl = typeof window !== 'undefined' ? `${window.location.origin}/auth/callback` : undefined;
         const { error } = await supabase.auth.resend({
           type: "signup",
           email,
+          options: {
+            emailRedirectTo: redirectUrl,
+          },
         });
 
         if (error) throw error;

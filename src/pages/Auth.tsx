@@ -249,24 +249,38 @@ const LoginComponent = ({ redirectTo, onSwitch, isActive }: { redirectTo: string
             <h2 className="text-4xl font-display font-bold text-slate-900 mb-8 tracking-tight text-center">Log In to Hikarii</h2>
             {/* Same form markup but styled for light background */}
             {verificationMode ? (
-                <form onSubmit={handleVerify} className="space-y-6">
-                    <p className="text-slate-500 text-sm leading-relaxed mb-6">
-                        We sent a code to <strong className="text-slate-800">{emailToVerify}</strong>.
-                    </p>
-                    <Input
-                        value={otp}
-                        onChange={(e) => setOtp(e.target.value)}
-                        placeholder="123456"
-                        maxLength={6}
-                        className="text-center text-3xl tracking-[0.5em] bg-slate-50 border-slate-200 text-slate-900 h-16 rounded-xl"
-                        autoFocus
-                    />
-                    {error && <p className="text-sm text-danger-500">{error}</p>}
-                    <Button type="submit" variant="primary" className="w-full h-14 rounded-xl bg-gradient-to-r from-primary-600 to-accent-600 text-white font-black shadow-lg">Verify Email</Button>
-                    <button type="button" onClick={handleResend} disabled={resendTimer > 0} className="w-full text-center text-xs font-bold text-slate-500 mt-4 uppercase hover:text-primary-600">
-                        {resendTimer > 0 ? `Resend Code (${resendTimer}s)` : 'Resend Code'}
+                <div className="space-y-6">
+                    <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 text-left">
+                        <p className="text-xs font-semibold text-emerald-800 uppercase tracking-wider mb-1">Email Confirmation Required</p>
+                        <p className="text-sm text-emerald-900 leading-relaxed">
+                            We sent a confirmation link to <strong className="font-bold">{emailToVerify}</strong>. Click the link in your email to complete sign in.
+                        </p>
+                    </div>
+
+                    <form onSubmit={handleVerify} className="space-y-4 pt-2">
+                        <p className="text-xs text-slate-500 text-center uppercase tracking-widest font-semibold">Or enter verification code</p>
+                        <Input
+                            value={otp}
+                            onChange={(e) => setOtp(e.target.value)}
+                            placeholder="123456"
+                            maxLength={6}
+                            className="text-center text-3xl tracking-[0.5em] bg-slate-50 border-slate-200 text-slate-900 h-16 rounded-xl"
+                        />
+                        {error && <p className="text-sm text-danger-500">{error}</p>}
+                        <Button type="submit" variant="primary" className="w-full h-14 rounded-xl bg-gradient-to-r from-primary-600 to-accent-600 text-white font-black shadow-lg">
+                            Verify & Sign In
+                        </Button>
+                    </form>
+
+                    <button 
+                        type="button" 
+                        onClick={handleResend} 
+                        disabled={resendTimer > 0} 
+                        className="w-full text-center text-xs font-bold text-slate-500 hover:text-primary-600 uppercase tracking-wider pt-2 disabled:opacity-50"
+                    >
+                        {resendTimer > 0 ? `Resend Confirmation Email (${resendTimer}s)` : 'Resend Confirmation Email'}
                     </button>
-                </form>
+                </div>
             ) : (
                 <div>
                     <button
@@ -412,24 +426,38 @@ const SignupComponent = ({ redirectTo, onSwitch, isActive }: { redirectTo: strin
             <h2 className="text-4xl font-display font-bold text-slate-900 mb-8 tracking-tight text-center">Create account</h2>
             
             {verificationMode ? (
-                <form onSubmit={handleVerify} className="space-y-6">
-                    <p className="text-slate-500 text-sm leading-relaxed mb-6">
-                        We sent a code to <strong className="text-slate-800">{emailToVerify}</strong>.
-                    </p>
-                    <Input
-                        value={otp}
-                        onChange={(e) => setOtp(e.target.value)}
-                        placeholder="123456"
-                        maxLength={6}
-                        className="text-center text-3xl tracking-[0.5em] bg-slate-50 border-slate-200 text-slate-900 h-16 rounded-xl"
-                        autoFocus
-                    />
-                    {error && <p className="text-sm text-danger-500">{error}</p>}
-                    <Button type="submit" variant="primary" className="w-full h-14 rounded-xl bg-gradient-to-r from-primary-600 to-accent-600 text-white font-black shadow-lg">Verify Email</Button>
-                    <button type="button" onClick={handleResend} disabled={resendTimer > 0} className="w-full text-center text-xs font-bold text-slate-500 mt-4 uppercase hover:text-primary-600">
-                        {resendTimer > 0 ? `Resend Code (${resendTimer}s)` : 'Resend Code'}
+                <div className="space-y-6">
+                    <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 text-left">
+                        <p className="text-xs font-semibold text-emerald-800 uppercase tracking-wider mb-1">Check Your Email</p>
+                        <p className="text-sm text-emerald-900 leading-relaxed">
+                            We sent a confirmation link to <strong className="font-bold">{emailToVerify}</strong>. Click the link in your email to complete registration.
+                        </p>
+                    </div>
+
+                    <form onSubmit={handleVerify} className="space-y-4 pt-2">
+                        <p className="text-xs text-slate-500 text-center uppercase tracking-widest font-semibold">Or enter verification code</p>
+                        <Input
+                            value={otp}
+                            onChange={(e) => setOtp(e.target.value)}
+                            placeholder="123456"
+                            maxLength={6}
+                            className="text-center text-3xl tracking-[0.5em] bg-slate-50 border-slate-200 text-slate-900 h-16 rounded-xl"
+                        />
+                        {error && <p className="text-sm text-danger-500">{error}</p>}
+                        <Button type="submit" variant="primary" className="w-full h-14 rounded-xl bg-gradient-to-r from-primary-600 to-accent-600 text-white font-black shadow-lg">
+                            Verify & Sign In
+                        </Button>
+                    </form>
+
+                    <button 
+                        type="button" 
+                        onClick={handleResend} 
+                        disabled={resendTimer > 0} 
+                        className="w-full text-center text-xs font-bold text-slate-500 hover:text-primary-600 uppercase tracking-wider pt-2 disabled:opacity-50"
+                    >
+                        {resendTimer > 0 ? `Resend Confirmation Email (${resendTimer}s)` : 'Resend Confirmation Email'}
                     </button>
-                </form>
+                </div>
             ) : (
                 <div>
                     <button
