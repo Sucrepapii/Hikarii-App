@@ -102,7 +102,7 @@ export const TermsOfService: React.FC = () => {
                         <div className="absolute inset-0 bg-gradient-to-tr from-primary-500/10 via-transparent to-accent-500/10" />
                         <h2 className="text-3xl font-bold text-white mb-6 tracking-tight relative">Questions or Concerns?</h2>
                         <p className="text-slate-400 mb-10 max-w-2xl mx-auto relative text-lg">Our legal department is available to clarify any aspects of these terms to ensure total transparency.</p>
-                        <a href="mailto:legal@Hikariii.org" className="relative inline-flex items-center justify-center px-12 py-5 rounded-2xl bg-white text-black font-black tracking-[0.2em] uppercase text-xs hover:bg-slate-200 transition-all shadow-xl shadow-white/5">
+                        <a href="mailto:legal@hikarii.org" className="relative inline-flex items-center justify-center px-12 py-5 rounded-2xl bg-white text-black font-black tracking-[0.2em] uppercase text-xs hover:bg-slate-200 transition-all shadow-xl shadow-white/5">
                             Contact Legal Counsel
                         </a>
                     </div>

@@ -205,7 +205,7 @@ export const HikariiWrapped: React.FC<HikariiWrappedProps> = ({ onClose }) => {
             ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
             ctx.font = 'bold 22px sans-serif';
             ctx.textAlign = 'center';
-            ctx.fillText('Organized & pre-funded via www.Hikariii.org', 400, 890);
+            ctx.fillText('Organized & pre-funded via hikarii.org', 400, 890);
 
             // Trigger Browser Download
             const dataUrl = canvas.toDataURL('image/png');

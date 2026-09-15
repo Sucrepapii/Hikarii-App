@@ -597,13 +597,13 @@ var init_email_service = __esm({
           return;
         }
         const resend = new Resend(apiKey);
-        const defaultDomain = process.env.EMAIL_DOMAIN || "Hikariii.org";
+        const defaultDomain = process.env.EMAIL_DOMAIN || "hikarii.org";
         const emailDomain = options?.fromDomain || defaultDomain;
         const fromName = options?.fromName || "Hikarii";
         const fromEmail = `${fromName} <noreply@${emailDomain}>`;
         if (!process.env.EMAIL_DOMAIN && !options?.fromDomain) {
           console.log(
-            "Using default email domain: Hikariii.org (EMAIL_DOMAIN not set)"
+            "Using default email domain: hikarii.org (EMAIL_DOMAIN not set)"
           );
         }
         console.log(`Sending email from: ${fromEmail} to: ${to}`);
@@ -3120,7 +3120,7 @@ var createCheckoutSession = async (req, res) => {
     console.log(
       `Stripe: Trial period set to ${trialDays} days (Promo active: ${isPromoActive})`
     );
-    const clientUrl = process.env.CLIENT_URL || "https://www.Hikariii.org";
+    const clientUrl = process.env.CLIENT_URL || "https://hikarii.org";
     console.log("Stripe: Using Client URL:", clientUrl);
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
@@ -3158,7 +3158,7 @@ var createPortalSession = async (req, res) => {
     const user = await db_default.user.findUnique({ where: { id: userId } });
     if (!user || !user.stripeCustomerId)
       return res.status(400).json({ message: "No subscription found" });
-    const clientUrl = process.env.CLIENT_URL || "https://www.Hikariii.org";
+    const clientUrl = process.env.CLIENT_URL || "https://hikarii.org";
     const session = await stripe.billingPortal.sessions.create({
       customer: user.stripeCustomerId,
       return_url: `${clientUrl}/settings`
@@ -3310,7 +3310,7 @@ var submitContactForm = async (req, res) => {
       res.status(400).json({ error: "Missing required fields" });
       return;
     }
-    const adminEmail = process.env.ADMIN_EMAIL || "support@Hikariii.org";
+    const adminEmail = process.env.ADMIN_EMAIL || "support@hikarii.org";
     const adminHtml = getContactFormTemplate(
       firstName,
       lastName,
@@ -4021,7 +4021,7 @@ var inviteMember = async (req, res) => {
         token
       }
     });
-    const clientUrl = process.env.CLIENT_URL || "https://www.Hikariii.org";
+    const clientUrl = process.env.CLIENT_URL || "https://hikarii.org";
     const inviteLink = `${clientUrl}/invites/${token}`;
     try {
       await sendEmail(

@@ -15,8 +15,8 @@ export const About: React.FC = () => {
             <Helmet>
                 <title>About Us | Hikarii - Radical Clarity in Tasks & Budgeting</title>
                 <meta name="description" content="Discover the Hikarii Method. We build tools for the Focused Few to bring radical clarity to the intersection of life's work and costs." />
-                <meta name="keywords" content="Hikarii mission, Hikariiiapp, tasks, budget, AI, collaboration, focused few" />
-                <link rel="canonical" href="https://www.Hikariii.org/about" />
+                <meta name="keywords" content="Hikarii mission, hikariiapp, tasks, budget, AI, collaboration, focused few" />
+                <link rel="canonical" href="https://hikarii.org/about" />
             </Helmet>
             <Navbar />
 

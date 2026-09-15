@@ -208,11 +208,11 @@ export const LandingPage: React.FC = () => {
     return (
         <div className="min-h-screen bg-gradient-to-b from-[#060814] to-[#04060a] font-sans text-slate-100 overflow-x-hidden selection:bg-amber-500/30 deep-dark">
             <Helmet>
-                <link rel="canonical" href="https://www.Hikariii.org/" />
+                <link rel="canonical" href="https://hikarii.org/" />
                 <title>Hikarii | Radical Clarity in Tasks & Budgeting</title>
                 <meta name="description" content="Master the Hikarii Method: A revolutionary approach to linking your tasks with your budget for ultimate financial and professional clarity." />
-                <meta name="keywords" content="Hikarii, Hikariiiapp, tasks, budget, AI, collaboration, productivity app Nigeria, AI task manager, project budget tracker, financial clarity Lagos, Hikarii method, task budget linking, best task app West Africa" />
-                <meta name="thumbnail" content="https://www.Hikariii.org/marketing/Hikarii_chaos_to_clarity_1778160537687.png" />
+                <meta name="keywords" content="Hikarii, hikariiapp, tasks, budget, AI, collaboration, productivity app Nigeria, AI task manager, project budget tracker, financial clarity Lagos, Hikarii method, task budget linking, best task app West Africa" />
+                <meta name="thumbnail" content="https://hikarii.org/marketing/Hikarii_chaos_to_clarity_1778160537687.png" />
 
                 {/* Structured Data */}
                 <script type="application/ld+json">
@@ -234,8 +234,8 @@ export const LandingPage: React.FC = () => {
                             "reviewCount": "100"
                         },
                         "sameAs": [
-                            "https://www.instagram.com/Hikariiiapp",
-                            "https://x.com/Hikariiiapp",
+                            "https://www.instagram.com/hikariiapp",
+                            "https://x.com/hikariiapp",
                             "https://www.linkedin.com/company/Hikarii-world/"
                         ]
                     })}
@@ -243,17 +243,17 @@ export const LandingPage: React.FC = () => {
 
                 {/* Open Graph / Facebook */}
                 <meta property="og:type" content="website" />
-                <meta property="og:url" content="https://www.Hikariii.org/" />
+                <meta property="og:url" content="https://hikarii.org/" />
                 <meta property="og:title" content="Hikarii | Radical Clarity in Tasks & Budgeting" />
                 <meta property="og:description" content="Master the Hikarii Method: Link your tasks to your budget for ultimate clarity." />
-                <meta property="og:image" content="https://www.Hikariii.org/marketing/Hikarii_chaos_to_clarity_1778160537687.png" />
+                <meta property="og:image" content="https://hikarii.org/marketing/Hikarii_chaos_to_clarity_1778160537687.png" />
 
                 {/* Twitter */}
                 <meta property="twitter:card" content="summary_large_image" />
-                <meta property="twitter:url" content="https://www.Hikariii.org/" />
+                <meta property="twitter:url" content="https://hikarii.org/" />
                 <meta property="twitter:title" content="Hikarii | Radical Clarity in Tasks & Budgeting" />
                 <meta property="twitter:description" content="Master the Hikarii Method: Link your tasks to your budget for ultimate clarity." />
-                <meta property="twitter:image" content="https://www.Hikariii.org/marketing/Hikarii_chaos_to_clarity_1778160537687.png" />
+                <meta property="twitter:image" content="https://hikarii.org/marketing/Hikarii_chaos_to_clarity_1778160537687.png" />
             </Helmet>
 
             {/* ── NAVBAR ─────────────────────────────────────────────── */}

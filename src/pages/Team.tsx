@@ -22,7 +22,7 @@ const team: TeamMember[] = [
         initials: 'AS',
         gradient: 'from-primary-600 to-accent-600',
         imageUrl: '/samuel_nobg.png',
-        links: { linkedin: 'https://www.linkedin.com/in/samuelakinboro/', twitter: 'https://x.com/Hikariiiapp', instagram: 'https://www.instagram.com/sucre_papii' },
+        links: { linkedin: 'https://www.linkedin.com/in/samuelakinboro/', twitter: 'https://x.com/hikariiapp', instagram: 'https://www.instagram.com/sucre_papii' },
     },
     {
         name: 'Product Team',
@@ -38,7 +38,7 @@ const team: TeamMember[] = [
         bio: 'Growing a global community of focused individuals — from Lagos to London to Singapore — who believe clarity is a competitive advantage.',
         initials: 'GC',
         gradient: 'from-emerald-600 to-teal-600',
-        links: { linkedin: 'https://www.linkedin.com/company/Hikarii-world/' },
+        links: { linkedin: 'https://www.linkedin.com/company/hikarii-world/' },
     },
 ];
 
