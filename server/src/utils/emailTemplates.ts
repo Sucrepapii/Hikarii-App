@@ -58,7 +58,7 @@ export const getBaseTemplate = (
           <!-- Colorful Header -->
           <div class="header" style="text-align: center;">
             <div style="display: inline-flex; align-items: center; justify-content: center; gap: 12px;">
-              <img src="${process.env.CLIENT_URL || "https://www.Hikariii.org"}/logo.png" width="45" height="45" alt="Hikarii Logo" style="display: block; border: 0; outline: none; text-decoration: none;" />
+              <img src="${process.env.CLIENT_URL || "https://hikarii.org"}/logo.png" width="45" height="45" alt="Hikarii Logo" style="display: block; border: 0; outline: none; text-decoration: none;" />
               <div class="header-logo">Hikarii</div>
             </div>
             <div class="header-subtitle">Light & Clarity</div>
@@ -116,7 +116,7 @@ export const getPasswordResetTemplate = (
   otp: string,
   email: string,
 ) => {
-  const resetLink = `${process.env.CLIENT_URL || "https://www.Hikariii.org"}/forgot-password?email=${encodeURIComponent(email)}&code=${otp}`;
+  const resetLink = `${process.env.CLIENT_URL || "https://hikarii.org"}/forgot-password?email=${encodeURIComponent(email)}&code=${otp}`;
   const content = `
     <p>Hello <strong>${name}</strong>,</p>
     <p>We received a request to reset the password for your Hikarii account. No worries, we're here to help you get back on track.</p>
@@ -156,7 +156,7 @@ export const getOverdueReminderTemplate = (name: string, tasksHtml: string) => {
     <p>Keeping your workspace clean helps the Hikarii intelligence engine give you better insights!</p>
   `;
 
-  const clientUrl = process.env.CLIENT_URL || "https://www.Hikariii.org/";
+  const clientUrl = process.env.CLIENT_URL || "https://hikarii.org/";
 
   return getBaseTemplate(
     "Action Required: Overdue Tasks",
@@ -213,7 +213,7 @@ export const getContactAutoReplyTemplate = (firstName: string) => {
   const content = `
     <p>Hello <strong>${firstName}</strong>,</p>
     <p>Thanks for reaching out to Hikarii! We've received your message and our team is reviewing it.</p>
-    <p>We typically reply within 24-48 hours. In the meantime, you might find answers in our <a href="https://www.Hikariii.org/help" style="color: #6366f1;">Help Center</a>.</p>
+    <p>We typically reply within 24-48 hours. In the meantime, you might find answers in our <a href="https://hikarii.org/help" style="color: #6366f1;">Help Center</a>.</p>
     
     <p>Talk soon,</p>
   `;
@@ -222,7 +222,7 @@ export const getContactAutoReplyTemplate = (firstName: string) => {
     "We received your message",
     content,
     "Visit Help Center",
-    "https://www.Hikariii.org/help",
+    "https://hikarii.org/help",
     "You received this because you contacted Hikarii Support.",
   );
 };
@@ -251,7 +251,7 @@ export const getSuspensionTemplate = (
     "Account Suspended",
     content,
     "Contact Support",
-    "mailto:support@Hikariii.org",
+    "mailto:support@hikarii.org",
     "This is a mandatory security notification regarding your account status.",
   );
 };
@@ -271,7 +271,7 @@ export const getReactivationTemplate = (name: string) => {
     "Account Reactivated",
     content,
     "Go to Dashboard",
-    process.env.CLIENT_URL || "https://www.Hikariii.org/",
+    process.env.CLIENT_URL || "https://hikarii.org/",
     "Welcome back to Hikarii!",
   );
 };
@@ -283,7 +283,7 @@ export const getAdminOnboardingTemplate = (
   email: string,
   temporaryPassword: string,
 ) => {
-  const loginUrl = process.env.CLIENT_URL || "https://www.Hikariii.org/";
+  const loginUrl = process.env.CLIENT_URL || "https://hikarii.org/";
 
   const content = `
     <p>Hello <strong>${name}</strong>,</p>
@@ -332,7 +332,7 @@ export const getLeadMagnetTemplate = (email: string) => {
   `;
 
   const leadMagnetUrl =
-    (process.env.CLIENT_URL || "https://www.Hikariii.org") +
+    (process.env.CLIENT_URL || "https://hikarii.org") +
     "/help/article/ultimate-guide-Hikarii-method";
 
   return getBaseTemplate(

@@ -41,6 +41,8 @@ const app = express();
 
 // CORS Configuration (Must be before other middleware to handle OPTIONS preflight)
 const allowedOrigins = [
+  "https://hikarii.org",
+  "https://www.hikarii.org",
   "http://localhost:5173",
   "http://localhost:5174",
   "http://127.0.0.1:5173",
@@ -48,13 +50,12 @@ const allowedOrigins = [
   "http://localhost:3000",
   "http://localhost:8081",
   "http://127.0.0.1:8081",
-  "https://www.Hikariii.org",
-  "https://Hikariii.org",
-  "https://www.hikarii.org",
-  "https://hikarii.org",
-  "https://checkmate-production-7067.up.railway.app",
 ];
 
+if (process.env.CLIENT_URL) {
+  const additionalOrigins = process.env.CLIENT_URL.split(",").map(url => url.trim());
+  allowedOrigins.push(...additionalOrigins);
+}
 if (process.env.FRONTEND_URL) {
   const additionalOrigins = process.env.FRONTEND_URL.split(",").map(url => url.trim());
   allowedOrigins.push(...additionalOrigins);
@@ -63,18 +64,18 @@ if (process.env.FRONTEND_URL) {
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (like mobile apps or curl requests)
+      // Allow requests with no origin (like mobile apps, same-origin server requests, or curl)
       if (!origin) return callback(null, true);
 
       const isAllowed =
-        allowedOrigins.indexOf(origin) !== -1 ||
+        allowedOrigins.includes(origin) ||
         process.env.NODE_ENV === "development";
 
       if (isAllowed) {
         callback(null, true);
       } else {
         console.warn(`[CORS Blocked] Origin: ${origin}`);
-        callback(null, false);
+        callback(new Error(`CORS policy violation: Access denied for origin ${origin}`));
       }
     },
     credentials: true,
