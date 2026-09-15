@@ -319,7 +319,7 @@ __export(task_splitter_service_exports, {
   TaskSplitterService: () => TaskSplitterService,
   taskSplitterService: () => taskSplitterService
 });
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from "@google/generative-ai";
 var TEMPLATES, DEFAULT_TEMPLATE, TaskSplitterService, taskSplitterService;
 var init_task_splitter_service = __esm({
   "server/src/services/task.splitter.service.ts"() {
@@ -396,9 +396,28 @@ var init_task_splitter_service = __esm({
         if (apiKey) {
           try {
             this.genAI = new GoogleGenerativeAI(apiKey);
+            const safetySettings2 = [
+              {
+                category: HarmCategory.HARM_CATEGORY_HARASSMENT,
+                threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE
+              },
+              {
+                category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+                threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE
+              },
+              {
+                category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+                threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE
+              },
+              {
+                category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+                threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE
+              }
+            ];
             this.model = this.genAI.getGenerativeModel({
-              model: "gemini-flash-latest",
-              generationConfig: { responseMimeType: "application/json" }
+              model: "gemini-3.6-flash",
+              generationConfig: { responseMimeType: "application/json" },
+              safetySettings: safetySettings2
             });
             console.log("[TaskSplitter] Gemini model initialized successfully.");
           } catch (error) {
@@ -517,32 +536,46 @@ var init_task_splitter_service = __esm({
 });
 
 // server/src/services/whatsapp.service.ts
-import twilio from "twilio";
 import dotenv2 from "dotenv";
-var accountSid, authToken, fromNumber, sendWhatsAppMessage;
+var accessToken, phoneNumberId, sendWhatsAppMessage;
 var init_whatsapp_service = __esm({
   "server/src/services/whatsapp.service.ts"() {
     dotenv2.config();
-    accountSid = process.env.TWILIO_ACCOUNT_SID;
-    authToken = process.env.TWILIO_AUTH_TOKEN;
-    fromNumber = process.env.TWILIO_WHATSAPP_FROM || "whatsapp:+14155238886";
+    accessToken = process.env.WHATSAPP_ACCESS_TOKEN;
+    phoneNumberId = process.env.WHATSAPP_PHONE_NUMBER_ID;
     sendWhatsAppMessage = async (to, message) => {
       try {
-        if (!accountSid || !authToken) {
-          console.log("Skipping WhatsApp: No TWILIO credentials provided.");
+        if (!accessToken || !phoneNumberId) {
+          console.log("Skipping WhatsApp: No WHATSAPP credentials provided.");
           return;
         }
-        const client = twilio(accountSid, authToken);
-        const formattedTo = to.startsWith("whatsapp:") ? to : `whatsapp:${to}`;
-        const response = await client.messages.create({
-          from: fromNumber,
-          body: message,
-          to: formattedTo
+        const formattedTo = to.replace("whatsapp:", "").replace(/\D/g, "");
+        const url = `https://graph.facebook.com/v20.0/${phoneNumberId}/messages`;
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${accessToken}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            messaging_product: "whatsapp",
+            recipient_type: "individual",
+            to: formattedTo,
+            type: "text",
+            text: {
+              preview_url: false,
+              body: message
+            }
+          })
         });
-        console.log("WhatsApp message sent successfully:", response.sid);
-        return response;
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.error?.message || "Failed to send WhatsApp message");
+        }
+        console.log("WhatsApp message sent successfully via Meta:", data.messages?.[0]?.id);
+        return data;
       } catch (error) {
-        console.error("Error sending WhatsApp message:", error);
+        console.error("Error sending WhatsApp message via Meta:", error);
         throw error;
       }
     };
@@ -855,18 +888,21 @@ var queue_exports = {};
 __export(queue_exports, {
   monthlyQueue: () => monthlyQueue,
   reminderQueue: () => reminderQueue,
-  setupRepeatableJobs: () => setupRepeatableJobs
+  setupRepeatableJobs: () => setupRepeatableJobs,
+  trialQueue: () => trialQueue
 });
 import { Queue } from "bullmq";
-var reminderQueue, monthlyQueue, setupRepeatableJobs;
+var reminderQueue, monthlyQueue, trialQueue, setupRepeatableJobs;
 var init_queue = __esm({
   "server/src/jobs/queue.ts"() {
     init_redis();
     reminderQueue = null;
     monthlyQueue = null;
+    trialQueue = null;
     if (redis_default) {
       reminderQueue = new Queue("reminder-queue", { connection: redis_default });
       monthlyQueue = new Queue("monthly-queue", { connection: redis_default });
+      trialQueue = new Queue("trial-queue", { connection: redis_default });
     }
     setupRepeatableJobs = async () => {
       if (!redis_default) return;
@@ -875,6 +911,9 @@ var init_queue = __esm({
       });
       await monthlyQueue?.add("monthly-greeting", {}, {
         repeat: { pattern: "0 9 1 * *" }
+      });
+      await trialQueue?.add("trial-expiration", {}, {
+        repeat: { pattern: "0 0 * * *" }
       });
     };
   }
@@ -1080,6 +1119,56 @@ var init_monthly_job = __esm({
   }
 });
 
+// server/src/jobs/trialExpiration.job.ts
+var trialExpiration_job_exports = {};
+__export(trialExpiration_job_exports, {
+  startTrialExpirationWorker: () => startTrialExpirationWorker
+});
+import { Worker as Worker4 } from "bullmq";
+var startTrialExpirationWorker;
+var init_trialExpiration_job = __esm({
+  "server/src/jobs/trialExpiration.job.ts"() {
+    init_redis();
+    init_db();
+    startTrialExpirationWorker = () => {
+      if (process.env.VERCEL) {
+        console.log(
+          "Workers are not supported on Vercel Serverless. Skipping..."
+        );
+        return;
+      }
+      if (!redis_default) {
+        console.warn("Redis is not configured. Trial Expiration Worker skipped.");
+        return;
+      }
+      const worker = new Worker4("trial-queue", async (job) => {
+        console.log("Running trial expiration job via BullMQ...");
+        try {
+          const now = /* @__PURE__ */ new Date();
+          const expiredUsers = await db_default.user.updateMany({
+            where: {
+              subscriptionStatus: "TRIAL",
+              currentPeriodEnd: {
+                lt: now
+              }
+            },
+            data: {
+              subscriptionStatus: "FREE"
+            }
+          });
+          console.log(`Successfully reverted ${expiredUsers.count} expired trial users to FREE.`);
+        } catch (error) {
+          console.error("Error in trial expiration job:", error);
+          throw error;
+        }
+      }, { connection: redis_default });
+      worker.on("failed", (job, err) => {
+        console.error(`Trial Expiration Job ${job?.id} failed:`, err);
+      });
+    };
+  }
+});
+
 // server/src/app.ts
 import "dotenv/config";
 import * as Sentry from "@sentry/node";
@@ -1255,7 +1344,8 @@ var authenticate = async (req, res, next) => {
           email: true,
           subscriptionStatus: true,
           stripeCustomerId: true,
-          isSuspended: true
+          isSuspended: true,
+          currentPeriodEnd: true
         }
       });
       if (existingByEmail) {
@@ -1263,22 +1353,48 @@ var authenticate = async (req, res, next) => {
         req.userId = existingByEmail.id;
       } else {
         const name = decoded.user_metadata?.name || decoded.email?.split("@")[0] || "User";
+        const trialEndDate = /* @__PURE__ */ new Date();
+        trialEndDate.setDate(trialEndDate.getDate() + 14);
         user = await db_default.user.create({
           data: {
             id: decoded.sub,
             email: decoded.email || "",
             name,
-            isVerified: true
+            isVerified: true,
+            subscriptionStatus: "TRIAL",
+            currentPeriodEnd: trialEndDate
           },
           select: {
             id: true,
             email: true,
             subscriptionStatus: true,
             stripeCustomerId: true,
-            isSuspended: true
+            isSuspended: true,
+            currentPeriodEnd: true
           }
         });
       }
+    }
+    const PERMANENT_PRO_EMAILS = ["akinboroo@gmail.com"];
+    if (user && PERMANENT_PRO_EMAILS.includes(user.email.toLowerCase()) && user.subscriptionStatus !== "PRO") {
+      await db_default.user.update({
+        where: { id: user.id },
+        data: {
+          subscriptionStatus: "PRO",
+          subscriptionId: "PERMANENT_PRO_VIP",
+          currentPeriodEnd: /* @__PURE__ */ new Date("2099-12-31T23:59:59Z")
+        }
+      });
+      user.subscriptionStatus = "PRO";
+    }
+    if (user && user.subscriptionStatus === "TRIAL" && user.currentPeriodEnd && /* @__PURE__ */ new Date() > user.currentPeriodEnd) {
+      await db_default.user.update({
+        where: { id: user.id },
+        data: {
+          subscriptionStatus: "FREE"
+        }
+      });
+      user.subscriptionStatus = "FREE";
     }
     if (user.isSuspended) {
       res.status(403).json({ error: "Your account is suspended. Please contact support." });
@@ -1306,6 +1422,23 @@ import { Router as Router2 } from "express";
 // server/src/controllers/task.controller.ts
 init_db();
 init_google_calendar_service();
+
+// server/src/utils/aiError.ts
+function getFriendlyAIError(error) {
+  const message = error?.message || String(error);
+  if (message.includes("503") || message.includes("Service Unavailable") || message.includes("high demand") || message.includes("overloaded")) {
+    return "The AI Coach is currently experiencing very high traffic. Please wait a moment and try again.";
+  }
+  if (message.includes("429") || message.includes("quota") || message.includes("RESOURCE_EXHAUSTED") || message.includes("rate limit")) {
+    return "Request limit reached. Please wait a moment before asking another question.";
+  }
+  if (message.includes("API key not valid") || message.includes("API_KEY_INVALID") || message.includes("leaked") || message.includes("403 Forbidden") || message.includes("Forbidden")) {
+    return "AI service configuration error. Please contact support to verify the API key setup.";
+  }
+  return "Connection issue with the AI service. Please try again in a few moments.";
+}
+
+// server/src/controllers/task.controller.ts
 init_redis();
 async function canAccessTask(taskId, userId, requireEdit = false) {
   const task = await db_default.task.findUnique({
@@ -1521,8 +1654,7 @@ var analyzeTaskSplit = async (req, res) => {
       message: "Blocks generated successfully"
     });
   } catch (error) {
-    console.error("Split analysis failed:", error);
-    res.status(500).json({ error: error.message || "Failed to analyze task" });
+    res.status(500).json({ error: getFriendlyAIError(error) });
   }
 };
 var scheduleBlocks = async (req, res) => {
@@ -1799,12 +1931,31 @@ var scopeProject = async (req, res) => {
     if (!apiKey) {
       return res.status(503).json({ error: "AI Scoping Service is currently unavailable (no API Key configured)" });
     }
-    const { GoogleGenerativeAI: GoogleGenerativeAI3 } = __require("@google/generative-ai");
+    const { GoogleGenerativeAI: GoogleGenerativeAI3, HarmCategory: HarmCategory3, HarmBlockThreshold: HarmBlockThreshold3 } = __require("@google/generative-ai");
     console.log(`[ProjectScoper] Prompt received: "${prompt}" with budget: $${totalBudget}`);
     const genAI = new GoogleGenerativeAI3(apiKey);
+    const safetySettings2 = [
+      {
+        category: HarmCategory3.HARM_CATEGORY_HARASSMENT,
+        threshold: HarmBlockThreshold3.BLOCK_MEDIUM_AND_ABOVE
+      },
+      {
+        category: HarmCategory3.HARM_CATEGORY_HATE_SPEECH,
+        threshold: HarmBlockThreshold3.BLOCK_MEDIUM_AND_ABOVE
+      },
+      {
+        category: HarmCategory3.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+        threshold: HarmBlockThreshold3.BLOCK_MEDIUM_AND_ABOVE
+      },
+      {
+        category: HarmCategory3.HARM_CATEGORY_DANGEROUS_CONTENT,
+        threshold: HarmBlockThreshold3.BLOCK_MEDIUM_AND_ABOVE
+      }
+    ];
     const model = genAI.getGenerativeModel({
-      model: "gemini-flash-latest",
-      generationConfig: { responseMimeType: "application/json" }
+      model: "gemini-3.6-flash",
+      generationConfig: { responseMimeType: "application/json" },
+      safetySettings: safetySettings2
     });
     const aiPrompt = `
       You are an expert product manager and technical scoping consultant.
@@ -1842,8 +1993,7 @@ var scopeProject = async (req, res) => {
     const parsedScoping = JSON.parse(responseText);
     res.json(parsedScoping);
   } catch (error) {
-    console.error("[ProjectScoper] Scoping failed:", error);
-    res.status(500).json({ error: error.message || "Failed to scope project using AI" });
+    res.status(500).json({ error: getFriendlyAIError(error) });
   }
 };
 
@@ -2551,7 +2701,25 @@ import { Router as Router5 } from "express";
 
 // server/src/controllers/predictive.controller.ts
 init_db();
-import { GoogleGenerativeAI as GoogleGenerativeAI2 } from "@google/generative-ai";
+import { GoogleGenerativeAI as GoogleGenerativeAI2, HarmCategory as HarmCategory2, HarmBlockThreshold as HarmBlockThreshold2 } from "@google/generative-ai";
+var safetySettings = [
+  {
+    category: HarmCategory2.HARM_CATEGORY_HARASSMENT,
+    threshold: HarmBlockThreshold2.BLOCK_MEDIUM_AND_ABOVE
+  },
+  {
+    category: HarmCategory2.HARM_CATEGORY_HATE_SPEECH,
+    threshold: HarmBlockThreshold2.BLOCK_MEDIUM_AND_ABOVE
+  },
+  {
+    category: HarmCategory2.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+    threshold: HarmBlockThreshold2.BLOCK_MEDIUM_AND_ABOVE
+  },
+  {
+    category: HarmCategory2.HARM_CATEGORY_DANGEROUS_CONTENT,
+    threshold: HarmBlockThreshold2.BLOCK_MEDIUM_AND_ABOVE
+  }
+];
 var predictiveService = new PredictiveService();
 var getForecast = async (req, res) => {
   try {
@@ -2578,7 +2746,7 @@ var getCoachResponse = async (req, res) => {
       db_default.budget.findMany({ where: { userId: req.userId } })
     ]);
     const genAI = new GoogleGenerativeAI2(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
+    const model = genAI.getGenerativeModel({ model: "gemini-3.6-flash", safetySettings });
     const budgetsContext = budgets.map((b) => `- Category: ${b.category}, Limit: ${b.limit}, Spent: ${b.spent}`).join("\n");
     const tasksContext = tasks.map((t) => `- Title: ${t.title}, Priority: ${t.priority}, Status: ${t.status}, Type: ${t.financials?.type || "NEUTRAL"}, Cost: ${t.financials?.estimatedCost || 0}, Income: ${t.financials?.estimatedIncome || 0}, Due: ${t.dueDate ? new Date(t.dueDate).toLocaleDateString() : "N/A"}`).join("\n");
     const systemPrompt = `
@@ -2606,7 +2774,7 @@ User Query: "${query}"
     const reply = result.response.text();
     res.json({ reply });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: getFriendlyAIError(error) });
   }
 };
 var getSupportBotResponse = async (req, res) => {
@@ -2622,7 +2790,7 @@ var getSupportBotResponse = async (req, res) => {
       return;
     }
     const genAI = new GoogleGenerativeAI2(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
+    const model = genAI.getGenerativeModel({ model: "gemini-3.6-flash", safetySettings });
     const systemPrompt = `
 You are Hikarii Support, the friendly, concise, and helpful public AI assistant for the Hikarii Task & Budget application.
 
@@ -2653,7 +2821,7 @@ User Query: "${query}"
     const reply = result.response.text();
     res.json({ reply });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: getFriendlyAIError(error) });
   }
 };
 
@@ -3150,15 +3318,19 @@ var submitContactForm = async (req, res) => {
       subject,
       message
     );
-    console.log(`Sending contact notification to Admin: ${adminEmail}`);
-    await sendEmail(adminEmail, `Contact Form: ${subject}`, adminHtml);
-    const userHtml = getContactAutoReplyTemplate(firstName);
-    console.log(`Sending auto-reply to user: ${email}`);
-    await sendEmail(
-      email,
-      "We received your message - Hikarii Support",
-      userHtml
-    );
+    try {
+      console.log(`Sending contact notification to Admin: ${adminEmail}`);
+      await sendEmail(adminEmail, `Contact Form: ${subject}`, adminHtml);
+      const userHtml = getContactAutoReplyTemplate(firstName);
+      console.log(`Sending auto-reply to user: ${email}`);
+      await sendEmail(
+        email,
+        "We received your message - Hikarii Support",
+        userHtml
+      );
+    } catch (emailError) {
+      console.error("Email sending failed, but contact form submitted:", emailError);
+    }
     res.status(200).json({ message: "Message sent successfully" });
   } catch (error) {
     console.error("Contact form error:", error);
@@ -4242,8 +4414,8 @@ router17.get("/", async (req, res) => {
       }
     });
     const countryCount = countries.length;
-    const baseUsers = 3e3;
-    const baseCountries = 20;
+    const baseUsers = 900;
+    const baseCountries = 5;
     res.json({
       users: baseUsers + userCount,
       countries: baseCountries + countryCount
@@ -4276,6 +4448,10 @@ var allowedOrigins = [
   "https://hikarii.org",
   "https://checkmate-production-7067.up.railway.app"
 ];
+if (process.env.FRONTEND_URL) {
+  const additionalOrigins = process.env.FRONTEND_URL.split(",").map((url) => url.trim());
+  allowedOrigins.push(...additionalOrigins);
+}
 app.use(
   cors({
     origin: (origin, callback) => {
@@ -4304,7 +4480,9 @@ app.use(
     optionsSuccessStatus: 204
   })
 );
-app.use(helmet());
+app.use(helmet({
+  crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" }
+}));
 app.use(hpp());
 app.use(express5.json({ limit: "10kb" }));
 var globalLimiter = rateLimit({
@@ -4392,6 +4570,9 @@ app.listen(PORT_NUM, () => {
     Promise.resolve().then(() => (init_monthly_job(), monthly_job_exports)).then(({ startMonthlyGreetingWorker: startMonthlyGreetingWorker2 }) => {
       startMonthlyGreetingWorker2();
     }).catch((err) => console.error("Failed to load monthly worker:", err));
+    Promise.resolve().then(() => (init_trialExpiration_job(), trialExpiration_job_exports)).then(({ startTrialExpirationWorker: startTrialExpirationWorker2 }) => {
+      startTrialExpirationWorker2();
+    }).catch((err) => console.error("Failed to load trial expiration worker:", err));
   }
   console.log(`
 \u{1F680} Server is running on port ${PORT_NUM}`);
