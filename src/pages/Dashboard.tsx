@@ -295,6 +295,7 @@ export const Dashboard: React.FC = () => {
                         <p className="text-2xl sm:text-3xl font-bold gradient-text">
                             <NumberCounter value={totalTasks} />
                         </p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-normal">Project deliverables</p>
                     </div>
                 </Card>
 
@@ -312,6 +313,7 @@ export const Dashboard: React.FC = () => {
                         <p className="text-2xl sm:text-3xl font-bold gradient-text">
                             <NumberCounter value={completedTasks} />
                         </p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-normal">Done and verified</p>
                     </div>
                 </Card>
 
@@ -329,6 +331,7 @@ export const Dashboard: React.FC = () => {
                         <p className="text-2xl sm:text-3xl font-bold gradient-text">
                             <NumberCounter value={pendingTasks} />
                         </p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-normal">Work in progress</p>
                     </div>
                 </Card>
 
@@ -354,6 +357,7 @@ export const Dashboard: React.FC = () => {
                         )}>
                             {formatCurrency(getConvertedAmount(totalSpent, currency), currency)}
                         </p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-normal">Logged project expenses</p>
                     </div>
                 </Card>
             </div>

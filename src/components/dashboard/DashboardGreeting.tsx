@@ -54,7 +54,7 @@ export const DashboardGreeting: React.FC<DashboardGreetingProps> = ({
                             {greeting}, {userName.split(' ')[0]}
                         </h2>
                         <p className="text-slate-500 dark:text-slate-400 mt-1">
-                            {randomMsg}
+                            Here is your project and budget overview for today.
                         </p>
                     </div>
                 </div>
