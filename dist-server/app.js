@@ -676,7 +676,7 @@ var init_emailTemplates = __esm({
           <!-- Colorful Header -->
           <div class="header" style="text-align: center;">
             <div style="display: inline-flex; align-items: center; justify-content: center; gap: 12px;">
-              <img src="${process.env.CLIENT_URL || "https://www.Hikariii.org"}/logo.png" width="45" height="45" alt="Hikarii Logo" style="display: block; border: 0; outline: none; text-decoration: none;" />
+              <img src="${process.env.CLIENT_URL || "https://hikarii.org"}/logo.png" width="45" height="45" alt="Hikarii Logo" style="display: block; border: 0; outline: none; text-decoration: none;" />
               <div class="header-logo">Hikarii</div>
             </div>
             <div class="header-subtitle">Light & Clarity</div>
@@ -720,7 +720,7 @@ var init_emailTemplates = __esm({
     
     <p>Keeping your workspace clean helps the Hikarii intelligence engine give you better insights!</p>
   `;
-      const clientUrl = process.env.CLIENT_URL || "https://www.Hikariii.org/";
+      const clientUrl = process.env.CLIENT_URL || "https://hikarii.org/";
       return getBaseTemplate(
         "Action Required: Overdue Tasks",
         content,
@@ -761,7 +761,7 @@ var init_emailTemplates = __esm({
       const content = `
     <p>Hello <strong>${firstName}</strong>,</p>
     <p>Thanks for reaching out to Hikarii! We've received your message and our team is reviewing it.</p>
-    <p>We typically reply within 24-48 hours. In the meantime, you might find answers in our <a href="https://www.Hikariii.org/help" style="color: #6366f1;">Help Center</a>.</p>
+    <p>We typically reply within 24-48 hours. In the meantime, you might find answers in our <a href="https://hikarii.org/help" style="color: #6366f1;">Help Center</a>.</p>
     
     <p>Talk soon,</p>
   `;
@@ -769,7 +769,7 @@ var init_emailTemplates = __esm({
         "We received your message",
         content,
         "Visit Help Center",
-        "https://www.Hikariii.org/help",
+        "https://hikarii.org/help",
         "You received this because you contacted Hikarii Support."
       );
     };
@@ -789,7 +789,7 @@ var init_emailTemplates = __esm({
         "Account Suspended",
         content,
         "Contact Support",
-        "mailto:support@Hikariii.org",
+        "mailto:support@hikarii.org",
         "This is a mandatory security notification regarding your account status."
       );
     };
@@ -804,12 +804,12 @@ var init_emailTemplates = __esm({
         "Account Reactivated",
         content,
         "Go to Dashboard",
-        process.env.CLIENT_URL || "https://www.Hikariii.org/",
+        process.env.CLIENT_URL || "https://hikarii.org/",
         "Welcome back to Hikarii!"
       );
     };
     getAdminOnboardingTemplate = (name, email, temporaryPassword) => {
-      const loginUrl = process.env.CLIENT_URL || "https://www.Hikariii.org/";
+      const loginUrl = process.env.CLIENT_URL || "https://hikarii.org/";
       const content = `
     <p>Hello <strong>${name}</strong>,</p>
     <p>You have been added as an <strong>Administrator</strong> for the Hikarii Platform. This role grants you access to manage users, view system analytics, and maintain platform health.</p>
@@ -850,7 +850,7 @@ var init_emailTemplates = __esm({
     
     <p>Once you've had a look, we'd love to hear how it helps your workflow!</p>
   `;
-      const leadMagnetUrl = (process.env.CLIENT_URL || "https://www.Hikariii.org") + "/help/article/ultimate-guide-Hikarii-method";
+      const leadMagnetUrl = (process.env.CLIENT_URL || "https://hikarii.org") + "/help/article/ultimate-guide-Hikarii-method";
       return getBaseTemplate(
         "Your Hikarii Method Guide Inside!",
         content,
@@ -4435,19 +4435,20 @@ Sentry.init({
 });
 var app = express5();
 var allowedOrigins = [
+  "https://hikarii.org",
+  "https://www.hikarii.org",
   "http://localhost:5173",
   "http://localhost:5174",
   "http://127.0.0.1:5173",
   "http://127.0.0.1:5174",
   "http://localhost:3000",
   "http://localhost:8081",
-  "http://127.0.0.1:8081",
-  "https://www.Hikariii.org",
-  "https://Hikariii.org",
-  "https://www.hikarii.org",
-  "https://hikarii.org",
-  "https://checkmate-production-7067.up.railway.app"
+  "http://127.0.0.1:8081"
 ];
+if (process.env.CLIENT_URL) {
+  const additionalOrigins = process.env.CLIENT_URL.split(",").map((url) => url.trim());
+  allowedOrigins.push(...additionalOrigins);
+}
 if (process.env.FRONTEND_URL) {
   const additionalOrigins = process.env.FRONTEND_URL.split(",").map((url) => url.trim());
   allowedOrigins.push(...additionalOrigins);
@@ -4456,12 +4457,12 @@ app.use(
   cors({
     origin: (origin, callback) => {
       if (!origin) return callback(null, true);
-      const isAllowed = allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV === "development";
+      const isAllowed = allowedOrigins.includes(origin) || process.env.NODE_ENV === "development";
       if (isAllowed) {
         callback(null, true);
       } else {
         console.warn(`[CORS Blocked] Origin: ${origin}`);
-        callback(null, false);
+        callback(new Error(`CORS policy violation: Access denied for origin ${origin}`));
       }
     },
     credentials: true,

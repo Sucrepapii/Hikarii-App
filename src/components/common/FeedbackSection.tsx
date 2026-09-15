@@ -3,6 +3,7 @@ import { Star, Send, MessageSquare, User, LogIn } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { useAuthStore } from '../../stores/authStore';
+import apiClient from '../../api/client';
 
 interface FeedbackItem {
     id: string;
@@ -79,22 +80,19 @@ export const FeedbackSection: React.FC = () => {
     useEffect(() => {
         const fetchFeedbacks = async () => {
             try {
-                const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
-                const res = await fetch(`${API_URL}/feedback`);
-                if (res.ok) {
-                    const data = await res.json();
-                    if (Array.isArray(data)) {
-                        setFeedbacks(data.map((fb: any) => ({
-                            id: fb.id,
-                            name: fb.name,
-                            rating: fb.rating,
-                            comment: fb.comment,
-                            topic: fb.topic,
-                            country: fb.country,
-                            flag: fb.flag,
-                            date: new Date(fb.createdAt).toLocaleDateString()
-                        })));
-                    }
+                const res = await apiClient.get('/feedback');
+                const data = res.data;
+                if (Array.isArray(data)) {
+                    setFeedbacks(data.map((fb: any) => ({
+                        id: fb.id,
+                        name: fb.name,
+                        rating: fb.rating,
+                        comment: fb.comment,
+                        topic: fb.topic,
+                        country: fb.country,
+                        flag: fb.flag,
+                        date: new Date(fb.createdAt).toLocaleDateString()
+                    })));
                 }
             } catch (err) {
                 console.error("Error fetching feedback:", err);
@@ -108,25 +106,17 @@ export const FeedbackSection: React.FC = () => {
         
         try {
             setIsLoading(true);
-            const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
-            const res = await fetch(`${API_URL}/feedback`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    ...(token ? { 'Authorization': `Bearer ${token}` } : {})
-                },
-                body: JSON.stringify({
-                    name: name.trim() || 'Anonymous',
-                    rating,
-                    comment,
-                    topic,
-                    country,
-                    flag
-                })
+            const res = await apiClient.post('/feedback', {
+                name: name.trim() || 'Anonymous',
+                rating,
+                comment,
+                topic,
+                country,
+                flag
             });
 
-            if (res.ok) {
-                const newlySaved = await res.json();
+            if (res.data) {
+                const newlySaved = res.data;
                 const newFeedback: FeedbackItem = {
                     id: newlySaved.id,
                     name: newlySaved.name,
@@ -146,13 +136,10 @@ export const FeedbackSection: React.FC = () => {
                     setTopic('General');
                     if (!user?.name) setName('');
                 }, 3000);
-            } else {
-                const errData = await res.json().catch(() => ({}));
-                toast.error(errData.error || "Failed to submit feedback.");
             }
-        } catch (err) {
+        } catch (err: any) {
             console.error("Error posting feedback:", err);
-            toast.error("Failed to connect to server.");
+            toast.error(err.response?.data?.error || "Failed to submit feedback.");
         } finally {
             setIsLoading(false);
         }

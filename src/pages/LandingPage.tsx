@@ -9,6 +9,7 @@ import { Navbar } from '../components/layout/Navbar';
 import { useAuthStore } from '../stores/authStore';
 import { Helmet } from 'react-helmet-async';
 import { clsx } from 'clsx';
+import apiClient from '../api/client';
 
 const ONBOARDING_STEPS = [
     {
@@ -165,25 +166,22 @@ export const LandingPage: React.FC = () => {
     useEffect(() => {
         const fetchFeedback = async () => {
             try {
-                const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
-                const res = await fetch(`${API_URL}/feedback`);
-                if (res.ok) {
-                    const data = await res.json();
-                    if (Array.isArray(data) && data.length > 0) {
-                        const mapped = data.map((fb: any, idx: number) => ({
-                            topic: (fb.topic || (fb.rating >= 4 ? "HIGHLY RATED" : "USER REVIEW")).toUpperCase(),
-                            quote: fb.comment,
-                            name: fb.name.toUpperCase(),
-                            location: fb.country || new Date(fb.createdAt).toLocaleDateString('en-US', { month: 'short' }),
-                            flag: fb.flag || null,
-                            rating: fb.rating,
-                            initials: getInitials(fb.name),
-                            color: GRADIENT_COLORS[idx % GRADIENT_COLORS.length]
-                        }));
-                        setTestimonials(mapped);
-                    }
+                const res = await apiClient.get('/feedback');
+                const data = res.data;
+                if (Array.isArray(data) && data.length > 0) {
+                    const mapped = data.map((fb: any, idx: number) => ({
+                        topic: (fb.topic || (fb.rating >= 4 ? "HIGHLY RATED" : "USER REVIEW")).toUpperCase(),
+                        quote: fb.comment,
+                        name: fb.name.toUpperCase(),
+                        location: fb.country || new Date(fb.createdAt).toLocaleDateString('en-US', { month: 'short' }),
+                        flag: fb.flag || null,
+                        rating: fb.rating,
+                        initials: getInitials(fb.name),
+                        color: GRADIENT_COLORS[idx % GRADIENT_COLORS.length]
+                    }));
+                    setTestimonials(mapped);
                 }
-            } catch {
+            } catch (err) {
                 // Keep fallbacks on error
             }
         };
