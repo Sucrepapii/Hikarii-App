@@ -12,6 +12,7 @@ import { Budget } from './pages/Budget';
 import { Tracker } from './pages/Tracker';
 import { Calendar } from './pages/Calendar';
 import { Auth } from './pages/Auth';
+import { AuthCallback } from './pages/AuthCallback';
 import { ForgotPassword } from './pages/ForgotPassword';
 import { Settings } from './pages/Settings';
 import { Analytics } from './pages/Analytics';
@@ -109,6 +110,10 @@ function App() {
                 <Route
                     path="/signup"
                     element={<AuthRoute><Auth defaultMode="signup" /></AuthRoute>}
+                />
+                <Route
+                    path="/auth/callback"
+                    element={<AuthCallback />}
                 />
                 <Route
                     path="/forgot-password"
