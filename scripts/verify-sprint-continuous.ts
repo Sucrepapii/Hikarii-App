@@ -1,9 +1,16 @@
+import { createClient } from "@supabase/supabase-js";
 import { PrismaClient } from "@prisma/client";
 import { execSync } from "child_process";
 import fs from "fs";
 import path from "path";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 let prisma = new PrismaClient();
+const supabaseUrl = process.env.VITE_SUPABASE_URL || "";
+const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY || "";
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 async function runSprintVerification() {
   console.log("===============================================================");
@@ -13,36 +20,86 @@ async function runSprintVerification() {
   let allPassed = true;
 
   // ---------------------------------------------------------------------------
-  // TEST 01: Stranger Test
+  // TEST 01: Stranger Test (Real Supabase Auth Signup -> Sync -> Login -> Data)
   // ---------------------------------------------------------------------------
   console.log("---------------------------------------------------------------");
-  console.log("TEST 01: Stranger Test (Signup -> Confirm -> Login -> Data Persistence)");
+  console.log("TEST 01: Stranger Test (Real Supabase Auth Signup -> Login -> Data)");
   console.log("---------------------------------------------------------------");
   
   const strangerEmail = `stranger_${Date.now()}@hikarii.org`;
   const strangerPassword = "StrangerSecurePassword123!";
+  let strangerUserId: string | null = null;
 
   try {
-    // 1. Sign Up & Confirm Email
-    console.log(`[Stranger] 1. Creating new account for: ${strangerEmail}...`);
-    const strangerUser = await prisma.user.create({
-      data: {
-        name: "Stranger Test User",
-        email: strangerEmail,
-        password: strangerPassword,
-        isVerified: true, // Confirmed email
+    // 1. SignUp via real Supabase Auth API
+    console.log(`[Stranger] 1. Calling real supabase.auth.signUp for: ${strangerEmail}...`);
+    const signUpRes = await supabase.auth.signUp({
+      email: strangerEmail,
+      password: strangerPassword,
+      options: {
+        emailRedirectTo: "https://hikarii.org/auth/callback",
+        data: { name: "Stranger Test User" },
       },
     });
 
-    console.log(`[Stranger] 2. User created with ID: ${strangerUser.id}`);
+    if (signUpRes.error) {
+      throw new Error(`Supabase Auth signUp failed: ${signUpRes.error.message}`);
+    }
 
-    // 2. Create Task & Budget
-    console.log("[Stranger] 3. Creating task and budget...");
+    console.log("[Stranger] SignUp call succeeded via Supabase Auth identity system.");
+
+    // 2. Confirm email status in auth.users (Supabase Auth identity table)
+    console.log("[Stranger] 2. Confirming email status in Supabase auth.users...");
+    await prisma.$executeRawUnsafe(
+      `UPDATE auth.users SET email_confirmed_at = NOW() WHERE email = $1`,
+      strangerEmail
+    );
+
+    // Get the Supabase auth.users UUID for this stranger
+    const authUserRows: any[] = await prisma.$queryRawUnsafe(
+      `SELECT id FROM auth.users WHERE email = $1`,
+      strangerEmail
+    );
+
+    if (authUserRows.length === 0) {
+      throw new Error("Supabase auth.users record not found!");
+    }
+
+    strangerUserId = authUserRows[0].id;
+    console.log(`[Stranger] Supabase auth.users ID: ${strangerUserId}`);
+
+    // 3. Log in with credentials through Supabase Auth
+    console.log("[Stranger] 3. Logging in via supabase.auth.signInWithPassword...");
+    const signInRes = await supabase.auth.signInWithPassword({
+      email: strangerEmail,
+      password: strangerPassword,
+    });
+
+    if (signInRes.error || !signInRes.data.session) {
+      throw new Error(`Supabase Auth signIn failed: ${signInRes.error?.message}`);
+    }
+
+    console.log(`[Stranger] Authenticated successfully via Supabase Auth! Token issued.`);
+
+    // Sync profile to public.User matching auth.middleware / /api/auth/me behavior
+    await prisma.user.upsert({
+      where: { id: strangerUserId },
+      update: { isVerified: true },
+      create: {
+        id: strangerUserId,
+        email: strangerEmail,
+        name: "Stranger Test User",
+        isVerified: true,
+      },
+    });
+
+    // 4. Create Task & Budget linked to this authenticated user identity
+    console.log("[Stranger] 4. Creating task and budget for authenticated user...");
     const strangerTask = await prisma.task.create({
       data: {
         title: "Stranger Sprint Task",
         description: "Task created during continuous sprint test pass",
-        userId: strangerUser.id,
+        userId: strangerUserId,
         status: "TODO",
         priority: "HIGH",
       },
@@ -52,29 +109,35 @@ async function runSprintVerification() {
       data: {
         category: "FOOD",
         limit: 750.0,
-        userId: strangerUser.id,
+        userId: strangerUserId,
       },
     });
 
     console.log(`[Stranger] Task created (${strangerTask.id}), Budget created (${strangerBudget.id})`);
 
-    // 3. Simulate Refresh & Relogin Loop
-    console.log("[Stranger] 4. Simulating logout, session refresh, and re-login...");
-    const reFetchedUser = await prisma.user.findUnique({
-      where: { email: strangerEmail },
-      include: {
-        tasks: true,
-        budgets: true,
-      },
+    // 5. Simulate Reload & Re-Login
+    console.log("[Stranger] 5. Simulating logout, reload, and re-authenticating with Supabase Auth...");
+    await supabase.auth.signOut();
+
+    const reAuthRes = await supabase.auth.signInWithPassword({
+      email: strangerEmail,
+      password: strangerPassword,
     });
 
-    if (!reFetchedUser) throw new Error("Stranger user account lost after re-login query!");
-    if (reFetchedUser.tasks.length === 0) throw new Error("Stranger task data missing after re-login!");
-    if (reFetchedUser.budgets.length === 0) throw new Error("Stranger budget data missing after re-login!");
+    if (reAuthRes.error || !reAuthRes.data.session) {
+      throw new Error("Re-authenticating stranger via Supabase Auth failed!");
+    }
 
-    console.log("✅ TEST 01 (Stranger Test): PASSED");
+    const fetchedTasks = await prisma.task.findMany({ where: { userId: strangerUserId } });
+    const fetchedBudgets = await prisma.budget.findMany({ where: { userId: strangerUserId } });
+
+    if (fetchedTasks.length === 0 || fetchedBudgets.length === 0) {
+      throw new Error("Stranger task or budget missing after Supabase Auth re-login!");
+    }
+
+    console.log("✅ TEST 01 (Stranger Test - Real Auth): PASSED");
   } catch (err: any) {
-    console.error("❌ TEST 01 (Stranger Test): FAILED ->", err.message);
+    console.error("❌ TEST 01 (Stranger Test - Real Auth): FAILED ->", err.message);
     allPassed = false;
   }
 
@@ -90,18 +153,18 @@ async function runSprintVerification() {
     const migrationOutput = execSync("npx prisma migrate deploy", { encoding: "utf8" });
     console.log(migrationOutput.trim());
 
-    console.log("[Restart] 2. Verifying stranger data integrity post-deploy/restart...");
-    const postRestartUser = await prisma.user.findUnique({
-      where: { email: strangerEmail },
-      include: { tasks: true, budgets: true },
-    });
+    if (strangerUserId) {
+      console.log("[Restart] 2. Verifying stranger data integrity post-deploy/restart...");
+      const postRestartTasks = await prisma.task.findMany({ where: { userId: strangerUserId } });
+      const postRestartBudgets = await prisma.budget.findMany({ where: { userId: strangerUserId } });
 
-    if (!postRestartUser) throw new Error("Stranger user was wiped after migration deploy!");
-    if (postRestartUser.tasks.length === 0 || postRestartUser.budgets.length === 0) {
-      throw new Error("Stranger user tasks or budgets were destroyed during release/restart!");
+      if (postRestartTasks.length === 0 || postRestartBudgets.length === 0) {
+        throw new Error("Stranger user tasks or budgets were destroyed during release/restart!");
+      }
+
+      console.log(`[Restart] Stranger user and data verified intact (${postRestartTasks[0].title}, ${postRestartBudgets[0].category})`);
     }
 
-    console.log(`[Restart] Stranger user and data verified intact (${postRestartUser.tasks[0].title}, ${postRestartUser.budgets[0].category})`);
     console.log("✅ TEST 02 (Restart Test): PASSED");
   } catch (err: any) {
     console.error("❌ TEST 02 (Restart Test): FAILED ->", err.message);
@@ -124,7 +187,6 @@ async function runSprintVerification() {
       const generateOutput = execSync("npx prisma generate", { encoding: "utf8" });
       console.log(generateOutput.trim());
     } catch (genErr: any) {
-      // On Windows, if native binary DLL is locked by system watcher, verify client output path exists
       if (genErr.message.includes("EPERM") && fs.existsSync("node_modules/@prisma/client/index.js")) {
         console.log("[Clean-Room] Prisma client binary active; verified schema client artifact present.");
       } else {
@@ -132,7 +194,6 @@ async function runSprintVerification() {
       }
     }
 
-    // Reconnect client for schema model inspection
     prisma = new PrismaClient();
     await prisma.$connect();
 
@@ -193,7 +254,6 @@ async function runSprintVerification() {
         } else if (file.endsWith(".js") || file.endsWith(".html") || file.endsWith(".css")) {
           const content = fs.readFileSync(fullPath, "utf8");
 
-          // Check secret regexes
           for (const regex of secretRegexes) {
             if (regex.test(content)) {
               console.error(`❌ Secret leak found in build artifact (${file}): ${regex}`);
@@ -201,7 +261,6 @@ async function runSprintVerification() {
             }
           }
 
-          // Check forbidden domain strings
           for (const domain of forbiddenDomains) {
             if (content.includes(domain)) {
               console.error(`❌ Invalid domain/URL leak found in build artifact (${file}): ${domain}`);
