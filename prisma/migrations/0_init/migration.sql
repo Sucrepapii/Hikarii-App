@@ -93,7 +93,7 @@ CREATE TABLE "Project" (
     "status" TEXT NOT NULL DEFAULT 'ACTIVE',
     "startDate" TIMESTAMP(3),
     "endDate" TIMESTAMP(3),
-    "budgetLimit" DOUBLE PRECISION,
+    "budgetLimit" DECIMAL(65,30),
     "userId" TEXT NOT NULL,
     "lastViewedActivityAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -170,8 +170,8 @@ CREATE TABLE "TaskBlock" (
 CREATE TABLE "Budget" (
     "id" TEXT NOT NULL,
     "category" "ExpenseCategory" NOT NULL,
-    "limit" DOUBLE PRECISION NOT NULL,
-    "spent" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "limit" DECIMAL(65,30) NOT NULL,
+    "spent" DECIMAL(65,30) NOT NULL DEFAULT 0,
     "period" "BudgetPeriod" NOT NULL DEFAULT 'MONTHLY',
     "userId" TEXT NOT NULL,
     "projectId" TEXT,
@@ -185,7 +185,7 @@ CREATE TABLE "Budget" (
 CREATE TABLE "Expense" (
     "id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
-    "amount" DOUBLE PRECISION NOT NULL,
+    "amount" DECIMAL(65,30) NOT NULL,
     "category" "ExpenseCategory" NOT NULL,
     "date" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "description" TEXT,
@@ -203,7 +203,7 @@ CREATE TABLE "Expense" (
 CREATE TABLE "RecurringExpense" (
     "id" TEXT NOT NULL,
     "merchantName" TEXT NOT NULL,
-    "amount" DOUBLE PRECISION NOT NULL,
+    "amount" DECIMAL(65,30) NOT NULL,
     "frequency" TEXT NOT NULL,
     "nextDueDate" TIMESTAMP(3) NOT NULL,
     "confidenceScore" DOUBLE PRECISION NOT NULL,
