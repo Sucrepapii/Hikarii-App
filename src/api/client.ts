@@ -1,11 +1,7 @@
 import axios, { AxiosInstance, InternalAxiosRequestConfig } from "axios";
 import { supabase } from "../supabase/client";
 
-const API_BASE_URL =
-  import.meta.env.VITE_API_URL || 
-  (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1' 
-    ? "https://hikarii.onrender.com/api" 
-    : "http://127.0.0.1:5005/api");
+const API_BASE_URL = import.meta.env.VITE_API_URL || "/api";
 
 // Create axios instance
 const apiClient: AxiosInstance = axios.create({

@@ -51,7 +51,7 @@ import { NotFound } from './pages/NotFound';
 import { ThankYou } from './pages/ThankYou';
 import './index.css';
 
-import { useInactivity } from './hooks/useInactivity';
+
 import toast from 'react-hot-toast';
 
 function AuthRoute({ children }: { children: JSX.Element }) {
@@ -82,13 +82,7 @@ function App() {
         checkAuth();
     }, [checkAuth]);
 
-    // Auto-logout after 20 minutes (20 * 60 * 1000 = 1200000ms)
-    useInactivity(20 * 60 * 1000, () => {
-        if (isAuthenticated) {
-            logout();
-            toast.error('Session timed out due to inactivity');
-        }
-    });
+
 
     if (isLoading) {
         return <LoadingScreen />;

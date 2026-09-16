@@ -9,8 +9,10 @@ export interface AuthRequest extends Request {
   user?: any;
 }
 
-// Use Supabase's JWKS endpoint to get the public key for ES256 token verification
-const supabaseUrl = process.env.VITE_SUPABASE_URL || "https://kcwcdkanpmonimcdzeix.supabase.co";
+if (!process.env.SUPABASE_URL) {
+  throw new Error("SUPABASE_URL environment variable is missing");
+}
+const supabaseUrl = process.env.SUPABASE_URL;
 const jwks = jwksClient({
   jwksUri: `${supabaseUrl}/auth/v1/.well-known/jwks.json`,
   cache: true,
@@ -94,24 +96,43 @@ export const authenticate = async (
         const trialEndDate = new Date();
         trialEndDate.setDate(trialEndDate.getDate() + 14);
 
-        user = await prisma.user.create({
-          data: {
-            id: decoded.sub,
-            email: decoded.email || "",
-            name: name,
-            isVerified: true,
-            subscriptionStatus: "TRIAL",
-            currentPeriodEnd: trialEndDate,
-          },
-          select: {
-            id: true,
-            email: true,
-            subscriptionStatus: true,
-            stripeCustomerId: true,
-            isSuspended: true,
-            currentPeriodEnd: true,
-          },
-        });
+        try {
+          user = await prisma.user.create({
+            data: {
+              id: decoded.sub,
+              email: decoded.email || "",
+              name: name,
+              isVerified: true,
+              subscriptionStatus: "TRIAL",
+              currentPeriodEnd: trialEndDate,
+            },
+            select: {
+              id: true,
+              email: true,
+              subscriptionStatus: true,
+              stripeCustomerId: true,
+              isSuspended: true,
+              currentPeriodEnd: true,
+            },
+          });
+        } catch (createError: any) {
+          if (createError.code === "P2002") {
+            // Another request beat us to creating the user row (race condition).
+            // Fetch the newly created row instead.
+            user = await prisma.user.findUnique({
+              where: { id: decoded.sub },
+              select: {
+                id: true,
+                email: true,
+                subscriptionStatus: true,
+                stripeCustomerId: true,
+                isSuspended: true,
+              },
+            });
+          } else {
+            throw createError;
+          }
+        }
       }
     }
 

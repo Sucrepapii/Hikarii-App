@@ -1,8 +1,8 @@
 # Resend Domain Setup Instructions
 
-## ✅ Domain: Hikariii.org
+## ✅ Domain: hikarii.org
 
-Your application is now configured to send emails from: `noreply@Hikariii.org`
+Your application is now configured to send emails from: `noreply@hikarii.org`
 
 ---
 
@@ -13,14 +13,14 @@ Your application is now configured to send emails from: `noreply@Hikariii.org`
 - Visit: [https://resend.com/domains](https://resend.com/domains)
 - Click **"Add Domain"**
 
-### 2. **Add Hikariii.org**
+### 2. **Add hikarii.org**
 
-- Enter your domain: `Hikariii.org`
+- Enter your domain: `hikarii.org`
 - Click **"Add"**
 
 ### 3. **Configure DNS Records**
 
-Resend will provide you with DNS records to add. You'll need to add these to your domain registrar (where you bought Hikariii.org):
+Resend will provide you with DNS records to add. You'll need to add these to your domain registrar (where you bought hikarii.org):
 
 **Typical records you'll need to add:**
 
@@ -60,7 +60,7 @@ Value: [provided by Resend]
 If you want to easily switch domains (e.g., for staging), add to your `.env`:
 
 ```env
-EMAIL_DOMAIN=Hikariii.org
+EMAIL_DOMAIN=hikarii.org
 ```
 
 ---
@@ -69,7 +69,7 @@ EMAIL_DOMAIN=Hikariii.org
 
 Once your domain is verified:
 
-1. **Test email sending** - try signup/password reset
+1. **Test email sending** - try a budget limit alert or notification (Note: Signup and password reset emails are sent by **Supabase Auth**, which must be configured separately in the Supabase Dashboard, not Resend).
 2. **Emails should now send to ANY email address**, not just yours
 3. **Check spam folder** initially (until domain reputation builds)
 
@@ -105,13 +105,13 @@ Once your domain is verified:
 The code now uses:
 
 ```typescript
-const emailDomain = process.env.EMAIL_DOMAIN || "Hikariii.org";
+const emailDomain = process.env.EMAIL_DOMAIN || "hikarii.org";
 const fromEmail = `Hikarii <noreply@${emailDomain}>`;
 ```
 
 This means:
 
-- ✅ Default: `noreply@Hikariii.org`
+- ✅ Default: `noreply@hikarii.org`
 - ✅ Override via `.env` if needed
 - ✅ No more hardcoded `resend.dev`
 

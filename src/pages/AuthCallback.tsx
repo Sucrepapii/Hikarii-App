@@ -54,14 +54,7 @@ export const AuthCallback: React.FC = () => {
                         }
                     });
 
-                    // Timeout fallback if no session is detected after 5 seconds
-                    setTimeout(() => {
-                        if (isMounted && !useAuthStore.getState().token) {
-                            subscription.unsubscribe();
-                            toast.error('Session expired or confirmation link invalid.');
-                            navigate('/login', { replace: true });
-                        }
-                    }, 5000);
+
                 }
             } catch (err: any) {
                 console.error('[Auth Callback Error]:', err);
