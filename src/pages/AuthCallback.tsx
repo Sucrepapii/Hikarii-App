@@ -26,7 +26,23 @@ export const AuthCallback: React.FC = () => {
                     return;
                 }
 
-                // Retrieve session initialized by Supabase from hash/code
+                const hashParams = new URLSearchParams(hash.replace('#', '?'));
+                const pkceCode = searchParams.get('code') || hashParams.get('code');
+                const accessToken = hashParams.get('access_token');
+                const refreshToken = hashParams.get('refresh_token');
+
+                if (pkceCode) {
+                    const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(pkceCode);
+                    if (exchangeError) throw exchangeError;
+                } else if (accessToken && refreshToken) {
+                    const { error: setSessionError } = await supabase.auth.setSession({
+                        access_token: accessToken,
+                        refresh_token: refreshToken
+                    });
+                    if (setSessionError) throw setSessionError;
+                }
+
+                // Retrieve session initialized by Supabase
                 const { data: { session }, error } = await supabase.auth.getSession();
 
                 if (error) {
