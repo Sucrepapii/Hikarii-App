@@ -8,7 +8,7 @@ Backend server for the Hikariitask and budget management application.
 - ✅ Task management with financial tracking
 - ✅ Budget and expense management
 - ✅ Smart insights and recommendations
-- ✅ MongoDB database
+- ✅ PostgreSQL database via Prisma ORM
 - ✅ RESTful API
 
 ## Setup
@@ -19,9 +19,9 @@ Backend server for the Hikariitask and budget management application.
 npm install
 ```
 
-2. **Set up MongoDB:**
-   - Install MongoDB locally or use MongoDB Atlas
-   - Default URI: `mongodb://localhost:27017/Hikarii`
+2. **Set up PostgreSQL:**
+   - Install PostgreSQL locally or use a managed service like Supabase
+   - Ensure the database is accessible for migrations
 
 3. **Configure environment variables:**
    - Copy `.env.example` to `.env`
@@ -70,7 +70,8 @@ Server will run on `http://localhost:5000`
 ```env
 PORT=5000
 NODE_ENV=development
-MONGODB_URI=mongodb://localhost:27017/Hikarii
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/hikarii_dev?pgbouncer=true"
+DIRECT_URL="postgresql://postgres:postgres@localhost:5432/hikarii_dev"
 JWT_SECRET=your-secret-key
 JWT_EXPIRES_IN=7d
 CLIENT_URL=http://localhost:5174
@@ -87,6 +88,6 @@ CLIENT_URL=http://localhost:5174
 
 - Node.js + Express
 - TypeScript
-- MongoDB + Prisma
+- PostgreSQL + Prisma ORM
 - JWT Authentication
 - bcryptjs for password hashing
