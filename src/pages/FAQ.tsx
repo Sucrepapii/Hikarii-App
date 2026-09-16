@@ -53,7 +53,7 @@ export const FAQ: React.FC = () => {
                 <title>FAQ | Hikarii Support & Help Center</title>
                 <meta name="description" content="Find answers to frequently asked questions about Hikarii. Learn about AI Smart Split, WhatsApp notifications, and how to master your budget." />
                 <meta name="keywords" content="Hikarii faq, Hikariiiapp support, help center, AI task manager help, budget app nigeria, whatsapp notifications" />
-                <link rel="canonical" href="https://www.Hikariii.org/faq" />
+                <link rel="canonical" href="https://www.hikarii.org/faq" />
             </Helmet>
             <Navbar />
 
