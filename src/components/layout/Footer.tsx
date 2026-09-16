@@ -21,13 +21,13 @@ export const Footer: React.FC = () => {
                             Gain clarity, find focus, and achieve financial freedom.
                         </p>
                         <div className="flex items-center gap-4">
-                            <a href="https://www.instagram.com/Hikariiiapp?igsh=ejNzOGsybWltMWk4&utm_source=qr" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-colors">
+                            <a href="https://www.instagram.com/hikariiapp?igsh=ejNzOGsybWltMWk4&utm_source=qr" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-colors">
                                 <Instagram className="w-5 h-5" />
                             </a>
-                            <a href="https://x.com/Hikariiiapp?s=21&t=QnoqdrIaByUDrhoWj0KuLA" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-colors">
+                            <a href="https://x.com/hikariiapp?s=21&t=QnoqdrIaByUDrhoWj0KuLA" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-colors">
                                 <Twitter className="w-5 h-5" />
                             </a>
-                            <a href="https://www.linkedin.com/company/Hikarii-world/" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-colors">
+                            <a href="https://www.linkedin.com/company/hikarii-world/" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-colors">
                                 <Linkedin className="w-5 h-5" />
                             </a>
                         </div>
@@ -46,7 +46,7 @@ export const Footer: React.FC = () => {
                         <h4 className="text-[10px] font-black tracking-[0.3em] text-slate-500 uppercase mb-8">Resources</h4>
                         <ul className="space-y-4 text-sm text-slate-400">
                             <li><Link to="/help/article/ultimate-guide-Hikarii-method" className="text-primary-400 font-semibold hover:text-primary-300 transition-colors">The Ultimate Guide</Link></li>
-                            <li><a href="https://www.linkedin.com/company/Hikarii-world/" target="_blank" rel="noopener noreferrer" className="hover:text-primary-400 transition-colors">Blog</a></li>
+                            <li><a href="https://www.linkedin.com/company/hikarii-world/" target="_blank" rel="noopener noreferrer" className="hover:text-primary-400 transition-colors">Blog</a></li>
                             <li><Link to="/help" className="hover:text-primary-400 transition-colors">Help Center</Link></li>
                             <li><Link to="/faq" className="hover:text-primary-400 transition-colors">FAQ</Link></li>
                             <li><Link to="/feedback" className="hover:text-primary-400 transition-colors">Feedback</Link></li>

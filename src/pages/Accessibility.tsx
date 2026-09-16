@@ -76,7 +76,7 @@ export const Accessibility: React.FC = () => {
                         <p className="text-slate-400 mb-10 max-w-2xl text-lg leading-relaxed">
                             If you encounter any accessibility barriers while using Hikarii, please let us know. We take all feedback seriously and will work to provide an alternative or remediate the issue promptly.
                         </p>
-                        <a href="mailto:accessibility@Hikariii.org" className="inline-flex items-center justify-center px-12 py-5 rounded-2xl bg-pink-600 text-white font-black tracking-[0.2em] uppercase text-xs hover:bg-pink-500 transition-all shadow-xl shadow-pink-500/20">
+                        <a href="mailto:accessibility@hikarii.org" className="inline-flex items-center justify-center px-12 py-5 rounded-2xl bg-pink-600 text-white font-black tracking-[0.2em] uppercase text-xs hover:bg-pink-500 transition-all shadow-xl shadow-pink-500/20">
                             Contact Accessibility Support
                         </a>
                     </div>
