@@ -3,9 +3,17 @@ import path from "path";
 import dns from "dns/promises";
 import https from "https";
 
-async function checkHttps(url: string): Promise<any> {
+async function checkHttps(url: string, method = 'GET', headers = {}): Promise<any> {
   return new Promise((resolve, reject) => {
-    const req = https.get(url, (res) => {
+    const parsed = new URL(url);
+    const options = {
+      hostname: parsed.hostname,
+      port: parsed.port || 443,
+      path: parsed.pathname + parsed.search,
+      method,
+      headers
+    };
+    const req = https.request(options, (res) => {
       resolve({
         statusCode: res.statusCode,
         headers: res.headers,
@@ -39,8 +47,14 @@ async function runDomainVerification() {
     
     // Check HTTPS
     const res = await checkHttps(`https://${hostname}`);
-    if (res.statusCode !== 200 && res.statusCode !== 301 && res.statusCode !== 308) {
-       console.log(`[Warning] Status code ${res.statusCode} (expected for unconfigured sites, but connection succeeded)`);
+    if (res.statusCode === 301 || res.statusCode === 308) {
+       const loc = res.headers.location;
+       if (!loc || (loc !== 'https://www.hikarii.org/' && loc !== 'https://hikarii.org/')) {
+           throw new Error(`Redirected to unexpected location: ${loc}`);
+       }
+       console.log(`[Domain Resolution] Verified redirect to canonical destination: ${loc}`);
+    } else if (res.statusCode !== 200) {
+       throw new Error(`Unexpected status code ${res.statusCode}.`);
     }
 
     if (res.cert && res.cert.subject) {
@@ -106,18 +120,18 @@ async function runDomainVerification() {
   console.log("---------------------------------------------------------------");
 
   try {
-    // Make a CORS preflight request
-    const options = {
-      method: 'OPTIONS',
-      headers: {
-        'Origin': 'https://evil.com',
-        'Access-Control-Request-Method': 'GET'
-      }
-    };
-    
-    // We would make a real request here if the server was running locally,
-    // For now we just verify the live domain CORS if available.
-    console.log("[CORS Policy] Active CORS check is expected to block evil.com in production.");
+    // Make a CORS preflight request to the live domain
+    const res = await checkHttps('https://hikarii.org/api/health', 'OPTIONS', {
+      'Origin': 'https://evil.com',
+      'Access-Control-Request-Method': 'GET'
+    });
+
+    const allowOrigin = res.headers['access-control-allow-origin'];
+    if (allowOrigin === '*' || allowOrigin === 'https://evil.com') {
+      throw new Error("CORS policy violation! API accepts requests from unauthorized origin (evil.com).");
+    }
+
+    console.log("[CORS Policy] Active CORS check successfully blocked evil.com (no matching Access-Control-Allow-Origin header).");
     console.log("✅ CRITERIA 04 (Strict CORS Access Control): PASSED");
   } catch (err: any) {
     console.error("❌ CRITERIA 04 (Strict CORS Access Control): FAILED ->", err.message);
@@ -134,7 +148,7 @@ async function runDomainVerification() {
   try {
     const distPath = path.resolve(process.cwd(), "dist");
     if (!fs.existsSync(distPath)) {
-      console.log("dist directory does not exist. Skipping leak check.");
+      throw new Error("dist directory does not exist! Build production bundle first.");
     } else {
       const secretRegexes = [
         /DATABASE_URL\s*=/i,
@@ -146,9 +160,13 @@ async function runDomainVerification() {
 
       // Generalized regex for private/loopback IPv4 addresses and common dev ports
       const forbiddenRegexes = [
-        /127\.0\.0\.1/,
+        /\b127\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/,
+        /\b10\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/,
+        /\b172\.(1[6-9]|2\d|3[0-1])\.\d{1,3}\.\d{1,3}\b/,
+        /\b192\.168\.\d{1,3}\.\d{1,3}\b/,
         /localhost:\d+/,
-        /::1/
+        /::1/,
+        /https?:\/\/[a-zA-Z0-9-]+\.(vercel\.app|onrender\.com|railway\.app|ngrok\.io|ngrok-free\.app|herokuapp\.com|netlify\.app)/i
       ];
 
       let foundLeak = false;
