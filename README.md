@@ -65,7 +65,7 @@ We don't just say "Spend less". Hikarii gives you proactive, AI-driven guidance.
 ### Backend
 
 - **Runtime**: Node.js & Express / TypeScript
-- **Database**: MongoDB (via Prisma ORM)
+- **Database**: PostgreSQL (via Prisma ORM)
 - **AI Engine**: Google Gemini API
 - **Payments**: Stripe CLI / API
 - **Email**: Resend
@@ -77,7 +77,7 @@ We don't just say "Spend less". Hikarii gives you proactive, AI-driven guidance.
 ### Prerequisites
 
 - Node.js (v18+)
-- MongoDB (Local or Atlas)
+- PostgreSQL (Local or managed e.g. Supabase)
 - npm or yarn
 
 ### Installation
@@ -95,7 +95,8 @@ We don't just say "Spend less". Hikarii gives you proactive, AI-driven guidance.
 
    ```env
    PORT=5000
-   DATABASE_URL="mongodb://localhost:27017/Hikarii"
+   DATABASE_URL="postgresql://postgres:postgres@localhost:5432/hikarii_dev?pgbouncer=true"
+   DIRECT_URL="postgresql://postgres:postgres@localhost:5432/hikarii_dev"
    JWT_SECRET="your_secret"
    RESEND_API_KEY="re_..."
    STRIPE_SECRET_KEY="sk_..."
