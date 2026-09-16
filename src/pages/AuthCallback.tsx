@@ -42,6 +42,14 @@ export const AuthCallback: React.FC = () => {
                         navigate(redirectTo, { replace: true });
                     }
                 } else {
+                    if (!hash.includes('access_token') && !searchParams.get('code')) {
+                        // Direct navigation with no auth material: bail out
+                        if (isMounted) {
+                            navigate('/login', { replace: true });
+                        }
+                        return;
+                    }
+
                     // Subscribe to state change in case session processing is in-flight
                     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, currentSession) => {
                         if (currentSession && isMounted) {

@@ -1,11 +1,10 @@
 import axios, { AxiosInstance, InternalAxiosRequestConfig } from "axios";
 import { supabase } from "../supabase/client";
 
-const API_BASE_URL =
-  import.meta.env.VITE_API_URL || 
-  (typeof window !== 'undefined'
-    ? `${window.location.origin}/api`
-    : "http://127.0.0.1:5005/api");
+if (!import.meta.env.VITE_API_URL) {
+  throw new Error("VITE_API_URL is missing. The API client cannot be initialized.");
+}
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 // Create axios instance
 const apiClient: AxiosInstance = axios.create({

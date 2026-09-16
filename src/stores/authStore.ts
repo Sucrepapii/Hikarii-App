@@ -299,7 +299,7 @@ export const useAuthStore = create<AuthState>((set, get) => {
           set({ user: null, token: null, isLoading: false });
         } else {
           // Transient error, retain session
-          set({ isLoading: false });
+          set({ token: session.access_token, isLoading: false });
         }
       }
     },
