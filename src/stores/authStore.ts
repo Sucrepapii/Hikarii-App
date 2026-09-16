@@ -287,15 +287,20 @@ export const useAuthStore = create<AuthState>((set, get) => {
         const { user } = response.data;
         localStorage.setItem("auth-user", JSON.stringify(user));
         set({ user, token: session.access_token, isLoading: false });
-      } catch (error) {
-        // Clear session on error
-        try {
-          await supabase.auth.signOut();
-        } catch (e) {
-          console.error("SignOut error:", e);
+      } catch (error: any) {
+        if (error.response?.status === 401) {
+          // Clear session on 401
+          try {
+            await supabase.auth.signOut();
+          } catch (e) {
+            console.error("SignOut error:", e);
+          }
+          localStorage.removeItem("auth-user");
+          set({ user: null, token: null, isLoading: false });
+        } else {
+          // Transient error, retain session
+          set({ token: session.access_token, isLoading: false });
         }
-        localStorage.removeItem("auth-user");
-        set({ user: null, token: null, isLoading: false });
       }
     },
   };
