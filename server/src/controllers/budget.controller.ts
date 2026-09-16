@@ -99,7 +99,7 @@ export const createBudget = async (
       },
     });
 
-    const spent = expenses.reduce((sum, exp) => sum + exp.amount, 0);
+    const spent = expenses.reduce((sum, exp) => sum + Number(exp.amount), 0);
 
     // If projectId is provided, check permissions
     if (req.body.projectId) {
@@ -263,7 +263,7 @@ export const createExpense = async (
       });
 
       // Check if limit is reached
-      if (updatedBudget.spent >= updatedBudget.limit) {
+      if (Number(updatedBudget.spent) >= Number(updatedBudget.limit)) {
         import("../services/notification.service").then(({ notifyUser }) => {
           notifyUser(
             req.userId!,
@@ -355,7 +355,7 @@ export const updateExpense = async (
           data: { spent: { increment: updatedExpense.amount } },
         });
 
-        if (updatedNewBudget.spent >= newBudget.limit) {
+        if (Number(updatedNewBudget.spent) >= Number(newBudget.limit)) {
           import("../services/notification.service").then(({ notifyUser }) => {
             notifyUser(
               req.userId!,

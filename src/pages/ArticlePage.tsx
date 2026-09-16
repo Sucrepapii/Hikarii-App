@@ -6,6 +6,7 @@ import { Logo } from '../components/common/Logo';
 import { Button } from '../components/common/Button';
 import { ArrowLeft, Clock, Tag } from 'lucide-react';
 import toast from 'react-hot-toast';
+import apiClient from '../api/client';
 
 export const ArticlePage: React.FC = () => {
     const { slug } = useParams<{ slug: string }>();
@@ -60,12 +61,7 @@ export const ArticlePage: React.FC = () => {
                         <button
                             onClick={async () => {
                                 try {
-                                    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
-                                    await fetch(`${API_URL}/article-feedback`, {
-                                        method: 'POST',
-                                        headers: { 'Content-Type': 'application/json' },
-                                        body: JSON.stringify({ articleSlug: slug, isHelpful: true })
-                                    });
+                                    await apiClient.post('/article-feedback', { articleSlug: slug, isHelpful: true });
                                     toast.success("Thanks for your feedback!");
                                 } catch (error) {
                                     toast.success("Thanks for your feedback!"); // Still show success even if tracking fails
@@ -78,12 +74,7 @@ export const ArticlePage: React.FC = () => {
                         <button
                             onClick={async () => {
                                 try {
-                                    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
-                                    await fetch(`${API_URL}/article-feedback`, {
-                                        method: 'POST',
-                                        headers: { 'Content-Type': 'application/json' },
-                                        body: JSON.stringify({ articleSlug: slug, isHelpful: false })
-                                    });
+                                    await apiClient.post('/article-feedback', { articleSlug: slug, isHelpful: false });
                                     toast.success("Thanks for your feedback! We'll work on improving it.");
                                 } catch (error) {
                                     toast.success("Thanks for your feedback!");

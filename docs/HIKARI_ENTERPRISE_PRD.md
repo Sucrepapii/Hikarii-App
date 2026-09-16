@@ -94,7 +94,7 @@ graph TD
     LB[Load Balancer / Vercel]
     FE[React Frontend / Vite]
     BE[Node.js / Express Backend]
-    DB[(MongoDB Atlas)]
+    DB[(PostgreSQL)]
     Gemini[Google Gemini AI]
     Stripe[Stripe Payments]
     Resend[Resend Email Service]

@@ -6,6 +6,7 @@ import { Button } from '../components/common/Button';
 import { Mail, MessageSquare, Send, Globe, Shield } from 'lucide-react';
 import { Navbar } from '../components/layout/Navbar';
 import toast from 'react-hot-toast';
+import apiClient from '../api/client';
 
 export const Contact: React.FC = () => {
     const navigate = useNavigate();
@@ -25,14 +26,7 @@ export const Contact: React.FC = () => {
         };
 
         try {
-            const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
-            const response = await fetch(`${API_URL}/contact`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data),
-            });
-
-            if (!response.ok) throw new Error('Failed to send message');
+            await apiClient.post('/contact', data);
 
             toast.success("Message sent! Check your inbox for confirmation.");
             (e.target as HTMLFormElement).reset();

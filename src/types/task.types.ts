@@ -40,7 +40,7 @@ export interface TaskFinancials {
 }
 
 export interface Task {
-  id: string; // MongoDB ID (mapped from Prisma)
+  id: string; // UUID (mapped from Prisma)
   title: string;
   description?: string;
   status: TaskStatus;

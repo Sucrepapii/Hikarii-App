@@ -114,7 +114,7 @@ model Project {
   startDate   DateTime?
   endDate     DateTime?
   
-  budgetLimit Float?   // Optional overall budget for the project
+  budgetLimit Decimal? // Optional overall budget for the project
   
   userId      String
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -233,8 +233,8 @@ model TaskBlock {
 model Budget {
   id        String          @id @default(uuid())
   category  ExpenseCategory
-  limit     Float
-  spent     Float           @default(0)
+  limit     Decimal
+  spent     Decimal         @default(0)
   period    BudgetPeriod    @default(MONTHLY)
 
   userId    String
@@ -252,7 +252,7 @@ model Budget {
 model Expense {
   id             String          @id @default(uuid())
   title          String
-  amount         Float
+  amount         Decimal
   category       ExpenseCategory
   date           DateTime        @default(now())
   description    String?
@@ -315,7 +315,7 @@ enum ExpenseCategory {
 model RecurringExpense {
   id              String   @id @default(uuid())
   merchantName    String
-  amount          Float    // Average amount
+  amount          Decimal  // Average amount
   frequency       String   // "WEEKLY", "MONTHLY", "YEARLY"
   nextDueDate     DateTime
   confidenceScore Float    // 0.0 to 1.0
