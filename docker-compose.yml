@@ -1,0 +1,60 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hikarii-app
+    restart: unless-stopped
+    ports:
+      - "5005:5005"
+    environment:
+      - NODE_ENV=production
+      - PORT=5005
+      - DATABASE_URL=postgresql://hikarii_user:hikarii_secret@postgres:5432/hikarii_db?schema=public
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    networks:
+      - hikarii-network
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: hikarii-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: hikarii_user
+      POSTGRES_PASSWORD: hikarii_secret
+      POSTGRES_DB: hikarii_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hikarii_user -d hikarii_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - hikarii-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: hikarii-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - hikarii-network
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  hikarii-network:
+    driver: bridge

@@ -1,127 +1,201 @@
-# Hikarii (Light & Clarity)
+# Hikarii — Radical Clarity in Tasks & Budgeting
 
-**Hikarii** is a premium, productivity-focused web application designed to bring light and clarity to your tasks and finances. It combines a robust task tracker with an intuitive budget manager, powered by intelligent insights to help you stay on top of your game.
+[![CI Pipeline](https://github.com/Sucrepapii/Hikarii-App/actions/workflows/ci.yml/badge.svg)](https://github.com/Sucrepapii/Hikarii-App/actions/workflows/ci.yml)
+[![Node Version](https://img.shields.io/badge/node-v22-blue.svg)](https://nodejs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.6-blue.svg)](https://www.typescriptlang.org/)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Tests](https://img.shields.io/badge/tests-Vitest%20%7C%20Passing-brightgreen.svg)](vitest.config.ts)
 
-![Hikarii Dashboard Preview](public/hero_dashboard_v2.png)
-
----
-
-## 💡 Why Hikarii Stands Out
-
-Hikarii isn't just another budget tracker. It is built for **Project-Centric Users** who need clarity on specific goals—whether it's a home renovation, a wedding, or a startup launch.
-
-### 🎯 1. Project-Centric Focus
-
-Manage specific goals with dedicated timelines and budgets. No more mixing your "Vacation Fund" with your "Groceries".
-
-### ✨ 2. Visual Clarity
-
-A "Light & Clarity" theme that goes beyond aesthetics. Accessible color coding, motivational progress visualization, and a dashboard designed to show status at a glance.
-
-### 🤖 3. Intelligence & Actionable Insights
-
-We don't just say "Spend less". Hikarii gives you proactive, AI-driven guidance.
-
-|                     **Financial Intelligence**                     |                      **Smart Task Management**                       |
-| :----------------------------------------------------------------: | :------------------------------------------------------------------: |
-|            ![Budget Control](public/feature_budget.png)            |        ![AI Task Splitting](public/feature_intelligence.png)         |
-| **"Switch phone carriers to save NGN 15,000/year based on usage"** | **"Split this complex task into smaller, manageable steps with AI"** |
+**Hikarii** is a fullstack web application engineered for intentional productivity and financial mastery. It solves the fragmentation between task tracking and financial management by connecting every milestone directly to project budgets, augmented with Google Gemini AI task decomposition, Google Calendar bi-directional sync, BullMQ background queues, Stripe subscription billing, and enterprise observability via Sentry and Pino.
 
 ---
 
-## 🌟 Key Features
+## 🏛️ System Architecture
 
-### 📝 Task Management
+Hikarii uses a clean, decoupled architecture with a modern React 18 single-page frontend and a resilient Node.js / Express backend with Prisma ORM and BullMQ background workers.
 
-- **Smart AI Split**: Automatically decompose complex tasks into sub-tasks using Google Gemini AI.
-- **Visual Organization**: Categorize (Work, Personal, etc.) and prioritize (High to Low).
-- **Interactive Status**: Track progress with To-Do, In Progress, and Completed states.
-- **Overdue Alerts**: Stay on track with automated visual indicators and email nudges.
+```mermaid
+graph TD
+    Client["React 18 / Vite Client\n(Tailwind CSS, Zustand, Recharts)"]
+    API["Express REST API (Node 22)\n(Controllers, Services, Pino Logger)"]
+    Prisma["Prisma ORM Client"]
+    Postgres[("PostgreSQL Database\n(Users, Tasks, Budgets, Audits)")]
+    Redis[("Redis Instance\n(BullMQ Background Queue)")]
+    Workers["Background Workers\n(Reminders, Trial Expiration, Wraps)"]
+    Gemini["Google Gemini AI API\n(Task Splitting & Scoper)"]
+    GCal["Google Calendar API\n(Bi-Directional Event Sync)"]
+    Stripe["Stripe API\n(Subscriptions & Webhooks)"]
+    Resend["Resend API\n(Transactional Emails)"]
+    Sentry["Sentry\n(Error Tracking & Profiling)"]
 
-### 💰 Financial Integration
+    Client -->|HTTPS / JSON REST| API
+    API -->|Typed Queries| Prisma
+    Prisma --> Postgres
+    API -->|Dispatch Jobs| Redis
+    Redis --> Workers
+    Workers -->|DB Updates| Postgres
+    API -->|Prompt & Parse| Gemini
+    API -->|OAuth2 / Calendar Events| GCal
+    API -->|Billing & Checkout| Stripe
+    API -->|Dispatch Emails| Resend
+    API -->|Traces & Exceptions| Sentry
+    Client -->|Client Errors| Sentry
+```
 
-- **Smart Budgeting**: Set categorical limits (Monthly, Weekly, or Daily).
-- **Multi-Currency Support**: Switch between **NGN, USD, GBP, and EUR** with real-time conversion.
-- **Task-Expense Linking**: Attach costs directly to tasks for precise project tracking.
-- **Visual Analytics**: Interactive charts showing spending vs. budget in real-time.
-
-### 🔒 Security & Accounts
-
-- **Secure Authentication**: JWT-based auth with secure credential handling.
-- **Stripe Integration**: Professional subscription management with **14-day free trials** and Monthly/Yearly options.
-- **Profile Customization**: Manage your name, password, and subscription tier with ease.
-
----
-
-## 🛠️ Tech Stack
-
-### Frontend
-
-- **Framework**: React 18 (Vite) / TypeScript
-- **Styling**: Tailwind CSS (Custom "Hikarii" Design System)
-- **State**: Zustand
-- **Icons**: Lucide React / Recharts
-
-### Backend
-
-- **Runtime**: Node.js & Express / TypeScript
-- **Database**: PostgreSQL (via Prisma ORM)
-- **AI Engine**: Google Gemini API
-- **Payments**: Stripe CLI / API
-- **Email**: Resend
+### Component Breakdown
+- **Frontend Layer**: Built with React 18, Vite, TypeScript, and Tailwind CSS. State is managed via lightweight Zustand stores with optimistic UI updates. Form validations are strictly enforced through Zod schemas.
+- **API & Middleware Layer**: Express application secured with Helmet, HTTP Parameter Pollution (HPP) protection, structured rate limiting, and CORS whitelist controls.
+- **Service & Domain Layer**: Encapsulated services (`AdminService`, `email.service`, `google.calendar.service`, etc.) decouple business workflows and audit logging from transport controllers.
+- **Logging & Observability**: High-throughput structured JSON logging powered by **Pino** (`server/src/config/logger.ts`) with Sentry distributed tracing across frontend and backend.
+- **Background Jobs**: BullMQ and Redis handle automated task reminders, monthly wraps, and trial expiration workflows without blocking synchronous HTTP request threads.
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Quick Start (Fresh Clone)
 
-### Prerequisites
+### 1. Prerequisites
+- **Node.js**: `v22.x` or higher (verified on Node 22)
+- **npm**: `v10.x` or higher
+- **PostgreSQL**: Local instance or managed provider (e.g. Supabase)
+- **Redis**: Local instance or container (for background jobs)
 
-- Node.js (v18+)
-- PostgreSQL (Local or managed e.g. Supabase)
-- npm or yarn
+### 2. Clone & Install
+```bash
+git clone https://github.com/Sucrepapii/Hikarii-App.git
+cd Hikarii-App
 
-### Installation
+# Clean install all root and runtime dependencies
+npm ci
+```
 
-1. **Clone & Install**:
+### 3. Environment Configuration
+Copy the template configuration file:
+```bash
+cp .env.example .env
+```
+Populate the required environment variables in `.env`:
+```env
+PORT=5005
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/hikarii_dev?schema=public"
+JWT_SECRET="replace_with_a_secure_random_key_min_32_chars"
+CLIENT_URL="http://localhost:5173"
+VITE_API_URL="http://localhost:5005/api"
+```
 
-   ```bash
-   git clone https://github.com/yourusername/Hikarii.git
-   cd Hikarii
-   npm install && cd server && npm install && cd ..
-   ```
+### 4. Database Setup
+Generate the Prisma typed client and execute migrations:
+```bash
+npx prisma generate
+npx prisma db push
+```
 
-2. **Environment Setup**:
-   Create a `.env` in the `server/` directory:
-
-   ```env
-   PORT=5000
-   DATABASE_URL="postgresql://postgres:postgres@localhost:5432/hikarii_dev?pgbouncer=true"
-   DIRECT_URL="postgresql://postgres:postgres@localhost:5432/hikarii_dev"
-   JWT_SECRET="your_secret"
-   RESEND_API_KEY="re_..."
-   STRIPE_SECRET_KEY="sk_..."
-   GEMINI_API_KEY="AIza..."
-   ```
-
-3. **Database Refresh**:
-
-   ```bash
-   npm run db:push
-   ```
-
-4. **Run Development**:
-   ```bash
-   npm run dev
-   ```
+### 5. Run the Application
+Launch both client and server development processes:
+```bash
+npm run dev
+```
+- Client interface: `http://localhost:5173`
+- API server: `http://localhost:5005/api`
 
 ---
 
-## 🤝 Contributing
+## 🧪 Testing Suite & Quality Checks
 
-1. Fork the repository.
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`).
-3. Commit and push.
+Hikarii enforces strict code quality and test coverage across controllers, services, and React components.
+
+### Run Unit and Component Tests
+```bash
+npm test
+```
+
+### Run Tests with Full Coverage Report
+```bash
+npm run test:coverage
+```
+
+### Linting & Formatting
+```bash
+# Check code style and rules
+npm run lint
+
+# Automatically fix lint issues
+npm run lint:fix
+
+# Format files with Prettier
+npm run format
+```
+
+### TypeScript Type Checking
+```bash
+npm run typecheck
+```
+
+---
+
+## 🐳 Containerized Deployment (Docker)
+
+Hikarii includes an enterprise multi-stage Dockerfile and Docker Compose configuration for one-command local reproduction:
+
+### Run Full Stack with Docker Compose
+```bash
+docker compose up --build -d
+```
+This spins up:
+- `hikarii-app`: Multi-stage production Node 22 Alpine container (port `5005`)
+- `hikarii-postgres`: PostgreSQL 16 database with health check (port `5432`)
+- `hikarii-redis`: Redis 7 alpine cache & job queue (port `6379`)
+
+### Stop Containers
+```bash
+docker compose down
+```
+
+---
+
+## ⚙️ Environment Variables Reference
+
+All referenced environment variables in the codebase are documented in [`.env.example`](.env.example):
+
+| Variable | Description | Default / Example |
+|---|---|---|
+| `PORT` | Backend HTTP port | `5005` |
+| `NODE_ENV` | Application environment | `development` / `production` |
+| `CLIENT_URL` | Trusted frontend origins for CORS | `http://localhost:5173` |
+| `DATABASE_URL` | PostgreSQL connection string | `postgresql://...` |
+| `JWT_SECRET` | Signing secret for session tokens | `32+ character string` |
+| `JWT_EXPIRES_IN` | JWT token lifespan | `7d` |
+| `ADMIN_EMAIL` | Default administrator account | `admin@hikarii.org` |
+| `GEMINI_API_KEY` | Google Gemini AI generative API key | `AIzaSy...` |
+| `GOOGLE_CLIENT_ID` | OAuth2 client ID for Google Calendar | `...apps.googleusercontent.com` |
+| `GOOGLE_CLIENT_SECRET` | OAuth2 client secret for Google Calendar | `GOCSPX-...` |
+| `STRIPE_SECRET_KEY` | Stripe secret API key | `sk_test_...` |
+| `STRIPE_WEBHOOK_SECRET`| Stripe webhook verification secret | `whsec_...` |
+| `RESEND_API_KEY` | Resend API key for transactional email | `re_...` |
+| `REDIS_URL` | Redis URI for BullMQ workers | `redis://localhost:6379` |
+| `SENTRY_DSN` | Sentry DSN for backend observability | `https://...@sentry.io/...` |
+| `VITE_SENTRY_DSN` | Sentry DSN for frontend observability | `https://...@sentry.io/...` |
+
+---
+
+## 🔄 CI/CD Pipeline
+
+Automated checks run on every `push` and `pull_request` targeting `main` via [`.github/workflows/ci.yml`](.github/workflows/ci.yml):
+1. **Lint**: Enforces ESLint standards with zero errors across TypeScript and React source.
+2. **Typecheck**: Verifies strict TypeScript compilation via `tsc --noEmit`.
+3. **Test & Coverage**: Executes Vitest unit tests (admin controller, auth schemas, React components) and outputs coverage artifacts.
+4. **Build**: Assembles frontend Vite assets and bundles the Node.js server with esbuild.
+
+Automated dependency updates and security patches are managed via [Dependabot](.github/dependabot.yml).
+
+---
+
+## 🔒 Security Hygiene & Audit Standards
+- **Zero Committed Secrets**: All secrets and credentials are read dynamically from runtime environments via `dotenv` and validated with typed schemas.
+- **No Committed Build Bundles**: Bundled artifacts (`dist/`, `dist-server/`) are strictly ignored by `.gitignore`.
+- **Audit Logging**: Sensitive admin actions (user creation, role modification, account suspension) are recorded in PostgreSQL audit logs with client IP tracking.
+- **Typed Errors**: Uniform error handling using typed `AppError` subclasses.
+
+---
 
 ## 📄 License
-
-Distributed under the MIT License. See `LICENSE` for more information.
+Distributed under the MIT License. See `LICENSE` for details.
