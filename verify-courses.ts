@@ -1,20 +1,25 @@
 import axios from "axios";
+import dotenv from "dotenv";
 
-const api = axios.create({ baseURL: "http://localhost:5000/api" });
+dotenv.config();
+
+const api = axios.create({ baseURL: process.env.VITE_API_URL || "http://localhost:5005/api" });
 
 async function runTest() {
   try {
+    const testEmail = process.env.TEST_STUDENT_EMAIL || "student_test@hikarii.org";
+    const testPassword = process.env.TEST_ADMIN_PASSWORD || process.env.TEST_PASSWORD || `P@ss_${Date.now()}`;
+
     // 1. Signup
     console.log("Signing up...");
     try {
       await api.post("/auth/signup", {
         name: "Student Tester",
-        email: "student@test.com",
-        password: "Password123!",
+        email: testEmail,
+        password: testPassword,
         isStudent: true,
       });
     } catch (e: any) {
-      // Log the actual error to debug if mismatch
       console.log("Signup error:", e.response?.data);
       if (
         e.response?.data?.error === "User already exists with this email" ||
@@ -29,11 +34,11 @@ async function runTest() {
     // 2. Login
     console.log("Logging in...");
     const loginRes = await api.post("/auth/login", {
-      email: "student@test.com",
-      password: "Password123!",
+      email: testEmail,
+      password: testPassword,
     });
     const token = loginRes.data.token;
-    const isStudent = loginRes.data.user.isStudent;
+    const isStudent = loginRes.data.user?.isStudent;
     console.log("Logged in successfully. isStudent:", isStudent);
 
     if (!isStudent) {

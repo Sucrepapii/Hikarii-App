@@ -21,7 +21,7 @@ async function runAuthLoopVerification() {
 
   const unconfirmedEmail = `unconfirmed_${Date.now()}@hikarii.org`;
   const strangerEmail = `authloop_${Date.now()}@hikarii.org`;
-  const testPassword = "SecurePassword123!";
+  const testPassword = process.env.TEST_USER_PASSWORD || process.env.TEST_ADMIN_PASSWORD || `P@ss_${Date.now()}!`;
 
   try {
     console.log(`[Signup] Registering unconfirmed account for: ${unconfirmedEmail}...`);

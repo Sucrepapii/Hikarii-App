@@ -1,11 +1,19 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const prisma = new PrismaClient();
 
 async function main() {
-  const email = "admin@Hikariii.org";
-  const password = "adminPassword123!";
+  const email = process.env.ADMIN_EMAIL || "admin@hikarii.org";
+  const password = process.env.TEST_ADMIN_PASSWORD;
+
+  if (!password) {
+    throw new Error("TEST_ADMIN_PASSWORD environment variable is required to run verify-admin.");
+  }
+
   const hashedPassword = await bcrypt.hash(password, 10);
 
   const admin = await prisma.user.upsert({
