@@ -13,12 +13,12 @@ import { clsx } from 'clsx';
 import { Helmet } from 'react-helmet-async';
 
 // --- SCHEMAS ---
-const loginSchema = z.object({
+export const loginSchema = z.object({
     email: z.string().email('Please enter a valid email address'),
     password: z.string().min(1, 'Password is required'),
 });
 
-const signupSchema = z.object({
+export const signupSchema = z.object({
     name: z.string().min(2, 'Name must be at least 2 characters'),
     email: z.string().email('Please enter a valid email address'),
     password: z.string()
