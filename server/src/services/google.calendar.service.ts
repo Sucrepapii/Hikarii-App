@@ -1,20 +1,6 @@
 import { google } from "googleapis";
 import prisma from "../config/db";
-import fs from "fs";
-import path from "path";
-
-const logToFile = (message: string, data?: any) => {
-  // Also log to console for immediate visibility
-  console.log(`[DEBUG] ${message}`, data ? JSON.stringify(data, null, 2) : "");
-  try {
-    const logPath = path.join(process.cwd(), "debug.log");
-    const timestamp = new Date().toISOString();
-    const logEntry = `[${timestamp}] ${message} ${data ? JSON.stringify(data, null, 2) : ""}\n`;
-    fs.appendFileSync(logPath, logEntry);
-  } catch (e) {
-    console.error("Failed to write to debug.log", e);
-  }
-};
+import logger from "../config/logger";
 
 const oauth2Client = new google.auth.OAuth2(
   process.env.GOOGLE_CLIENT_ID,
@@ -35,16 +21,7 @@ const SCOPES = [
  */
 export const exchangeCodeForToken = async (userId: string, code: string) => {
   try {
-    // Debugging logs to file
-    logToFile("CWD:", process.cwd());
-    logToFile("Exchanging code for token");
-    logToFile(
-      "Client ID prefix:",
-      process.env.GOOGLE_CLIENT_ID?.substring(0, 10),
-    );
-    logToFile("Redirect URI (Configured):", (oauth2Client as any).redirectUri);
-    // @ts-ignore
-    logToFile("Redirect URI (Internal):", oauth2Client._redirectUri);
+    logger.debug({ userId }, "Exchanging code for Google OAuth token");
 
     const { tokens } = await oauth2Client.getToken(code);
 
@@ -57,12 +34,11 @@ export const exchangeCodeForToken = async (userId: string, code: string) => {
       },
     });
 
+    logger.info({ userId }, "Google OAuth tokens exchanged and saved successfully");
     return updatedUser;
   } catch (error: any) {
     const errorDetails = error.response?.data || error.message;
-    logToFile("Error exchanging code:", errorDetails);
-
-    console.error("Error exchanging code for token details:", errorDetails);
+    logger.error({ errorDetails, userId }, "Error exchanging Google OAuth code for token");
     throw new Error(
       `Google Auth Failed: ${error.response?.data?.error || error.message}`,
     );
@@ -77,7 +53,7 @@ export const createCalendarEvent = async (userId: string, task: any) => {
     const user = await prisma.user.findUnique({ where: { id: userId } });
 
     if (!user?.googleAccessToken) {
-      console.log("No Google Access Token for user", userId);
+      logger.info({ userId }, "No Google Access Token found for user; skipping calendar event creation");
       return null;
     }
 
@@ -87,8 +63,6 @@ export const createCalendarEvent = async (userId: string, task: any) => {
       refresh_token: user.googleRefreshToken,
     });
 
-    // Handle token refresh if needed (googleapis handles this automatically if refresh_token is present)
-
     const calendar = google.calendar({ version: "v3", auth: oauth2Client });
 
     // Map Task to Google Event
@@ -96,21 +70,19 @@ export const createCalendarEvent = async (userId: string, task: any) => {
       summary: task.title,
       description: task.description || "",
       start: {
-        dateTime: new Date().toISOString(), // Default to now if no due date, logic can be improved
-        timeZone: "UTC", // Use user's timezone if available
-      },
-      end: {
-        dateTime: new Date(new Date().getTime() + 60 * 60 * 1000).toISOString(), // +1 hour default
+        dateTime: new Date().toISOString(),
         timeZone: "UTC",
       },
-      // If task has specific due date:
+      end: {
+        dateTime: new Date(new Date().getTime() + 60 * 60 * 1000).toISOString(),
+        timeZone: "UTC",
+      },
       ...(task.dueDate && {
         start: {
           dateTime: new Date(task.dueDate).toISOString(),
           timeZone: "UTC",
         },
         end: {
-          // Use estimated duration if available, otherwise default to 1 hour
           dateTime: new Date(
             new Date(task.dueDate).getTime() +
               (task.estimatedDuration
@@ -130,17 +102,16 @@ export const createCalendarEvent = async (userId: string, task: any) => {
       requestBody: event,
     });
 
+    logger.info({ userId, eventId: response.data.id }, "Google Calendar event created successfully");
     return response.data;
   } catch (error: any) {
-    console.error("Error creating calendar event:", error);
-    // If token invalid, we might want to flag user to re-auth
+    logger.error({ error: error.message, userId }, "Error creating Google Calendar event");
     return null;
   }
 };
 
 /**
  * Sync multiple task blocks to calendar
- * Simple strategy: Schedule starting tomorrow 9am, sequentially with 5m breaks
  */
 export const syncTaskBlocks = async (
   userId: string,
@@ -158,31 +129,22 @@ export const syncTaskBlocks = async (
 
     const calendar = google.calendar({ version: "v3", auth: oauth2Client });
 
-    // Fetch the parent task to get the main title and due date
     const parentTask = await prisma.task.findUnique({
       where: { id: taskId },
       select: { title: true, dueDate: true },
     });
     const parentTitle = parentTask?.title || "Task";
 
-    // Determine scheduling start date
     let startDate = new Date();
     if (parentTask?.dueDate) {
       startDate = new Date(parentTask.dueDate);
-      // Ensure we don't accidentally schedule in the past if due date is today/past
-      // (Optional: for now, let's respect the user's date even if close)
-
-      // If the due date logic in frontend sets it to midnight,
-      // setting hours to 9 ensures it starts at 9am on that day
     } else {
-      // Default to tomorrow if no due date
       startDate.setDate(startDate.getDate() + 1);
     }
 
     startDate.setHours(9, 0, 0, 0);
 
     let currentStartTime = startDate;
-
     const results = [];
 
     for (const block of blocks) {
@@ -193,12 +155,12 @@ export const syncTaskBlocks = async (
       );
 
       const event = {
-        summary: `[${parentTitle}] ${block.title}`, // e.g. "[Write Essay] Research"
+        summary: `[${parentTitle}] ${block.title}`,
         description: `Block ${block.order + 1} of task: ${parentTitle}`,
-        colorId: "5", // "5" is Banana (Yellow) in Google Calendar standard colors
+        colorId: "5",
         start: {
           dateTime: currentStartTime.toISOString(),
-          timeZone: "UTC", // or user timezone
+          timeZone: "UTC",
         },
         end: {
           dateTime: endTime.toISOString(),
@@ -212,28 +174,27 @@ export const syncTaskBlocks = async (
           requestBody: event,
         });
         results.push({ blockId: block.id, googleEventId: response.data.id });
-
-        // Advance time + 5 mins break
         currentStartTime = new Date(endTime.getTime() + 5 * 60000);
-      } catch (err) {
-        console.error("Failed to sync block", block.title, err);
+      } catch (err: any) {
+        logger.error({ blockTitle: block.title, error: err.message }, "Failed to sync calendar block");
       }
     }
 
+    logger.info({ userId, taskId, count: results.length }, "Synced task blocks to Google Calendar");
     return results;
-  } catch (error) {
-    console.error("Batch sync failed", error);
+  } catch (error: any) {
+    logger.error({ error: error.message, userId, taskId }, "Batch sync to Google Calendar failed");
     throw error;
   }
 };
 
 /**
- * Get Auth URL (if doing server-side redirect flow, though we are using frontend popup)
+ * Get Auth URL
  */
 export const getAuthUrl = () => {
   return oauth2Client.generateAuthUrl({
-    access_type: "offline", // Essential for refresh token
+    access_type: "offline",
     scope: SCOPES,
-    prompt: "consent", // Force consent to get refresh token
+    prompt: "consent",
   });
 };

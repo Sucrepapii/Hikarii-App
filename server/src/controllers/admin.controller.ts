@@ -2,12 +2,8 @@ import { Request, Response } from "express";
 import prisma from "../config/db";
 import { subDays } from "date-fns";
 import bcrypt from "bcryptjs";
-import { sendEmail } from "../services/email.service";
-import {
-  getSuspensionTemplate,
-  getReactivationTemplate,
-  getAdminOnboardingTemplate,
-} from "../utils/emailTemplates";
+import logger from "../config/logger";
+import AdminService from "../services/admin.service";
 
 export const createAdmin = async (req: Request, res: Response) => {
   try {
@@ -20,6 +16,7 @@ export const createAdmin = async (req: Request, res: Response) => {
     });
 
     if (!requestor || requestor.role !== "ADMIN") {
+      logger.warn({ adminId }, "Unauthorized admin creation attempt");
       return res.status(403).json({ message: "Access Denied: Admin only" });
     }
 
@@ -40,35 +37,26 @@ export const createAdmin = async (req: Request, res: Response) => {
         email,
         password: hashedPassword,
         role: "ADMIN",
-        isVerified: true, // Auto-verify admins created by other admins
+        isVerified: true,
         requiresPasswordChange: true,
       },
     });
 
-    await prisma.auditLog.create({
-      data: {
-        adminId,
-        action: "CREATE_ADMIN",
-        targetId: newAdmin.id,
-        targetType: "USER",
-        details: { email, name },
-        ipAddress: req.ip,
-      },
+    await AdminService.recordAuditLog({
+      adminId,
+      action: "CREATE_ADMIN",
+      targetId: newAdmin.id,
+      targetType: "USER",
+      details: { email, name },
+      ipAddress: req.ip,
     });
 
-    // Send Onboarding Email
-    try {
-      await sendEmail(
-        email,
-        "Welcome to the Admin Team - Hikarii",
-        getAdminOnboardingTemplate(name, email, password),
-      );
-    } catch (emailError) {
-      console.error("Failed to send admin onboarding email:", emailError);
-      // In a real app we might still succeed the request but flag the email failure
-    }
+    // Send Onboarding Email via AdminService
+    await AdminService.sendAdminOnboardingEmail(name, email, password);
 
-    res.status(201).json({
+    logger.info({ adminId, newAdminId: newAdmin.id, email }, "Admin created successfully");
+
+    return res.status(201).json({
       message: "Admin created successfully",
       user: {
         id: newAdmin.id,
@@ -77,9 +65,9 @@ export const createAdmin = async (req: Request, res: Response) => {
         role: newAdmin.role,
       },
     });
-  } catch (error) {
-    console.error("Create Admin Error:", error);
-    res.status(500).json({ message: "Failed to create admin" });
+  } catch (error: any) {
+    logger.error({ error: error.message, stack: error.stack }, "Create Admin Error");
+    return res.status(500).json({ message: "Failed to create admin" });
   }
 };
 
@@ -87,13 +75,13 @@ export const getAdminDashboardData = async (req: Request, res: Response) => {
   try {
     const adminId = (req as any).userId;
 
-    // Verify Admin Access
     const requestor = await prisma.user.findUnique({
       where: { id: adminId },
       select: { role: true },
     });
 
     if (!requestor || requestor.role !== "ADMIN") {
+      logger.warn({ adminId }, "Unauthorized admin dashboard access attempt");
       return res.status(403).json({ message: "Access Denied: Admin only" });
     }
 
@@ -113,7 +101,6 @@ export const getAdminDashboardData = async (req: Request, res: Response) => {
     });
 
     const totalTasks = await prisma.task.count();
-    // Proxy for "AI Splits": Counting TaskBlocks.
     const totalAiSplits = await prisma.taskBlock.count();
     const totalExpenses = await prisma.expense.count();
 
@@ -135,49 +122,58 @@ export const getAdminDashboardData = async (req: Request, res: Response) => {
     const limit = parseInt(req.query.limit as string) || 10;
     const skip = (page - 1) * limit;
 
-    // Fetch Recent Users with pagination
     const users = await prisma.user.findMany({
       orderBy: { createdAt: "desc" },
-      skip,
-      take: limit,
       select: {
         id: true,
         name: true,
         email: true,
         role: true,
         subscriptionStatus: true,
-        lastLoginAt: true,
         createdAt: true,
+        lastLoginAt: true,
         isSuspended: true,
+        _count: {
+          select: {
+            tasks: true,
+            expenses: true,
+          },
+        },
       },
+      skip,
+      take: limit,
     });
 
-    res.json({
-      stats: {
+    const totalPages = Math.ceil(totalUsers / limit);
+
+    return res.json({
+      health: {
         totalUsers,
         activeUsers,
         proUsers,
         totalTasks,
         totalAiSplits,
         totalExpenses,
-        estimatedMRR,
       },
       engagement: {
-        clarity: recentTasks,
-        focus: recentSplits,
-        freedom: recentExpenses,
+        recentTasks,
+        recentSplits,
+        recentExpenses,
+      },
+      revenue: {
+        estimatedMRR,
       },
       users,
       pagination: {
-        total: totalUsers,
-        pages: Math.ceil(totalUsers / limit),
         currentPage: page,
+        totalPages,
+        totalUsers,
         limit,
       },
     });
-  } catch (error) {
-    console.error("Admin Dashboard Error:", error);
-    res.status(500).json({ message: "Failed to fetch admin data" });
+  } catch (error: any) {
+    logger.error({ error: error.message, stack: error.stack }, "Get Admin Dashboard Data Error");
+    return res.status(500).json({ message: "Failed to fetch dashboard data" });
   }
 };
 
@@ -187,13 +183,13 @@ export const updateUser = async (req: Request, res: Response) => {
     const id = req.params.id as string;
     const { name, email, role, subscriptionStatus } = req.body;
 
-    // Verify Admin Access
     const requestor = await prisma.user.findUnique({
       where: { id: adminId },
       select: { role: true, name: true },
     });
 
     if (!requestor || requestor.role !== "ADMIN") {
+      logger.warn({ adminId }, "Unauthorized update user attempt");
       return res.status(403).json({ message: "Access Denied: Admin only" });
     }
 
@@ -207,19 +203,18 @@ export const updateUser = async (req: Request, res: Response) => {
       },
     });
 
-    // Create Audit Log
-    await prisma.auditLog.create({
-      data: {
-        adminId,
-        action: "UPDATE_USER",
-        targetId: id,
-        targetType: "USER",
-        details: { name, email, role, subscriptionStatus },
-        ipAddress: req.ip,
-      },
+    await AdminService.recordAuditLog({
+      adminId,
+      action: "UPDATE_USER",
+      targetId: id,
+      targetType: "USER",
+      details: { name, email, role, subscriptionStatus },
+      ipAddress: req.ip,
     });
 
-    res.json({
+    logger.info({ adminId, targetUserId: id }, "User updated by admin");
+
+    return res.json({
       message: "User updated successfully",
       user: {
         id: updatedUser.id,
@@ -229,9 +224,9 @@ export const updateUser = async (req: Request, res: Response) => {
         subscriptionStatus: updatedUser.subscriptionStatus,
       },
     });
-  } catch (error) {
-    console.error("Update User Error:", error);
-    res.status(500).json({ message: "Failed to update user" });
+  } catch (error: any) {
+    logger.error({ error: error.message, stack: error.stack }, "Update User Error");
+    return res.status(500).json({ message: "Failed to update user" });
   }
 };
 
@@ -240,7 +235,6 @@ export const deleteUser = async (req: Request, res: Response) => {
     const adminId = (req as any).userId;
     const id = req.params.id as string;
 
-    // Verify Admin Access
     const requestor = await prisma.user.findUnique({
       where: { id: adminId },
       select: { role: true },
@@ -250,34 +244,26 @@ export const deleteUser = async (req: Request, res: Response) => {
       return res.status(403).json({ message: "Access Denied: Admin only" });
     }
 
-    // Admins cannot delete themselves
-    if (id === adminId) {
-      return res
-        .status(400)
-        .json({ message: "Admins cannot delete their own account" });
-    }
-
     const targetUser = await prisma.user.findUnique({ where: { id } });
     if (!targetUser) return res.status(404).json({ message: "User not found" });
 
     await prisma.user.delete({ where: { id } });
 
-    // Create Audit Log
-    await prisma.auditLog.create({
-      data: {
-        adminId,
-        action: "DELETE_USER",
-        targetId: id,
-        targetType: "USER",
-        details: { email: targetUser.email, name: targetUser.name },
-        ipAddress: req.ip,
-      },
+    await AdminService.recordAuditLog({
+      adminId,
+      action: "DELETE_USER",
+      targetId: id,
+      targetType: "USER",
+      details: { email: targetUser.email, name: targetUser.name },
+      ipAddress: req.ip,
     });
 
-    res.json({ message: "User and all associated data deleted successfully" });
-  } catch (error) {
-    console.error("Delete User Error:", error);
-    res.status(500).json({ message: "Failed to delete user" });
+    logger.info({ adminId, targetUserId: id }, "User deleted by admin");
+
+    return res.json({ message: "User and all associated data deleted successfully" });
+  } catch (error: any) {
+    logger.error({ error: error.message, stack: error.stack }, "Delete User Error");
+    return res.status(500).json({ message: "Failed to delete user" });
   }
 };
 
@@ -309,37 +295,28 @@ export const suspendUser = async (req: Request, res: Response) => {
       },
     });
 
-    // Send notification email
-    try {
-      const emailHtml = getSuspensionTemplate(
-        userToSuspend.name,
-        reason,
-        suspensionExpires || undefined,
-      );
-      await sendEmail(
-        userToSuspend.email,
-        "Account Suspended - Hikarii",
-        emailHtml,
-      );
-    } catch (emailError) {
-      console.error("Failed to send suspension email:", emailError);
-      // We continue even if email fails, but log it
-    }
+    await AdminService.sendSuspensionNotification(
+      userToSuspend.name,
+      userToSuspend.email,
+      reason,
+      suspensionExpires
+    );
 
-    await prisma.auditLog.create({
-      data: {
-        adminId,
-        action: "SUSPEND_USER",
-        targetId: id,
-        targetType: "USER",
-        details: { reason, durationDays, expires: suspensionExpires },
-        ipAddress: req.ip,
-      },
+    await AdminService.recordAuditLog({
+      adminId,
+      action: "SUSPEND_USER",
+      targetId: id,
+      targetType: "USER",
+      details: { reason, durationDays, expires: suspensionExpires },
+      ipAddress: req.ip,
     });
 
-    res.json({ message: "User suspended successfully" });
-  } catch (error) {
-    res.status(500).json({ message: "Failed to suspend user" });
+    logger.info({ adminId, targetUserId: id, reason }, "User suspended by admin");
+
+    return res.json({ message: "User suspended successfully" });
+  } catch (error: any) {
+    logger.error({ error: error.message }, "Suspend User Error");
+    return res.status(500).json({ message: "Failed to suspend user" });
   }
 };
 
@@ -366,31 +343,25 @@ export const reactivateUser = async (req: Request, res: Response) => {
       },
     });
 
-    // Send notification email
-    try {
-      const emailHtml = getReactivationTemplate(reactivatedUser.name);
-      await sendEmail(
-        reactivatedUser.email,
-        "Account Reactivated - Hikarii",
-        emailHtml,
-      );
-    } catch (emailError) {
-      console.error("Failed to send reactivation email:", emailError);
-    }
+    await AdminService.sendReactivationNotification(
+      reactivatedUser.name,
+      reactivatedUser.email
+    );
 
-    await prisma.auditLog.create({
-      data: {
-        adminId,
-        action: "REACTIVATE_USER",
-        targetId: id,
-        targetType: "USER",
-        ipAddress: req.ip,
-      },
+    await AdminService.recordAuditLog({
+      adminId,
+      action: "REACTIVATE_USER",
+      targetId: id,
+      targetType: "USER",
+      ipAddress: req.ip,
     });
 
-    res.json({ message: "User reactivated successfully" });
-  } catch (error) {
-    res.status(500).json({ message: "Failed to reactivate user" });
+    logger.info({ adminId, targetUserId: id }, "User reactivated by admin");
+
+    return res.json({ message: "User reactivated successfully" });
+  } catch (error: any) {
+    logger.error({ error: error.message }, "Reactivate User Error");
+    return res.status(500).json({ message: "Failed to reactivate user" });
   }
 };
 
@@ -424,7 +395,7 @@ export const getAuditLogs = async (req: Request, res: Response) => {
       prisma.auditLog.count(),
     ]);
 
-    res.json({
+    return res.json({
       logs,
       pagination: {
         total,
@@ -433,8 +404,9 @@ export const getAuditLogs = async (req: Request, res: Response) => {
         limit,
       },
     });
-  } catch (error) {
-    res.status(500).json({ message: "Failed to fetch audit logs" });
+  } catch (error: any) {
+    logger.error({ error: error.message }, "Get Audit Logs Error");
+    return res.status(500).json({ message: "Failed to fetch audit logs" });
   }
 };
 
@@ -457,7 +429,6 @@ export const handleBatchOperations = async (req: Request, res: Response) => {
     }
 
     if (action === "DELETE") {
-      // Prevent self-deletion in batch
       const filteredIds = userIds.filter((id) => id !== adminId);
       await prisma.user.deleteMany({
         where: { id: { in: filteredIds } },
@@ -478,18 +449,21 @@ export const handleBatchOperations = async (req: Request, res: Response) => {
       });
     }
 
-    await prisma.auditLog.create({
-      data: {
-        adminId,
-        action: `BATCH_${action}`,
-        details: { userCount: userIds.length, userIds, ...details },
-        ipAddress: req.ip,
-      },
+    await AdminService.recordAuditLog({
+      adminId,
+      action: `BATCH_${action}`,
+      targetId: "BATCH",
+      targetType: "USERS",
+      details: { userCount: userIds.length, userIds, ...details },
+      ipAddress: req.ip,
     });
 
-    res.json({ message: `Batch ${action} completed successfully` });
-  } catch (error) {
-    res.status(500).json({ message: "Batch operation failed" });
+    logger.info({ adminId, action, count: userIds.length }, "Batch admin operation completed");
+
+    return res.json({ message: `Batch ${action} completed successfully` });
+  } catch (error: any) {
+    logger.error({ error: error.message }, "Batch Operations Error");
+    return res.status(500).json({ message: "Batch operation failed" });
   }
 };
 
@@ -505,13 +479,11 @@ export const getMarketingStats = async (req: Request, res: Response) => {
       return res.status(403).json({ message: "Access Denied" });
     }
 
-    // 1. Leads Stats
     const totalLeads = await prisma.lead.count();
     const recentLeads = await prisma.lead.count({
       where: { createdAt: { gte: subDays(new Date(), 7) } },
     });
 
-    // 2. Article Feedback
     const articleStats = await prisma.articleFeedback.groupBy({
       by: ["articleSlug", "isHelpful"],
       _count: {
@@ -519,7 +491,6 @@ export const getMarketingStats = async (req: Request, res: Response) => {
       },
     });
 
-    // 3. Lead Sources
     const leadSources = await prisma.lead.groupBy({
       by: ["source"],
       _count: {
@@ -527,13 +498,12 @@ export const getMarketingStats = async (req: Request, res: Response) => {
       },
     });
 
-    // 4. Recent Feedback Feed
     const recentFeedback = await prisma.articleFeedback.findMany({
       orderBy: { createdAt: "desc" },
       take: 10,
     });
 
-    res.json({
+    return res.json({
       leads: {
         total: totalLeads,
         last7Days: recentLeads,
@@ -542,9 +512,9 @@ export const getMarketingStats = async (req: Request, res: Response) => {
       contentPerformance: articleStats,
       recentFeedback,
     });
-  } catch (error) {
-    console.error("Marketing Stats Error:", error);
-    res.status(500).json({ message: "Failed to fetch marketing stats" });
+  } catch (error: any) {
+    logger.error({ error: error.message }, "Marketing Stats Error");
+    return res.status(500).json({ message: "Failed to fetch marketing stats" });
   }
 };
 
@@ -562,10 +532,8 @@ export const deleteFeedback = async (req: Request, res: Response) => {
 
     const id = req.params.id as string;
 
-    // Check standard feedback first
     const feedback = await prisma.feedback.findUnique({ where: { id } });
     if (!feedback) {
-      // Check article feedback if not found
       const articleFeedback = await prisma.articleFeedback.findUnique({ where: { id } });
       if (articleFeedback) {
         await prisma.articleFeedback.delete({ where: { id } });
@@ -576,9 +544,11 @@ export const deleteFeedback = async (req: Request, res: Response) => {
 
     await prisma.feedback.delete({ where: { id } });
 
-    res.json({ message: "Feedback deleted successfully" });
-  } catch (error) {
-    console.error("Delete Feedback Error:", error);
-    res.status(500).json({ message: "Failed to delete feedback" });
+    logger.info({ adminId, feedbackId: id }, "Feedback deleted by admin");
+
+    return res.json({ message: "Feedback deleted successfully" });
+  } catch (error: any) {
+    logger.error({ error: error.message }, "Delete Feedback Error");
+    return res.status(500).json({ message: "Failed to delete feedback" });
   }
 };
