@@ -273,6 +273,7 @@ export const useAuthStore = create<AuthState>((set, get) => {
     },
 
     checkAuth: async () => {
+      let activeToken: string | null = null;
       try {
         set({ isLoading: true });
         const { data: { session } } = await supabase.auth.getSession();
@@ -282,6 +283,8 @@ export const useAuthStore = create<AuthState>((set, get) => {
           set({ user: null, token: null, isLoading: false });
           return;
         }
+
+        activeToken = session.access_token;
 
         const response = await apiClient.get("/auth/me");
         const { user } = response.data;
@@ -298,8 +301,8 @@ export const useAuthStore = create<AuthState>((set, get) => {
           localStorage.removeItem("auth-user");
           set({ user: null, token: null, isLoading: false });
         } else {
-          // Transient error, retain session
-          set({ token: session.access_token, isLoading: false });
+          // Transient error, retain session if available
+          set({ token: activeToken, isLoading: false });
         }
       }
     },
