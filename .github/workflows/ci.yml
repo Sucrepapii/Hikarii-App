@@ -10,6 +10,13 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  NODE_ENV: test
+  VITE_SUPABASE_URL: "https://placeholder-project.supabase.co"
+  VITE_SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder"
+  JWT_SECRET: "ci-test-jwt-secret-must-be-32-chars-long"
+  DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/test?schema=public"
+
 jobs:
   lint:
     name: Lint Codebase
