@@ -10,6 +10,7 @@ export default defineConfig({
     include: ["src/**/*.{test,spec}.{ts,tsx}", "server/**/*.{test,spec}.{ts,tsx}"],
     env: {
       NODE_ENV: "test",
+      VITE_API_URL: "http://localhost:5005/api",
       VITE_SUPABASE_URL: "https://placeholder-project.supabase.co",
       VITE_SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder",
       JWT_SECRET: "test-jwt-secret-key-min-32-characters",
