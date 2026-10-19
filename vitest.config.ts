@@ -8,6 +8,7 @@ export default defineConfig({
     environment: "jsdom",
     setupFiles: ["./src/test/setup.ts"],
     include: ["src/**/*.{test,spec}.{ts,tsx}", "server/**/*.{test,spec}.{ts,tsx}"],
+    pool: "threads",
     env: {
       NODE_ENV: "test",
       VITE_API_URL: "http://localhost:5005/api",

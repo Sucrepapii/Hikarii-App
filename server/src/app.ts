@@ -1,4 +1,8 @@
 import "dotenv/config";
+import { validateEnv } from "./config/env.schema";
+
+// Validate environment variables on server startup
+validateEnv();
 
 import * as Sentry from "@sentry/node";
 import { nodeProfilingIntegration } from "@sentry/profiling-node";
