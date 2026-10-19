@@ -8,20 +8,9 @@ import { useNavigate } from 'react-router-dom';
 import apiClient from '../api/client';
 import toast from 'react-hot-toast';
 import { ConfirmModal } from '../components/common/ConfirmModal';
-
-interface UserData {
-    id: string;
-    name: string;
-    email: string;
-    role: string;
-    subscriptionStatus: string;
-    lastLoginAt: string | null;
-    createdAt: string;
-    isSuspended: boolean;
-    suspensionReason?: string;
-    suspensionExpires?: string;
-    requiresPasswordChange?: boolean;
-}
+import { EditUserModal } from '../components/admin/EditUserModal';
+import { CreateAdminModal } from '../components/admin/CreateAdminModal';
+import { useAdminUserActions, UserData } from '../hooks/useAdminUserActions';
 
 export const AdminUserManagement: React.FC = () => {
     const { user } = useAuthStore();
@@ -29,34 +18,11 @@ export const AdminUserManagement: React.FC = () => {
     const [users, setUsers] = useState<UserData[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
-    const [editingUser, setEditingUser] = useState<UserData | null>(null);
-    const [isUpdating, setIsUpdating] = useState(false);
-    const [userToDelete, setUserToDelete] = useState<UserData | null>(null);
     const [pagination, setPagination] = useState({
         currentPage: 1,
         pages: 1,
         total: 0
     });
-
-    // Batch Operations State
-    const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
-    const [batchActionToConfirm, setBatchActionToConfirm] = useState<'DELETE' | 'SUSPEND' | null>(null);
-
-    // Suspension State
-    const [suspensionReason, setSuspensionReason] = useState('');
-    const [suspensionDuration, setSuspensionDuration] = useState('7'); // days
-
-    // Create Admin State
-    const [isCreatingAdmin, setIsCreatingAdmin] = useState(false);
-    const [newAdmin, setNewAdmin] = useState({ name: '', email: '', password: '' });
-
-    useEffect(() => {
-        if (!user || user.role !== 'ADMIN') {
-            navigate('/dashboard');
-            return;
-        }
-        fetchAdminData();
-    }, [user, navigate, pagination.currentPage]);
 
     const fetchAdminData = async () => {
         setLoading(true);
@@ -76,126 +42,43 @@ export const AdminUserManagement: React.FC = () => {
         }
     };
 
+    const {
+        isUpdating,
+        editingUser,
+        setEditingUser,
+        userToDelete,
+        setUserToDelete,
+        selectedUserIds,
+        setSelectedUserIds,
+        toggleUserSelection,
+        batchActionToConfirm,
+        setBatchActionToConfirm,
+        suspensionReason,
+        setSuspensionReason,
+        suspensionDuration,
+        setSuspensionDuration,
+        isCreatingAdmin,
+        setIsCreatingAdmin,
+        newAdmin,
+        setNewAdmin,
+        handleUpdateUser,
+        handleDeleteUser,
+        handleSuspendUser,
+        handleReactivateUser,
+        handleCreateAdmin,
+        handleBatchAction,
+    } = useAdminUserActions(fetchAdminData);
+
+    useEffect(() => {
+        if (!user || user.role !== 'ADMIN') {
+            navigate('/dashboard');
+            return;
+        }
+        fetchAdminData();
+    }, [user, navigate, pagination.currentPage]);
+
     const handlePageChange = (newPage: number) => {
         setPagination(prev => ({ ...prev, currentPage: newPage }));
-    };
-
-    const handleUpdateUser = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!editingUser) return;
-
-        setIsUpdating(true);
-        try {
-            await apiClient.put(`/admin/users/${editingUser.id}`, {
-                name: editingUser.name,
-                email: editingUser.email,
-                role: editingUser.role,
-                subscriptionStatus: editingUser.subscriptionStatus
-            });
-
-            toast.success('User updated successfully');
-            setEditingUser(null);
-            fetchAdminData();
-        } catch (error) {
-            console.error('Failed to update user:', error);
-            toast.error('Failed to update user');
-        } finally {
-            setIsUpdating(false);
-        }
-    };
-
-    const handleDeleteUser = async () => {
-        if (!userToDelete) return;
-
-        setIsUpdating(true);
-        try {
-            await apiClient.delete(`/admin/users/${userToDelete.id}`);
-            toast.success('User and all associated data deleted');
-            setUserToDelete(null);
-            fetchAdminData();
-        } catch (error) {
-            console.error('Failed to delete user:', error);
-            toast.error('Failed to delete user');
-        } finally {
-            setIsUpdating(false);
-        }
-    };
-
-    const handleSuspendUser = async () => {
-        if (!editingUser) return;
-        setIsUpdating(true);
-        try {
-            await apiClient.post(`/admin/users/${editingUser.id}/suspend`, {
-                reason: suspensionReason,
-                durationDays: parseInt(suspensionDuration)
-            });
-            toast.success('User suspended');
-            setEditingUser(null);
-            fetchAdminData();
-        } catch (error) {
-            toast.error('Failed to suspend user');
-        } finally {
-            setIsUpdating(false);
-        }
-    };
-
-    const handleCreateAdmin = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setIsUpdating(true);
-        try {
-            await apiClient.post('/admin/create-admin', newAdmin);
-            toast.success('Admin account created successfully');
-            setIsCreatingAdmin(false);
-            setNewAdmin({ name: '', email: '', password: '' });
-            fetchAdminData();
-        } catch (error: any) {
-            console.error('Failed to create admin:', error);
-            const message = error.response?.data?.message || 'Failed to create admin';
-            toast.error(message);
-        } finally {
-            setIsUpdating(false);
-        }
-    };
-
-    const handleReactivateUser = async (id: string) => {
-        setIsUpdating(true);
-        try {
-            await apiClient.post(`/admin/users/${id}/reactivate`);
-            toast.success('User reactivated');
-            fetchAdminData();
-        } catch (error) {
-            toast.error('Failed to reactivate user');
-        } finally {
-            setIsUpdating(false);
-        }
-    };
-
-    const handleBatchAction = async () => {
-        if (selectedUserIds.length === 0 || !batchActionToConfirm) return;
-        const action = batchActionToConfirm;
-
-        setIsUpdating(true);
-        try {
-            await apiClient.post('/admin/batch', {
-                userIds: selectedUserIds,
-                action,
-                details: action === 'SUSPEND' ? { reason: 'Batch suspension', durationDays: 30 } : {}
-            });
-            toast.success(`Batch ${action.toLowerCase()} successful`);
-            setSelectedUserIds([]);
-            setBatchActionToConfirm(null);
-            fetchAdminData();
-        } catch (error) {
-            toast.error('Batch operation failed');
-        } finally {
-            setIsUpdating(false);
-        }
-    };
-
-    const toggleUserSelection = (id: string) => {
-        setSelectedUserIds(prev =>
-            prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
-        );
     };
 
     const filteredUsers = users.filter(u =>
@@ -439,154 +322,20 @@ export const AdminUserManagement: React.FC = () => {
 
             {/* Comprehensive Manage/Edit Modal */}
             {editingUser && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-                    <div className="absolute inset-0 bg-slate-900/70 backdrop-blur-md" onClick={() => !isUpdating && setEditingUser(null)} />
-                    <Card className="relative w-full max-w-2xl animate-scale-in overflow-hidden border-none shadow-2xl">
-                        <div className="p-8 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-slate-900/50">
-                            <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 rounded-2xl bg-gradient-to-r from-primary-600 to-accent-600 text-white flex items-center justify-center font-bold text-xl">
-                                    {editingUser.name.charAt(0).toUpperCase()}
-                                </div>
-                                <div>
-                                    <h3 className="text-2xl font-display font-bold text-slate-900 dark:text-white">{editingUser.name}</h3>
-                                    <p className="text-sm text-slate-500">{editingUser.email}</p>
-                                </div>
-                            </div>
-                            <button onClick={() => setEditingUser(null)} className="p-2 hover:bg-white dark:hover:bg-slate-800 rounded-xl transition-colors shadow-sm">
-                                <X className="w-6 h-6 text-slate-500" />
-                            </button>
-                        </div>
-
-                        <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-8 max-h-[70vh] overflow-y-auto">
-                            {/* Account Settings */}
-                            <div className="space-y-6">
-                                <h4 className="text-sm font-bold uppercase tracking-widest text-slate-400 flex items-center gap-2">
-                                    <Shield className="w-4 h-4" />
-                                    Access Control
-                                </h4>
-
-                                <div>
-                                    <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Platform Role</label>
-                                    <div className="grid grid-cols-2 gap-2">
-                                        {['USER', 'ADMIN'].map(r => (
-                                            <button
-                                                key={r}
-                                                onClick={() => setEditingUser({ ...editingUser, role: r })}
-                                                className={clsx(
-                                                    "px-4 py-2 rounded-xl text-sm font-bold border transition-all",
-                                                    editingUser.role === r
-                                                        ? "bg-gradient-to-r from-primary-600 to-accent-600 border-primary-600 text-white shadow-lg shadow-primary-600/20"
-                                                        : "border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-primary-400"
-                                                )}
-                                            >
-                                                {r}
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                {editingUser.role !== 'ADMIN' ? (
-                                    <div>
-                                        <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Subscription Tier</label>
-                                        <select
-                                            value={editingUser.subscriptionStatus}
-                                            onChange={(e) => setEditingUser({ ...editingUser, subscriptionStatus: e.target.value })}
-                                            className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm font-medium focus:ring-4 focus:ring-primary-500/10 outline-none"
-                                        >
-                                            <option value="FREE">FREE (Standard)</option>
-                                            <option value="TRIAL">TRIAL (14-Day)</option>
-                                            <option value="PRO">PRO (Premium)</option>
-                                        </select>
-                                    </div>
-                                ) : (
-                                    <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-dashed border-slate-200 dark:border-slate-700">
-                                        <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Subscription Restricted</p>
-                                        <p className="text-sm text-slate-500">Administrators have full platform access by default.</p>
-                                    </div>
-                                )}
-
-                                <div className="pt-4">
-                                    <button
-                                        onClick={handleUpdateUser}
-                                        disabled={isUpdating}
-                                        className="w-full py-3 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-xl font-bold hover:opacity-90 transition-all disabled:opacity-50 shadow-xl"
-                                    >
-                                        {isUpdating ? 'Updating...' : 'Save Permissions'}
-                                    </button>
-                                </div>
-                            </div>
-
-                            {/* Suspension Controls */}
-                            <div className="space-y-6 bg-slate-50 dark:bg-slate-800/30 p-6 rounded-2xl border border-slate-100 dark:border-slate-800">
-                                <h4 className="text-sm font-bold uppercase tracking-widest text-amber-600 flex items-center gap-2">
-                                    <Ban className="w-4 h-4" />
-                                    Account Suspension
-                                </h4>
-
-                                {editingUser.isSuspended ? (
-                                    <div className="space-y-4 text-center">
-                                        <div className="p-4 bg-red-50 dark:bg-red-900/10 rounded-xl border border-red-100 dark:border-red-900/30">
-                                            <AlertTriangle className="w-8 h-8 text-red-500 mx-auto mb-2" />
-                                            <p className="text-sm font-bold text-red-700 dark:text-red-400">Account is currently suspended</p>
-                                            <p className="text-xs text-red-600 mt-1">Reason: {editingUser.suspensionReason || 'None specified'}</p>
-                                        </div>
-                                        <button
-                                            onClick={() => handleReactivateUser(editingUser.id)}
-                                            className="w-full py-3 bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-700 transition-colors shadow-lg shadow-emerald-600/20"
-                                        >
-                                            Reactivate Now
-                                        </button>
-                                    </div>
-                                ) : (
-                                    <>
-                                        <div>
-                                            <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Duration</label>
-                                            <select
-                                                value={suspensionDuration}
-                                                onChange={(e) => setSuspensionDuration(e.target.value)}
-                                                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm outline-none"
-                                            >
-                                                <option value="1">24 Hours</option>
-                                                <option value="7">7 Days</option>
-                                                <option value="30">30 Days</option>
-                                                <option value="0">Indefinite</option>
-                                            </select>
-                                        </div>
-                                        <div>
-                                            <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Reason for Action</label>
-                                            <textarea
-                                                value={suspensionReason}
-                                                onChange={(e) => setSuspensionReason(e.target.value)}
-                                                placeholder="Violation of terms, suspicious activity..."
-                                                className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm min-h-[100px] outline-none"
-                                            />
-                                        </div>
-                                        <button
-                                            onClick={handleSuspendUser}
-                                            disabled={isUpdating}
-                                            className="w-full py-3 bg-amber-600 text-white rounded-xl font-bold hover:bg-amber-700 transition-colors shadow-lg shadow-amber-600/20"
-                                        >
-                                            {isUpdating ? 'Executing...' : 'Suspend Account'}
-                                        </button>
-                                    </>
-                                )}
-                            </div>
-                        </div>
-
-                        <div className="p-6 bg-slate-100 dark:bg-slate-900 flex justify-center border-t border-slate-200 dark:border-slate-800">
-                            <button
-                                onClick={() => {
-                                    setUserToDelete(editingUser);
-                                    setEditingUser(null);
-                                }}
-                                className="flex items-center gap-2 text-red-600 font-bold text-sm hover:bg-red-50 dark:hover:bg-red-900/20 px-4 py-2 rounded-xl transition-colors"
-                            >
-                                <Trash2 className="w-4 h-4" />
-                                Permanently Delete Account
-                            </button>
-                        </div>
-                    </Card>
-                </div>
+                <EditUserModal
+                    editingUser={editingUser}
+                    onClose={() => setEditingUser(null)}
+                    isUpdating={isUpdating}
+                    onUpdate={handleUpdateUser}
+                    onSuspend={handleSuspendUser}
+                    onReactivate={handleReactivateUser}
+                    onDelete={(u) => setUserToDelete(u)}
+                    suspensionReason={suspensionReason}
+                    setSuspensionReason={setSuspensionReason}
+                    suspensionDuration={suspensionDuration}
+                    setSuspensionDuration={setSuspensionDuration}
+                    setEditingUser={setEditingUser}
+                />
             )}
 
             {/* Delete User Confirmation remains as is but with slightly improved styling */}
@@ -623,77 +372,14 @@ export const AdminUserManagement: React.FC = () => {
                 </div>
             )}
             {/* Create Admin Modal */}
-            {isCreatingAdmin && (
-                <div className="fixed inset-0 z-[70] flex items-center justify-center p-4">
-                    <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-md" onClick={() => !isUpdating && setIsCreatingAdmin(false)} />
-                    <Card className="relative w-full max-w-md animate-scale-in overflow-hidden border-none shadow-2xl">
-                        <div className="p-8 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-slate-900/50">
-                            <h3 className="text-2xl font-display font-bold text-slate-900 dark:text-white flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-primary-600 to-accent-600 text-white flex items-center justify-center">
-                                    <UserPlus className="w-6 h-6" />
-                                </div>
-                                Create New Admin
-                            </h3>
-                            <button onClick={() => setIsCreatingAdmin(false)} className="p-2 hover:bg-white dark:hover:bg-slate-800 rounded-xl transition-colors shadow-sm">
-                                <X className="w-6 h-6 text-slate-400" />
-                            </button>
-                        </div>
-
-                        <form onSubmit={handleCreateAdmin} className="p-8 space-y-6">
-                            <div className="p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-900 rounded-xl flex gap-3">
-                                <Shield className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
-                                <p className="text-xs text-amber-800 dark:text-amber-300 font-medium">
-                                    New admins will be required to change their temporary password upon their first login for security.
-                                </p>
-                            </div>
-
-                            <div className="space-y-4">
-                                <div>
-                                    <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Full Name</label>
-                                    <input
-                                        required
-                                        type="text"
-                                        placeholder="Enter admin name"
-                                        value={newAdmin.name}
-                                        onChange={e => setNewAdmin({ ...newAdmin, name: e.target.value })}
-                                        className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm focus:ring-4 focus:ring-primary-500/10 outline-none transition-all"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Email Address</label>
-                                    <input
-                                        required
-                                        type="email"
-                                        placeholder="admin@example.com"
-                                        value={newAdmin.email}
-                                        onChange={e => setNewAdmin({ ...newAdmin, email: e.target.value })}
-                                        className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm focus:ring-4 focus:ring-primary-500/10 outline-none transition-all"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Temporary Password</label>
-                                    <input
-                                        required
-                                        type="password"
-                                        placeholder="Create a temporary password"
-                                        value={newAdmin.password}
-                                        onChange={e => setNewAdmin({ ...newAdmin, password: e.target.value })}
-                                        className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm focus:ring-4 focus:ring-primary-500/10 outline-none transition-all"
-                                    />
-                                </div>
-                            </div>
-
-                            <button
-                                type="submit"
-                                disabled={isUpdating}
-                                className="w-full py-4 bg-gradient-to-r from-primary-600 to-accent-600 text-white rounded-xl font-bold hover:from-primary-700 hover:to-accent-700 transition-all shadow-xl shadow-primary-600/20 disabled:opacity-50"
-                            >
-                                {isUpdating ? 'Creating Account...' : 'Create Admin Account'}
-                            </button>
-                        </form>
-                    </Card>
-                </div>
-            )}
+            <CreateAdminModal
+                isOpen={isCreatingAdmin}
+                onClose={() => setIsCreatingAdmin(false)}
+                isUpdating={isUpdating}
+                onSubmit={handleCreateAdmin}
+                newAdmin={newAdmin}
+                setNewAdmin={setNewAdmin}
+            />
             <ConfirmModal
                 isOpen={!!batchActionToConfirm}
                 onClose={() => !isUpdating && setBatchActionToConfirm(null)}
