@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
-    "@hookform/resolvers": "^3.3.4",
+    "@hookform/resolvers": "^5.9.1",
     "@prisma/client": "5.10.2",
     "@react-oauth/google": "^0.13.4",
     "@sentry/node": "^10.40.0",
